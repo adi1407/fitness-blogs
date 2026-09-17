@@ -69,11 +69,13 @@
 }
 
 :root {
+  --font-roboto-slab: var(--font-roboto-slab), "Roboto Slab", "Times New Roman",
+    serif;
   --font-diet: "Diet", Impact, Haettenschweiler, "Arial Black", sans-serif;
   --font-oceanic-text-mono: "Oceanic Text Mono", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   /* Primary brand face */
-  --font-sans: var(--font-diet);
-  --font-heading: var(--font-diet);
+  --font-sans: var(--font-roboto-slab);
+  --font-heading: var(--font-roboto-slab);
   --font-mono: var(--font-oceanic-text-mono);
 }

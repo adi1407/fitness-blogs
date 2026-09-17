@@ -1,5 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { Roboto_Slab } from "next/font/google";
 import "./globals.css";
+
+const robotoSlab = Roboto_Slab({
+  variable: "--font-roboto-slab",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -57,7 +65,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased font-sans">
+    <html
+      lang="en"
+      className={`${robotoSlab.variable} h-full antialiased font-sans`}
+    >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );

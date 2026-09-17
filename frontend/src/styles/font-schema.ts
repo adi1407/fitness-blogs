@@ -1,10 +1,16 @@
 /**
  * Brand type stack.
- * Primary: Diet (BP Diet) — display/fat face for UI + headings.
- * Mono: Oceanic Text Mono when licensed files are present.
+ * Primary: Roboto Slab (Google Fonts) for UI + headings.
+ * Display utility: Diet. Mono: Oceanic Text Mono when licensed files exist.
  */
 export const fontSchema = {
   primary: {
+    family: "Roboto Slab",
+    cssVariable: "--font-roboto-slab",
+    source: "https://fonts.google.com/specimen/Roboto+Slab",
+    weights: [300, 400, 500, 600, 700, 800, 900],
+  },
+  display: {
     family: "Diet",
     cssVariable: "--font-diet",
     files: {
@@ -12,7 +18,6 @@ export const fontSchema = {
       italic: "/fonts/Diet-Italic.otf",
     },
     source: "https://backpacker.gr/fonts/8",
-    license: "Creative Commons Attribution-No Derivative Works",
   },
   mono: {
     family: "Oceanic Text Mono",
