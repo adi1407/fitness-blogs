@@ -1,5 +1,29 @@
-/* Oceanic Text Mono — Interval Type (licensed files in /public/fonts) */
+/* Brand fonts */
 
+/* Diet (BP Diet) — backpacker.gr, CC BY-ND */
+@font-face {
+  font-family: "Diet";
+  src:
+    local("Diet"),
+    local("BPdiet"),
+    url("/fonts/Diet-Regular.otf") format("opentype");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Diet";
+  src:
+    local("Diet Italic"),
+    local("BPdietItalics"),
+    url("/fonts/Diet-Italic.otf") format("opentype");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Oceanic Text Mono — optional licensed drop-in */
 @font-face {
   font-family: "Oceanic Text Mono";
   src:
@@ -45,9 +69,11 @@
 }
 
 :root {
+  --font-diet: "Diet", Impact, Haettenschweiler, "Arial Black", sans-serif;
   --font-oceanic-text-mono: "Oceanic Text Mono", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-sans: var(--font-oceanic-text-mono);
+  /* Primary brand face */
+  --font-sans: var(--font-diet);
+  --font-heading: var(--font-diet);
   --font-mono: var(--font-oceanic-text-mono);
-  --font-heading: var(--font-oceanic-text-mono);
 }

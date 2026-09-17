@@ -1,14 +1,19 @@
-# Fonts — Oceanic Text Mono
+# Fonts
 
-This project uses **Oceanic Text Mono** (Interval Type) as the primary typeface.
+## Diet (primary)
 
-Place your licensed web font files here:
+Fat display face by backpacker.gr — used as the site `font-sans` / `font-heading`.
 
-- `OceanicTextMono-Regular.woff2`
-- `OceanicTextMono-Book.woff2`
-- `OceanicTextMono-Medium.woff2`
-- `OceanicTextMono-Bold.woff2`
+Files:
 
-Buy / license: https://intervaltype.com/product/oceanictext-mono/
+- `Diet-Regular.otf`
+- `Diet-Italic.otf`
+- `BPdiet.zip` (original archive)
+- `Diet-LICENSE.txt`
 
-Until files are present, the browser will try a locally installed copy, then fall back to system monospace.
+Source: https://backpacker.gr/fonts/8  
+License: Creative Commons Attribution-No Derivative Works (credit backpacker.gr)
+
+## Oceanic Text Mono (optional mono)
+
+Drop licensed `.woff2` files here if you want Oceanic Text Mono for `font-mono`.
