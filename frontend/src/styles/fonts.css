@@ -1,0 +1,53 @@
+/* Oceanic Text Mono — Interval Type (licensed files in /public/fonts) */
+
+@font-face {
+  font-family: "Oceanic Text Mono";
+  src:
+    local("Oceanic Text Mono"),
+    local("OceanicTextMono-Regular"),
+    url("/fonts/OceanicTextMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Oceanic Text Mono";
+  src:
+    local("Oceanic Text Mono Book"),
+    local("OceanicTextMono-Book"),
+    url("/fonts/OceanicTextMono-Book.woff2") format("woff2");
+  font-weight: 450;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Oceanic Text Mono";
+  src:
+    local("Oceanic Text Mono Medium"),
+    local("OceanicTextMono-Medium"),
+    url("/fonts/OceanicTextMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Oceanic Text Mono";
+  src:
+    local("Oceanic Text Mono Bold"),
+    local("OceanicTextMono-Bold"),
+    url("/fonts/OceanicTextMono-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-oceanic-text-mono: "Oceanic Text Mono", ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-oceanic-text-mono);
+  --font-mono: var(--font-oceanic-text-mono);
+  --font-heading: var(--font-oceanic-text-mono);
+}
