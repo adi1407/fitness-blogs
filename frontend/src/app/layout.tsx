@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Roboto_Slab } from "next/font/google";
+import { SiteHeader } from "@/components/shared/SiteHeader";
+import { SiteFooter } from "@/components/shared/SiteFooter";
+import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -14,15 +17,23 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Fitness",
-    template: "%s | Fitness",
+    default: "FitKnowledge — Fitness, Nutrition & Training Guides",
+    template: "%s | FitKnowledge",
   },
   description:
-    "Performance-focused fitness experiences optimized for every screen and search engine.",
-  applicationName: "Fitness",
-  authors: [{ name: "Fitness" }],
-  generator: "Next.js",
-  keywords: ["fitness", "training", "wellness", "health"],
+    "Evidence-informed fitness knowledge platform: nutrition guides, weight loss, muscle building, exercise library, Indian foods, and free calculators.",
+  applicationName: "FitKnowledge",
+  authors: [{ name: "FitKnowledge" }],
+  keywords: [
+    "fitness",
+    "nutrition",
+    "protein",
+    "weight loss",
+    "muscle building",
+    "TDEE calculator",
+    "Indian diet",
+    "workout exercises",
+  ],
   alternates: {
     canonical: "/",
   },
@@ -30,16 +41,16 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "Fitness",
-    title: "Fitness",
+    siteName: "FitKnowledge",
+    title: "FitKnowledge — Fitness, Nutrition & Training Guides",
     description:
-      "Performance-focused fitness experiences optimized for every screen and search engine.",
+      "Guides, calculators, foods, and exercises built to answer real search questions.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fitness",
+    title: "FitKnowledge — Fitness Knowledge Platform",
     description:
-      "Performance-focused fitness experiences optimized for every screen and search engine.",
+      "Evidence-informed fitness, nutrition, and training — with tools that teach.",
   },
   robots: {
     index: true,
@@ -59,8 +70,28 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b2533" },
   ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "FitKnowledge",
+  url: siteUrl,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${siteUrl}/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "FitKnowledge",
+  url: siteUrl,
+  logo: `${siteUrl}/logo.svg`,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -69,7 +100,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${robotoSlab.variable} h-full antialiased font-sans`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
+        <JsonLd data={websiteJsonLd} />
+        <JsonLd data={orgJsonLd} />
+        <SiteHeader />
+        <div className="flex min-h-full flex-1 flex-col pt-16">{children}</div>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

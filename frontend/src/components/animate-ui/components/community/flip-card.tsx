@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { easeOut, motion } from 'motion/react';
 import * as React from 'react';
-import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Code2, Link2, AtSign } from 'lucide-react';
 
 export interface FlipCardData {
   name: string;
@@ -111,7 +111,7 @@ export function FlipCard({ data }: FlipCardProps) {
               rel="noopener noreferrer"
               className="hover:scale-105 transition-transform"
             >
-              <Linkedin size={20} />
+              <Link2 size={20} />
             </a>
           )}
           {data.socialLinks?.github && (
@@ -121,7 +121,7 @@ export function FlipCard({ data }: FlipCardProps) {
               rel="noopener noreferrer"
               className="hover:scale-105 transition-transform"
             >
-              <Github size={20} />
+              <Code2 size={20} />
             </a>
           )}
           {data.socialLinks?.twitter && (
@@ -131,7 +131,7 @@ export function FlipCard({ data }: FlipCardProps) {
               rel="noopener noreferrer"
               className="hover:scale-105 transition-transform"
             >
-              <Twitter size={20} />
+              <AtSign size={20} />
             </a>
           )}
         </div>

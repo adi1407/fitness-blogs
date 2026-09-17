@@ -145,17 +145,41 @@ function HoverCardContent({
   const translateY = useSpring(y, followCursorSpringOptions);
 
   return (
-    <HoverCardPrimitive.Content forceMount align={align} alignOffset={alignOffset} side={side} sideOffset={sideOffset} avoidCollisions={avoidCollisions} collisionBoundary={collisionBoundary} collisionPadding={collisionPadding} arrowPadding={arrowPadding} sticky={sticky} hideWhenDetached={hideWhenDetached} render={<motion.div key="hover-card-content" data-slot="hover-card-content" initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} transition={transition} style={{
-                x:
-                  followCursor === 'x' || followCursor === true
-                    ? translateX
-                    : undefined,
-                y:
-                  followCursor === 'y' || followCursor === true
-                    ? translateY
-                    : undefined,
-                ...style,
-              }} {...props} />}></HoverCardPrimitive.Content>
+    <HoverCardPrimitive.Content
+      forceMount
+      asChild
+      align={align}
+      alignOffset={alignOffset}
+      side={side}
+      sideOffset={sideOffset}
+      avoidCollisions={avoidCollisions}
+      collisionBoundary={collisionBoundary}
+      collisionPadding={collisionPadding}
+      arrowPadding={arrowPadding}
+      sticky={sticky}
+      hideWhenDetached={hideWhenDetached}
+    >
+      <motion.div
+        key="hover-card-content"
+        data-slot="hover-card-content"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={transition}
+        style={{
+          x:
+            followCursor === "x" || followCursor === true
+              ? translateX
+              : undefined,
+          y:
+            followCursor === "y" || followCursor === true
+              ? translateY
+              : undefined,
+          ...style,
+        }}
+        {...props}
+      />
+    </HoverCardPrimitive.Content>
   );
 }
 

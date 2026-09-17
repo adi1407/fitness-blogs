@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import { calsans } from "@/fonts/calsans";
-
-import { twMerge } from "tailwind-merge";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
 export default function TracingBeamDemo() {
@@ -15,7 +12,7 @@ export default function TracingBeamDemo() {
               {item.badge}
             </h2>
 
-            <p className={twMerge(calsans.className, "text-xl mb-4")}>
+            <p className="text-xl mb-4 font-semibold tracking-tight">
               {item.title}
             </p>
 

@@ -1,37 +1,45 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export const Card = React.memo(
-  ({
-    card,
-    index,
-    hovered,
-    setHovered,
-  }: {
-    card: any;
-    index: number;
-    hovered: number | null;
-    setHovered: React.Dispatch<React.SetStateAction<number | null>>;
-  }) => (
+type CardData = {
+  title: string;
+  src: string;
+  href?: string;
+};
+
+export const Card = React.memo(function Card({
+  card,
+  index,
+  hovered,
+  setHovered,
+}: {
+  card: CardData;
+  index: number;
+  hovered: number | null;
+  setHovered: React.Dispatch<React.SetStateAction<number | null>>;
+}) {
+  const inner = (
     <div
       onMouseEnter={() => setHovered(index)}
       onMouseLeave={() => setHovered(null)}
       className={cn(
         "rounded-lg relative bg-gray-100 dark:bg-neutral-900 overflow-hidden h-60 md:h-96 w-full transition-all duration-300 ease-out",
-        hovered !== null && hovered !== index && "blur-sm scale-[0.98]"
+        hovered !== null && hovered !== index && "blur-sm scale-[0.98]",
       )}
     >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={card.src}
         alt={card.title}
-        className="object-cover absolute inset-0"
+        className="object-cover absolute inset-0 h-full w-full"
       />
       <div
         className={cn(
           "absolute inset-0 bg-black/50 flex items-end py-8 px-4 transition-opacity duration-300",
-          hovered === index ? "opacity-100" : "opacity-0"
+          hovered === index ? "opacity-100" : "opacity-0",
         )}
       >
         <div className="text-xl md:text-2xl font-medium bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-200">
@@ -39,17 +47,20 @@ export const Card = React.memo(
         </div>
       </div>
     </div>
-  )
-);
+  );
 
-Card.displayName = "Card";
+  if (card.href) {
+    return (
+      <Link href={card.href} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+        {inner}
+      </Link>
+    );
+  }
 
-type Card = {
-  title: string;
-  src: string;
-};
+  return inner;
+});
 
-export function FocusCards({ cards }: { cards: Card[] }) {
+export function FocusCards({ cards }: { cards: CardData[] }) {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
