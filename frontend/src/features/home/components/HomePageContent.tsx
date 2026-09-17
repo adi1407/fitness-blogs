@@ -8,9 +8,9 @@ import { FocusCards } from "@/components/ui/focus-cards";
 import { CalendlyCarousel } from "@/components/ui/connected-carousel";
 import type { CarouselItem } from "@/components/ui/connected-carousel";
 import BlurText from "@/components/ui/blur-text";
-import FoldText from "@/components/ui/fold-text";
 import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble";
 import { PreviewLinkCard, PreviewLinkCardTrigger, PreviewLinkCardContent, PreviewLinkCardImage } from "@/components/animate-ui/components/radix/preview-link-card";
+import { HomeGhostFoldBand } from "@/features/home/components/HomeGhostFoldBand";
 
 const PILLARS = [
   {
@@ -223,32 +223,30 @@ export function HomePageContent() {
         </div>
       </section>
 
-      <section className="overflow-hidden bg-[#0b2533] py-24 text-center">
-        <FoldText
-          text="Train with clarity"
-          splitBy="char"
-          hinge="top"
-          trigger="scroll"
-          duration={0.65}
-          stagger={0.04}
-          ease="power3.out"
-          perspective={700}
-          creaseShading={0.55}
-          fontSize="clamp(2.4rem, 8vw, 5.5rem)"
-          fontWeight={700}
-          color="#E1F5FE"
-        />
-        <p className="mx-auto mt-6 max-w-xl px-4 text-brand-100">
-          From protein questions to exercise technique — every page should push
-          you toward the next useful action.
-        </p>
-        <Link
-          href="/muscle-building"
-          className="mt-8 inline-flex rounded-full bg-orange-400 px-6 py-3 text-sm font-semibold text-white hover:bg-orange-300"
-        >
-          Muscle building guides
-        </Link>
+      <section className="bg-white py-16">
+        <div className="mx-auto grid max-w-6xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
+          <Link
+            href="/foods/indian"
+            className="rounded-2xl border border-border bg-brand-50 p-6 hover:border-primary"
+          >
+            <h2 className="text-xl font-semibold">Indian foods hub</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              High-protein staples mapped to fat loss and muscle goals.
+            </p>
+          </Link>
+          <Link
+            href="/exercises"
+            className="rounded-2xl border border-border bg-brand-50 p-6 hover:border-primary"
+          >
+            <h2 className="text-xl font-semibold">Exercise library</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Browse by muscle group, then connect to hypertrophy guidance.
+            </p>
+          </Link>
+        </div>
       </section>
+
+      <HomeGhostFoldBand />
     </>
   );
 }

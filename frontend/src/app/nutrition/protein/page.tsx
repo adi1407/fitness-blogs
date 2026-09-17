@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -109,129 +110,131 @@ export default function ProteinHubPage() {
         </Link>
       </aside>
 
-      <section className="mt-12 prose-none">
-        <h2 className="text-2xl font-semibold">On this page</h2>
-        <ol className="mt-4 list-decimal space-y-2 pl-5 text-muted-foreground">
-          <li>What protein does</li>
-          <li>Requirements by goal</li>
-          <li>Calculate your target</li>
-          <li>Indian high-protein foods</li>
-          <li>FAQs</li>
-        </ol>
-      </section>
+      <ProteinTracingBeam>
+        <section className="mt-12 prose-none pl-4 sm:pl-8">
+          <h2 className="text-2xl font-semibold">On this page</h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-5 text-muted-foreground">
+            <li>What protein does</li>
+            <li>Requirements by goal</li>
+            <li>Calculate your target</li>
+            <li>Indian high-protein foods</li>
+            <li>FAQs</li>
+          </ol>
+        </section>
 
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">What protein does</h2>
-        <p className="mt-4 text-muted-foreground leading-relaxed">
-          Protein provides amino acids used for tissue repair, enzyme function,
-          and — when paired with training — supporting muscle protein synthesis.
-          It is one part of a complete nutrition plan that also includes energy
-          balance, carbohydrate and fat intake, micronutrients, and recovery.
-        </p>
-      </section>
+        <section className="mt-12 pl-4 sm:pl-8">
+          <h2 className="text-2xl font-semibold">What protein does</h2>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Protein provides amino acids used for tissue repair, enzyme function,
+            and — when paired with training — supporting muscle protein synthesis.
+            It is one part of a complete nutrition plan that also includes energy
+            balance, carbohydrate and fat intake, micronutrients, and recovery.
+          </p>
+        </section>
 
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">Requirements by goal</h2>
-        <div className="mt-6 overflow-x-auto rounded-xl border border-border">
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-brand-50">
-              <tr>
-                <th className="px-4 py-3 font-semibold">Goal</th>
-                <th className="px-4 py-3 font-semibold">Practical focus</th>
-                <th className="px-4 py-3 font-semibold">Next step</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t border-border">
-                <td className="px-4 py-3">General health</td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  Consistent daily intake across meals
-                </td>
-                <td className="px-4 py-3">
-                  <Link href="/tools/protein-calculator" className="text-primary">
-                    Calculator
-                  </Link>
-                </td>
-              </tr>
-              <tr className="border-t border-border">
-                <td className="px-4 py-3">Muscle building</td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  Higher protein + progressive training + enough calories
-                </td>
-                <td className="px-4 py-3">
-                  <Link href="/muscle-building" className="text-primary">
-                    Muscle hub
-                  </Link>
-                </td>
-              </tr>
-              <tr className="border-t border-border">
-                <td className="px-4 py-3">Fat loss</td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  Higher protein can help preserve lean mass in a deficit
-                </td>
-                <td className="px-4 py-3">
-                  <Link href="/weight-loss" className="text-primary">
-                    Weight loss
-                  </Link>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section className="mt-12 pl-4 sm:pl-8">
+          <h2 className="text-2xl font-semibold">Requirements by goal</h2>
+          <div className="mt-6 overflow-x-auto rounded-xl border border-border">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-brand-50">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Goal</th>
+                  <th className="px-4 py-3 font-semibold">Practical focus</th>
+                  <th className="px-4 py-3 font-semibold">Next step</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t border-border">
+                  <td className="px-4 py-3">General health</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    Consistent daily intake across meals
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href="/tools/protein-calculator" className="text-primary">
+                      Calculator
+                    </Link>
+                  </td>
+                </tr>
+                <tr className="border-t border-border">
+                  <td className="px-4 py-3">Muscle building</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    Higher protein + progressive training + enough calories
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href="/muscle-building" className="text-primary">
+                      Muscle hub
+                    </Link>
+                  </td>
+                </tr>
+                <tr className="border-t border-border">
+                  <td className="px-4 py-3">Fat loss</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    Higher protein can help preserve lean mass in a deficit
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link href="/weight-loss" className="text-primary">
+                      Weight loss
+                    </Link>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">Calculate your target</h2>
-        <p className="mt-4 text-muted-foreground">
-          Use the protein calculator, then validate meal ideas with the foods
-          database — especially Indian staples if that matches your kitchen.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Link
-            href="/tools/protein-calculator"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-          >
-            Protein calculator
-          </Link>
-          <Link
-            href="/tools/tdee-calculator"
-            className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
-          >
-            TDEE calculator
-          </Link>
-          <Link
-            href="/foods/indian"
-            className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
-          >
-            Indian high-protein foods
-          </Link>
-        </div>
-      </section>
-
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">FAQs</h2>
-        <div className="mt-6 space-y-4">
-          {faq.map((item) => (
-            <details
-              key={item.q}
-              className="rounded-xl border border-border bg-card p-4"
+        <section className="mt-12 pl-4 sm:pl-8">
+          <h2 className="text-2xl font-semibold">Calculate your target</h2>
+          <p className="mt-4 text-muted-foreground">
+            Use the protein calculator, then validate meal ideas with the foods
+            database — especially Indian staples if that matches your kitchen.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/tools/protein-calculator"
+              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
             >
-              <summary className="cursor-pointer font-semibold">{item.q}</summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {item.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
+              Protein calculator
+            </Link>
+            <Link
+              href="/tools/tdee-calculator"
+              className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
+            >
+              TDEE calculator
+            </Link>
+            <Link
+              href="/foods/indian"
+              className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
+            >
+              Indian high-protein foods
+            </Link>
+          </div>
+        </section>
 
-      <p className="mt-12 text-xs text-muted-foreground">
-        Educational information only. See our{" "}
-        <Link href="/medical-disclaimer" className="underline">
-          medical disclaimer
-        </Link>
-        .
-      </p>
+        <section className="mt-12 pl-4 sm:pl-8">
+          <h2 className="text-2xl font-semibold">FAQs</h2>
+          <div className="mt-6 space-y-4">
+            {faq.map((item) => (
+              <details
+                key={item.q}
+                className="rounded-xl border border-border bg-card p-4"
+              >
+                <summary className="cursor-pointer font-semibold">{item.q}</summary>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {item.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <p className="mt-12 pl-4 text-xs text-muted-foreground sm:pl-8">
+          Educational information only. See our{" "}
+          <Link href="/medical-disclaimer" className="underline">
+            medical disclaimer
+          </Link>
+          .
+        </p>
+      </ProteinTracingBeam>
     </main>
   );
 }

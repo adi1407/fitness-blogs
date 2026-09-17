@@ -11,7 +11,7 @@ import {
   useMotionValueEvent,
   type MotionValue,
 } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const IMG = {
   angle1:
@@ -311,6 +311,10 @@ interface StackSpreadStageProps {
   cardRadius?: number;
   textFadeStart?: number;
   showScrollHint?: boolean;
+  titleBefore?: ReactNode;
+  titleAfter?: ReactNode;
+  subtitleBefore?: string;
+  subtitleAfter?: string;
 }
 
 function StackSpreadStage({
@@ -320,6 +324,10 @@ function StackSpreadStage({
   cardRadius = 12,
   textFadeStart = 0.28,
   showScrollHint = true,
+  titleBefore,
+  titleAfter,
+  subtitleBefore = SUB_BEFORE,
+  subtitleAfter = SUB_AFTER,
 }: StackSpreadStageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -375,7 +383,7 @@ function StackSpreadStage({
       className="relative w-full select-none bg-[#faf9f6] dark:bg-[#0a0a0c] transition-colors duration-500"
       style={{ height: `${scrollLength}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      <div className="sticky top-20 h-[calc(100svh-5rem)] w-full overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-25 dark:opacity-15 blur-[120px]">
           <div className="w-[50vw] h-[50vw] rounded-full bg-stone-300 dark:bg-indigo-900" />
         </div>
@@ -391,11 +399,15 @@ function StackSpreadStage({
             style={{ opacity: beforeOpacity, y: beforeY }}
           >
             <h2 className="w-full whitespace-pre-line text-[4.8vw] font-light tracking-tight text-zinc-900 dark:text-zinc-100 max-md:text-[10vw]">
-              Portal <span className="font-normal opacity-40">Axis</span>{" "}
-              Convergence.
+              {titleBefore ?? (
+                <>
+                  Portal <span className="font-normal opacity-40">Axis</span>{" "}
+                  Convergence.
+                </>
+              )}
             </h2>
             <p className="mt-[1.4vw] w-full max-w-[40ch] text-[1.1vw] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 max-md:mt-3 max-md:text-[3.6vw]">
-              {SUB_BEFORE}
+              {subtitleBefore}
             </p>
           </motion.div>
 
@@ -404,14 +416,18 @@ function StackSpreadStage({
             style={{ opacity: afterOpacity, y: afterY }}
           >
             <h2 className="w-full whitespace-pre-line text-[4.8vw] font-light tracking-tight text-zinc-900 dark:text-zinc-100 max-md:text-[10vw]">
-              Cinematic{" "}
-              <span className="font-normal text-indigo-500 dark:text-indigo-400">
-                Perspective
-              </span>
-              .
+              {titleAfter ?? (
+                <>
+                  Cinematic{" "}
+                  <span className="font-normal text-indigo-500 dark:text-indigo-400">
+                    Perspective
+                  </span>
+                  .
+                </>
+              )}
             </h2>
             <p className="mt-[1.4vw] w-full max-w-[40ch] text-[1.1vw] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 max-md:mt-3 max-md:text-[3.6vw]">
-              {SUB_AFTER}
+              {subtitleAfter}
             </p>
           </motion.div>
         </motion.div>
@@ -462,28 +478,42 @@ function StackSpreadStage({
 }
 
 export interface SplitAxisProps {
+  cards?: StackSpreadCard[];
   scrollLength?: number;
   stackScale?: number;
   cardRadius?: number;
   textFadeStart?: number;
   showScrollHint?: boolean;
+  titleBefore?: ReactNode;
+  titleAfter?: ReactNode;
+  subtitleBefore?: string;
+  subtitleAfter?: string;
 }
 
 export default function SplitAxisConvergence({
+  cards = CARDS,
   scrollLength = 380,
   stackScale = 0.72,
   cardRadius = 12,
   textFadeStart = 0.28,
   showScrollHint = true,
+  titleBefore,
+  titleAfter,
+  subtitleBefore,
+  subtitleAfter,
 }: SplitAxisProps = {}) {
   return (
     <StackSpreadStage
-      cards={CARDS}
+      cards={cards}
       scrollLength={scrollLength}
       stackScale={stackScale}
       cardRadius={cardRadius}
       textFadeStart={textFadeStart}
       showScrollHint={showScrollHint}
+      titleBefore={titleBefore}
+      titleAfter={titleAfter}
+      subtitleBefore={subtitleBefore}
+      subtitleAfter={subtitleAfter}
     />
   );
 }

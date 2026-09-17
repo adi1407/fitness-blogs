@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { WeightLossSplitSection } from "@/features/weight-loss/components/WeightLossSplitSection";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -32,6 +33,29 @@ const faq = [
   },
 ];
 
+const pillars = [
+  {
+    href: "/tools/tdee-calculator",
+    title: "Energy balance",
+    text: "Estimate maintenance, then set a moderate deficit.",
+  },
+  {
+    href: "/nutrition/protein",
+    title: "Protein & meals",
+    text: "Protect lean mass and stay fuller while dieting.",
+  },
+  {
+    href: "/training",
+    title: "Training",
+    text: "Lift to preserve muscle; add cardio for health and burn.",
+  },
+  {
+    href: "/foods/indian",
+    title: "Indian diet context",
+    text: "Build deficit-friendly meals from familiar staples.",
+  },
+];
+
 export default function WeightLossPage() {
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -58,114 +82,101 @@ export default function WeightLossPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="flex w-full flex-1 flex-col">
       <JsonLd data={breadcrumbLd} />
       <JsonLd data={faqLd} />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="hover:text-primary">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Weight Loss</li>
-        </ol>
-      </nav>
-
-      <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-        Weight loss: a practical, evidence-informed path
-      </h1>
-      <p className="mt-3 text-sm text-muted-foreground">
-        Pillar hub · Educational content · Not medical advice
-      </p>
-
-      <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
-        <h2 className="text-lg font-semibold">Quick answer</h2>
-        <p className="mt-2 text-muted-foreground">
-          Fat loss requires a sustained calorie deficit. Pair that with enough
-          protein, resistance training, and habits you can keep — then use
-          calculators to estimate a starting point.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Link
-            href="/tools/tdee-calculator"
-            className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
-          >
-            TDEE calculator →
-          </Link>
-          <Link
-            href="/tools/calorie-calculator"
-            className="rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-semibold"
-          >
-            Calorie calculator
-          </Link>
-        </div>
-      </aside>
-
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">Core pillars</h2>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-          {[
-            {
-              href: "/tools/tdee-calculator",
-              title: "Energy balance",
-              text: "Estimate maintenance, then set a moderate deficit.",
-            },
-            {
-              href: "/nutrition/protein",
-              title: "Protein & meals",
-              text: "Protect lean mass and stay fuller while dieting.",
-            },
-            {
-              href: "/training",
-              title: "Training",
-              text: "Lift to preserve muscle; add cardio for health and burn.",
-            },
-            {
-              href: "/foods/indian",
-              title: "Indian diet context",
-              text: "Build deficit-friendly meals from familiar staples.",
-            },
-          ].map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
-              >
-                <h3 className="text-lg font-semibold">{item.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{item.text}</p>
+      {/* SSR SEO block — constrained */}
+      <div className="mx-auto w-full max-w-5xl px-4 pt-16 sm:px-6 lg:px-8">
+        <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+          <ol className="flex flex-wrap gap-2">
+            <li>
+              <Link href="/" className="hover:text-primary">
+                Home
               </Link>
             </li>
-          ))}
-        </ul>
-      </section>
+            <li aria-hidden="true">/</li>
+            <li className="text-foreground">Weight Loss</li>
+          </ol>
+        </nav>
 
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">FAQs</h2>
-        <div className="mt-6 space-y-4">
-          {faq.map((item) => (
-            <details
-              key={item.q}
-              className="rounded-xl border border-border bg-card p-4"
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+          Weight loss: a practical, evidence-informed path
+        </h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Pillar hub · Educational content · Not medical advice
+        </p>
+
+        <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
+          <h2 className="text-lg font-semibold">Quick answer</h2>
+          <p className="mt-2 text-muted-foreground">
+            Fat loss requires a sustained calorie deficit. Pair that with enough
+            protein, resistance training, and habits you can keep — then use
+            calculators to estimate a starting point.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link
+              href="/tools/tdee-calculator"
+              className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
             >
-              <summary className="cursor-pointer font-semibold">{item.q}</summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {item.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
+              TDEE calculator →
+            </Link>
+            <Link
+              href="/tools/calorie-calculator"
+              className="rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-semibold"
+            >
+              Calorie calculator
+            </Link>
+          </div>
+        </aside>
+      </div>
 
-      <p className="mt-12 text-xs text-muted-foreground">
-        Educational information only. See our{" "}
-        <Link href="/medical-disclaimer" className="underline">
-          medical disclaimer
-        </Link>
-        .
-      </p>
+      {/* Full-bleed sticky scroll story — outside max-width / overflow shells */}
+      <WeightLossSplitSection />
+
+      <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+        <section>
+          <h2 className="text-2xl font-semibold">Core pillars</h2>
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            {pillars.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+                >
+                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{item.text}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-2xl font-semibold">FAQs</h2>
+          <div className="mt-6 space-y-4">
+            {faq.map((item) => (
+              <details
+                key={item.q}
+                className="rounded-xl border border-border bg-card p-4"
+              >
+                <summary className="cursor-pointer font-semibold">{item.q}</summary>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  {item.a}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <p className="mt-12 text-xs text-muted-foreground">
+          Educational information only. See our{" "}
+          <Link href="/medical-disclaimer" className="underline">
+            medical disclaimer
+          </Link>
+          .
+        </p>
+      </div>
     </main>
   );
 }

@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { ToolsBentoGrid } from "@/features/tools/components/ToolsBentoGrid";
 
 export const metadata: Metadata = {
   title: "Fitness Calculators — TDEE, Protein, Macros, BMI & More",
@@ -49,7 +50,7 @@ const calculators = [
 
 export default function ToolsPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -71,7 +72,9 @@ export default function ToolsPage() {
         end the journey.
       </p>
 
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+      <ToolsBentoGrid />
+
+      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {calculators.map((tool) => (
           <li key={tool.href}>
             <Link

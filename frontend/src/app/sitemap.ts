@@ -3,8 +3,6 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  // Index only hubs with intentional SEO value / navigation importance.
-  // Thin calculator stubs stay out until they have real interactive content.
   const paths = [
     "",
     "/nutrition",
@@ -14,10 +12,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/training",
     "/tools",
     "/tools/protein-calculator",
+    "/tools/tdee-calculator",
+    "/tools/calorie-calculator",
+    "/tools/macro-calculator",
+    "/tools/bmr-calculator",
+    "/tools/bmi-calculator",
     "/exercises",
     "/foods",
     "/foods/indian",
     "/about",
+    "/authors",
     "/editorial-policy",
     "/medical-disclaimer",
     "/contact",

@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
   title: "About FitKnowledge — Editorial Fitness Platform",
@@ -17,6 +18,9 @@ export default function AboutPage() {
         guides, calculators, foods, and exercises — designed to answer real
         questions better than a thin blog post.
       </p>
+
+      <AboutRadialIntro />
+
       <h2 className="mt-10 text-2xl font-semibold">Editorial philosophy</h2>
       <ul className="mt-4 list-disc space-y-2 pl-5 text-muted-foreground">
         <li>Search intent first, keywords second</li>
@@ -31,6 +35,9 @@ export default function AboutPage() {
         </Link>
         <Link href="/medical-disclaimer" className="text-primary underline">
           Medical disclaimer
+        </Link>
+        <Link href="/authors" className="text-primary underline">
+          Authors
         </Link>
         <Link href="/contact" className="text-primary underline">
           Contact
