@@ -1,0 +1,75 @@
+---
+description: Fitness knowledge platform north star — SEO architecture, IA, content types, safety
+alwaysApply: true
+---
+
+# Fitness Knowledge Platform (not a basic blog)
+
+## Product definition
+
+Build a **searchable fitness knowledge platform** for Google traffic and returning users — not a generic blog.
+
+Traffic loop: Search → landing page → helpful content → internal links → tools/databases → subscribe/account → return.
+
+## Content engines (always)
+
+1. **Articles** — intent-complete answers  
+2. **Guides / pillars** — topic hubs + clusters  
+3. **Tools** — calculator ecosystem with educational outputs  
+4. **Databases** — foods (esp. Indian), exercises, recipes  
+
+Prefer depth in clusters (Protein, Weight Loss, Muscle Building) over random post volume.
+
+## Stack
+
+- `frontend/` Next.js App Router + TS + Tailwind + Motion — SEO/SSR/SSG/ISR  
+- `backend/` Express + **PostgreSQL** — shared API for site + CMS  
+- `cms/` React 19 — editorial workflow, roles, metadata, redirects  
+
+Do not introduce Mongo as primary CMS DB. Do not add FastAPI unless there is a real Python/AI workload.
+
+## URL & IA rules
+
+Follow `docs/INFORMATION_ARCHITECTURE.md`.
+
+- Clean paths: `/nutrition/protein/how-much-protein-do-i-need`  
+- No `?id=` posts; avoid unnecessary date URLs  
+- Breadcrumbs on all content pages  
+- Scaffold/empty hubs: `robots: { index: false }` until valuable  
+
+## Article UI requirements
+
+When building article pages include: Quick Answer, TOC, tables, optional calculator CTA, FAQ (real only), sources, author/reviewer, related cluster links, mobile-first layout.
+
+## SEO
+
+Follow `docs/SEO_PLAYBOOK.md`. Schema only when accurate. No thin programmatic spam. Performance is SEO (images, fonts, minimal JS).
+
+## Brand (current)
+
+- Background white `#FFFFFF`  
+- Blue primary `#E1F5FE`→`#29B6F6`, orange accent `#FFE0B2`→`#FF9800`  
+- Font: **Roboto Slab** primary; Diet = optional display  
+
+Motion: strategic only (hero, hover, reveals, calculators) — never animation everywhere.
+
+## Safety / EEAT
+
+No medical cure claims or medication advice. Educational + “consult a professional.”  
+Distinguish Written by / Reviewed by / Fact checked. Trust pages required as content scales.
+
+## Code organization
+
+Frontend: `components/shared` + `features/<domain>/{components,hooks,api,types}`.  
+Backend: routes/controllers/services for articles, foods, exercises, tools, authors.  
+CMS: same feature-folder discipline; support draft→review→publish + revisions + redirects.
+
+## Docs of record
+
+Read before large features:
+
+- `docs/PRODUCT_VISION.md`  
+- `docs/INFORMATION_ARCHITECTURE.md`  
+- `docs/CONTENT_MODEL.md`  
+- `docs/SEO_PLAYBOOK.md`  
+- `docs/BUILD_ROADMAP.md`  
