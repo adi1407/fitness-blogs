@@ -282,7 +282,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   );
 
   const updateMomentum = useCallback(() => {
-    if (isDragging) return;
+    if (isDragging || selectedImage) return;
 
     setVelocity((prev) => {
       const newVelocity = {
@@ -312,6 +312,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     });
   }, [
     isDragging,
+    selectedImage,
     momentumDecay,
     clampRotationSpeed,
     autoRotate,
@@ -508,7 +509,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
           }}
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
-          onClick={() => setSelectedImage(image)}
+          onClick={() => openPreview(image)}
         >
           <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-white/20 shadow-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -529,6 +530,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       containerSize,
       hoveredIndex,
       hoverScale,
+      openPreview,
     ],
   );
 
@@ -577,17 +579,19 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       {selectedImage ? (
         <div
-          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/55 p-0 sm:items-center sm:p-4"
+          onClick={closePreview}
+          onWheel={closePreview}
           role="dialog"
           aria-modal="true"
           aria-label={selectedImage.title ?? selectedImage.alt}
         >
           <div
-            className="max-h-[90svh] w-full max-w-md overflow-y-auto overflow-x-hidden rounded-xl bg-white shadow-xl"
+            className="flex max-h-[88svh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-square">
+            <div className="relative aspect-[4/3] w-full shrink-0 bg-brand-50 sm:aspect-[16/10]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={selectedImage.src}
@@ -596,36 +600,45 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
               />
               <button
                 type="button"
-                onClick={() => setSelectedImage(null)}
-                className="absolute top-2 right-2 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white transition hover:bg-black/70"
+                onClick={closePreview}
+                className="absolute top-3 right-3 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition hover:bg-black/70"
                 aria-label="Close"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             </div>
             {(selectedImage.title ||
               selectedImage.description ||
               selectedImage.href) && (
-              <div className="p-6">
+              <div className="flex flex-col gap-3 overflow-y-auto p-5 sm:p-6">
                 {selectedImage.title ? (
-                  <h3 className="mb-2 line-clamp-3 text-xl font-bold text-foreground">
+                  <h3 className="line-clamp-3 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                     {selectedImage.title}
                   </h3>
                 ) : null}
                 {selectedImage.description ? (
-                  <p className="line-clamp-4 text-muted-foreground">
+                  <p className="line-clamp-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
                     {selectedImage.description}
                   </p>
                 ) : null}
-                {selectedImage.href ? (
-                  <Link
-                    href={selectedImage.href}
-                    className="mt-4 inline-flex rounded-full bg-[#FF9800] px-4 py-2 text-sm font-semibold text-white hover:bg-[#FFA726]"
-                    onClick={() => setSelectedImage(null)}
+                <div className="mt-1 flex flex-wrap items-center gap-3">
+                  {selectedImage.href ? (
+                    <Link
+                      href={selectedImage.href}
+                      className="inline-flex rounded-full bg-[#FF9800] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#FFA726]"
+                      onClick={closePreview}
+                    >
+                      Read full article →
+                    </Link>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={closePreview}
+                    className="inline-flex rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-brand-50"
                   >
-                    Read full article →
-                  </Link>
-                ) : null}
+                    Close
+                  </button>
+                </div>
               </div>
             )}
           </div>

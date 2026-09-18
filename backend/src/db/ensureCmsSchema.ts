@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
+import { DEMO_ARTICLES } from "./demoArticles";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -249,6 +250,99 @@ async function ensureArticleNumbers(): Promise<void> {
   }
 }
 
+/** Seed 20 published demo posts (writer-authored) when the library is thin. */
+async function seedDemoArticles(): Promise<void> {
+  const published = await pool.query(
+    `SELECT COUNT(*)::int AS c FROM articles WHERE status = 'published'`,
+  );
+  const count = (published.rows[0]?.c as number) ?? 0;
+  if (count >= 20) return;
+
+  const writer = await pool.query(
+    `SELECT id FROM users WHERE email = 'writer@fitknowledge.local' LIMIT 1`,
+  );
+  const writerId = writer.rows[0]?.id as string | undefined;
+  if (!writerId) {
+    console.warn("[db] skip demo articles — writer user missing");
+    return;
+  }
+
+  let inserted = 0;
+  for (const demo of DEMO_ARTICLES) {
+    const exists = await pool.query(
+      `SELECT 1 FROM articles WHERE slug = $1 LIMIT 1`,
+      [demo.slug],
+    );
+    if (exists.rowCount && exists.rowCount > 0) continue;
+
+    const ids = await pool.query(
+      `SELECT c.id AS category_id, s.id AS subcategory_id
+       FROM categories c
+       JOIN subcategories s ON s.category_id = c.id
+       WHERE c.slug = $1 AND s.slug = $2`,
+      [demo.category, demo.subcategory],
+    );
+    if (!ids.rows[0]) {
+      console.warn(
+        `[db] skip ${demo.slug} — taxonomy ${demo.category}/${demo.subcategory} missing`,
+      );
+      continue;
+    }
+
+    const articleNumber = await allocateArticleNumber();
+    const plain = demo.body.replace(/<[^>]+>/g, " ");
+    const readingTime = Math.max(3, Math.round(plain.split(/\s+/).length / 200));
+    const faq = JSON.stringify([
+      {
+        question: `Quick take: ${demo.title}?`,
+        answer: demo.quickAnswer,
+      },
+    ]);
+
+    await pool.query(
+      `INSERT INTO articles (
+         article_number, title, slug, excerpt, body,
+         category_id, subcategory_id, status,
+         meta_title, meta_description, primary_keyword,
+         featured_image, featured_image_alt, og_image,
+         quick_answer, tags, topics, faq,
+         reading_time, author_id, reviewer_id, published_by, published_at
+       ) VALUES (
+         $1,$2,$3,$4,$5,
+         $6,$7,'published',
+         $8,$9,$10,
+         $11,$12,$11,
+         $13,$14::text[],$14::text[],$15::jsonb,
+         $16,$17,$17,$17,NOW()
+       )`,
+      [
+        articleNumber,
+        demo.title,
+        demo.slug,
+        demo.excerpt,
+        demo.body,
+        ids.rows[0].category_id,
+        ids.rows[0].subcategory_id,
+        demo.title,
+        demo.excerpt,
+        demo.tags[0] ?? demo.category,
+        demo.featuredImage,
+        demo.title,
+        demo.quickAnswer,
+        demo.tags,
+        faq,
+        readingTime,
+        writerId,
+      ],
+    );
+    inserted += 1;
+  }
+
+  if (inserted > 0) {
+    console.log(`[db] seeded ${inserted} demo published articles (writer)`);
+  }
+}
+
 /** Apply CMS schema and seed staff + taxonomy. */
 export async function ensureCmsSchema(): Promise<void> {
   await pool.query(SCHEMA_SQL);
@@ -288,4 +382,6 @@ export async function ensureCmsSchema(): Promise<void> {
       `[db] seeded ${user.email} / ${user.password} — change after first login`,
     );
   }
+
+  await seedDemoArticles();
 }
