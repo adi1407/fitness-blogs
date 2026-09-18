@@ -86,6 +86,7 @@ export function mapArticle(row: Record<string, unknown>) {
     reviewerId: row.reviewer_id,
     publishedBy: row.published_by,
     rejectReason: row.reject_reason,
+    editorNote: row.reject_reason,
     publishedAt: row.published_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -160,6 +161,11 @@ articlesRouter.get("/", async (req, res) => {
     typeof req.query.category === "string" ? req.query.category : null;
   const subcategorySlug =
     typeof req.query.subcategory === "string" ? req.query.subcategory : null;
+  const period =
+    typeof req.query.period === "string" ? req.query.period : "all";
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 20));
+  const offset = (page - 1) * limit;
 
   const clauses: string[] = [];
   const params: unknown[] = [];
@@ -189,12 +195,49 @@ articlesRouter.get("/", async (req, res) => {
     clauses.push(`s.slug = $${params.length}`);
   }
 
+  const dateCol =
+    status === "published"
+      ? "COALESCE(a.published_at, a.updated_at)"
+      : "a.updated_at";
+
+  if (period === "today") {
+    clauses.push(`${dateCol} >= date_trunc('day', NOW())`);
+  } else if (period === "week") {
+    clauses.push(`${dateCol} >= date_trunc('week', NOW())`);
+  } else if (period === "month") {
+    clauses.push(`${dateCol} >= date_trunc('month', NOW())`);
+  } else if (period === "year") {
+    clauses.push(`${dateCol} >= date_trunc('year', NOW())`);
+  }
+
   const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
-  const result = await pool.query(
-    `${ARTICLE_SELECT} ${where} ORDER BY a.updated_at DESC LIMIT 200`,
+
+  const countRes = await pool.query(
+    `SELECT COUNT(*)::int AS total
+     FROM articles a
+     LEFT JOIN categories c ON c.id = a.category_id
+     LEFT JOIN subcategories s ON s.id = a.subcategory_id
+     ${where}`,
     params,
   );
-  res.json({ articles: result.rows.map(mapArticle) });
+  const total = countRes.rows[0]?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+
+  const listParams = [...params, limit, offset];
+  const result = await pool.query(
+    `${ARTICLE_SELECT} ${where}
+     ORDER BY a.updated_at DESC
+     LIMIT $${listParams.length - 1} OFFSET $${listParams.length}`,
+    listParams,
+  );
+
+  res.json({
+    articles: result.rows.map(mapArticle),
+    page,
+    limit,
+    total,
+    totalPages,
+  });
 });
 
 articlesRouter.get("/:id", async (req, res) => {
@@ -367,13 +410,6 @@ articlesRouter.put("/:id", async (req, res) => {
 
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
   const article = mapArticle(full.rows[0]);
-  await recordAudit(req, {
-    action: "article.updated",
-    entityType: "article",
-    entityId: String(article.id),
-    summary: `Updated “${article.title}”`,
-  });
-
   res.json({ article });
 });
 
@@ -392,10 +428,15 @@ articlesRouter.patch("/:id/submit", async (req, res) => {
     res.status(403).json({ message: "Forbidden" });
     return;
   }
-  if (row.status !== "draft" && row.status !== "rejected") {
-    res
-      .status(400)
-      .json({ message: "Only draft or rejected articles can be submitted" });
+  if (
+    row.status !== "draft" &&
+    row.status !== "rejected" &&
+    row.status !== "changes_requested"
+  ) {
+    res.status(400).json({
+      message:
+        "Only draft, rejected, or changes-requested articles can be submitted",
+    });
     return;
   }
   if (!row.title?.trim() || !row.body?.trim()) {
@@ -545,6 +586,46 @@ articlesRouter.patch("/:id/reject", async (req, res) => {
     entityType: "article",
     entityId: String(article.id),
     summary: `Rejected “${article.title}”`,
+    meta: { reason },
+  });
+  res.json({ article });
+});
+
+articlesRouter.patch("/:id/request-changes", async (req, res) => {
+  if (!canPublish(req.user!.role)) {
+    res
+      .status(403)
+      .json({ message: "Only editors/admins can request changes" });
+    return;
+  }
+  const existing = await pool.query(`SELECT * FROM articles WHERE id = $1`, [
+    req.params.id,
+  ]);
+  const row = existing.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  if (row.status !== "submitted") {
+    res.status(400).json({
+      message: "Only submitted articles can be sent back for changes",
+    });
+    return;
+  }
+
+  const reason = String(req.body?.reason ?? "").slice(0, 500);
+  await pool.query(
+    `UPDATE articles SET status = 'changes_requested', reject_reason = $1, updated_at = NOW()
+     WHERE id = $2`,
+    [reason, row.id],
+  );
+  const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
+  const article = mapArticle(full.rows[0]);
+  await recordAudit(req, {
+    action: "article.changes_requested",
+    entityType: "article",
+    entityId: String(article.id),
+    summary: `Requested changes on “${article.title}”`,
     meta: { reason },
   });
   res.json({ article });

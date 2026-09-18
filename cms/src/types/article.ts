@@ -1,4 +1,9 @@
-export type ArticleStatus = "draft" | "submitted" | "published" | "rejected";
+export type ArticleStatus =
+  | "draft"
+  | "submitted"
+  | "published"
+  | "rejected"
+  | "changes_requested";
 
 export type Article = {
   id: string;
@@ -28,6 +33,7 @@ export type Article = {
   readingTime: number;
   authorId: string | null;
   rejectReason: string;
+  editorNote?: string;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;

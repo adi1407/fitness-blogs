@@ -83,7 +83,9 @@ export default function WriterDashboardPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const data = await apiFetch<{ articles: Article[] }>("/articles");
+        const data = await apiFetch<{ articles: Article[] }>(
+          "/articles?limit=100",
+        );
         setArticles(data.articles);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load");
@@ -97,12 +99,18 @@ export default function WriterDashboardPage() {
     const total = articles.length;
     const published = articles.filter((a) => a.status === "published").length;
     const submitted = articles.filter((a) => a.status === "submitted").length;
+    const needsChanges = articles.filter(
+      (a) => a.status === "changes_requested",
+    ).length;
     const rejected = articles.filter((a) => a.status === "rejected").length;
-    return { total, published, submitted, rejected };
+    return { total, published, submitted, needsChanges, rejected };
   }, [articles]);
 
   const drafts = articles.filter((a) => a.status === "draft");
   const inReview = articles.filter((a) => a.status === "submitted");
+  const needsChanges = articles.filter(
+    (a) => a.status === "changes_requested",
+  );
   const live = articles.filter((a) => a.status === "published");
 
   if (user && !isWriter(user.role)) {
@@ -173,15 +181,21 @@ export default function WriterDashboardPage() {
         <p className="mt-8 text-slate-500">Loading…</p>
       ) : (
         <>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <StatTile label="Total" value={stats.total} />
             <StatTile label="Live" value={stats.published} hint="Published" />
             <StatTile label="In review" value={stats.submitted} hint="Submitted" />
+            <StatTile
+              label="Needs changes"
+              value={stats.needsChanges}
+              hint="Sent back"
+            />
             <StatTile label="Rejected" value={stats.rejected} />
           </div>
-          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+          <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
             <ArticleBucket title="Drafts" articles={drafts} />
             <ArticleBucket title="In review" articles={inReview} />
+            <ArticleBucket title="Needs changes" articles={needsChanges} />
             <ArticleBucket title="Live" articles={live} showViews />
           </div>
         </>

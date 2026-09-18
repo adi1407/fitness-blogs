@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS articles (
   category_id UUID REFERENCES categories(id) ON DELETE RESTRICT,
   subcategory_id UUID REFERENCES subcategories(id) ON DELETE RESTRICT,
   status TEXT NOT NULL DEFAULT 'draft'
-    CHECK (status IN ('draft', 'submitted', 'published', 'rejected')),
+    CHECK (status IN ('draft', 'submitted', 'published', 'rejected', 'changes_requested')),
   meta_title TEXT NOT NULL DEFAULT '',
   meta_description TEXT NOT NULL DEFAULT '',
   meta_keywords TEXT NOT NULL DEFAULT '',
@@ -138,6 +138,15 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS views INT NOT NULL DEFAULT 0;
   `);
 
+  // Allow changes_requested status on existing DBs
+  await pool.query(`
+    DO $$ BEGIN
+      ALTER TABLE articles DROP CONSTRAINT IF EXISTS articles_status_check;
+      ALTER TABLE articles ADD CONSTRAINT articles_status_check
+        CHECK (status IN ('draft', 'submitted', 'published', 'rejected', 'changes_requested'));
+    EXCEPTION WHEN others THEN NULL;
+    END $$;
+  `);
 }
 
 async function seedTaxonomy(): Promise<void> {

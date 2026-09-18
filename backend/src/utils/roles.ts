@@ -22,7 +22,7 @@ export function canViewAuditLogs(role: string): boolean {
   return role === "admin";
 }
 
-/** Writers may only mutate their own drafts/rejected; editors/admins any. */
+/** Writers may only mutate their own drafts / rejected / changes_requested. */
 export function canEditArticle(
   role: string,
   authorId: string | null,
@@ -32,7 +32,11 @@ export function canEditArticle(
   if (role === "admin" || role === "editor") return true;
   if (role !== "writer") return false;
   if (authorId !== userId) return false;
-  return status === "draft" || status === "rejected";
+  return (
+    status === "draft" ||
+    status === "rejected" ||
+    status === "changes_requested"
+  );
 }
 
 export type { StaffRole };

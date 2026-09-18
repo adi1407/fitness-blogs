@@ -138,6 +138,12 @@ function navForRole(role: StaffRole): NavItem[] {
       match: (p) => p.startsWith("/articles"),
     },
     {
+      to: "/users",
+      label: "Users",
+      icon: Users,
+      match: (p) => p.startsWith("/users"),
+    },
+    {
       to: "/admin/activity",
       label: "Activity log",
       icon: FilePenLine,

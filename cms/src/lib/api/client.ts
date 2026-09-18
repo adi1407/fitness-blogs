@@ -64,7 +64,7 @@ export type Article = {
   subcategorySlug: string | null;
   subcategoryLabel: string | null;
   path: string | null;
-  status: "draft" | "submitted" | "published" | "rejected";
+  status: "draft" | "submitted" | "published" | "rejected" | "changes_requested";
   metaTitle: string;
   metaDescription: string;
   metaKeywords: string;
@@ -78,9 +78,19 @@ export type Article = {
   readingTime: number;
   authorId: string | null;
   rejectReason: string;
+  editorNote?: string;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type StaffUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: StaffRole;
+  isActive: boolean;
+  createdAt: string;
 };
 
 export type TaxonomyCategory = {

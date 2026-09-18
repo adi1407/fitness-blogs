@@ -34,11 +34,13 @@ type Summary = {
 export default function ActivityLogPage() {
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [actionFilter, setActionFilter] = useState("");
   const [page, setPage] = useState(1);
+  const limit = 50;
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -46,16 +48,19 @@ export default function ActivityLogPage() {
     try {
       const params = new URLSearchParams({
         page: String(page),
-        limit: "50",
+        limit: String(limit),
       });
       if (search.trim()) params.set("search", search.trim());
       if (actionFilter) params.set("action", actionFilter);
 
       const [act, sum] = await Promise.all([
-        apiFetch<{ events: AuditEvent[] }>(`/admin/activity?${params}`),
+        apiFetch<{ events: AuditEvent[]; total: number }>(
+          `/admin/activity?${params}`,
+        ),
         apiFetch<Summary>("/admin/activity/summary"),
       ]);
       setEvents(act.events);
+      setTotal(act.total);
       setSummary(sum);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load activity");
@@ -173,7 +178,7 @@ export default function ActivityLogPage() {
         </div>
       )}
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex items-center gap-2">
         <button
           type="button"
           disabled={page <= 1}
@@ -182,11 +187,15 @@ export default function ActivityLogPage() {
         >
           Previous
         </button>
-        <span className="px-2 py-1.5 text-sm text-slate-500">Page {page}</span>
+        <span className="px-2 py-1.5 text-sm text-slate-500">
+          Page {page}
+          {total > 0 ? ` · ${total} events` : ""}
+        </span>
         <button
           type="button"
+          disabled={page * limit >= total}
           onClick={() => setPage((p) => p + 1)}
-          className="rounded-lg border px-3 py-1.5 text-sm"
+          className="rounded-lg border px-3 py-1.5 text-sm disabled:opacity-40"
         >
           Next
         </button>

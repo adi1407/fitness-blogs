@@ -8,6 +8,7 @@ import ArticlesListPage from "./pages/ArticlesListPage.tsx";
 import ArticleEditorPage from "./pages/ArticleEditorPage.tsx";
 import ActivityLogPage from "./pages/ActivityLogPage.tsx";
 import WritersPage from "./pages/WritersPage.tsx";
+import UsersPage from "./pages/UsersPage.tsx";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
                 <Route path="writers" element={<WritersPage />} />
               </Route>
               <Route element={<ProtectedRoute roles={["admin"]} />}>
+                <Route path="users" element={<UsersPage />} />
                 <Route path="admin/activity" element={<ActivityLogPage />} />
               </Route>
             </Route>

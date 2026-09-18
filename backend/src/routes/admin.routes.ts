@@ -1,17 +1,113 @@
 import { Router } from "express";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
 import { pool } from "../db/pool";
 import { authenticate, authorize } from "../middleware/auth";
+import { recordAudit } from "../services/auditLog";
+import { STAFF_ROLES } from "../utils/roles";
 
 export const adminRouter = Router();
 
-adminRouter.use(authenticate, authorize("admin"));
+adminRouter.use(authenticate);
 
-adminRouter.get("/activity", async (req, res) => {
+const createUserSchema = z.object({
+  email: z.string().email().max(200),
+  name: z.string().min(1).max(120),
+  password: z.string().min(8).max(200),
+  role: z.enum(STAFF_ROLES),
+});
+
+function mapUser(row: Record<string, unknown>) {
+  return {
+    id: row.id,
+    email: row.email,
+    name: row.name,
+    role: row.role,
+    isActive: row.is_active,
+    createdAt: row.created_at,
+  };
+}
+
+/** Admin: all staff. Editor: writers only (for Writers desk). */
+adminRouter.get("/users", async (req, res) => {
+  const role = req.user!.role;
+  if (role !== "admin" && role !== "editor") {
+    res.status(403).json({ message: "Insufficient permissions" });
+    return;
+  }
+
+  const roleFilter =
+    typeof req.query.role === "string" ? req.query.role.trim() : "";
+
+  const clauses: string[] = [];
+  const params: unknown[] = [];
+
+  if (role === "editor") {
+    clauses.push(`role = 'writer'`);
+  } else if (roleFilter && (STAFF_ROLES as readonly string[]).includes(roleFilter)) {
+    params.push(roleFilter);
+    clauses.push(`role = $${params.length}`);
+  }
+
+  const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+  const result = await pool.query(
+    `SELECT id, email, name, role, is_active, created_at
+     FROM users ${where}
+     ORDER BY created_at DESC`,
+    params,
+  );
+
+  res.json({ users: result.rows.map(mapUser) });
+});
+
+adminRouter.post("/users", authorize("admin"), async (req, res) => {
+  const parsed = createUserSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({
+      message: "Invalid user payload",
+      errors: parsed.error.flatten(),
+    });
+    return;
+  }
+
+  const { email, name, password, role } = parsed.data;
+  const existing = await pool.query(
+    `SELECT id FROM users WHERE lower(email) = lower($1) LIMIT 1`,
+    [email],
+  );
+  if (existing.rowCount && existing.rowCount > 0) {
+    res.status(409).json({ message: "Email already in use" });
+    return;
+  }
+
+  const hash = await bcrypt.hash(password, 10);
+  const result = await pool.query(
+    `INSERT INTO users (email, password_hash, name, role)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, email, name, role, is_active, created_at`,
+    [email.toLowerCase(), hash, name, role],
+  );
+
+  const user = mapUser(result.rows[0]);
+  await recordAudit(req, {
+    action: "user.created",
+    entityType: "user",
+    entityId: String(user.id),
+    summary: `Created ${role} ${email}`,
+    meta: { role },
+  });
+
+  res.status(201).json({ user });
+});
+
+adminRouter.get("/activity", authorize("admin"), async (req, res) => {
   const page = Math.max(1, Number(req.query.page) || 1);
   const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
   const offset = (page - 1) * limit;
-  const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
-  const action = typeof req.query.action === "string" ? req.query.action.trim() : "";
+  const search =
+    typeof req.query.search === "string" ? req.query.search.trim() : "";
+  const action =
+    typeof req.query.action === "string" ? req.query.action.trim() : "";
 
   const clauses: string[] = [];
   const params: unknown[] = [];
@@ -68,7 +164,7 @@ adminRouter.get("/activity", async (req, res) => {
   });
 });
 
-adminRouter.get("/activity/summary", async (_req, res) => {
+adminRouter.get("/activity/summary", authorize("admin"), async (_req, res) => {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const [logins, publishes, newUsers, all] = await Promise.all([
     pool.query(

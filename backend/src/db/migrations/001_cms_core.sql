@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS articles (
   category_id UUID REFERENCES categories(id) ON DELETE RESTRICT,
   subcategory_id UUID REFERENCES subcategories(id) ON DELETE RESTRICT,
   status TEXT NOT NULL DEFAULT 'draft'
-    CHECK (status IN ('draft', 'submitted', 'published', 'rejected')),
+    CHECK (status IN ('draft', 'submitted', 'published', 'rejected', 'changes_requested')),
   meta_title TEXT NOT NULL DEFAULT '',
   meta_description TEXT NOT NULL DEFAULT '',
   meta_keywords TEXT NOT NULL DEFAULT '',
