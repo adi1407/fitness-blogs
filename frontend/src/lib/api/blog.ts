@@ -5,6 +5,13 @@ import {
   type BlogCategoryDef,
 } from "@/lib/blogTaxonomy";
 
+export type ArticleFaqItem = { question: string; answer: string };
+export type ArticleSourceItem = {
+  title: string;
+  url?: string;
+  note?: string;
+};
+
 export type PublicBlogArticle = {
   id: string;
   title: string;
@@ -21,12 +28,20 @@ export type PublicBlogArticle = {
   topics: string[];
   views: number;
   articleNumber: number | null;
+  relatedArticleNumbers: number[];
+  faq: ArticleFaqItem[];
+  sources: ArticleSourceItem[];
   metaTitle: string;
   metaDescription: string;
   publishedAt: string | null;
+  updatedAt?: string;
   readingTime: number;
   featuredImage?: string;
+  featuredImageAlt?: string;
+  featuredImageCaption?: string;
   ogImage?: string;
+  authorName?: string | null;
+  reviewerName?: string | null;
 };
 
 export type PublicTaxonomyCategory = {
@@ -59,7 +74,6 @@ function staticTaxonomyFallback(): PublicTaxonomy {
   };
 }
 
-/** Map API/static taxonomy into the shared BlogCategoryDef shape. */
 export function toBlogCategoryDefs(
   taxonomy: PublicTaxonomy,
 ): BlogCategoryDef[] {
@@ -106,12 +120,22 @@ export async function fetchPublishedArticles(opts?: {
 
 export async function fetchPublishedArticleBySlug(
   slug: string,
-): Promise<PublicBlogArticle | null> {
+): Promise<{ article: PublicBlogArticle; related: PublicBlogArticle[] } | null> {
   try {
-    const data = await apiFetch<{ article: PublicBlogArticle }>(
-      `/public/articles/${encodeURIComponent(slug)}`,
-    );
-    return data.article ?? null;
+    const data = await apiFetch<{
+      article: PublicBlogArticle;
+      related?: PublicBlogArticle[];
+    }>(`/public/articles/${encodeURIComponent(slug)}`);
+    if (!data.article) return null;
+    return {
+      article: {
+        ...data.article,
+        relatedArticleNumbers: data.article.relatedArticleNumbers ?? [],
+        faq: data.article.faq ?? [],
+        sources: data.article.sources ?? [],
+      },
+      related: data.related ?? [],
+    };
   } catch {
     return null;
   }
@@ -127,5 +151,38 @@ export async function fetchPublishedArticleByNumber(
     return data.article ?? null;
   } catch {
     return null;
+  }
+}
+
+export function calculatorCtaForCategory(categorySlug: string | null): {
+  href: string;
+  label: string;
+  blurb: string;
+} | null {
+  switch (categorySlug) {
+    case "nutrition":
+      return {
+        href: "/tools/protein-calculator",
+        label: "Protein calculator",
+        blurb: "Estimate daily protein targets for your goal.",
+      };
+    case "weight-loss":
+      return {
+        href: "/tools/tdee-calculator",
+        label: "TDEE calculator",
+        blurb: "Estimate maintenance calories to plan a sustainable deficit.",
+      };
+    case "muscle-building":
+      return {
+        href: "/tools/macro-calculator",
+        label: "Macro calculator",
+        blurb: "Build a simple macro split around your training.",
+      };
+    default:
+      return {
+        href: "/tools",
+        label: "Fitness calculators",
+        blurb: "Free educational tools for calories, macros, and more.",
+      };
   }
 }

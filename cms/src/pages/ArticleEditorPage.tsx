@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import RichTextEditor from "@/components/RichTextEditor";
+import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "@/constants/blogTaxonomy";
 import { canPublish } from "@/constants/roles";
 import { useAuth } from "@/context/AuthContext";
@@ -11,6 +12,14 @@ import {
   type TaxonomyCategory,
 } from "@/lib/api/client";
 import { normalizeSlugInput, slugFromTitle } from "@/utils/articleSlug";
+
+type FaqItem = { question: string; answer: string };
+type SourceItem = { title: string; url: string; note: string };
+type LinkedArticle = {
+  articleNumber: number;
+  title: string;
+  path: string | null;
+};
 
 type FormState = {
   title: string;
@@ -25,9 +34,13 @@ type FormState = {
   primaryKeyword: string;
   ogImage: string;
   featuredImage: string;
+  featuredImageAlt: string;
+  featuredImageCaption: string;
   quickAnswer: string;
   tagsCsv: string;
   topics: string[];
+  faq: FaqItem[];
+  sources: SourceItem[];
 };
 
 const emptyForm: FormState = {
@@ -43,9 +56,13 @@ const emptyForm: FormState = {
   primaryKeyword: "",
   ogImage: "",
   featuredImage: "",
+  featuredImageAlt: "",
+  featuredImageCaption: "",
   quickAnswer: "",
   tagsCsv: "",
   topics: [],
+  faq: [],
+  sources: [],
 };
 
 const SITE_ORIGIN =
@@ -86,11 +103,13 @@ export default function ArticleEditorPage() {
   const [views, setViews] = useState(0);
   const [loaded, setLoaded] = useState(isNew);
   const [dirty, setDirty] = useState(false);
+  const [linkedArticles, setLinkedArticles] = useState<LinkedArticle[]>([]);
 
   const formRef = useRef(form);
   const articleIdRef = useRef(articleId);
   const dirtyRef = useRef(dirty);
   const statusRef = useRef(status);
+  const linkedRef = useRef(linkedArticles);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipAutosave = useRef(false);
 
@@ -98,6 +117,7 @@ export default function ArticleEditorPage() {
   articleIdRef.current = articleId;
   dirtyRef.current = dirty;
   statusRef.current = status;
+  linkedRef.current = linkedArticles;
 
   const publisher = user ? canPublish(user.role) : false;
   const isWriter = user?.role === "writer";
@@ -162,9 +182,50 @@ export default function ArticleEditorPage() {
           primaryKeyword: a.primaryKeyword,
           ogImage: a.ogImage,
           featuredImage: a.featuredImage,
+          featuredImageAlt: a.featuredImageAlt || "",
+          featuredImageCaption: a.featuredImageCaption || "",
           quickAnswer: a.quickAnswer,
           tagsCsv: (a.tags || []).join(", "),
           topics: a.topics || [],
+          faq: (a.faq || []).map((f) => ({
+            question: f.question,
+            answer: f.answer,
+          })),
+          sources: (a.sources || []).map((s) => ({
+            title: s.title,
+            url: s.url || "",
+            note: s.note || "",
+          })),
+        });
+        setLinkedArticles(
+          (a.relatedArticleNumbers || []).map((n) => ({
+            articleNumber: n,
+            title: `Article #${n}`,
+            path: null,
+          })),
+        );
+        // Resolve titles for linked IDs
+        void Promise.all(
+          (a.relatedArticleNumbers || []).map(async (n) => {
+            try {
+              const look = await apiFetch<{ article: Article }>(
+                `/articles/lookup-by-number/${n}`,
+              );
+              return {
+                articleNumber: n,
+                title: look.article.title || `Article #${n}`,
+                path: look.article.path,
+              };
+            } catch {
+              return {
+                articleNumber: n,
+                title: `Article #${n}`,
+                path: null,
+              };
+            }
+          }),
+        ).then((list) => {
+          if (list.length) setLinkedArticles(list);
         });
         setDirty(false);
         setSaveState("saved");
@@ -233,9 +294,14 @@ export default function ArticleEditorPage() {
       primaryKeyword: state.primaryKeyword,
       ogImage: state.ogImage,
       featuredImage: state.featuredImage,
+      featuredImageAlt: state.featuredImageAlt,
+      featuredImageCaption: state.featuredImageCaption,
       quickAnswer: state.quickAnswer,
       tags,
       topics: state.topics,
+      relatedArticleNumbers: linkedRef.current.map((l) => l.articleNumber),
+      faq: state.faq.filter((f) => f.question.trim() && f.answer.trim()),
+      sources: state.sources.filter((s) => s.title.trim()),
     };
   }
 
@@ -719,24 +785,198 @@ export default function ArticleEditorPage() {
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
             />
           </label>
-          <label className="block text-sm font-medium">
-            Featured image URL
-            <input
-              value={form.featuredImage}
-              onChange={(e) => patch("featuredImage", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-            />
-          </label>
-          <label className="block text-sm font-medium">
-            OG image URL
-            <input
-              value={form.ogImage}
-              onChange={(e) => patch("ogImage", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-            />
-          </label>
-        </section>
-      </fieldset>
+        <label className="block text-sm font-medium">
+          Featured image URL
+          <input
+            value={form.featuredImage}
+            onChange={(e) => patch("featuredImage", e.target.value)}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+          />
+        </label>
+        <label className="block text-sm font-medium">
+          OG image URL
+          <input
+            value={form.ogImage}
+            onChange={(e) => patch("ogImage", e.target.value)}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+          />
+        </label>
+        <label className="block text-sm font-medium">
+          Cover alt text
+          <input
+            value={form.featuredImageAlt}
+            onChange={(e) => patch("featuredImageAlt", e.target.value)}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+          />
+        </label>
+        <label className="block text-sm font-medium">
+          Cover caption
+          <input
+            value={form.featuredImageCaption}
+            onChange={(e) => patch("featuredImageCaption", e.target.value)}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+          />
+        </label>
+      </section>
+
+      <RelatedArticlesPanel
+        linked={linkedArticles}
+        body={form.body}
+        currentArticleNumber={articleNumber}
+        disabled={!canEditContent}
+        onChange={({ linked, body: nextBody }) => {
+          setLinkedArticles(linked);
+          if (nextBody !== undefined) {
+            patch("body", nextBody);
+          } else {
+            markDirty();
+          }
+        }}
+      />
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold">FAQ</h2>
+          <button
+            type="button"
+            disabled={!canEditContent}
+            onClick={() =>
+              patch("faq", [...form.faq, { question: "", answer: "" }])
+            }
+            className="text-sm font-semibold text-sky-700 hover:underline"
+          >
+            Add question
+          </button>
+        </div>
+        <div className="mt-4 space-y-4">
+          {form.faq.length === 0 ? (
+            <p className="text-sm text-slate-500">No FAQ items yet.</p>
+          ) : (
+            form.faq.map((item, i) => (
+              <div
+                key={i}
+                className="grid gap-2 rounded-lg border border-slate-100 p-3"
+              >
+                <input
+                  value={item.question}
+                  disabled={!canEditContent}
+                  onChange={(e) => {
+                    const next = [...form.faq];
+                    next[i] = { ...next[i], question: e.target.value };
+                    patch("faq", next);
+                  }}
+                  placeholder="Question"
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                />
+                <textarea
+                  value={item.answer}
+                  disabled={!canEditContent}
+                  onChange={(e) => {
+                    const next = [...form.faq];
+                    next[i] = { ...next[i], answer: e.target.value };
+                    patch("faq", next);
+                  }}
+                  placeholder="Answer"
+                  rows={2}
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                />
+                <button
+                  type="button"
+                  disabled={!canEditContent}
+                  onClick={() =>
+                    patch(
+                      "faq",
+                      form.faq.filter((_, idx) => idx !== i),
+                    )
+                  }
+                  className="justify-self-start text-xs font-semibold text-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold">Sources</h2>
+          <button
+            type="button"
+            disabled={!canEditContent}
+            onClick={() =>
+              patch("sources", [
+                ...form.sources,
+                { title: "", url: "", note: "" },
+              ])
+            }
+            className="text-sm font-semibold text-sky-700 hover:underline"
+          >
+            Add source
+          </button>
+        </div>
+        <div className="mt-4 space-y-4">
+          {form.sources.length === 0 ? (
+            <p className="text-sm text-slate-500">No sources yet.</p>
+          ) : (
+            form.sources.map((item, i) => (
+              <div
+                key={i}
+                className="grid gap-2 rounded-lg border border-slate-100 p-3 sm:grid-cols-2"
+              >
+                <input
+                  value={item.title}
+                  disabled={!canEditContent}
+                  onChange={(e) => {
+                    const next = [...form.sources];
+                    next[i] = { ...next[i], title: e.target.value };
+                    patch("sources", next);
+                  }}
+                  placeholder="Source title"
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm sm:col-span-2"
+                />
+                <input
+                  value={item.url}
+                  disabled={!canEditContent}
+                  onChange={(e) => {
+                    const next = [...form.sources];
+                    next[i] = { ...next[i], url: e.target.value };
+                    patch("sources", next);
+                  }}
+                  placeholder="URL (optional)"
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                />
+                <input
+                  value={item.note}
+                  disabled={!canEditContent}
+                  onChange={(e) => {
+                    const next = [...form.sources];
+                    next[i] = { ...next[i], note: e.target.value };
+                    patch("sources", next);
+                  }}
+                  placeholder="Note (optional)"
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                />
+                <button
+                  type="button"
+                  disabled={!canEditContent}
+                  onClick={() =>
+                    patch(
+                      "sources",
+                      form.sources.filter((_, idx) => idx !== i),
+                    )
+                  }
+                  className="justify-self-start text-xs font-semibold text-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+    </fieldset>
 
       {publisher && status === "submitted" ? (
         <section className="rounded-xl border border-slate-200 bg-white p-5">
