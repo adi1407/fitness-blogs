@@ -1,8 +1,9 @@
 import { getApiBase } from "@/lib/api/client";
 import type { PublicBlogArticle } from "@/lib/api/blog";
-import { HomeHeroSlider } from "@/features/home/components/HomeHeroSlider";
+import { HomeSphereHero } from "@/features/home/components/HomeSphereHero";
 import { HomeLatestList } from "@/features/home/components/HomeLatestList";
 import { HomeCategorySections } from "@/features/home/components/HomeCategorySections";
+import { HomeCircularGalleryBand } from "@/features/home/components/HomeCircularGalleryBand";
 import { HomeMagazineBands } from "@/features/home/components/HomeMagazineBands";
 
 type HomeMagazineProps = {
@@ -38,9 +39,10 @@ export function HomeMagazine({ articles }: HomeMagazineProps) {
   return (
     <>
       <h1 className="sr-only">FitKnowledge — latest fitness guides and news</h1>
-      <HomeHeroSlider articles={latest} />
+      <HomeSphereHero articles={latest} />
       <HomeLatestList articles={latest} />
       <HomeCategorySections articles={articles} />
+      <HomeCircularGalleryBand articles={articles} />
       <HomeMagazineBands />
     </>
   );

@@ -6,6 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
+import Link from "next/link";
 import { X } from "lucide-react";
 
 export interface Position3D {
@@ -34,6 +35,8 @@ export interface ImageData {
   alt: string;
   title?: string;
   description?: string;
+  /** When set, the preview modal offers a link to the full page. */
+  href?: string;
 }
 
 export interface SphereImageGridProps {
@@ -560,7 +563,9 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                 <X size={16} />
               </button>
             </div>
-            {(selectedImage.title || selectedImage.description) && (
+            {(selectedImage.title ||
+              selectedImage.description ||
+              selectedImage.href) && (
               <div className="p-6">
                 {selectedImage.title ? (
                   <h3 className="mb-2 text-xl font-bold text-foreground">
@@ -571,6 +576,15 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                   <p className="text-muted-foreground">
                     {selectedImage.description}
                   </p>
+                ) : null}
+                {selectedImage.href ? (
+                  <Link
+                    href={selectedImage.href}
+                    className="mt-4 inline-flex rounded-full bg-[#FF9800] px-4 py-2 text-sm font-semibold text-white hover:bg-[#FFA726]"
+                    onClick={() => setSelectedImage(null)}
+                  >
+                    Read full article →
+                  </Link>
                 ) : null}
               </div>
             )}
