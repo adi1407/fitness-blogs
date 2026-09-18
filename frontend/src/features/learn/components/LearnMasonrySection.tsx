@@ -52,8 +52,8 @@ export function LearnMasonrySection() {
         .
       </p>
 
-      <div className="mt-6 -mx-4 sm:mx-0">
-        <MasonryGrid items={items} className="px-0 sm:px-0" />
+      <div className="mt-6">
+        <MasonryGrid items={items} size="large" className="px-0" />
       </div>
     </section>
   );

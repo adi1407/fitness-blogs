@@ -13,6 +13,8 @@ export interface MasonryCardData {
 
 export interface MasonryGridProps extends React.HTMLAttributes<HTMLDivElement> {
   items: MasonryCardData[];
+  /** `large` = 3 columns, bigger cards (Learn page). Default = dense demo grid. */
+  size?: "default" | "large";
 }
 
 const MasonryGridCSS = () => (
@@ -54,35 +56,69 @@ const MasonryGridCSS = () => (
         animation-range: entry 0% cover 15%;
       }
     }
+
+    .masonry-grid-large .masonry-card-wrapper {
+      &:nth-of-type(2n + 1) { transform-origin: 25vw 100%; }
+      &:nth-of-type(2n) { transform-origin: -25vw 100%; }
+
+      @media (min-width: 768px) {
+        &:nth-of-type(3n + 1) { transform-origin: 40vw 100%; }
+        &:nth-of-type(3n + 2) { transform-origin: 0 100%; }
+        &:nth-of-type(3n) { transform-origin: -40vw 100%; }
+      }
+    }
   `}</style>
 );
 
 const MasonryCard = ({
   item,
   className,
+  size = "default",
   ...props
-}: { item: MasonryCardData } & React.HTMLAttributes<HTMLDivElement>) => {
+}: {
+  item: MasonryCardData;
+  size?: "default" | "large";
+} & React.HTMLAttributes<HTMLDivElement>) => {
   const isInternal = item.linkHref.startsWith("/");
+  const large = size === "large";
 
   return (
     <div className={cn("grid gap-2", className)} {...props}>
-      <article className="space-y-2 rounded-lg border bg-card p-3 shadow-md">
+      <article
+        className={cn(
+          "rounded-lg border bg-card shadow-md",
+          large ? "space-y-3 p-5" : "space-y-2 p-3",
+        )}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={item.src}
           alt={item.alt}
-          height={500}
-          width={500}
-          className="aspect-square w-full rounded-md bg-muted object-cover"
+          height={large ? 720 : 500}
+          width={large ? 720 : 500}
+          className={cn(
+            "w-full rounded-md bg-muted object-cover",
+            large ? "aspect-[4/3] min-h-[200px]" : "aspect-square",
+          )}
           loading="lazy"
         />
-        <p className="line-clamp-2 text-sm leading-tight text-muted-foreground">
+        <p
+          className={cn(
+            "leading-snug text-muted-foreground",
+            large
+              ? "line-clamp-3 text-base"
+              : "line-clamp-2 text-sm leading-tight",
+          )}
+        >
           {item.content}
         </p>
         {isInternal ? (
           <Link
             href={item.linkHref}
-            className="text-sm font-medium text-primary hover:underline"
+            className={cn(
+              "font-semibold text-primary hover:underline",
+              large ? "text-base" : "text-sm font-medium",
+            )}
           >
             {item.linkText}
           </Link>
@@ -91,7 +127,10 @@ const MasonryCard = ({
             href={item.linkHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-primary hover:underline"
+            className={cn(
+              "font-semibold text-primary hover:underline",
+              large ? "text-base" : "text-sm font-medium",
+            )}
           >
             {item.linkText}
           </a>
@@ -102,14 +141,19 @@ const MasonryCard = ({
 };
 
 const MasonryGrid = React.forwardRef<HTMLDivElement, MasonryGridProps>(
-  ({ items, className, ...props }, ref) => {
+  ({ items, className, size = "default", ...props }, ref) => {
+    const large = size === "large";
+
     return (
       <>
         <MasonryGridCSS />
         <div
           ref={ref}
           className={cn(
-            "grid grid-cols-2 gap-4 p-4 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8",
+            "grid p-4",
+            large
+              ? "masonry-grid-large grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8 md:grid-cols-3"
+              : "grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8",
             className,
           )}
           {...props}
@@ -118,6 +162,7 @@ const MasonryGrid = React.forwardRef<HTMLDivElement, MasonryGridProps>(
             <MasonryCard
               key={item.id}
               item={item}
+              size={size}
               className="masonry-card-wrapper"
               style={
                 {
