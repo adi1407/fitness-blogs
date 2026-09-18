@@ -173,3 +173,20 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+@keyframes ias-scroll-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ias-infinite-scroll {
+  animation: ias-scroll-right var(--ias-duration, 20s) linear infinite;
+}
+
+.ias-infinite-scroll:hover {
+  animation-play-state: paused;
+}
