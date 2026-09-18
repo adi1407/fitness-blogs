@@ -14,6 +14,19 @@ import {
 
 export const articlesRouter = Router();
 
+const MAX_RELATED = 5;
+
+const faqItemSchema = z.object({
+  question: z.string().max(300),
+  answer: z.string().max(2000),
+});
+
+const sourceItemSchema = z.object({
+  title: z.string().max(250),
+  url: z.string().max(1000).optional().default(""),
+  note: z.string().max(500).optional().default(""),
+});
+
 const articleBodySchema = z.object({
   title: z.string().max(250).optional(),
   slug: z.string().max(100).optional().nullable(),
@@ -27,9 +40,17 @@ const articleBodySchema = z.object({
   primaryKeyword: z.string().max(120).optional(),
   ogImage: z.string().max(1000).optional(),
   featuredImage: z.string().max(1000).optional(),
+  featuredImageAlt: z.string().max(250).optional(),
+  featuredImageCaption: z.string().max(500).optional(),
   quickAnswer: z.string().max(2000).optional(),
   tags: z.array(z.string().max(60)).max(30).optional(),
   topics: z.array(z.string().max(80)).max(20).optional(),
+  relatedArticleNumbers: z
+    .array(z.number().int().min(100_000_000).max(999_999_999))
+    .max(MAX_RELATED)
+    .optional(),
+  faq: z.array(faqItemSchema).max(20).optional(),
+  sources: z.array(sourceItemSchema).max(30).optional(),
 });
 
 const ARTICLE_SELECT = `
@@ -37,11 +58,29 @@ const ARTICLE_SELECT = `
     c.slug AS category_slug,
     c.label AS category_label,
     s.slug AS subcategory_slug,
-    s.label AS subcategory_label
+    s.label AS subcategory_label,
+    u.name AS author_name,
+    u.email AS author_email,
+    rev.name AS reviewer_name
   FROM articles a
   LEFT JOIN categories c ON c.id = a.category_id
   LEFT JOIN subcategories s ON s.id = a.subcategory_id
+  LEFT JOIN users u ON u.id = a.author_id
+  LEFT JOIN users rev ON rev.id = a.reviewer_id
 `;
+
+function parseJsonArray(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
 
 export function mapArticle(row: Record<string, unknown>) {
   const categorySlug =
@@ -53,6 +92,11 @@ export function mapArticle(row: Record<string, unknown>) {
     categorySlug && subcategorySlug && slug
       ? blogArticlePath(categorySlug, subcategorySlug, slug)
       : null;
+
+  const relatedRaw = row.related_article_numbers;
+  const relatedArticleNumbers = Array.isArray(relatedRaw)
+    ? relatedRaw.map((n) => Number(n)).filter((n) => Number.isFinite(n))
+    : [];
 
   return {
     id: row.id,
@@ -77,13 +121,28 @@ export function mapArticle(row: Record<string, unknown>) {
     primaryKeyword: row.primary_keyword,
     ogImage: row.og_image,
     featuredImage: row.featured_image,
+    featuredImageAlt: row.featured_image_alt ?? "",
+    featuredImageCaption: row.featured_image_caption ?? "",
     quickAnswer: row.quick_answer,
     tags: Array.isArray(row.tags) ? row.tags : [],
     topics: Array.isArray(row.topics) ? row.topics : [],
+    relatedArticleNumbers,
+    faq: parseJsonArray(row.faq),
+    sources: parseJsonArray(row.sources),
     views: Number(row.views ?? 0),
     readingTime: row.reading_time,
     authorId: row.author_id,
+    authorName:
+      typeof row.author_name === "string" && row.author_name
+        ? row.author_name
+        : null,
+    authorEmail:
+      typeof row.author_email === "string" ? row.author_email : null,
     reviewerId: row.reviewer_id,
+    reviewerName:
+      typeof row.reviewer_name === "string" && row.reviewer_name
+        ? row.reviewer_name
+        : null,
     publishedBy: row.published_by,
     rejectReason: row.reject_reason,
     editorNote: row.reject_reason,
@@ -91,6 +150,23 @@ export function mapArticle(row: Record<string, unknown>) {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+export async function resolveRelatedArticles(
+  numbers: number[],
+  excludeId?: string,
+) {
+  if (!numbers.length) return [];
+  const result = await pool.query(
+    `${ARTICLE_SELECT}
+     WHERE a.article_number = ANY($1::int[])
+       AND a.status = 'published'
+       AND a.slug IS NOT NULL
+       ${excludeId ? "AND a.id <> $2" : ""}
+     ORDER BY array_position($1::int[], a.article_number)`,
+    excludeId ? [numbers, excludeId] : [numbers],
+  );
+  return result.rows.map(mapArticle);
 }
 
 async function uniqueSlug(
@@ -148,6 +224,33 @@ async function resolveTaxonomyPair(
 }
 
 articlesRouter.use(authenticate);
+
+/** Lookup published or any article by 9-digit ID (CMS linking). */
+articlesRouter.get("/lookup-by-number/:articleNumber", async (req, res) => {
+  const num = Number(req.params.articleNumber);
+  if (!Number.isInteger(num) || num < 100_000_000 || num > 999_999_999) {
+    res.status(400).json({ message: "Invalid article number" });
+    return;
+  }
+
+  const result = await pool.query(
+    `${ARTICLE_SELECT} WHERE a.article_number = $1 LIMIT 1`,
+    [num],
+  );
+  const row = result.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  if (req.user?.role === "writer" && row.author_id !== req.user.id) {
+    // Writers may look up any published piece for linking
+    if (row.status !== "published") {
+      res.status(404).json({ message: "Article not found" });
+      return;
+    }
+  }
+  res.json({ article: mapArticle(row) });
+});
 
 articlesRouter.get("/", async (req, res) => {
   const status = typeof req.query.status === "string" ? req.query.status : null;
@@ -279,16 +382,20 @@ articlesRouter.post("/", async (req, res) => {
   const articleNumber = await allocateArticleNumber();
   const tags = (data.tags ?? []).map((t) => t.trim()).filter(Boolean);
   const topics = (data.topics ?? []).map((t) => t.trim()).filter(Boolean);
+  const related = data.relatedArticleNumbers ?? [];
+  const faq = data.faq ?? [];
+  const sources = data.sources ?? [];
 
   const result = await pool.query(
     `INSERT INTO articles (
       article_number, title, slug, excerpt, body,
       category_id, subcategory_id, status,
       meta_title, meta_description, meta_keywords, primary_keyword,
-      og_image, featured_image, quick_answer, tags, topics,
+      og_image, featured_image, featured_image_alt, featured_image_caption,
+      quick_answer, tags, topics, related_article_numbers, faq, sources,
       reading_time, author_id
     ) VALUES (
-      $1,$2,$3,$4,$5,$6,$7,'draft',$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18
+      $1,$2,$3,$4,$5,$6,$7,'draft',$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20::jsonb,$21::jsonb,$22,$23
     ) RETURNING id`,
     [
       articleNumber,
@@ -304,9 +411,14 @@ articlesRouter.post("/", async (req, res) => {
       data.primaryKeyword ?? "",
       data.ogImage ?? "",
       data.featuredImage ?? "",
+      data.featuredImageAlt ?? "",
+      data.featuredImageCaption ?? "",
       data.quickAnswer ?? "",
       tags,
       topics,
+      related,
+      JSON.stringify(faq),
+      JSON.stringify(sources),
       estimateReadingTime(body),
       req.user!.id,
     ],
@@ -377,6 +489,14 @@ articlesRouter.put("/:id", async (req, res) => {
     data.topics !== undefined
       ? data.topics.map((t) => t.trim()).filter(Boolean)
       : row.topics;
+  const related =
+    data.relatedArticleNumbers !== undefined
+      ? data.relatedArticleNumbers
+      : row.related_article_numbers ?? [];
+  const faq =
+    data.faq !== undefined ? data.faq : parseJsonArray(row.faq);
+  const sources =
+    data.sources !== undefined ? data.sources : parseJsonArray(row.sources);
 
   await pool.query(
     `UPDATE articles SET
@@ -384,9 +504,11 @@ articlesRouter.put("/:id", async (req, res) => {
       category_id = $5, subcategory_id = $6,
       meta_title = $7, meta_description = $8, meta_keywords = $9,
       primary_keyword = $10, og_image = $11, featured_image = $12,
-      quick_answer = $13, tags = $14, topics = $15,
-      reading_time = $16, updated_at = NOW()
-     WHERE id = $17`,
+      featured_image_alt = $13, featured_image_caption = $14,
+      quick_answer = $15, tags = $16, topics = $17,
+      related_article_numbers = $18, faq = $19::jsonb, sources = $20::jsonb,
+      reading_time = $21, updated_at = NOW()
+     WHERE id = $22`,
     [
       title,
       slug,
@@ -400,17 +522,21 @@ articlesRouter.put("/:id", async (req, res) => {
       data.primaryKeyword ?? row.primary_keyword,
       data.ogImage ?? row.og_image,
       data.featuredImage ?? row.featured_image,
+      data.featuredImageAlt ?? row.featured_image_alt ?? "",
+      data.featuredImageCaption ?? row.featured_image_caption ?? "",
       data.quickAnswer ?? row.quick_answer,
       tags,
       topics,
+      related,
+      JSON.stringify(faq),
+      JSON.stringify(sources),
       estimateReadingTime(body),
       row.id,
     ],
   );
 
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
-  const article = mapArticle(full.rows[0]);
-  res.json({ article });
+  res.json({ article: mapArticle(full.rows[0]) });
 });
 
 articlesRouter.patch("/:id/submit", async (req, res) => {

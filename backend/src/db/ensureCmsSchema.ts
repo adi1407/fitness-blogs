@@ -54,9 +54,14 @@ CREATE TABLE IF NOT EXISTS articles (
   primary_keyword TEXT NOT NULL DEFAULT '',
   og_image TEXT NOT NULL DEFAULT '',
   featured_image TEXT NOT NULL DEFAULT '',
+  featured_image_alt TEXT NOT NULL DEFAULT '',
+  featured_image_caption TEXT NOT NULL DEFAULT '',
   quick_answer TEXT NOT NULL DEFAULT '',
   tags TEXT[] NOT NULL DEFAULT '{}',
   topics TEXT[] NOT NULL DEFAULT '{}',
+  related_article_numbers INT[] NOT NULL DEFAULT '{}',
+  faq JSONB NOT NULL DEFAULT '[]'::jsonb,
+  sources JSONB NOT NULL DEFAULT '[]'::jsonb,
   views INT NOT NULL DEFAULT 0,
   reading_time INT NOT NULL DEFAULT 0,
   author_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -136,6 +141,11 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS topics TEXT[] DEFAULT '{}';
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS views INT NOT NULL DEFAULT 0;
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS featured_image_alt TEXT NOT NULL DEFAULT '';
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS featured_image_caption TEXT NOT NULL DEFAULT '';
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS related_article_numbers INT[] NOT NULL DEFAULT '{}';
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]'::jsonb;
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS sources JSONB NOT NULL DEFAULT '[]'::jsonb;
   `);
 
   // Allow changes_requested status on existing DBs
