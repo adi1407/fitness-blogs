@@ -1,7 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { IndianFoodsCarousel } from "@/features/foods/components/IndianFoodsCarousel";
+import { IndianFoodsCircularGallery } from "@/features/foods/components/IndianFoodsCircularGallery";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -119,6 +120,8 @@ export default function IndianFoodsPage() {
       </aside>
 
       <IndianFoodsCarousel />
+
+      <IndianFoodsCircularGallery />
 
       <section className="mt-12">
         <h2 className="text-2xl font-semibold">Staples to prioritize</h2>

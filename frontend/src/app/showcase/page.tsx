@@ -22,6 +22,7 @@ import TailwindImageAccordionDemo from "@/components/tailwind-image-accordion-de
 import TracingBeamDemo from "@/components/tracing-beam-demo";
 import HabitFaqScrollerDemo from "@/components/habit-faq-scroller-demo";
 import ImgSphereDemo from "@/components/img-sphere-demo";
+import CircularGalleryDemo from "@/components/circular-gallery-demo";
 
 export const metadata: Metadata = {
   title: "Component showcase",
@@ -153,6 +154,10 @@ export default function ShowcasePage() {
 
       <Band title="Image sphere">
         <ImgSphereDemo />
+      </Band>
+
+      <Band title="Circular gallery">
+        <div className="max-h-[80vh] overflow-auto"><CircularGalleryDemo /></div>
       </Band>
     </main>
   );
