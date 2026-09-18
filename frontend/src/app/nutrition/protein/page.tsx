@@ -7,7 +7,7 @@ import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTraci
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Protein Guide — How Much Protein Do You Need?",
+  title: "Protein Guide â€” How Much Protein Do You Need?",
   description:
     "Learn how much protein you need per day for general health, muscle growth, and fat loss. Includes calculator links and Indian high-protein food pathways.",
   alternates: { canonical: "/nutrition/protein" },
@@ -30,7 +30,7 @@ const faq = [
   },
   {
     q: "Can vegetarians hit protein targets with Indian foods?",
-    a: "Yes — paneer, dal, soya, Greek yogurt/curd, eggs (if included), milk, and tofu can form a strong base when portions and daily totals are planned.",
+    a: "Yes â€” paneer, dal, soya, Greek yogurt/curd, eggs (if included), milk, and tofu can form a strong base when portions and daily totals are planned.",
   },
 ];
 
@@ -92,7 +92,7 @@ export default function ProteinHubPage() {
         Protein: how much do you need?
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Pillar hub · Educational content · Not medical advice
+        Pillar hub Â· Educational content Â· Not medical advice
       </p>
 
       <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
@@ -127,7 +127,7 @@ export default function ProteinHubPage() {
           <h2 className="text-2xl font-semibold">What protein does</h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Protein provides amino acids used for tissue repair, enzyme function,
-            and — when paired with training — supporting muscle protein synthesis.
+            and â€” when paired with training â€” supporting muscle protein synthesis.
             It is one part of a complete nutrition plan that also includes energy
             balance, carbohydrate and fat intake, micronutrients, and recovery.
           </p>
@@ -187,7 +187,7 @@ export default function ProteinHubPage() {
           <h2 className="text-2xl font-semibold">Calculate your target</h2>
           <p className="mt-4 text-muted-foreground">
             Use the protein calculator, then validate meal ideas with the foods
-            database — especially Indian staples if that matches your kitchen.
+            database â€” especially Indian staples if that matches your kitchen.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link

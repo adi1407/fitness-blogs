@@ -7,7 +7,7 @@ import { MuscleBuildingVisuals } from "@/features/muscle-building/components/Mus
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Muscle Building Guide — Hypertrophy, Protein & Progressive Overload",
+  title: "Muscle Building Guide â€” Hypertrophy, Protein & Progressive Overload",
   description:
     "Learn how to build muscle: progressive overload, protein targets, recovery, and programming. Explore exercise libraries and protein calculators.",
   alternates: { canonical: "/muscle-building" },
@@ -30,7 +30,7 @@ const faq = [
   },
   {
     q: "How important is protein for hypertrophy?",
-    a: "Protein provides amino acids for repair and growth. Pair adequate intake with hard training — protein alone does not build muscle.",
+    a: "Protein provides amino acids for repair and growth. Pair adequate intake with hard training â€” protein alone does not build muscle.",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function MuscleBuildingPage() {
         Muscle building fundamentals
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Pillar hub · Educational content · Not medical advice
+        Pillar hub Â· Educational content Â· Not medical advice
       </p>
 
       <aside className="mt-8 rounded-2xl border border-brand-100 bg-brand-50 p-6">
@@ -113,15 +113,15 @@ export default function MuscleBuildingPage() {
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-muted-foreground">
           <li>
             <span className="font-medium text-foreground">Mechanical tension</span>{" "}
-            — challenging sets with good form over time
+            â€” challenging sets with good form over time
           </li>
           <li>
             <span className="font-medium text-foreground">Progressive overload</span>{" "}
-            — more reps, load, or quality work across weeks
+            â€” more reps, load, or quality work across weeks
           </li>
           <li>
             <span className="font-medium text-foreground">Recovery & nutrition</span>{" "}
-            — protein, calories, sleep, and stress management
+            â€” protein, calories, sleep, and stress management
           </li>
         </ol>
       </section>

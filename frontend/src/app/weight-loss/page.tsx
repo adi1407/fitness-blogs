@@ -7,7 +7,7 @@ import { WeightLossSplitSection } from "@/features/weight-loss/components/Weight
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Weight Loss Guide — Calorie Deficit, Training & Sustainable Fat Loss",
+  title: "Weight Loss Guide â€” Calorie Deficit, Training & Sustainable Fat Loss",
   description:
     "Learn how weight loss works: calorie deficit, protein, training, habits, and plateaus. Use TDEE and calorie calculators, then build a realistic plan.",
   alternates: { canonical: "/weight-loss" },
@@ -87,7 +87,7 @@ export default function WeightLossPage() {
       <JsonLd data={breadcrumbLd} />
       <JsonLd data={faqLd} />
 
-      {/* SSR SEO block — constrained */}
+      {/* SSR SEO block â€” constrained */}
       <div className="mx-auto w-full max-w-5xl px-4 pt-16 sm:px-6 lg:px-8">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
           <ol className="flex flex-wrap gap-2">
@@ -105,14 +105,14 @@ export default function WeightLossPage() {
           Weight loss: a practical, evidence-informed path
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Pillar hub · Educational content · Not medical advice
+          Pillar hub Â· Educational content Â· Not medical advice
         </p>
 
         <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
           <h2 className="text-lg font-semibold">Quick answer</h2>
           <p className="mt-2 text-muted-foreground">
             Fat loss requires a sustained calorie deficit. Pair that with enough
-            protein, resistance training, and habits you can keep — then use
+            protein, resistance training, and habits you can keep â€” then use
             calculators to estimate a starting point.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
@@ -132,7 +132,7 @@ export default function WeightLossPage() {
         </aside>
       </div>
 
-      {/* Full-bleed sticky scroll story — outside max-width / overflow shells */}
+      {/* Full-bleed sticky scroll story â€” outside max-width / overflow shells */}
       <WeightLossSplitSection />
 
       <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
