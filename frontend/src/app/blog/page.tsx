@@ -3,6 +3,9 @@ import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
+import { BlogPillNav } from "@/features/blog/components/BlogPillNav";
+import { LearnMasonrySection } from "@/features/learn/components/LearnMasonrySection";
+import { fetchPublishedLearnArticles } from "@/features/learn/api/fetchPublishedArticles";
 import { fetchPublishedArticles } from "@/lib/api/blog";
 import { getApiBase } from "@/lib/api/client";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
@@ -12,12 +15,12 @@ export const dynamic = "force-dynamic";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Fitness Blog — Muscle Building, Weight Loss & Nutrition",
+  title: "Latest — Muscle Building, Weight Loss & Nutrition Guides",
   description:
-    "Browse FitKnowledge articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
+    "Latest FitKnowledge articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog | FitKnowledge",
+    title: "Latest | FitKnowledge",
     description:
       "Recent fitness articles across three pillars: muscle building, weight loss, and nutrition.",
     url: "/blog",
@@ -25,7 +28,10 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogIndexPage() {
-  const articles = await fetchPublishedArticles({ limit: 24 });
+  const [articles, masonryArticles] = await Promise.all([
+    fetchPublishedArticles({ limit: 24 }),
+    fetchPublishedLearnArticles(),
+  ]);
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -35,7 +41,7 @@ export default async function BlogIndexPage() {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Blog",
+        name: "Latest",
         item: `${siteUrl}/blog`,
       },
     ],
@@ -44,11 +50,13 @@ export default async function BlogIndexPage() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
       <JsonLd data={breadcrumbLd} />
-      <BlogBreadcrumbs items={[{ label: "Home", href: "/" }, { label: "Blog" }]} />
+      <BlogBreadcrumbs
+        items={[{ label: "Home", href: "/" }, { label: "Latest" }]}
+      />
 
       <header className="mt-6 max-w-3xl">
         <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-          All news
+          Latest
         </h1>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
           Every published FitKnowledge guide across muscle building, weight
@@ -56,6 +64,10 @@ export default async function BlogIndexPage() {
           professional for personal advice.
         </p>
       </header>
+
+      <div className="mt-8">
+        <BlogPillNav />
+      </div>
 
       <section className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
@@ -79,10 +91,12 @@ export default async function BlogIndexPage() {
         </div>
       </section>
 
+      <LearnMasonrySection cmsArticles={masonryArticles} />
+
       <section className="mt-14">
         <div className="flex items-end justify-between gap-4">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Recent articles
+            All published articles
           </h2>
           <Link
             href="/tools"

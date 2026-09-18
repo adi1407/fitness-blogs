@@ -26,12 +26,12 @@ Pillar marketing hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) stay as
 
 ```
 /
-/blog
+/blog                              → Latest (all published articles)
 /blog/[category]
 /blog/[category]/[subcategory]
 /blog/[category]/[subcategory]/[slug]
 
-/learn                              → Learning hub (links into /blog)
+/learn                              → redirects to /blog
 /nutrition                          → hub → /blog/nutrition/...
 /nutrition/protein                  → cluster hub (links into blog)
 /weight-loss                        → hub → /blog/weight-loss/...
@@ -71,10 +71,12 @@ Pillar marketing hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) stay as
 
 ```
 Bar 1: Logo (left) | Home | Tools | About
-Bar 2: All News | Muscle Building | Weight Loss | Nutrition
+Bar 2: Latest | Muscle Building | Weight Loss | Nutrition
 ```
 
-Category strip links to `/blog` and `/blog/{category}`. Home (`/`) is the magazine feed of published articles.
+Category strip links to `/blog` (Latest) and `/blog/{category}`. Home (`/`) is the magazine feed of published articles.
+
+`/learn` permanently redirects to `/blog`.
 
 Mobile: Logo · hamburger for Home/Tools/About · horizontal-scroll category strip.
 

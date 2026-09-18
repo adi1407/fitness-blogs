@@ -2,13 +2,13 @@ import Link from "next/link";
 
 const explore = [
   { href: "/", label: "Home" },
-  { href: "/blog", label: "All News" },
+  { href: "/blog", label: "Latest" },
   { href: "/blog/muscle-building", label: "Muscle Building" },
   { href: "/blog/weight-loss", label: "Weight Loss" },
   { href: "/blog/nutrition", label: "Nutrition" },
-  { href: "/learn", label: "Learn" },
   { href: "/exercises", label: "Exercises" },
   { href: "/foods/indian", label: "Indian Foods" },
+  { href: "/showcase", label: "UI Showcase" },
 ];
 
 const tools = [

@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { TrainingScrollMorph } from "@/features/training/components/TrainingScrollMorph";
 
 export const metadata: Metadata = {
   title: "Training Guides — Programming, Volume, Recovery & Workouts",
@@ -80,6 +81,8 @@ export default function TrainingPage() {
           <li>Protect sleep and manage stress — recovery is part of training</li>
         </ul>
       </section>
+
+      <TrainingScrollMorph />
     </main>
   );
 }

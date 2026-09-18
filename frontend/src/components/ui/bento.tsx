@@ -4,86 +4,93 @@ import type { ReactNode } from "react";
 import { clsx } from "clsx";
 import { motion } from "motion/react";
 
+/** Dark bento showcase used on Tools + /bento demo. */
 export default function FUIBentoGridDark() {
   return (
-    <div className="pt-32 container mx-auto min-w-screen flex flex-col p-10 bg-gray-950/10">
-      <h1 className="font-geistMono tracking-tight text-3xl md:text-5xl">
-        Sales
-      </h1>
-      <p className="max-w-3xl text-2xl/8 font-medium tracking-tight mt-2 bg-gradient-to-br bg-clip-text text-transparent from-black to-gray-400/20 dark:from-white dark:to-white/40">
-        Know more about your customers than they do.
+    <div className="mx-auto flex w-full max-w-6xl flex-col rounded-2xl bg-[#0B2533] p-6 sm:p-10">
+      <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+        Calculator ecosystem
+      </h2>
+      <p className="mt-2 max-w-3xl text-lg text-brand-100">
+        Educational outputs that route into guides, foods, and programs — not
+        dead-end numbers.
       </p>
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
+      <div className="mt-10 grid grid-cols-1 gap-4 lg:grid-cols-6 lg:grid-rows-2">
         <BentoCard
-          eyebrow="Insight"
-          title="Get perfect clarity"
-          description="PerkAI uses social engineering to build a detailed financial picture of your leads. Know their budget, compensation package, social security number, and more."
+          dark
+          eyebrow="Energy"
+          title="TDEE clarity"
+          description="Estimate maintenance calories, then set a deficit or surplus with next-step education."
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url(https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop)",
+                  "url(https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1600&auto=format&fit=crop)",
               }}
             />
           }
           className="max-lg:rounded-t-4xl lg:col-span-3 lg:rounded-tl-4xl"
         />
         <BentoCard
-          eyebrow="Analysis"
-          title="Undercut your competitors"
-          description="With our advanced data mining, you’ll know which companies your leads are talking to and exactly how much they’re being charged."
+          dark
+          eyebrow="Protein"
+          title="Daily targets"
+          description="Body-weight based protein ranges tied to Indian foods and meal ideas."
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url(https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop)",
+                  "url(https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1600&auto=format&fit=crop)",
               }}
             />
           }
           className="lg:col-span-3 lg:rounded-tr-4xl"
         />
         <BentoCard
-          eyebrow="Speed"
-          title="Built for power users"
-          description="It’s never been faster to cold email your entire contact list using our streamlined keyboard shortcuts."
+          dark
+          eyebrow="Macros"
+          title="Split with purpose"
+          description="Convert calories into protein, carbs, and fat that match your goal."
           graphic={
             <div
-              className="absolute inset-0 -top-20 -left-60 bg-cover bg-center bg-black"
+              className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url(https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1600&auto=format&fit=crop)",
+                  "url(https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1600&auto=format&fit=crop)",
               }}
             />
           }
           className="lg:col-span-2 lg:rounded-bl-4xl"
         />
         <BentoCard
-          eyebrow="Source"
-          title="Get the furthest reach"
-          description="Bypass those inconvenient privacy laws to source leads from the most unexpected places."
+          dark
+          eyebrow="BMI"
+          title="Screening metric"
+          description="A simple height-weight index — educational context, not a diagnosis."
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop)",
+                  "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1600&auto=format&fit=crop)",
               }}
             />
           }
           className="lg:col-span-2"
         />
         <BentoCard
-          eyebrow="Limitless"
-          title="Sell globally"
-          description="PerkAI helps you sell in locations currently under international embargo."
+          dark
+          eyebrow="BMR"
+          title="Resting burn"
+          description="Understand basal needs before layering activity and training."
           graphic={
             <div
-              className="absolute inset-0 -top-44 -left-60 bg-cover bg-center"
+              className="absolute inset-0 bg-cover bg-center"
               style={{
                 backgroundImage:
-                  "url(https://images.unsplash.com/photo-1526304640581-d334cdbbf46e?q=80&w=1600&auto=format&fit=crop)",
+                  "url(https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1600&auto=format&fit=crop)",
               }}
             />
           }
@@ -120,25 +127,27 @@ export function BentoCard({
       className={clsx(
         className,
         "group relative flex flex-col overflow-hidden rounded-lg",
-        "bg-black dark:bg-transparent transform-gpu dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#8686f01f_inset] shadow-sm ring-1 ring-white/10",
+        "transform-gpu bg-black shadow-sm ring-1 ring-white/10 dark:bg-transparent dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#8686f01f_inset]",
         "data-[dark]:bg-gray-800 data-[dark]:ring-white/15",
       )}
     >
       <div className="relative h-[29rem] shrink-0">
         {graphic}
         {fade.includes("top") && (
-          <div className="absolute inset-0 bg-gradient-to-b from-white to-50% group-data-[dark]:from-gray-800 group-data-[dark]:from-[-25%] opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white to-50% opacity-25 group-data-[dark]:from-gray-800 group-data-[dark]:from-[-25%]" />
         )}
         {fade.includes("bottom") && (
-          <div className="absolute inset-0 bg-gradient-to-t from-white to-50% group-data-[dark]:from-gray-800 group-data-[dark]:from-[-25%] opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white to-50% opacity-25 group-data-[dark]:from-gray-800 group-data-[dark]:from-[-25%]" />
         )}
       </div>
-      <div className="relative p-10 z-20 isolate mt-[-110px] h-[14rem] backdrop-blur-xl text-white">
-        <h1>{eyebrow}</h1>
-        <p className="mt-1 text-2xl/8 font-medium tracking-tight dark:text-gray-100 text-gray-150 group-data-[dark]:text-white">
+      <div className="relative z-20 mt-[-110px] h-[14rem] isolate p-10 text-white backdrop-blur-xl">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-100">
+          {eyebrow}
+        </h3>
+        <p className="mt-1 text-2xl/8 font-medium tracking-tight text-white">
           {title}
         </p>
-        <p className="mt-2 max-w-[600px] text-sm/6 text-gray-100 dark:text-gray-300 group-data-[dark]:text-gray-400">
+        <p className="mt-2 max-w-[600px] text-sm/6 text-gray-100">
           {description}
         </p>
       </div>

@@ -13,7 +13,7 @@ const PRIMARY_NAV = [
 ] as const;
 
 const CATEGORY_STRIP = [
-  { label: "All News", href: "/blog" },
+  { label: "Latest", href: "/blog" },
   ...BLOG_TAXONOMY.map((c) => ({
     label: c.label,
     href: `/blog/${c.slug}`,

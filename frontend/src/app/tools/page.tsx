@@ -1,6 +1,11 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import FUIBentoGridDark from "@/components/ui/bento";
 import { ToolsBentoGrid } from "@/features/tools/components/ToolsBentoGrid";
+import {
+  ToolsGhostBand,
+  ToolsVisualBands,
+} from "@/features/tools/components/ToolsVisualBands";
 
 export const metadata: Metadata = {
   title: "Fitness Calculators — TDEE, Protein, Macros, BMI & More",
@@ -72,7 +77,15 @@ export default function ToolsPage() {
         end the journey.
       </p>
 
-      <ToolsBentoGrid />
+      <ToolsVisualBands />
+
+      <div className="mt-12">
+        <ToolsBentoGrid />
+      </div>
+
+      <div className="mt-16">
+        <FUIBentoGridDark />
+      </div>
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {calculators.map((tool) => (
@@ -87,6 +100,8 @@ export default function ToolsPage() {
           </li>
         ))}
       </ul>
+
+      <ToolsGhostBand />
     </main>
   );
 }

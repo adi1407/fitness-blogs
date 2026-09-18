@@ -1,4 +1,6 @@
-﻿import { noIndexMetadata, PlatformHub } from "@/components/shared/PlatformHub";
+﻿import Link from "next/link";
+import { noIndexMetadata } from "@/components/shared/PlatformHub";
+import { ProgramsCarousel } from "@/features/programs/components/ProgramsCarousel";
 
 export const metadata = noIndexMetadata(
   "Programs",
@@ -7,12 +9,49 @@ export const metadata = noIndexMetadata(
 
 export default function Page() {
   return (
-    <PlatformHub
-      title={"Programs"}
-      description={"Beginner, fat loss, muscle gain, strength, and athletic performance tracks."}
-      links={[
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+        <ol className="flex flex-wrap gap-2">
+          <li>
+            <Link href="/" className="hover:text-primary">
+              Home
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li className="text-foreground">Programs</li>
+        </ol>
+      </nav>
 
-      ]}
-    />
+      <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+        Programs
+      </h1>
+      <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
+        Structured tracks for beginners, fat loss, and muscle gain — growing
+        alongside the exercise library and calculators.
+      </p>
+
+      <ProgramsCarousel />
+
+      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/exercises"
+          className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+        >
+          <h2 className="text-lg font-semibold">Exercise library</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Technique by muscle group to plug into any program.
+          </p>
+        </Link>
+        <Link
+          href="/training"
+          className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+        >
+          <h2 className="text-lg font-semibold">Training principles</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Progressive overload, volume, and recovery fundamentals.
+          </p>
+        </Link>
+      </div>
+    </main>
   );
 }

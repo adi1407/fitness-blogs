@@ -1,8 +1,13 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
+import BlurText from "@/components/ui/blur-text";
 import TailwindImageAccordion, {
   type AccordionItem,
 } from "@/components/ui/tailwind-image-accordion";
+import { FlipCard } from "@/components/animate-ui/components/community/flip-card";
+import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
   title: "About FitKnowledge — Fitness Knowledge Platform",
@@ -56,38 +61,89 @@ const SECONDARY_HUBS = [
   },
 ];
 
+const FLIP_CARDS = [
+  {
+    name: "Guides",
+    username: "articles",
+    image:
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400&auto=format&fit=crop",
+    bio: "Intent-complete articles across muscle building, weight loss, and nutrition.",
+    stats: { following: 3, followers: 0, posts: 0 },
+    socialLinks: {
+      linkedin: "/blog",
+      github: "/blog",
+      twitter: "/about",
+    },
+  },
+  {
+    name: "Tools",
+    username: "calculators",
+    image:
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop",
+    bio: "TDEE, protein, macros, and more — each tool teaches and links onward.",
+    stats: { following: 6, followers: 0, posts: 0 },
+    socialLinks: {
+      linkedin: "/tools",
+      github: "/tools/protein-calculator",
+      twitter: "/tools/tdee-calculator",
+    },
+  },
+  {
+    name: "Databases",
+    username: "foods-exercises",
+    image:
+      "https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=400&auto=format&fit=crop",
+    bio: "Indian foods and exercise libraries that support real search intent.",
+    stats: { following: 2, followers: 0, posts: 0 },
+    socialLinks: {
+      linkedin: "/foods/indian",
+      github: "/exercises",
+      twitter: "/recipes",
+    },
+  },
+];
+
 export default function AboutPage() {
   return (
     <main className="flex w-full flex-1 flex-col">
-      <section className="border-b border-border bg-brand-50/60">
-        <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-medium tracking-wide text-primary">
-            About the platform
-          </p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
-            Build a stronger body. Understand your nutrition, training, and
-            recovery.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            FitKnowledge is a searchable fitness knowledge platform — articles,
-            guides, calculators, foods, and exercises — designed to answer real
-            questions better than a thin blog post.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/"
-              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
-            >
-              Latest guides
-            </Link>
-            <Link
-              href="/tools"
-              className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground hover:border-primary"
-            >
-              Free calculators
-            </Link>
+      <section className="relative min-h-[70svh] overflow-hidden border-b border-border">
+        <AuroraBackground className="!min-h-[70svh] bg-brand-50">
+          <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-4 py-16 text-center sm:px-6 lg:px-8">
+            <p className="text-sm font-medium tracking-wide text-primary">
+              About the platform
+            </p>
+            <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl">
+              Build a stronger body. Understand your{" "}
+              <ContainerTextFlip
+                words={["nutrition", "training", "recovery", "protein", "calories"]}
+                className="mt-2 inline-flex"
+                textClassName="text-primary"
+              />
+            </h1>
+            <BlurText
+              text="FitKnowledge is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
+              delay={40}
+              animateBy="words"
+              direction="top"
+              className="mt-6 max-w-2xl justify-center text-lg leading-relaxed text-muted-foreground"
+            />
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href="/"
+                className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              >
+                Latest guides
+              </Link>
+              <Link
+                href="/tools"
+                className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground hover:border-primary"
+              >
+                Free calculators
+              </Link>
+            </div>
+            <AboutRadialIntro />
           </div>
-        </div>
+        </AuroraBackground>
       </section>
 
       <section className="mx-auto w-full max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
@@ -103,7 +159,23 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-white">
+      <section className="border-y border-border bg-brand-50/40">
+        <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            What we build
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            Flip a card to explore guides, tools, and databases.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-6">
+            {FLIP_CARDS.map((card) => (
+              <FlipCard key={card.username} data={card} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-white">
         <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight">
             Tools & databases
@@ -160,8 +232,8 @@ export default function AboutPage() {
           <Link href="/authors" className="hover:underline">
             Authors
           </Link>
-          <Link href="/learn" className="hover:underline">
-            Learn hub
+          <Link href="/blog" className="hover:underline">
+            Latest articles
           </Link>
           <Link href="/contact" className="hover:underline">
             Contact

@@ -21,7 +21,7 @@ export function HomeLatestList({ articles }: HomeLatestListProps) {
           href="/blog"
           className="text-sm font-semibold text-primary hover:underline"
         >
-          All news →
+          View all →
         </Link>
       </div>
 

@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { ContactEmailDialog } from "@/features/contact/components/ContactEmailDialog";
 
 export const metadata: Metadata = {
   title: "Contact FitKnowledge",
@@ -29,6 +30,7 @@ export default function ContactPage() {
           emergencies, contact local emergency services — we do not provide
           clinical care.
         </p>
+        <ContactEmailDialog />
       </div>
       <div className="mt-6 flex flex-wrap gap-3 text-sm">
         <Link href="/editorial-policy" className="text-primary underline">

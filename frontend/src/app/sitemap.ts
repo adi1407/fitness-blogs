@@ -7,7 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
     "",
     "/blog",
-    "/learn",
     "/nutrition",
     "/nutrition/protein",
     "/weight-loss",
