@@ -1,6 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ExercisesHaloSection } from "@/features/exercises/components/ExercisesHaloSection";
+import { ExercisesSphereSection } from "@/features/exercises/components/ExercisesSphereSection";
 
 export const metadata: Metadata = {
   title: "Exercise Library — Chest, Back, Legs, Arms, Core & Cardio",
@@ -63,6 +64,8 @@ export default function ExercisesPage() {
       </div>
 
       <ExercisesHaloSection />
+
+      <ExercisesSphereSection />
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (

@@ -21,6 +21,7 @@ import SplitAxisConvergenceDemo from "@/components/split-axis-convergence-demo";
 import TailwindImageAccordionDemo from "@/components/tailwind-image-accordion-demo";
 import TracingBeamDemo from "@/components/tracing-beam-demo";
 import HabitFaqScrollerDemo from "@/components/habit-faq-scroller-demo";
+import ImgSphereDemo from "@/components/img-sphere-demo";
 
 export const metadata: Metadata = {
   title: "Component showcase",
@@ -148,6 +149,10 @@ export default function ShowcasePage() {
 
       <Band title="Habit FAQ scroller">
         <HabitFaqScrollerDemo />
+      </Band>
+
+      <Band title="Image sphere">
+        <ImgSphereDemo />
       </Band>
     </main>
   );
