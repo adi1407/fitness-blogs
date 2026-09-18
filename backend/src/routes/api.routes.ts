@@ -1,19 +1,20 @@
 import { Router } from "express";
+import { authRouter } from "./auth.routes";
+import { articlesRouter } from "./articles.routes";
+import { adminRouter } from "./admin.routes";
+import { publicRouter } from "./public.routes";
 
-/**
- * Shared API for:
- * - frontend (Next.js public site)
- * - cms (React 19 dashboard)
- *
- * Feature routes will be mounted here as the product grows.
- */
 export const apiRouter = Router();
 
 apiRouter.get("/", (_req, res) => {
   res.json({
-    name: "fitness-api",
-    version: "v1",
+    message: "FitKnowledge API",
     clients: ["frontend", "cms"],
-    message: "API scaffold ready",
+    endpoints: ["/auth", "/articles", "/admin", "/public"],
   });
 });
+
+apiRouter.use("/auth", authRouter);
+apiRouter.use("/public", publicRouter);
+apiRouter.use("/articles", articlesRouter);
+apiRouter.use("/admin", adminRouter);

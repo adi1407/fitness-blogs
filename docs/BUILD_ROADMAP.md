@@ -10,8 +10,9 @@ Ship in this order. Do not jump to accounts/community before content engines exi
 - [ ] Shared layout: nav, footer, breadcrumb primitives
 
 ## Phase 1 — Publishable articles
-- [ ] Postgres schema: authors, articles, categories, topics
-- [ ] CMS auth + roles (admin/editor/author)
+- [x] Postgres schema: categories, subcategories, articles (article_number, tags, topics, views)
+- [x] CMS auth + roles (admin/editor/writer) + SessionNavBar + writer desk
+- [x] Public taxonomy + `/blog/{cat}/{sub}/{slug}` routes + Categories mega menu
 - [ ] Article editor + metadata fields
 - [ ] Public article template (quick answer, TOC, FAQ, sources)
 - [ ] Sitemap includes published articles only

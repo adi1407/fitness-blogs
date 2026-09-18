@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { LearnMasonrySection } from "@/features/learn/components/LearnMasonrySection";
+import { fetchPublishedLearnArticles } from "@/features/learn/api/fetchPublishedArticles";
 import { LEARN_CATEGORIES } from "@/features/learn/data/learnArticles";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -20,15 +21,17 @@ export const metadata: Metadata = {
 };
 
 const categoryLinks = [
-  { href: "/nutrition", label: "Nutrition" },
-  { href: "/nutrition/protein", label: "Protein" },
-  { href: "/weight-loss", label: "Weight Loss" },
-  { href: "/muscle-building", label: "Muscle Building" },
-  { href: "/training", label: "Training" },
+  { href: "/blog/nutrition", label: "Nutrition" },
+  { href: "/blog/nutrition/protein", label: "Protein" },
+  { href: "/blog/weight-loss", label: "Weight Loss" },
+  { href: "/blog/muscle-building", label: "Muscle Building" },
+  { href: "/blog", label: "All articles" },
   { href: "/tools", label: "Tools" },
 ];
 
-export default function LearnPage() {
+export default async function LearnPage() {
+  const cmsArticles = await fetchPublishedLearnArticles();
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -91,7 +94,7 @@ export default function LearnPage() {
         </ul>
       </aside>
 
-      <LearnMasonrySection />
+      <LearnMasonrySection cmsArticles={cmsArticles} />
 
       <p className="mt-12 text-xs text-muted-foreground">
         Educational information only. See our{" "}

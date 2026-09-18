@@ -5,79 +5,69 @@ PostgreSQL is the primary store (relational content graph). Mongo is not the def
 ## Core entities
 
 ```
-users, authors, reviewers
-articles, categories, topics, tags
-article_topics, article_categories, article_sources
-foods, food_nutrients
-exercises, exercise_muscles
-recipes, recipe_ingredients
-calculators
-comments, likes, bookmarks
-newsletter_subscribers
-redirects, article_revisions
+users (admin | editor | writer)
+categories (exactly 3: muscle-building, weight-loss, nutrition)
+subcategories (FK category_id, unique per category slug)
+articles
+  - article_number (unique 9-digit)
+  - category_id, subcategory_id (required for submit/publish)
+  - tags TEXT[], topics TEXT[], views INT
+audit_events
 ```
 
-## Article fields (minimum)
+Future: authors/reviewer profiles, foods, exercises, recipes, calculators, redirects, revisions.
+
+## Locked taxonomy
+
+Category → Subcategory → Article only. Topics and tags are metadata, not nested categories. Do not auto-index tag landing pages.
+
+## Article fields (MVP)
 
 | Field | Notes |
 |-------|--------|
-| title, slug, excerpt, content | Required |
-| featuredImage | Optimized variants |
-| authorId, reviewerId | EEAT |
-| categoryId / topics | Architecture |
-| status | draft → research → writing → seo → fact_check → expert_review → editor → publish |
+| title, slug, excerpt, body | Required for submit/publish |
+| article_number | Random 9-digit on create |
+| category_id, subcategory_id | Must match (sub belongs to category) |
+| tags[], topics[] | Free tags + curated topic labels |
+| views | Incremented on public read |
+| featuredImage, ogImage | URLs |
+| author_id, reviewer_id, published_by | EEAT / workflow |
+| status | draft → submitted → published \| rejected |
 | publishedAt, updatedAt | Display honesty |
-| lastFactCheckedAt, nextReviewDate | Freshness engine |
-| readingTime, difficulty | UX |
-| primaryKeyword, secondaryKeywords, searchIntent | SEO ops |
-| canonicalUrl, metaTitle, metaDescription, ogImage | Overridable |
-| schemaType | article / faq / howTo only if true |
-| sources[], faq[] | Credibility |
-| relatedArticleIds | Manual + suggested |
-| quickAnswer | HTML/markdown box |
+| readingTime | Estimated from body |
+| primaryKeyword, metaTitle, metaDescription, metaKeywords | SEO |
+| quickAnswer | Featured answer box |
+| reject_reason | Editor feedback |
 
-## Food page fields
+Public path: `/blog/{categorySlug}/{subcategorySlug}/{slug}`
 
-name, slug, cuisineRegion (e.g. indian), servingSize, calories, protein, carbs, fat, fiber, micros, aliases, relatedFoodIds, relatedArticleIds, recipes[]
+## Food / exercise / calculator fields
 
-## Exercise page fields
-
-name, slug, primaryMuscle, secondaryMuscles[], equipment, difficulty, movementPattern, instructions[], cues[], mistakes[], setsRepsRest defaults, progressions, regressions, variations[], video, relatedExerciseIds
-
-## Calculator fields
-
-slug, name, description, inputs schema, formula notes, output templates, relatedArticleIds, relatedToolIds
+Unchanged product intent — see BUILD_ROADMAP for phased delivery.
 
 ## CMS roles
 
 | Role | Powers |
 |------|--------|
-| Admin | All |
-| Editor | Create/edit/publish/review |
-| Author | Own drafts |
-| Reviewer | Approve/reject |
-| SEO Manager | Metadata, links, redirects, sitemaps |
+| Admin | All articles, activity log |
+| Editor | Create/edit/publish/reject; review queue |
+| Writer | Own drafts/rejected; submit for review; writer desk (views on live) |
 
-## Editorial pipeline
+## Editorial pipeline (MVP)
 
 ```
-Draft → Research → Writing → Technical SEO → Fact check
-  → Expert review → Editor review → Publish → Scheduled update
+Draft → Submit → Editor publish | Reject → (revise) Draft
 ```
 
-Support **revision history** and **301 redirect manager**.
+Unpublish returns to draft. Support revision history and redirects in a later pass.
 
 ## Tags policy
 
 Do **not** auto-index every tag.  
-Categories = architecture. Topics/entities = relationships.  
+Categories + subcategories = architecture. Topics = relationships.  
 Only index topic pages with curated value.
 
 ## Search (product)
 
 Unified search across Articles · Foods · Exercises · Recipes · Calculators.  
 Start: Postgres FTS. Later: Typesense / Meilisearch if scale demands.
-
-## Trust / legal pages (required before scaling health content)
-
-About · Editorial Policy · Medical Disclaimer · Nutrition Disclaimer · Corrections · Advertising · Affiliate · Privacy · Terms · Contact

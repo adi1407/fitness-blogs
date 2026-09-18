@@ -11,27 +11,59 @@ import BlurText from "@/components/ui/blur-text";
 import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble";
 import { PreviewLinkCard, PreviewLinkCardTrigger, PreviewLinkCardContent, PreviewLinkCardImage } from "@/components/animate-ui/components/radix/preview-link-card";
 import { HomeGhostFoldBand } from "@/features/home/components/HomeGhostFoldBand";
+import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
+import TailwindImageAccordion, {
+  type AccordionItem,
+} from "@/components/ui/tailwind-image-accordion";
 
-const PILLARS = [
+/** Featured pillars = the 3 blog categories */
+const PILLAR_ACCORDION: AccordionItem[] = [
   {
+    id: "muscle-building",
+    url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=960&auto=format&fit=crop",
+    title: "Muscle Building",
+    description: "Hypertrophy & strength",
+    href: "/blog/muscle-building",
+  },
+  {
+    id: "weight-loss",
+    url: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=960&auto=format&fit=crop",
+    title: "Weight Loss",
+    description: "Deficit done right",
+    href: "/blog/weight-loss",
+  },
+  {
+    id: "nutrition",
+    url: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=960&auto=format&fit=crop",
     title: "Nutrition",
-    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop",
-    href: "/nutrition",
+    description: "Protein, macros & meals",
+    href: "/blog/nutrition",
+  },
+];
+
+const BLOG_PILLARS = [
+  {
+    title: "Muscle Building",
+    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop",
+    href: "/blog/muscle-building",
   },
   {
     title: "Weight Loss",
     src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1200&auto=format&fit=crop",
-    href: "/weight-loss",
+    href: "/blog/weight-loss",
   },
   {
-    title: "Muscle Building",
-    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1200&auto=format&fit=crop",
-    href: "/muscle-building",
+    title: "Nutrition",
+    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop",
+    href: "/blog/nutrition",
   },
+];
+
+const SECONDARY_HUBS = [
   {
-    title: "Exercises",
-    src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop",
-    href: "/exercises",
+    title: "Calculators",
+    src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
+    href: "/tools",
   },
   {
     title: "Indian Foods",
@@ -39,9 +71,9 @@ const PILLARS = [
     href: "/foods/indian",
   },
   {
-    title: "Calculators",
-    src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
-    href: "/tools",
+    title: "Exercises",
+    src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop",
+    href: "/exercises",
   },
 ];
 
@@ -118,7 +150,7 @@ export function HomePageContent() {
             />
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/nutrition"
+                href="/blog"
                 className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-90"
               >
                 Explore Guides
@@ -147,6 +179,45 @@ export function HomePageContent() {
             </p>
           </div>
         </AuroraBackground>
+      </section>
+
+      <section className="bg-brand-50/50 py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-3xl font-semibold tracking-tight">
+                Three knowledge pillars
+              </h2>
+              <p className="mt-2 max-w-xl text-muted-foreground">
+                Deep clusters for topical authority — muscle building, weight
+                loss, and nutrition — with articles under each subcategory.
+              </p>
+            </div>
+            <Link href="/blog" className="text-sm font-semibold text-primary">
+              Browse the blog →
+            </Link>
+          </div>
+          <TailwindImageAccordion items={PILLAR_ACCORDION} className="mb-12" />
+          <FocusCards cards={BLOG_PILLARS} />
+          <ul className="sr-only">
+            {BLOG_PILLARS.map((p) => (
+              <li key={p.href}>
+                <Link href={p.href}>{p.title}</Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {BLOG_PILLARS.map((p) => (
+              <Link
+                key={p.href}
+                href={p.href}
+                className="rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium hover:border-primary hover:bg-brand-50"
+              >
+                {p.title}
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="relative border-y border-border bg-white py-20">
@@ -185,49 +256,55 @@ export function HomePageContent() {
         </div>
       </section>
 
-      <section className="bg-brand-50/50 py-20">
+      <section className="border-y border-border bg-white py-8">
+        <div className="mx-auto mb-4 max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-semibold tracking-tight">
+            Scroll the knowledge arc
+          </h2>
+          <p className="mt-2 max-w-xl text-muted-foreground">
+            Hover cards flip · scroll inside the frame to morph the gallery.
+          </p>
+        </div>
+        <div className="mx-auto h-[720px] w-full max-w-6xl overflow-hidden rounded-2xl border border-border px-2 sm:px-4">
+          <ScrollMorphHero />
+        </div>
+      </section>
+
+      <section className="bg-white py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-3xl font-semibold tracking-tight">
-                Explore fitness topics
-              </h2>
-              <p className="mt-2 max-w-xl text-muted-foreground">
-                Pillar hubs for topical authority — nutrition, fat loss, muscle,
-                exercises, Indian foods, and tools.
-              </p>
-            </div>
-            <Link href="/search" className="text-sm font-semibold text-primary">
-              Search everything →
-            </Link>
-          </div>
-          <FocusCards cards={PILLARS} />
-          <ul className="sr-only">
-            {PILLARS.map((p) => (
-              <li key={p.href}>
-                <Link href={p.href}>{p.title}</Link>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {PILLARS.map((p) => (
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Tools & databases
+          </h2>
+          <p className="mt-2 max-w-xl text-muted-foreground">
+            Secondary destinations that complement the blog pillars.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {SECONDARY_HUBS.map((hub) => (
               <Link
-                key={p.href}
-                href={p.href}
-                className="rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium hover:border-primary hover:bg-brand-50"
+                key={hub.href}
+                href={hub.href}
+                className="group overflow-hidden rounded-2xl border border-border bg-brand-50/40 transition hover:border-primary"
               >
-                {p.title}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={hub.src}
+                  alt=""
+                  className="h-36 w-full object-cover transition group-hover:scale-[1.02]"
+                />
+                <div className="px-4 py-3 text-sm font-semibold text-foreground">
+                  {hub.title}
+                </div>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-16">
+      <section className="bg-brand-50/40 py-16">
         <div className="mx-auto grid max-w-6xl gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:px-8">
           <Link
             href="/foods/indian"
-            className="rounded-2xl border border-border bg-brand-50 p-6 hover:border-primary"
+            className="rounded-2xl border border-border bg-white p-6 hover:border-primary"
           >
             <h2 className="text-xl font-semibold">Indian foods hub</h2>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -236,7 +313,7 @@ export function HomePageContent() {
           </Link>
           <Link
             href="/exercises"
-            className="rounded-2xl border border-border bg-brand-50 p-6 hover:border-primary"
+            className="rounded-2xl border border-border bg-white p-6 hover:border-primary"
           >
             <h2 className="text-xl font-semibold">Exercise library</h2>
             <p className="mt-2 text-sm text-muted-foreground">

@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthorsFlipCards } from "@/features/about/components/AuthorsFlipCards";
+import TailwindImageAccordion from "@/components/ui/tailwind-image-accordion";
 
 export const metadata: Metadata = {
   title: "Authors & Reviewers — FitKnowledge EEAT",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function AuthorsPage() {
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -32,6 +33,10 @@ export default function AuthorsPage() {
         roles will expand as the CMS author profiles ship — placeholders below
         show the editorial model.
       </p>
+
+      <div className="mt-10">
+        <TailwindImageAccordion />
+      </div>
 
       <AuthorsFlipCards />
 

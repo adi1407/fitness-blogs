@@ -2,26 +2,40 @@
 
 Clean, hierarchical URLs. No `?id=` blogs. Prefer no date in path unless editorial model requires it.
 
+## Locked blog taxonomy
+
+Exactly **3 primary categories** → **subcategories** → **articles** (no deeper nesting).
+
+| Category slug | Label |
+|---------------|--------|
+| `muscle-building` | Muscle Building |
+| `weight-loss` | Weight Loss |
+| `nutrition` | Nutrition |
+
+Article URLs:
+
+```
+/blog/{category}/{subcategory}/{slug}
+```
+
+Short resolve (redirects to canonical path): `/blog/{9-digit-article-number}`
+
+Pillar marketing hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) stay as hub pages and link into `/blog/...`.
+
 ## Public routes (target)
 
 ```
 /
-/learn                              → Learning hub (or redirect to pillars)
-/nutrition
-/nutrition/[topic]                  e.g. protein, calories
-/nutrition/[topic]/[slug]          e.g. how-much-protein-do-i-need
+/blog
+/blog/[category]
+/blog/[category]/[subcategory]
+/blog/[category]/[subcategory]/[slug]
 
-/weight-loss
-/weight-loss/[slug]
-
-/muscle-building
-/muscle-building/[slug]
-
-/training
-/training/[slug]
-
-/programs
-/programs/[slug]
+/learn                              → Learning hub (links into /blog)
+/nutrition                          → hub → /blog/nutrition/...
+/nutrition/protein                  → cluster hub (links into blog)
+/weight-loss                        → hub → /blog/weight-loss/...
+/muscle-building                    → hub → /blog/muscle-building/...
 
 /tools
 /tools/[calculator]                 e.g. protein-calculator, tdee-calculator
@@ -36,9 +50,6 @@ Clean, hierarchical URLs. No `?id=` blogs. Prefer no date in path unless editori
 
 /recipes
 /recipes/[slug]
-
-/reviews
-/reviews/[category]/[slug]
 
 /authors
 /authors/[slug]
@@ -59,13 +70,12 @@ Clean, hierarchical URLs. No `?id=` blogs. Prefer no date in path unless editori
 ## Navigation (product)
 
 ```
-Logo | Learn ▾ | Tools ▾ | Exercises | Foods | Recipes | Search | Calculate CTA
+Logo (left) | Home | Categories ▾ | Tools | Learn | About
 ```
 
-**Learn** children: Nutrition, Weight Loss, Muscle Building, Training, Recovery, Supplements  
-**Tools** children: Calorie, Macro, Protein, BMI, TDEE (+ more)
+**Categories** mega menu: three columns (Muscle Building, Weight Loss, Nutrition) listing subcategories → `/blog/{cat}/{sub}`.
 
-Mobile: Logo · Search · Menu
+Mobile: Logo · Menu drawer with expandable Categories.
 
 ## Footer blocks
 
@@ -73,42 +83,22 @@ Explore · Tools · Resources (About, Authors, Editorial, Sources) · Legal · S
 
 ## Breadcrumbs (required on content)
 
-`Home > Nutrition > Protein > How Much Protein Do I Need`
+`Home > Blog > Nutrition > Protein > How Much Protein Do I Need`
 
 ## Topic clusters (first three)
 
 ### 1. Protein
-Pillar → requirements → muscle → fat loss → timing → foods → Indian foods → vegetarian → whey/plant → **Protein Calculator** → food DB + recipes
+Hub intent: how much / best sources / timing / vegetarian / Indian foods  
+Internal links: protein calculator, Indian foods, muscle building basics
 
 ### 2. Weight loss
-Pillar → calorie deficit → TDEE/BMR → protein/fiber → walking/strength/cardio → mistakes → **TDEE / Calorie / Macro / BMI**
+Hub intent: deficit, sustainability, plateaus, myths  
+Internal links: TDEE/calorie tools, walking, strength for fat loss
 
 ### 3. Muscle building
-Pillar → hypertrophy → overload → volume → protein/calories → bulk/cut → recovery → programs → **1RM / Protein / TDEE**
+Hub intent: hypertrophy, progressive overload, beginners, nutrition  
+Internal links: protein cluster, training programs, recovery
 
-## Internal linking pattern
+## Scaffold / empty hubs
 
-Prefer intentional chains over random “related posts”:
-
-```
-Weight Loss → Calorie Deficit → TDEE Calculator → Calorie Calculator
-  → Protein Calculator → High Protein Foods → Indian High Protein → Recipes
-```
-
-## Homepage sections (order)
-
-1. Navbar  
-2. Hero (product statement + CTAs: Explore Guides · Calculate Calories)  
-3. Featured calculators  
-4. Trending / featured guides  
-5. Explore pillars (Nutrition, Training, Weight Loss, Muscle, Indian Nutrition)  
-6. Exercise library teaser  
-7. Food database teaser  
-8. Latest articles  
-9. Authors  
-10. Newsletter  
-11. Footer  
-
-## Indexation rule
-
-Scaffold / empty hubs: `robots: { index: false }` until they have real curated content.
+Until a hub has valuable content: `robots: { index: false }`.

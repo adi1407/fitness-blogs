@@ -1,0 +1,34 @@
+export type ArticleStatus = "draft" | "submitted" | "published" | "rejected";
+
+export type Article = {
+  id: string;
+  articleNumber: number | null;
+  title: string;
+  slug: string | null;
+  excerpt: string;
+  body: string;
+  categoryId: string | null;
+  subcategoryId: string | null;
+  categorySlug: string | null;
+  categoryLabel: string | null;
+  subcategorySlug: string | null;
+  subcategoryLabel: string | null;
+  path: string | null;
+  status: ArticleStatus;
+  metaTitle: string;
+  metaDescription: string;
+  metaKeywords: string;
+  primaryKeyword: string;
+  ogImage: string;
+  featuredImage: string;
+  quickAnswer: string;
+  tags: string[];
+  topics: string[];
+  views: number;
+  readingTime: number;
+  authorId: string | null;
+  rejectReason: string;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};

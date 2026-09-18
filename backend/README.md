@@ -20,6 +20,10 @@ npm run dev
 
 - Health: `GET http://localhost:4000/health`
 - API root: `GET http://localhost:4000/api/v1`
+- Public articles: `GET http://localhost:4000/api/v1/public/articles`
+- Auth (CMS): `POST /api/v1/auth/login`
+
+Schema + seed staff users run on boot (`ensureCmsSchema`). See `cms/README.md` for roles and passwords.
 
 ## Production notes
 

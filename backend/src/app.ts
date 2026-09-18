@@ -18,10 +18,9 @@ export function createApp() {
       credentials: true,
     }),
   );
-  app.use(express.json({ limit: "1mb" }));
+  app.use(express.json({ limit: "2mb" }));
   app.use(morgan(env.nodeEnv === "production" ? "combined" : "dev"));
 
-  // Shared API surface for both frontend (Next.js) and CMS (React)
   app.use("/health", healthRouter);
   app.use("/api/v1", apiRouter);
 

@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
   const paths = [
     "",
+    "/blog",
     "/learn",
     "/nutrition",
     "/nutrition/protein",
@@ -28,10 +30,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
   ];
 
-  return paths.map((path, index) => ({
+  const blogCategoryPaths = BLOG_TAXONOMY.map((c) => `/blog/${c.slug}`);
+
+  const staticEntries = paths.map((path, index) => ({
     url: `${siteUrl}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === "" ? "daily" : "weekly",
-    priority: path === "" ? 1 : index < 6 ? 0.9 : 0.7,
+    changeFrequency: (path === "" || path === "/blog"
+      ? "daily"
+      : "weekly") as "daily" | "weekly",
+    priority: path === "" ? 1 : path === "/blog" ? 0.95 : index < 6 ? 0.9 : 0.7,
   }));
+
+  const blogEntries = blogCategoryPaths.map((path) => ({
+    url: `${siteUrl}${path}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
+  }));
+
+  return [...staticEntries, ...blogEntries];
 }

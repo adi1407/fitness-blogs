@@ -3,18 +3,25 @@
 import { useMemo, useState } from "react";
 import { MasonryGrid } from "@/components/ui/masonry-grid-with-scroll-animation";
 import {
+  LEARN_ARTICLES,
   LEARN_CATEGORIES,
-  filterLearnArticles,
+  type LearnArticle,
   type LearnCategory,
 } from "@/features/learn/data/learnArticles";
 
-export function LearnMasonrySection() {
+type Props = {
+  /** CMS-published articles merged ahead of curated static teasers. */
+  cmsArticles?: LearnArticle[];
+};
+
+export function LearnMasonrySection({ cmsArticles = [] }: Props) {
   const [category, setCategory] = useState<LearnCategory>("all");
 
-  const items = useMemo(
-    () => filterLearnArticles(category),
-    [category],
-  );
+  const items = useMemo(() => {
+    const merged = [...cmsArticles, ...LEARN_ARTICLES];
+    if (category === "all") return merged;
+    return merged.filter((a) => a.category === category);
+  }, [category, cmsArticles]);
 
   return (
     <section className="mt-10">
@@ -48,6 +55,9 @@ export function LearnMasonrySection() {
         Showing {items.length} guide{items.length === 1 ? "" : "s"}
         {category !== "all"
           ? ` in ${LEARN_CATEGORIES.find((c) => c.id === category)?.label}`
+          : ""}
+        {cmsArticles.length > 0
+          ? ` · ${cmsArticles.length} from CMS`
           : ""}
         .
       </p>

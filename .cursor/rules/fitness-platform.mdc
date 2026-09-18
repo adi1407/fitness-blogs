@@ -20,6 +20,8 @@ Traffic loop: Search → landing page → helpful content → internal links →
 
 Prefer depth in clusters (Protein, Weight Loss, Muscle Building) over random post volume.
 
+**Locked blog taxonomy (primary categories only):** Muscle Building · Weight Loss · Nutrition → subcategory → article. Public article URLs: `/blog/{category}/{subcategory}/{slug}`. Pillar hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) remain marketing pages that link into `/blog/...`.
+
 ## Stack
 
 - `frontend/` Next.js App Router + TS + Tailwind + Motion — SEO/SSR/SSG/ISR  
