@@ -104,7 +104,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <JsonLd data={websiteJsonLd} />
         <JsonLd data={orgJsonLd} />
         <SiteHeader />
-        <div className="flex min-h-full flex-1 flex-col pt-16">{children}</div>
+        <div className="flex min-h-full flex-1 flex-col pt-[6.75rem]">{children}</div>
         <SiteFooter />
       </body>
     </html>

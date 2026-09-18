@@ -70,12 +70,13 @@ Pillar marketing hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) stay as
 ## Navigation (product)
 
 ```
-Logo (left) | Home | Categories ▾ | Tools | Learn | About
+Bar 1: Logo (left) | Home | Tools | About
+Bar 2: All News | Muscle Building | Weight Loss | Nutrition
 ```
 
-**Categories** mega menu: three columns (Muscle Building, Weight Loss, Nutrition) listing subcategories → `/blog/{cat}/{sub}`.
+Category strip links to `/blog` and `/blog/{category}`. Home (`/`) is the magazine feed of published articles.
 
-Mobile: Logo · Menu drawer with expandable Categories.
+Mobile: Logo · hamburger for Home/Tools/About · horizontal-scroll category strip.
 
 ## Footer blocks
 

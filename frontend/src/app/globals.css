@@ -164,3 +164,12 @@
     @apply font-sans;
   }
 }
+
+/* Hide scrollbar on category strip while keeping scroll */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

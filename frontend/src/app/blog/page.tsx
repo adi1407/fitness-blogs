@@ -48,12 +48,12 @@ export default async function BlogIndexPage() {
 
       <header className="mt-6 max-w-3xl">
         <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-          Fitness knowledge blog
+          All news
         </h1>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-          Intent-complete articles organized into three pillars — muscle
-          building, weight loss, and nutrition. Educational content only;
-          consult a qualified professional for personal advice.
+          Every published FitKnowledge guide across muscle building, weight
+          loss, and nutrition. Educational content only — consult a qualified
+          professional for personal advice.
         </p>
       </header>
 

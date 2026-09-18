@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
-import { HomePageContent } from "@/features/home/components/HomePageContent";
+import { HomeMagazine } from "@/features/home/components/HomeMagazine";
+import { fetchPublishedArticles } from "@/lib/api/blog";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "FitKnowledge — Fitness, Nutrition & Training Guides",
+    absolute: "FitKnowledge — Latest Fitness Guides & News",
   },
   description:
-    "Build a stronger body with evidence-informed nutrition, weight loss, muscle building, Indian foods, exercise libraries, and free fitness calculators.",
+    "Latest FitKnowledge articles on muscle building, weight loss, and nutrition — plus free calculators and educational tools.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "FitKnowledge — Fitness Knowledge Platform",
+    title: "FitKnowledge — Latest Fitness Guides & News",
     description:
-      "Guides, calculators, foods, and exercises designed for real search intent.",
+      "Browse the latest evidence-informed fitness articles across muscle building, weight loss, and nutrition.",
     url: "/",
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const articles = await fetchPublishedArticles({ limit: 48 });
+
   return (
     <main className="flex w-full flex-1 flex-col">
-      <HomePageContent />
+      <HomeMagazine articles={articles} />
     </main>
   );
 }

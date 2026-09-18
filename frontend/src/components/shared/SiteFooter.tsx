@@ -1,14 +1,14 @@
 import Link from "next/link";
 
 const explore = [
+  { href: "/", label: "Home" },
+  { href: "/blog", label: "All News" },
+  { href: "/blog/muscle-building", label: "Muscle Building" },
+  { href: "/blog/weight-loss", label: "Weight Loss" },
+  { href: "/blog/nutrition", label: "Nutrition" },
   { href: "/learn", label: "Learn" },
-  { href: "/nutrition", label: "Nutrition" },
-  { href: "/weight-loss", label: "Weight Loss" },
-  { href: "/muscle-building", label: "Muscle Building" },
-  { href: "/training", label: "Training" },
   { href: "/exercises", label: "Exercises" },
-  { href: "/foods", label: "Foods" },
-  { href: "/recipes", label: "Recipes" },
+  { href: "/foods/indian", label: "Indian Foods" },
 ];
 
 const tools = [
