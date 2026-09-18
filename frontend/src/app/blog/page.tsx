@@ -4,7 +4,10 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
 import { fetchPublishedArticles } from "@/lib/api/blog";
+import { getApiBase } from "@/lib/api/client";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
+
+export const dynamic = "force-dynamic";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -93,6 +96,15 @@ export default async function BlogIndexPage() {
           <p className="mt-6 rounded-xl border border-dashed border-border bg-white px-5 py-8 text-sm text-muted-foreground">
             No published articles yet. Explore the category hubs above while we
             grow the library.
+            {process.env.NODE_ENV === "production" &&
+            getApiBase().includes("localhost") ? (
+              <span className="mt-2 block text-red-600">
+                Site API is still pointed at localhost. Set{" "}
+                <code className="font-mono">API_URL</code> (or{" "}
+                <code className="font-mono">NEXT_PUBLIC_API_URL</code>) to your
+                Render API and redeploy.
+              </span>
+            ) : null}
           </p>
         ) : (
           <div className="mt-4 divide-y divide-border border-t border-border">

@@ -13,19 +13,13 @@ import {
   isBlogCategorySlug,
 } from "@/lib/blogTaxonomy";
 
+export const dynamic = "force-dynamic";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 type PageProps = {
   params: Promise<{ category: string }>;
 };
-
-export async function generateStaticParams() {
-  return [
-    { category: "muscle-building" },
-    { category: "weight-loss" },
-    { category: "nutrition" },
-  ];
-}
 
 export async function generateMetadata({
   params,

@@ -18,6 +18,8 @@ import {
   isBlogCategorySlug,
 } from "@/lib/blogTaxonomy";
 
+export const dynamic = "force-dynamic";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 type PageProps = {

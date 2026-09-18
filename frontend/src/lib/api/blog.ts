@@ -113,7 +113,8 @@ export async function fetchPublishedArticles(opts?: {
       `/public/articles?${params.toString()}`,
     );
     return data.articles ?? [];
-  } catch {
+  } catch (err) {
+    console.error("[blog] fetchPublishedArticles failed", err);
     return [];
   }
 }

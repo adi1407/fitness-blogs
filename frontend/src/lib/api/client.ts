@@ -1,17 +1,27 @@
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";
+const API_BASE = (
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:4000/api/v1"
+).replace(/\/$/, "");
+
+export function getApiBase(): string {
+  return API_BASE;
+}
 
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const url = `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
+
+  const response = await fetch(url, {
     ...init,
     headers: {
       "Content-Type": "application/json",
       ...init?.headers,
     },
-    next: { revalidate: 60 },
+    // Always hit the live API in production so publishes show immediately.
+    cache: "no-store",
   });
 
   if (!response.ok) {
