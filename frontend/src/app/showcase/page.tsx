@@ -20,6 +20,7 @@ import ScrollMorphHeroDemo from "@/components/scroll-morph-hero-demo";
 import SplitAxisConvergenceDemo from "@/components/split-axis-convergence-demo";
 import TailwindImageAccordionDemo from "@/components/tailwind-image-accordion-demo";
 import TracingBeamDemo from "@/components/tracing-beam-demo";
+import HabitFaqScrollerDemo from "@/components/habit-faq-scroller-demo";
 
 export const metadata: Metadata = {
   title: "Component showcase",
@@ -143,6 +144,10 @@ export default function ShowcasePage() {
         <div className="px-4 py-8">
           <BaseAlertDialogDemo from="bottom" />
         </div>
+      </Band>
+
+      <Band title="Habit FAQ scroller">
+        <HabitFaqScrollerDemo />
       </Band>
     </main>
   );

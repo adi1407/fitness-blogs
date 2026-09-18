@@ -1,12 +1,13 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MuscleBuildingVisuals } from "@/features/muscle-building/components/MuscleBuildingVisuals";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Muscle Building Guide â€” Hypertrophy, Protein & Progressive Overload",
+  title: "Muscle Building Guide — Hypertrophy, Protein & Progressive Overload",
   description:
     "Learn how to build muscle: progressive overload, protein targets, recovery, and programming. Explore exercise libraries and protein calculators.",
   alternates: { canonical: "/muscle-building" },
@@ -29,7 +30,7 @@ const faq = [
   },
   {
     q: "How important is protein for hypertrophy?",
-    a: "Protein provides amino acids for repair and growth. Pair adequate intake with hard training â€” protein alone does not build muscle.",
+    a: "Protein provides amino acids for repair and growth. Pair adequate intake with hard training — protein alone does not build muscle.",
   },
 ];
 
@@ -79,7 +80,7 @@ export default function MuscleBuildingPage() {
         Muscle building fundamentals
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Pillar hub Â· Educational content Â· Not medical advice
+        Pillar hub · Educational content · Not medical advice
       </p>
 
       <aside className="mt-8 rounded-2xl border border-brand-100 bg-brand-50 p-6">
@@ -94,7 +95,7 @@ export default function MuscleBuildingPage() {
             href="/exercises"
             className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
-            Exercise library â†’
+            Exercise library ?
           </Link>
           <Link
             href="/tools/protein-calculator"
@@ -112,15 +113,15 @@ export default function MuscleBuildingPage() {
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-muted-foreground">
           <li>
             <span className="font-medium text-foreground">Mechanical tension</span>{" "}
-            â€” challenging sets with good form over time
+            — challenging sets with good form over time
           </li>
           <li>
             <span className="font-medium text-foreground">Progressive overload</span>{" "}
-            â€” more reps, load, or quality work across weeks
+            — more reps, load, or quality work across weeks
           </li>
           <li>
             <span className="font-medium text-foreground">Recovery & nutrition</span>{" "}
-            â€” protein, calories, sleep, and stress management
+            — protein, calories, sleep, and stress management
           </li>
         </ol>
       </section>
@@ -163,22 +164,14 @@ export default function MuscleBuildingPage() {
         </ul>
       </section>
 
-      <section className="mt-12">
-        <h2 className="text-2xl font-semibold">FAQs</h2>
-        <div className="mt-6 space-y-4">
-          {faq.map((item) => (
-            <details
-              key={item.q}
-              className="rounded-xl border border-border bg-card p-4"
-            >
-              <summary className="cursor-pointer font-semibold">{item.q}</summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {item.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <FaqScrollerBlock
+        className="mt-12"
+        items={faq.map((item) => ({
+          question: item.q,
+          answer: item.a,
+        }))}
+        title="FAQs"
+      />
 
       <p className="mt-12 text-xs text-muted-foreground">
         Educational information only. See our{" "}

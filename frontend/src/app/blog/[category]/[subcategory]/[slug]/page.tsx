@@ -12,6 +12,7 @@ import {
   calculatorCtaForCategory,
   fetchPublishedArticleBySlug,
 } from "@/lib/api/blog";
+import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import {
   findCategory,
   findSubcategory,

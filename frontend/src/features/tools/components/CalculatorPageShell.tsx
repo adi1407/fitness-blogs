@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -101,20 +102,15 @@ export function CalculatorPageShell({
       </section>
 
       {faq.length > 0 ? (
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold">FAQs</h2>
-          <div className="mt-6 space-y-4">
-            {faq.map((item) => (
-              <details
-                key={item.q}
-                className="rounded-xl border border-border bg-card p-4"
-              >
-                <summary className="cursor-pointer font-semibold">{item.q}</summary>
-                <p className="mt-3 text-sm text-muted-foreground">{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
+        <FaqScrollerBlock
+          className="mt-12 -mx-4 overflow-hidden sm:-mx-6"
+          items={faq.map((item) => ({
+            question: item.q,
+            answer: item.a,
+          }))}
+          title="FAQs"
+          subtitle="Quick answers about this calculator. Educational only — not medical advice."
+        />
       ) : null}
 
       <p className="mt-10 text-xs text-muted-foreground">

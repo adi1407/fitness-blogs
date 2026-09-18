@@ -1,12 +1,13 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Protein Guide â€” How Much Protein Do You Need?",
+  title: "Protein Guide — How Much Protein Do You Need?",
   description:
     "Learn how much protein you need per day for general health, muscle growth, and fat loss. Includes calculator links and Indian high-protein food pathways.",
   alternates: { canonical: "/nutrition/protein" },
@@ -29,7 +30,7 @@ const faq = [
   },
   {
     q: "Can vegetarians hit protein targets with Indian foods?",
-    a: "Yes â€” paneer, dal, soya, Greek yogurt/curd, eggs (if included), milk, and tofu can form a strong base when portions and daily totals are planned.",
+    a: "Yes — paneer, dal, soya, Greek yogurt/curd, eggs (if included), milk, and tofu can form a strong base when portions and daily totals are planned.",
   },
 ];
 
@@ -91,7 +92,7 @@ export default function ProteinHubPage() {
         Protein: how much do you need?
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Pillar hub Â· Educational content Â· Not medical advice
+        Pillar hub · Educational content · Not medical advice
       </p>
 
       <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
@@ -106,7 +107,7 @@ export default function ProteinHubPage() {
           href="/tools/protein-calculator"
           className="mt-4 inline-flex rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
         >
-          Calculate your protein requirement â†’
+          Calculate your protein requirement ?
         </Link>
       </aside>
 
@@ -126,7 +127,7 @@ export default function ProteinHubPage() {
           <h2 className="text-2xl font-semibold">What protein does</h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Protein provides amino acids used for tissue repair, enzyme function,
-            and â€” when paired with training â€” supporting muscle protein synthesis.
+            and — when paired with training — supporting muscle protein synthesis.
             It is one part of a complete nutrition plan that also includes energy
             balance, carbohydrate and fat intake, micronutrients, and recovery.
           </p>
@@ -186,7 +187,7 @@ export default function ProteinHubPage() {
           <h2 className="text-2xl font-semibold">Calculate your target</h2>
           <p className="mt-4 text-muted-foreground">
             Use the protein calculator, then validate meal ideas with the foods
-            database â€” especially Indian staples if that matches your kitchen.
+            database — especially Indian staples if that matches your kitchen.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
@@ -210,22 +211,15 @@ export default function ProteinHubPage() {
           </div>
         </section>
 
-        <section className="mt-12 pl-4 sm:pl-8">
-          <h2 className="text-2xl font-semibold">FAQs</h2>
-          <div className="mt-6 space-y-4">
-            {faq.map((item) => (
-              <details
-                key={item.q}
-                className="rounded-xl border border-border bg-card p-4"
-              >
-                <summary className="cursor-pointer font-semibold">{item.q}</summary>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {item.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
+        <div className="mt-12 pl-0 sm:pl-0">
+          <FaqScrollerBlock
+            items={faq.map((item) => ({
+              question: item.q,
+              answer: item.a,
+            }))}
+            title="FAQs"
+          />
+        </div>
 
         <p className="mt-12 pl-4 text-xs text-muted-foreground sm:pl-8">
           Educational information only. See our{" "}
