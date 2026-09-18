@@ -42,6 +42,13 @@ cd frontend && cp .env.example .env.local && npm install && npm run dev
 cd cms && cp .env.example .env && npm install && npm run dev
 ```
 
+## Production deploy
+
+API + Postgres on **Render**, site + CMS on **Vercel**. Step-by-step: [docs/DEPLOY.md](./docs/DEPLOY.md).
+
+- Blueprint: `render.yaml`
+- CMS SPA: `cms/vercel.json`
+
 ## Architecture rules
 
 - One API for site + CMS

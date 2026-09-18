@@ -1,0 +1,36 @@
+# FitKnowledge API + Postgres on Render
+# Dashboard: New → Blueprint → connect this repo → apply
+# Docs: docs/DEPLOY.md
+
+databases:
+  - name: fitness-db
+    plan: free
+    databaseName: fitness
+    user: fitness
+
+services:
+  - type: web
+    name: fitness-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fitness-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      # Replace with your real Vercel URLs after first deploy (comma-separated, no trailing slash)
+      - key: CORS_ORIGINS
+        sync: false
