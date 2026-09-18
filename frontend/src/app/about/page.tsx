@@ -1,4 +1,4 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
@@ -10,7 +10,7 @@ import { FlipCard } from "@/components/animate-ui/components/community/flip-card
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
-  title: "About FitKnowledge â€” Fitness Knowledge Platform",
+  title: "About FitKnowledge — Fitness Knowledge Platform",
   description:
     "Why FitKnowledge exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.",
   alternates: { canonical: "/about" },
@@ -80,7 +80,7 @@ const FLIP_CARDS = [
     username: "calculators",
     image:
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop",
-    bio: "TDEE, protein, macros, and more â€” each tool teaches and links onward.",
+    bio: "TDEE, protein, macros, and more — each tool teaches and links onward.",
     stats: { following: 6, followers: 0, posts: 0 },
     socialLinks: {
       linkedin: "/tools",
@@ -108,7 +108,7 @@ export default function AboutPage() {
     <main className="flex w-full flex-1 flex-col">
       <section className="relative min-h-[70svh] overflow-hidden border-b border-border">
         <AuroraBackground className="!min-h-[70svh] bg-brand-50">
-          <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-4 py-16 text-center sm:px-6 lg:px-8">
+          <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-4 py-16 text-center sm:px-6 lg:px-8">
             <p className="text-sm font-medium tracking-wide text-primary">
               About the platform
             </p>
@@ -121,7 +121,7 @@ export default function AboutPage() {
               />
             </h1>
             <BlurText
-              text="FitKnowledge is a searchable fitness knowledge platform â€” articles, guides, calculators, foods, and exercises â€” designed to answer real questions better than a thin blog post."
+              text="FitKnowledge is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
               delay={40}
               animateBy="words"
               direction="top"
@@ -146,13 +146,13 @@ export default function AboutPage() {
         </AuroraBackground>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-semibold tracking-tight">
           Three knowledge pillars
         </h2>
         <p className="mt-2 max-w-xl text-muted-foreground">
-          Deep clusters for topical authority â€” muscle building, weight loss,
-          and nutrition â€” with articles under each subcategory.
+          Deep clusters for topical authority — muscle building, weight loss,
+          and nutrition — with articles under each subcategory.
         </p>
         <div className="mt-8">
           <TailwindImageAccordion items={PILLAR_ACCORDION} />
@@ -160,7 +160,7 @@ export default function AboutPage() {
       </section>
 
       <section className="border-y border-border bg-brand-50/40">
-        <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight">
             What we build
           </h2>
@@ -176,12 +176,12 @@ export default function AboutPage() {
       </section>
 
       <section className="border-b border-border bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold tracking-tight">
             Tools & databases
           </h2>
           <p className="mt-2 max-w-xl text-muted-foreground">
-            Calculators and libraries that complement the blog â€” the product
+            Calculators and libraries that complement the blog — the product
             flywheel beyond articles alone.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -211,7 +211,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-semibold tracking-tight">
           Editorial philosophy
         </h2>

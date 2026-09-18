@@ -1,9 +1,9 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { TrainingScrollMorph } from "@/features/training/components/TrainingScrollMorph";
 
 export const metadata: Metadata = {
-  title: "Training Guides â€” Programming, Volume, Recovery & Workouts",
+  title: "Training Guides — Programming, Volume, Recovery & Workouts",
   description:
     "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.",
   alternates: { canonical: "/training" },
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function TrainingPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -33,7 +33,7 @@ export default function TrainingPage() {
         Training fundamentals
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Training content should answer how to progress â€” not just list
+        Training content should answer how to progress — not just list
         exercises. Start with principles, then drill into muscle groups and
         programs.
       </p>
@@ -78,7 +78,7 @@ export default function TrainingPage() {
           <li>Train each major muscle group enough times per week to progress</li>
           <li>Leave most sets near technical failure, not total failure every set</li>
           <li>Add load, reps, or better form over weeks (progressive overload)</li>
-          <li>Protect sleep and manage stress â€” recovery is part of training</li>
+          <li>Protect sleep and manage stress — recovery is part of training</li>
         </ul>
       </section>
 

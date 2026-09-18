@@ -154,14 +154,20 @@
 }
 
 @layer base {
+  :root {
+    /* Fallback until SiteHeader measures real height */
+    --site-header-height: 6.75rem;
+  }
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: clip;
   }
 }
 
@@ -227,6 +233,14 @@
 .animate-scroll-horizontal-reverse {
   animation: scroll-horizontal-reverse var(--scroll-duration, 40s) linear
     infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-horizontal,
+  .animate-scroll-horizontal-reverse,
+  .ias-infinite-scroll {
+    animation: none !important;
+  }
 }
 
 .group:hover .animate-scroll-horizontal,

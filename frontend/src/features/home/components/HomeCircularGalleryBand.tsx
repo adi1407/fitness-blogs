@@ -31,19 +31,27 @@ function toGalleryItems(articles: PublicBlogArticle[]): GalleryItem[] {
   return items;
 }
 
+function mobileScrollHeight(): string {
+  if (typeof window === "undefined") return "180svh";
+  return window.innerWidth < 768 ? "170svh" : "220svh";
+}
+
 /** Scroll-driven circular gallery of recent articles (below category sections). */
 export function HomeCircularGalleryBand({
   articles,
 }: HomeCircularGalleryBandProps) {
   const items = useMemo(() => toGalleryItems(articles), [articles]);
-  const [radius, setRadius] = useState(420);
+  const [radius, setRadius] = useState(240);
+  const [scrollH, setScrollH] = useState("180svh");
 
   useEffect(() => {
     const sync = () => {
       const w = window.innerWidth;
-      if (w < 480) setRadius(260);
-      else if (w < 768) setRadius(340);
-      else setRadius(460);
+      if (w < 480) setRadius(200);
+      else if (w < 768) setRadius(260);
+      else if (w < 1024) setRadius(360);
+      else setRadius(440);
+      setScrollH(mobileScrollHeight());
     };
     sync();
     window.addEventListener("resize", sync);
@@ -55,12 +63,12 @@ export function HomeCircularGalleryBand({
   return (
     <section
       className="relative w-full border-t border-border bg-brand-50/20"
-      style={{ height: "240vh" }}
+      style={{ height: scrollH }}
       aria-label="Circular article gallery"
     >
-      <div className="sticky top-[6.75rem] flex h-[calc(100svh-6.75rem)] w-full flex-col items-center justify-center overflow-hidden">
-        <div className="absolute top-6 z-10 px-4 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <div className="sticky top-[var(--site-header-height)] flex h-[calc(100svh-var(--site-header-height))] w-full flex-col overflow-hidden">
+        <div className="z-10 shrink-0 px-4 pb-2 pt-4 text-center sm:pt-6">
+          <h2 className="text-xl font-semibold tracking-tight sm:text-3xl">
             Rotate through the library
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -68,12 +76,12 @@ export function HomeCircularGalleryBand({
           </p>
           <Link
             href="/blog"
-            className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline"
+            className="mt-2 inline-flex text-sm font-semibold text-primary hover:underline"
           >
             View all articles →
           </Link>
         </div>
-        <div className="h-full w-full max-w-5xl">
+        <div className="min-h-0 w-full flex-1">
           <CircularGallery
             items={items}
             radius={radius}

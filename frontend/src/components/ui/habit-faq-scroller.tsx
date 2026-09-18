@@ -33,14 +33,14 @@ export function FaqCard({ question, answer, className }: FaqCardProps) {
   return (
     <div
       className={cn(
-        "faq-card flex w-80 flex-shrink-0 flex-col items-start gap-3 rounded-xl border border-brand-100 bg-white p-5 shadow-md sm:w-96",
+        "faq-card flex w-[min(18rem,85vw)] flex-shrink-0 flex-col items-start gap-3 rounded-xl border border-brand-100 bg-white p-5 shadow-md sm:w-96",
         className,
       )}
     >
-      <h3 className="faq-title text-lg font-semibold tracking-tight text-foreground">
+      <h3 className="faq-title line-clamp-3 text-base font-semibold tracking-tight text-foreground sm:text-lg">
         {question}
       </h3>
-      <p className="faq-answer text-sm leading-relaxed text-muted-foreground">
+      <p className="faq-answer line-clamp-6 text-sm leading-relaxed text-muted-foreground">
         {answer}
       </p>
     </div>
@@ -75,7 +75,7 @@ export function HorizontalScroller({
         className,
       )}
     >
-      <div className={cn("flex w-max", animationClass)} style={style}>
+      <div className={cn("flex w-max motion-reduce:animate-none", animationClass)} style={style}>
         <div className="flex flex-shrink-0 items-stretch justify-center gap-6 px-3 sm:gap-8 sm:px-4">
           {children}
         </div>
@@ -100,7 +100,7 @@ export default function FaqSection({ data, className }: FaqSectionProps) {
   return (
     <div
       className={cn(
-        "relative flex w-full max-w-6xl flex-col items-center gap-10 py-4",
+        "relative mx-auto flex w-full max-w-7xl flex-col items-center gap-10 overflow-x-clip py-4",
         className,
       )}
     >

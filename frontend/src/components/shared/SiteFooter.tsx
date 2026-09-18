@@ -31,7 +31,7 @@ const resources = [
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-border bg-brand-50">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4 lg:px-8">
         <div className="md:col-span-1">
           <p className="text-lg font-semibold text-foreground">FitKnowledge</p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

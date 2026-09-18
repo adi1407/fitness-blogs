@@ -69,13 +69,13 @@ function buildImages(count: number): ImageData[] {
 
 /** Interactive 3D sphere preview for the exercise library hub. */
 export function ExercisesSphereSection() {
-  const [size, setSize] = useState(420);
+  const [size, setSize] = useState(280);
 
   useEffect(() => {
     const sync = () => {
       const w = window.innerWidth;
-      if (w < 480) setSize(300);
-      else if (w < 768) setSize(360);
+      if (w < 480) setSize(Math.min(280, w - 32));
+      else if (w < 768) setSize(Math.min(360, w - 32));
       else setSize(480);
     };
     sync();

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { noIndexMetadata } from "@/components/shared/PlatformHub";
 import { ProgramsCarousel } from "@/features/programs/components/ProgramsCarousel";
 
@@ -9,7 +9,7 @@ export const metadata = noIndexMetadata(
 
 export default function Page() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -26,7 +26,7 @@ export default function Page() {
         Programs
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Structured tracks for beginners, fat loss, and muscle gain — growing
+        Structured tracks for beginners, fat loss, and muscle gain � growing
         alongside the exercise library and calculators.
       </p>
 

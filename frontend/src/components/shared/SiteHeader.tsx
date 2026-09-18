@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { colorSchema } from "@/styles/color-schema";
@@ -35,10 +35,33 @@ function isCategoryActive(pathname: string, href: string) {
 export function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const syncHeight = () => {
+      const h = el.getBoundingClientRect().height;
+      document.documentElement.style.setProperty(
+        "--site-header-height",
+        `${Math.ceil(h)}px`,
+      );
+    };
+
+    syncHeight();
+    const ro = new ResizeObserver(syncHeight);
+    ro.observe(el);
+    window.addEventListener("resize", syncHeight);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", syncHeight);
+    };
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -56,7 +79,10 @@ export function SiteHeader() {
   const brand = colorSchema.brand[400];
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-[1000]">
+    <header
+      ref={headerRef}
+      className="pointer-events-none fixed inset-x-0 top-0 z-[1000] pt-[env(safe-area-inset-top)]"
+    >
       {/* Bar 1 — logo + primary nav */}
       <div className="pointer-events-auto border-b border-brand-100/80 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:h-16 sm:px-6 lg:px-8">
@@ -123,7 +149,7 @@ export function SiteHeader() {
       {/* Bar 2 — category strip */}
       <div className="pointer-events-auto border-b border-brand-100 bg-brand-50/90 backdrop-blur-md">
         <nav
-          className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2 scrollbar-none sm:px-6 lg:px-8"
+          className="mx-auto flex max-w-7xl gap-1 overflow-x-auto overscroll-x-contain px-4 py-2 scrollbar-none sm:px-6 lg:px-8"
           aria-label="Categories"
         >
           {CATEGORY_STRIP.map((item) => {
@@ -154,7 +180,7 @@ export function SiteHeader() {
             aria-label="Close menu overlay"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute inset-x-0 top-[6.75rem] max-h-[calc(100svh-6.75rem)] overflow-y-auto border-b border-brand-100 bg-white shadow-lg">
+          <div className="absolute inset-x-0 top-[var(--site-header-height)] max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-b border-brand-100 bg-white shadow-lg">
             <ul className="space-y-1 p-3">
               {PRIMARY_NAV.map((item) => (
                 <li key={item.href}>

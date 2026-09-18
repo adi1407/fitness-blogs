@@ -383,7 +383,7 @@ function StackSpreadStage({
       className="relative w-full select-none bg-[#faf9f6] dark:bg-[#0a0a0c] transition-colors duration-500"
       style={{ height: `${scrollLength}vh` }}
     >
-      <div className="sticky top-20 h-[calc(100svh-5rem)] w-full overflow-hidden">
+      <div className="sticky top-[var(--site-header-height)] h-[calc(100svh-var(--site-header-height))] w-full overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-25 dark:opacity-15 blur-[120px]">
           <div className="w-[50vw] h-[50vw] rounded-full bg-stone-300 dark:bg-indigo-900" />
         </div>
@@ -398,7 +398,7 @@ function StackSpreadStage({
             className="absolute flex flex-col items-center max-w-2xl px-4"
             style={{ opacity: beforeOpacity, y: beforeY }}
           >
-            <h2 className="w-full whitespace-pre-line text-[4.8vw] font-light tracking-tight text-zinc-900 dark:text-zinc-100 max-md:text-[10vw]">
+            <h2 className="w-full whitespace-pre-line text-[clamp(1.75rem,4.8vw,3.5rem)] font-light tracking-tight text-zinc-900 dark:text-zinc-100">
               {titleBefore ?? (
                 <>
                   Portal <span className="font-normal opacity-40">Axis</span>{" "}
@@ -406,7 +406,7 @@ function StackSpreadStage({
                 </>
               )}
             </h2>
-            <p className="mt-[1.4vw] w-full max-w-[40ch] text-[1.1vw] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 max-md:mt-3 max-md:text-[3.6vw]">
+            <p className="mt-3 w-full max-w-[40ch] text-[clamp(0.875rem,1.1vw,1.125rem)] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 md:mt-[1.4vw]">
               {subtitleBefore}
             </p>
           </motion.div>
@@ -415,7 +415,7 @@ function StackSpreadStage({
             className="absolute flex flex-col items-center max-w-2xl px-4"
             style={{ opacity: afterOpacity, y: afterY }}
           >
-            <h2 className="w-full whitespace-pre-line text-[4.8vw] font-light tracking-tight text-zinc-900 dark:text-zinc-100 max-md:text-[10vw]">
+            <h2 className="w-full whitespace-pre-line text-[clamp(1.75rem,4.8vw,3.5rem)] font-light tracking-tight text-zinc-900 dark:text-zinc-100">
               {titleAfter ?? (
                 <>
                   Cinematic{" "}
@@ -426,7 +426,7 @@ function StackSpreadStage({
                 </>
               )}
             </h2>
-            <p className="mt-[1.4vw] w-full max-w-[40ch] text-[1.1vw] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 max-md:mt-3 max-md:text-[3.6vw]">
+            <p className="mt-3 w-full max-w-[40ch] text-[clamp(0.875rem,1.1vw,1.125rem)] font-light leading-relaxed tracking-wide text-zinc-600 dark:text-zinc-400 md:mt-[1.4vw]">
               {subtitleAfter}
             </p>
           </motion.div>

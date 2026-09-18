@@ -84,6 +84,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     }, [isScrolling, autoRotateSpeed]);
 
     const anglePerItem = 360 / Math.max(items.length, 1);
+    const compact = radius < 300;
 
     return (
       <div
@@ -118,7 +119,12 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={`${item.common}-${item.photo.url}`}
                 role="group"
                 aria-label={item.common}
-                className="absolute h-[320px] w-[240px] sm:h-[400px] sm:w-[300px]"
+                className={cn(
+                  "absolute",
+                  compact
+                    ? "h-[220px] w-[160px]"
+                    : "h-[260px] w-[190px] sm:h-[360px] sm:w-[270px] lg:h-[400px] lg:w-[300px]",
+                )}
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translate(-50%, -50%)`,
                   left: "50%",
@@ -136,12 +142,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     style={{ objectPosition: item.photo.pos || "center" }}
                     loading="lazy"
                   />
-                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
-                    <h2 className="text-xl font-bold">{item.common}</h2>
-                    <em className="text-sm italic opacity-80">
+                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3 text-white sm:p-4">
+                    <h2 className="line-clamp-2 text-base font-bold sm:text-xl">
+                      {item.common}
+                    </h2>
+                    <em className="line-clamp-1 text-xs italic opacity-80 sm:text-sm">
                       {item.binomial}
                     </em>
-                    <p className="mt-2 text-xs opacity-70">
+                    <p className="mt-1 line-clamp-1 text-[10px] opacity-70 sm:mt-2 sm:text-xs">
                       Photo by: {item.photo.by}
                     </p>
                   </div>

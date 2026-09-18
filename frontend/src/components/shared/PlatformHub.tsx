@@ -19,7 +19,7 @@ type HubProps = {
 /** Temporary hub shell — replace with real curated content before indexing. */
 export function PlatformHub({ title, description, links = [] }: HubProps) {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <p className="text-sm text-muted-foreground">Platform scaffold · not indexed yet</p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
         {title}

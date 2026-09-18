@@ -1,4 +1,4 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import FUIBentoGridDark from "@/components/ui/bento";
 import { ToolsBentoGrid } from "@/features/tools/components/ToolsBentoGrid";
@@ -8,7 +8,7 @@ import {
 } from "@/features/tools/components/ToolsVisualBands";
 
 export const metadata: Metadata = {
-  title: "Fitness Calculators â€” TDEE, Protein, Macros, BMI & More",
+  title: "Fitness Calculators — TDEE, Protein, Macros, BMI & More",
   description:
     "Free fitness calculators for TDEE, calories, macros, protein, BMR, and BMI. Each tool links into guides and food databases.",
   alternates: { canonical: "/tools" },
@@ -55,7 +55,7 @@ const calculators = [
 
 export default function ToolsPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -72,7 +72,7 @@ export default function ToolsPage() {
         Fitness calculators
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Calculators are SEO landing pages for calculation intent â€” and the
+        Calculators are SEO landing pages for calculation intent — and the
         bridge into guides, foods, and programs. Results should educate, not
         end the journey.
       </p>

@@ -134,6 +134,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   const lastMousePos = useRef<MousePosition>({ x: 0, y: 0 });
   const animationFrame = useRef<number | null>(null);
   const velocityRef = useRef(velocity);
+  const dragDistanceRef = useRef(0);
+  const isDraggingRef = useRef(false);
   velocityRef.current = velocity;
 
   const actualSphereRadius = sphereRadius || containerSize * 0.5;
@@ -318,6 +320,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
+    isDraggingRef.current = true;
+    dragDistanceRef.current = 0;
     setIsDragging(true);
     setVelocity({ x: 0, y: 0 });
     lastMousePos.current = { x: e.clientX, y: e.clientY };
@@ -325,9 +329,10 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!isDragging) return;
+      if (!isDraggingRef.current) return;
       const deltaX = e.clientX - lastMousePos.current.x;
       const deltaY = e.clientY - lastMousePos.current.y;
+      dragDistanceRef.current += Math.abs(deltaX) + Math.abs(deltaY);
       const rotationDelta = {
         x: -deltaY * dragSensitivity,
         y: deltaX * dragSensitivity,
@@ -347,16 +352,18 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       });
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     },
-    [isDragging, dragSensitivity, clampRotationSpeed],
+    [dragSensitivity, clampRotationSpeed],
   );
 
   const handleMouseUp = useCallback(() => {
+    isDraggingRef.current = false;
     setIsDragging(false);
   }, []);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
     const touch = e.touches[0];
+    isDraggingRef.current = true;
+    dragDistanceRef.current = 0;
     setIsDragging(true);
     setVelocity({ x: 0, y: 0 });
     lastMousePos.current = { x: touch.clientX, y: touch.clientY };
@@ -364,11 +371,12 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
-      if (!isDragging) return;
+      if (!isDraggingRef.current) return;
       e.preventDefault();
       const touch = e.touches[0];
       const deltaX = touch.clientX - lastMousePos.current.x;
       const deltaY = touch.clientY - lastMousePos.current.y;
+      dragDistanceRef.current += Math.abs(deltaX) + Math.abs(deltaY);
       const rotationDelta = {
         x: -deltaY * dragSensitivity,
         y: deltaX * dragSensitivity,
@@ -388,11 +396,22 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       });
       lastMousePos.current = { x: touch.clientX, y: touch.clientY };
     },
-    [isDragging, dragSensitivity, clampRotationSpeed],
+    [dragSensitivity, clampRotationSpeed],
   );
 
   const handleTouchEnd = useCallback(() => {
+    isDraggingRef.current = false;
     setIsDragging(false);
+  }, []);
+
+  const openPreview = useCallback((image: ImageData) => {
+    // Ignore selection after a drag/spin so the modal does not stick open.
+    if (dragDistanceRef.current > 8) return;
+    setSelectedImage(image);
+  }, []);
+
+  const closePreview = useCallback(() => {
+    setSelectedImage(null);
   }, []);
 
   useEffect(() => {
@@ -402,6 +421,27 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   useEffect(() => {
     setImagePositions(generateSpherePositions());
   }, [generateSpherePositions]);
+
+  // Close preview on scroll / Escape; lock body scroll while open.
+  useEffect(() => {
+    if (!selectedImage) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closePreview();
+    };
+    const onScroll = () => closePreview();
+
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [selectedImage, closePreview]);
 
   useEffect(() => {
     const animate = () => {
@@ -537,14 +577,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       {selectedImage ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/40 p-4 animate-in fade-in duration-200"
           onClick={() => setSelectedImage(null)}
           role="dialog"
           aria-modal="true"
           aria-label={selectedImage.title ?? selectedImage.alt}
         >
           <div
-            className="w-full max-w-md overflow-hidden rounded-xl bg-white shadow-xl"
+            className="max-h-[90svh] w-full max-w-md overflow-y-auto overflow-x-hidden rounded-xl bg-white shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-square">
@@ -568,12 +608,12 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
               selectedImage.href) && (
               <div className="p-6">
                 {selectedImage.title ? (
-                  <h3 className="mb-2 text-xl font-bold text-foreground">
+                  <h3 className="mb-2 line-clamp-3 text-xl font-bold text-foreground">
                     {selectedImage.title}
                   </h3>
                 ) : null}
                 {selectedImage.description ? (
-                  <p className="text-muted-foreground">
+                  <p className="line-clamp-4 text-muted-foreground">
                     {selectedImage.description}
                   </p>
                 ) : null}

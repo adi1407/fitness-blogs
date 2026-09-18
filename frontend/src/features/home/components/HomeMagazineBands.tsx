@@ -77,7 +77,7 @@ export function HomeMagazineBands() {
                 Explore by pillar
               </h2>
               <p className="mt-2 max-w-xl text-muted-foreground">
-                Hover to focus a cluster — then dive into the full category
+                Tap or focus a cluster — then dive into the full category
                 archive.
               </p>
             </div>

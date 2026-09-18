@@ -1,8 +1,8 @@
-ï»¿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Nutrition Guides â€” Protein, Calories, Macros & Indian Diet",
+  title: "Nutrition Guides — Protein, Calories, Macros & Indian Diet",
   description:
     "Learn nutrition for fat loss and muscle gain: protein, calories, carbs, fats, hydration, meal timing, and Indian diet guidance with calculators.",
   alternates: { canonical: "/nutrition" },
@@ -39,7 +39,7 @@ const topics = [
 
 export default function NutritionPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -57,7 +57,7 @@ export default function NutritionPage() {
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
         Nutrition content built for search intent: clear answers, calculators
-        when people need numbers, and pathways into foods and training â€” not
+        when people need numbers, and pathways into foods and training — not
         thin keyword posts.
       </p>
 

@@ -55,7 +55,7 @@ export function HomeLatestList({ articles }: HomeLatestListProps) {
                       <span>{article.readingTime} min read</span>
                     ) : null}
                   </div>
-                  <h3 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground group-hover:text-primary">
+                  <h3 className="mt-1.5 line-clamp-2 text-lg font-semibold tracking-tight text-foreground group-hover:text-primary">
                     {article.title}
                   </h3>
                   {article.excerpt ? (

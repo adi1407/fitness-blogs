@@ -31,7 +31,6 @@ function toSphereImages(articles: PublicBlogArticle[]): ImageData[] {
 
   if (base.length === 0) return [];
 
-  // Fill the sphere so latest posts still look dense with a small library.
   const target = Math.max(24, base.length);
   const out: ImageData[] = [];
   for (let i = 0; i < target; i++) {
@@ -44,20 +43,22 @@ function toSphereImages(articles: PublicBlogArticle[]): ImageData[] {
   return out;
 }
 
+function sphereSizeForWidth(w: number): number {
+  const pad = 32;
+  if (w < 480) return Math.min(280, w - pad);
+  if (w < 768) return Math.min(360, w - pad);
+  if (w < 1024) return 440;
+  return 500;
+}
+
 /** Home hero: latest blogs on an img-sphere — tap preview, then open the article. */
 export function HomeSphereHero({ articles }: HomeSphereHeroProps) {
   const latest = useMemo(() => articles.slice(0, 8), [articles]);
   const images = useMemo(() => toSphereImages(latest), [latest]);
-  const [size, setSize] = useState(440);
+  const [size, setSize] = useState(280);
 
   useEffect(() => {
-    const sync = () => {
-      const w = window.innerWidth;
-      if (w < 480) setSize(300);
-      else if (w < 768) setSize(380);
-      else if (w < 1024) setSize(460);
-      else setSize(520);
-    };
+    const sync = () => setSize(sphereSizeForWidth(window.innerWidth));
     sync();
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
@@ -97,7 +98,7 @@ export function HomeSphereHero({ articles }: HomeSphereHeroProps) {
           ) : null}
         </div>
 
-        <div className="mt-8 flex justify-center lg:mt-0 lg:flex-1">
+        <div className="mt-8 flex max-w-full justify-center overflow-hidden lg:mt-0 lg:flex-1">
           <SphereImageGrid
             images={images}
             containerSize={size}
@@ -110,6 +111,7 @@ export function HomeSphereHero({ articles }: HomeSphereHeroProps) {
             perspective={1000}
             autoRotate
             autoRotateSpeed={0.22}
+            className="max-w-full"
           />
         </div>
       </div>

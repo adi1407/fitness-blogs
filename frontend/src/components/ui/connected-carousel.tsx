@@ -53,8 +53,8 @@ export function CalendlyCarousel({
   const [page, setPage] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [tier, setTier] = useState<ScreenTier>("desktop");
-  const [viewportWidth, setViewportWidth] = useState<number>(1200);
+  const [tier, setTier] = useState<ScreenTier>("mobile");
+  const [viewportWidth, setViewportWidth] = useState<number>(375);
 
   const total = items.length;
   const activeIndex = ((page % total) + total) % total;
@@ -565,7 +565,7 @@ export function CalendlyCarousel({
                     <div className="flex-1 min-w-0 flex flex-col items-center md:items-start text-center md:text-left justify-between py-1 gap-2 sm:gap-3">
                       <h3
                         title={item.stat}
-                        className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-tight w-full"
+                        className="line-clamp-3 text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground leading-tight w-full"
                       >
                         {item.stat}
                       </h3>

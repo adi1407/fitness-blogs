@@ -23,7 +23,7 @@ export function FaqScrollerBlock({
   const data = buildFaqSectionData(items, { title, subtitle });
 
   return (
-    <section className={className}>
+    <section className={className ?? "mt-12 w-full overflow-x-clip"}>
       <FaqSection data={data} />
       {/* Accessible fallback for screen readers / SEO crawlers that skip motion UI */}
       <div className="sr-only">

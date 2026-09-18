@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import SplitAxisConvergence, {
   type StackSpreadCard,
@@ -95,7 +96,7 @@ function buildCards(): StackSpreadCard[] {
 
 function StaticFallback() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <h2 className="text-center text-3xl font-semibold tracking-tight">
         Deficit plus habits → sustainable fat loss
       </h2>
@@ -123,6 +124,16 @@ function StaticFallback() {
 /** Full-bleed SplitAxis — must NOT sit inside overflow-hidden / max-width shells. */
 export function WeightLossSplitSection() {
   const reduce = useReducedMotion();
+  const [scrollLength, setScrollLength] = useState(200);
+
+  useEffect(() => {
+    const sync = () => {
+      setScrollLength(window.innerWidth < 768 ? 180 : 260);
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
 
   if (reduce) {
     return (
@@ -139,7 +150,7 @@ export function WeightLossSplitSection() {
     >
       <SplitAxisConvergence
         cards={buildCards()}
-        scrollLength={280}
+        scrollLength={scrollLength}
         showScrollHint
         titleBefore={
           <>
