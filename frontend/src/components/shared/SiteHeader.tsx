@@ -6,6 +6,7 @@ import { colorSchema } from "@/styles/color-schema";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
+  { label: "Learn", href: "/learn" },
   { label: "Nutrition", href: "/nutrition" },
   { label: "Weight Loss", href: "/weight-loss" },
   { label: "Tools", href: "/tools" },
@@ -18,8 +19,8 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-[1000] h-20">
-      <div className="pointer-events-auto mx-auto flex w-full max-w-7xl justify-center px-0 md:justify-start md:px-6 lg:px-8">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-[1000] flex h-20 items-start justify-center">
+      <div className="pointer-events-auto flex w-full max-w-7xl justify-center px-0">
         <PillNav
           logo="/logo.svg"
           logoAlt="FitKnowledge"
