@@ -1,51 +1,11 @@
-import { getApiBase } from "@/lib/api/client";
 import type { PublicBlogArticle } from "@/lib/api/blog";
-import { HomeSphereHero } from "@/features/home/components/HomeSphereHero";
-import { HomeLatestList } from "@/features/home/components/HomeLatestList";
 import { HomeKnowledgeKeepBand } from "@/features/home/components/HomeKnowledgeKeepBand";
-import { HomeCategorySections } from "@/features/home/components/HomeCategorySections";
-import { HomeCircularGalleryBand } from "@/features/home/components/HomeCircularGalleryBand";
-import { HomeMagazineBands } from "@/features/home/components/HomeMagazineBands";
 
 type HomeMagazineProps = {
   articles: PublicBlogArticle[];
 };
 
+/** Home shell: Karakeep-style keep only (no sphere / gallery stack). */
 export function HomeMagazine({ articles }: HomeMagazineProps) {
-  const latest = articles.slice(0, 5);
-  const apiIsLocalhost = getApiBase().includes("localhost");
-
-  if (articles.length === 0) {
-    return (
-      <>
-        <section className="mx-auto w-full max-w-3xl flex-1 px-4 py-20 text-center sm:px-6">
-          <h1 className="text-3xl font-semibold tracking-tight">FitKnowledge</h1>
-          <p className="mt-4 text-muted-foreground">
-            No published articles yet. Check back soon — or browse Tools while
-            the library grows.
-          </p>
-          {apiIsLocalhost ? (
-            <p className="mt-4 text-sm text-red-600">
-              Site API is still pointed at localhost. Set{" "}
-              <code className="font-mono">API_URL</code> to your Render API and
-              redeploy.
-            </p>
-          ) : null}
-        </section>
-        <HomeMagazineBands />
-      </>
-    );
-  }
-
-  return (
-    <>
-      <h1 className="sr-only">FitKnowledge — latest fitness guides and news</h1>
-      <HomeSphereHero articles={articles} />
-      <HomeLatestList articles={latest} />
-      <HomeKnowledgeKeepBand articles={articles} />
-      <HomeCategorySections articles={articles} />
-      <HomeCircularGalleryBand articles={articles} />
-      <HomeMagazineBands />
-    </>
-  );
+  return <HomeKnowledgeKeepBand articles={articles} />;
 }
