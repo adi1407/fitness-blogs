@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { DEMO_ARTICLES } from "./demoArticles";
+import { demoBodyWithImage } from "./demoArticleHtml";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -250,14 +251,8 @@ async function ensureArticleNumbers(): Promise<void> {
   }
 }
 
-/** Seed 20 published demo posts (writer-authored) when the library is thin. */
+/** Seed / refresh 20 published demo posts with featured + body images. */
 async function seedDemoArticles(): Promise<void> {
-  const published = await pool.query(
-    `SELECT COUNT(*)::int AS c FROM articles WHERE status = 'published'`,
-  );
-  const count = (published.rows[0]?.c as number) ?? 0;
-  if (count >= 20) return;
-
   const writer = await pool.query(
     `SELECT id FROM users WHERE email = 'writer@fitknowledge.local' LIMIT 1`,
   );
@@ -268,12 +263,18 @@ async function seedDemoArticles(): Promise<void> {
   }
 
   let inserted = 0;
+  let refreshed = 0;
+
   for (const demo of DEMO_ARTICLES) {
-    const exists = await pool.query(
-      `SELECT 1 FROM articles WHERE slug = $1 LIMIT 1`,
-      [demo.slug],
-    );
-    if (exists.rowCount && exists.rowCount > 0) continue;
+    const body = demoBodyWithImage(demo.title, demo.body, demo.featuredImage);
+    const plain = body.replace(/<[^>]+>/g, " ");
+    const readingTime = Math.max(3, Math.round(plain.split(/\s+/).length / 200));
+    const faq = JSON.stringify([
+      {
+        question: `Quick take: ${demo.title}?`,
+        answer: demo.quickAnswer,
+      },
+    ]);
 
     const ids = await pool.query(
       `SELECT c.id AS category_id, s.id AS subcategory_id
@@ -289,29 +290,66 @@ async function seedDemoArticles(): Promise<void> {
       continue;
     }
 
+    const exists = await pool.query(
+      `SELECT id FROM articles WHERE slug = $1 LIMIT 1`,
+      [demo.slug],
+    );
+
+    if (exists.rowCount && exists.rowCount > 0) {
+      await pool.query(
+        `UPDATE articles SET
+           title = $1,
+           excerpt = $2,
+           body = $3,
+           featured_image = $4,
+           featured_image_alt = $5,
+           featured_image_caption = $5,
+           og_image = $4,
+           quick_answer = $6,
+           reading_time = $7,
+           status = 'published',
+           published_at = COALESCE(published_at, NOW()),
+           author_id = COALESCE(author_id, $8),
+           reviewer_id = COALESCE(reviewer_id, $8),
+           published_by = COALESCE(published_by, $8),
+           updated_at = NOW()
+         WHERE slug = $9`,
+        [
+          demo.title,
+          demo.excerpt,
+          body,
+          demo.featuredImage,
+          demo.title,
+          demo.quickAnswer,
+          readingTime,
+          writerId,
+          demo.slug,
+        ],
+      );
+      refreshed += 1;
+      continue;
+    }
+
+    const published = await pool.query(
+      `SELECT COUNT(*)::int AS c FROM articles WHERE status = 'published'`,
+    );
+    // Still insert missing seed slugs even if other published posts exist
     const articleNumber = await allocateArticleNumber();
-    const plain = demo.body.replace(/<[^>]+>/g, " ");
-    const readingTime = Math.max(3, Math.round(plain.split(/\s+/).length / 200));
-    const faq = JSON.stringify([
-      {
-        question: `Quick take: ${demo.title}?`,
-        answer: demo.quickAnswer,
-      },
-    ]);
+    void published;
 
     await pool.query(
       `INSERT INTO articles (
          article_number, title, slug, excerpt, body,
          category_id, subcategory_id, status,
          meta_title, meta_description, primary_keyword,
-         featured_image, featured_image_alt, og_image,
+         featured_image, featured_image_alt, featured_image_caption, og_image,
          quick_answer, tags, topics, faq,
          reading_time, author_id, reviewer_id, published_by, published_at
        ) VALUES (
          $1,$2,$3,$4,$5,
          $6,$7,'published',
          $8,$9,$10,
-         $11,$12,$11,
+         $11,$12,$12,$11,
          $13,$14::text[],$14::text[],$15::jsonb,
          $16,$17,$17,$17,NOW()
        )`,
@@ -320,7 +358,7 @@ async function seedDemoArticles(): Promise<void> {
         demo.title,
         demo.slug,
         demo.excerpt,
-        demo.body,
+        body,
         ids.rows[0].category_id,
         ids.rows[0].subcategory_id,
         demo.title,
@@ -338,8 +376,10 @@ async function seedDemoArticles(): Promise<void> {
     inserted += 1;
   }
 
-  if (inserted > 0) {
-    console.log(`[db] seeded ${inserted} demo published articles (writer)`);
+  if (inserted > 0 || refreshed > 0) {
+    console.log(
+      `[db] demo articles — inserted ${inserted}, refreshed images ${refreshed}`,
+    );
   }
 }
 
