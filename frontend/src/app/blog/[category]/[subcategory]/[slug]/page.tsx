@@ -13,7 +13,12 @@ import {
   calculatorCtaForCategory,
   fetchPublishedArticleBySlug,
 } from "@/lib/api/blog";
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import {
+  KeepAtmosphere,
+  KeepMasonry,
+  KeepRelatedMidStrip,
+  KeepRelatedStack,
+} from "@/features/keep";
 import {
   findCategory,
   findSubcategory,
@@ -186,288 +191,284 @@ export default async function BlogArticlePage({ params }: PageProps) {
         }
       : null;
 
+  const tagChips = [
+    category.label,
+    subcategory.label,
+    ...article.topics.slice(0, 2),
+    ...article.tags.slice(0, 3),
+  ].filter(Boolean);
+
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
-      <JsonLd data={breadcrumbLd} />
-      <JsonLd data={articleLd} />
-      {faqLd ? <JsonLd data={faqLd} /> : null}
+    <KeepAtmosphere className="flex-1">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+        <JsonLd data={breadcrumbLd} />
+        <JsonLd data={articleLd} />
+        {faqLd ? <JsonLd data={faqLd} /> : null}
 
-      <ArticleOpenBeacon
-        slug={article.slug ?? slug}
-        category={category.slug}
-        subcategory={subcategory.slug}
-      />
+        <ArticleOpenBeacon
+          slug={article.slug ?? slug}
+          category={category.slug}
+          subcategory={subcategory.slug}
+        />
 
-      <BlogBreadcrumbs
-        items={[
-          { label: "Home", href: "/" },
-          { label: "Blog", href: "/blog" },
-          { label: category.label, href: `/blog/${category.slug}` },
-          {
-            label: subcategory.label,
-            href: `/blog/${category.slug}/${subcategory.slug}`,
-          },
-          { label: article.title },
-        ]}
-      />
+        <BlogBreadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: category.label, href: `/blog/${category.slug}` },
+            {
+              label: subcategory.label,
+              href: `/blog/${category.slug}/${subcategory.slug}`,
+            },
+            { label: article.title },
+          ]}
+        />
 
-      <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-        <div>
-          <header>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full bg-brand-50 px-2.5 py-0.5 font-medium text-foreground ring-1 ring-brand-100">
-                {category.label}
-              </span>
-              <Link
-                href={`/blog/${category.slug}/${subcategory.slug}`}
-                className="hover:text-primary"
-              >
-                {subcategory.label}
-              </Link>
-              {article.readingTime > 0 && (
-                <span>· {article.readingTime} min read</span>
-              )}
-              {article.views > 0 && <span>· {article.views.toLocaleString()} views</span>}
-            </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              {article.title}
-            </h1>
-            {article.excerpt ? (
-              <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                {article.excerpt}
-              </p>
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
+          {/* Bookmark-style preview panel */}
+          <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)]">
+            {article.featuredImage ? (
+              <figure className="overflow-hidden border-b border-border bg-muted">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={article.featuredImage}
+                  alt={
+                    article.featuredImageAlt ||
+                    article.title ||
+                    "Article cover image"
+                  }
+                  className="aspect-video w-full object-cover"
+                />
+                {article.featuredImageCaption ? (
+                  <figcaption className="px-4 py-2 text-center text-xs text-muted-foreground">
+                    {article.featuredImageCaption}
+                  </figcaption>
+                ) : null}
+              </figure>
             ) : null}
 
-            <div className="mt-6 flex flex-wrap items-start justify-between gap-4 border-y border-border py-4">
-              <div className="text-sm text-muted-foreground">
-                <p>
-                  <span className="font-medium text-foreground">Written by</span>{" "}
-                  {article.authorName || "FitKnowledge Editorial"}
-                </p>
-                {article.reviewerName ? (
-                  <p className="mt-1">
-                    <span className="font-medium text-foreground">
-                      Reviewed by
-                    </span>{" "}
-                    {article.reviewerName}
+            <div className="p-5 sm:p-7 lg:p-8">
+              <header>
+                <ul className="flex flex-wrap gap-1.5">
+                  {tagChips.map((tag) => (
+                    <li
+                      key={tag}
+                      className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-600"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+
+                <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                  {article.title}
+                </h1>
+                {article.excerpt ? (
+                  <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                    {article.excerpt}
                   </p>
                 ) : null}
-                <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
-                  {publishedLabel && <span>Published {publishedLabel}</span>}
-                  {updatedLabel && <span>Updated {updatedLabel}</span>}
-                  {article.articleNumber != null && (
-                    <span className="font-mono text-xs text-slate-500">
-                      ID {article.articleNumber}
-                    </span>
-                  )}
-                </p>
-              </div>
-              <ArticleShare title={article.title} url={absoluteUrl} />
-            </div>
-          </header>
 
-          {article.featuredImage ? (
-            <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-muted">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={article.featuredImage}
-                alt={
-                  article.featuredImageAlt ||
-                  article.title ||
-                  "Article cover image"
-                }
-                className="aspect-[16/9] w-full object-cover"
-              />
-              {article.featuredImageCaption ? (
-                <figcaption className="px-4 py-2 text-center text-xs text-muted-foreground">
-                  {article.featuredImageCaption}
-                </figcaption>
+                <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-y border-border py-4">
+                  <div className="text-sm text-muted-foreground">
+                    <p>
+                      <span className="font-medium text-foreground">
+                        Written by
+                      </span>{" "}
+                      {article.authorName || "FitKnowledge Editorial"}
+                    </p>
+                    {article.reviewerName ? (
+                      <p className="mt-1">
+                        <span className="font-medium text-foreground">
+                          Reviewed by
+                        </span>{" "}
+                        {article.reviewerName}
+                      </p>
+                    ) : null}
+                    <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                      {publishedLabel && (
+                        <span>Published {publishedLabel}</span>
+                      )}
+                      {updatedLabel && <span>Updated {updatedLabel}</span>}
+                      {article.readingTime > 0 && (
+                        <span>{article.readingTime} min read</span>
+                      )}
+                      {article.views > 0 && (
+                        <span>{article.views.toLocaleString()} views</span>
+                      )}
+                    </p>
+                  </div>
+                  <ArticleShare title={article.title} url={absoluteUrl} />
+                </div>
+              </header>
+
+              {article.quickAnswer ? (
+                <aside className="mt-6 rounded-xl border border-brand-100 bg-brand-50/60 p-4 sm:p-5">
+                  <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+                    Quick Answer
+                  </h2>
+                  <p className="mt-2 text-base leading-relaxed text-foreground">
+                    {article.quickAnswer}
+                  </p>
+                </aside>
               ) : null}
-            </figure>
-          ) : null}
 
-          {article.quickAnswer ? (
-            <aside className="mt-8 rounded-2xl border border-brand-100 bg-brand-50/60 p-5 sm:p-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
-                Quick Answer
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-foreground">
-                {article.quickAnswer}
+              <div className="mt-6 lg:hidden">
+                <ArticleToc items={toc} />
+              </div>
+
+              {bodyHtml ? (
+                <article
+                  className="article-body mt-8 overflow-x-auto space-y-4 text-base leading-relaxed text-foreground [&_.read-also]:my-6 [&_.read-also]:rounded-xl [&_.read-also]:border [&_.read-also]:border-sky-100 [&_.read-also]:bg-sky-50/70 [&_.read-also]:px-4 [&_.read-also]:py-3 [&_.read-also]:text-sm [&_a]:font-medium [&_a]:text-primary [&_a]:underline-offset-2 hover:[&_a]:underline [&_h2]:scroll-mt-28 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:scroll-mt-28 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:rounded-xl [&_li]:ml-5 [&_li]:list-disc [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:text-muted-foreground [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_ul]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: bodyHtml }}
+                />
+              ) : null}
+
+              {related.length > 0 ? (
+                <KeepRelatedMidStrip articles={related} />
+              ) : null}
+
+              {article.faq.length > 0 ? (
+                <section className="mt-10 border-t border-border pt-8">
+                  <h2 className="text-xl font-semibold tracking-tight">
+                    Frequently asked questions
+                  </h2>
+                  <div className="mt-5 space-y-3">
+                    {article.faq.map((item, i) => (
+                      <details
+                        key={`${item.question}-${i}`}
+                        className="group rounded-xl border border-border bg-slate-50/50 px-4 py-3"
+                        open={i === 0}
+                      >
+                        <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
+                          {item.question}
+                        </summary>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                          {item.answer}
+                        </p>
+                      </details>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {article.sources.length > 0 ? (
+                <section className="mt-10 border-t border-border pt-8">
+                  <h2 className="text-lg font-semibold tracking-tight">
+                    Sources
+                  </h2>
+                  <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
+                    {article.sources.map((s, i) => (
+                      <li key={`${s.title}-${i}`}>
+                        {s.url ? (
+                          <a
+                            href={s.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-primary hover:underline"
+                          >
+                            {s.title}
+                          </a>
+                        ) : (
+                          <span className="font-medium text-foreground">
+                            {s.title}
+                          </span>
+                        )}
+                        {s.note ? ` — ${s.note}` : null}
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              ) : null}
+
+              <p className="mt-8 rounded-xl border border-orange-100 bg-orange-50/50 px-4 py-3 text-sm text-muted-foreground">
+                Educational information only — not medical advice. Consult a
+                qualified professional for personal health decisions.
               </p>
-            </aside>
-          ) : null}
-
-          <div className="mt-8 lg:hidden">
-            <ArticleToc items={toc} />
+            </div>
           </div>
 
-          {bodyHtml ? (
-            <article
-              className="article-body mt-10 overflow-x-auto space-y-4 text-base leading-relaxed text-foreground [&_.read-also]:my-6 [&_.read-also]:rounded-xl [&_.read-also]:border [&_.read-also]:border-sky-100 [&_.read-also]:bg-sky-50/70 [&_.read-also]:px-4 [&_.read-also]:py-3 [&_.read-also]:text-sm [&_a]:font-medium [&_a]:text-primary [&_a]:underline-offset-2 hover:[&_a]:underline [&_h2]:scroll-mt-28 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:scroll-mt-28 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:rounded-xl [&_li]:ml-5 [&_li]:list-disc [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:text-muted-foreground [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_ul]:pl-5"
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
-            />
-          ) : null}
-
-          {article.faq.length > 0 ? (
-            <section className="mt-12 border-t border-border pt-10">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Frequently asked questions
-              </h2>
-              <div className="mt-6 space-y-4">
-                {article.faq.map((item, i) => (
-                  <details
-                    key={`${item.question}-${i}`}
-                    className="group rounded-xl border border-border bg-white px-4 py-3"
-                    open={i === 0}
-                  >
-                    <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
-                      {item.question}
-                    </summary>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {item.answer}
-                    </p>
-                  </details>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          {article.sources.length > 0 ? (
-            <section className="mt-12 border-t border-border pt-10">
-              <h2 className="text-xl font-semibold tracking-tight">Sources</h2>
-              <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
-                {article.sources.map((s, i) => (
-                  <li key={`${s.title}-${i}`}>
-                    {s.url ? (
-                      <a
-                        href={s.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-medium text-primary hover:underline"
-                      >
-                        {s.title}
-                      </a>
-                    ) : (
-                      <span className="font-medium text-foreground">
-                        {s.title}
-                      </span>
-                    )}
-                    {s.note ? ` — ${s.note}` : null}
-                  </li>
-                ))}
-              </ol>
-            </section>
-          ) : null}
-
-          <p className="mt-10 rounded-xl border border-orange-100 bg-orange-50/50 px-4 py-3 text-sm text-muted-foreground">
-            Educational information only — not medical advice. Consult a
-            qualified professional for personal health decisions.
-          </p>
-
-          {(article.tags.length > 0 || article.topics.length > 0) && (
-            <div className="mt-8 flex flex-wrap gap-2">
-              {[...article.topics, ...article.tags].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-white px-3 py-1 text-xs font-medium text-foreground ring-1 ring-border"
+          <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block">
+            <ArticleToc items={toc} />
+            <KeepRelatedStack articles={related} limit={4} />
+            {calc ? (
+              <div className="rounded-xl border border-orange-100 bg-orange-50/60 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-orange-800">
+                  Related tool
+                </p>
+                <h3 className="mt-2 text-base font-semibold text-foreground">
+                  {calc.label}
+                </h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {calc.blurb}
+                </p>
+                <Link
+                  href={calc.href}
+                  className="mt-3 inline-flex rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-700"
                 >
-                  {tag}
-                </span>
-              ))}
+                  Open calculator
+                </Link>
+              </div>
+            ) : null}
+            <div className="rounded-xl border border-border bg-white p-4 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground">Article ID</p>
+              <p className="mt-1 font-mono text-base text-sky-800">
+                {article.articleNumber ?? "—"}
+              </p>
+              <p className="mt-2 text-xs">
+                Short link:{" "}
+                <Link
+                  href={`/blog/${article.articleNumber}`}
+                  className="text-primary hover:underline"
+                >
+                  /blog/{article.articleNumber}
+                </Link>
+              </p>
             </div>
-          )}
-
-          <section className="mt-14 border-t border-border pt-10">
-            <h2 className="text-xl font-semibold tracking-tight">
-              Related reading
-            </h2>
-            {related.length === 0 ? (
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>
-                  <Link
-                    href={`/blog/${category.slug}/${subcategory.slug}`}
-                    className="font-medium text-primary hover:underline"
-                  >
-                    More in {subcategory.label}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`/blog/${category.slug}`}
-                    className="font-medium text-primary hover:underline"
-                  >
-                    All {category.label} articles
-                  </Link>
-                </li>
-              </ul>
-            ) : (
-              <ul className="mt-4 divide-y divide-border rounded-2xl border border-border bg-white">
-                {related.map((a) => {
-                  const href =
-                    a.path ??
-                    `/blog/${a.categorySlug}/${a.subcategorySlug}/${a.slug}`;
-                  return (
-                    <li key={a.id} className="px-4 py-3">
-                      <Link
-                        href={href}
-                        className="font-medium text-foreground hover:text-primary"
-                      >
-                        {a.title}
-                      </Link>
-                      {a.articleNumber != null ? (
-                        <span className="ml-2 font-mono text-xs text-muted-foreground">
-                          #{a.articleNumber}
-                        </span>
-                      ) : null}
-                      {a.excerpt ? (
-                        <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                          {a.excerpt}
-                        </p>
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </section>
+          </aside>
         </div>
 
-        <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block">
-          <ArticleToc items={toc} />
-          {calc ? (
-            <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-orange-800">
-                Related tool
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-foreground">
-                {calc.label}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">{calc.blurb}</p>
-              <Link
-                href={calc.href}
-                className="mt-4 inline-flex rounded-lg bg-sky-600 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-700"
-              >
-                Open calculator
-              </Link>
-            </div>
-          ) : null}
-          <div className="rounded-2xl border border-border bg-white p-5 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Article ID</p>
-            <p className="mt-1 font-mono text-base text-sky-800">
-              {article.articleNumber ?? "—"}
-            </p>
-            <p className="mt-2 text-xs">
-              Short link:{" "}
-              <Link
-                href={`/blog/${article.articleNumber}`}
-                className="text-primary hover:underline"
-              >
-                /blog/{article.articleNumber}
-              </Link>
-            </p>
+        {/* Full related masonry */}
+        <section className="mt-12 border-t border-border/60 pt-10">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Related reading
+            </h2>
+            <Link
+              href={`/blog/${category.slug}/${subcategory.slug}`}
+              className="text-sm font-semibold text-sky-700 hover:underline"
+            >
+              More in {subcategory.label} →
+            </Link>
           </div>
-        </aside>
-      </div>
-    </main>
+          {related.length === 0 ? (
+            <ul className="mt-4 space-y-2 text-sm">
+              <li>
+                <Link
+                  href={`/blog/${category.slug}/${subcategory.slug}`}
+                  className="font-medium text-primary hover:underline"
+                >
+                  More in {subcategory.label}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/blog/${category.slug}`}
+                  className="font-medium text-primary hover:underline"
+                >
+                  All {category.label} articles
+                </Link>
+              </li>
+            </ul>
+          ) : (
+            <KeepMasonry
+              articles={related}
+              dense
+              className="mt-6"
+            />
+          )}
+        </section>
+      </main>
+    </KeepAtmosphere>
   );
 }
