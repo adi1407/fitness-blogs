@@ -12,7 +12,7 @@ export function TrainingScrollMorph() {
       <p className="mt-2 max-w-xl text-muted-foreground">
         Scroll inside the frame to morph through training themes.
       </p>
-      <div className="mx-auto mt-6 h-[560px] w-full overflow-hidden rounded-2xl border border-border bg-brand-50/30 sm:h-[640px]">
+      <div className="mx-auto mt-6 h-[560px] w-full overflow-hidden rounded-2xl border border-border bg-muted/40 sm:h-[640px]">
         <ScrollMorphHero />
       </div>
       <p className="mt-4 text-sm text-muted-foreground">

@@ -130,14 +130,14 @@ function RadialIntro({
               style={{
                 width: imageSize,
                 height: imageSize,
-                opacity: i === 0 ? 1 : 0,
+                opacity: 1,
+                top: 0,
               }}
               src={item.src}
               alt={item.name}
               draggable={false}
               layoutId={`arm-img-${item.id}`}
-            />
-          </motion.div>
+            />          </motion.div>
         ))}
       </motion.div>
     </LayoutGroup>

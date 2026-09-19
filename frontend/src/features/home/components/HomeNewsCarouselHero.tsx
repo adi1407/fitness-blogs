@@ -8,9 +8,36 @@ type Props = {
   articles: PublicBlogArticle[];
 };
 
+const FALLBACK_SLIDES = [
+  {
+    title: "How much protein do you need?",
+    button: "Read · Nutrition",
+    src: "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1400&auto=format&fit=crop",
+    href: "/nutrition/protein",
+  },
+  {
+    title: "Build muscle with progressive overload",
+    button: "Read · Muscle Building",
+    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1400&auto=format&fit=crop",
+    href: "/muscle-building",
+  },
+  {
+    title: "Sustainable fat loss basics",
+    button: "Read · Weight Loss",
+    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1400&auto=format&fit=crop",
+    href: "/weight-loss",
+  },
+  {
+    title: "Free TDEE & protein calculators",
+    button: "Open tools",
+    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1400&auto=format&fit=crop",
+    href: "/tools",
+  },
+];
+
 /** NewsKothari-style lead stories — full-bleed carousel above the keep band. */
 export function HomeNewsCarouselHero({ articles }: Props) {
-  const slides = articles
+  const fromCms = articles
     .map((a) => {
       const href = articleHref(a);
       if (!href) return null;
@@ -24,7 +51,7 @@ export function HomeNewsCarouselHero({ articles }: Props) {
     .filter((s): s is NonNullable<typeof s> => Boolean(s))
     .slice(0, 6);
 
-  if (slides.length === 0) return null;
+  const slides = fromCms.length > 0 ? fromCms : FALLBACK_SLIDES;
 
   return (
     <section

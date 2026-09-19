@@ -7,11 +7,11 @@ import { motion } from "motion/react";
 /** Dark bento grid used on the Tools hub. */
 export default function FUIBentoGridDark() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col rounded-2xl bg-[#0B2533] p-6 sm:p-10">
+    <div className="mx-auto flex w-full max-w-6xl flex-col rounded-2xl bg-foreground p-6 sm:p-10">
       <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
         Calculator ecosystem
       </h2>
-      <p className="mt-2 max-w-3xl text-lg text-brand-100">
+      <p className="mt-2 max-w-3xl text-lg text-white/70">
         Educational outputs that route into guides, foods, and programs — not
         dead-end numbers.
       </p>
