@@ -30,6 +30,12 @@ const MasonryGridCSS = () => (
       }
     }
 
+    /* Always visible by default — never leave cards stuck at opacity 0 */
+    .masonry-card-wrapper {
+      opacity: 1;
+      transform: none;
+    }
+
     .masonry-card-wrapper {
       &:nth-of-type(2n + 1) { transform-origin: 25vw 100%; }
       &:nth-of-type(2n) { transform-origin: -25vw 100%; }
@@ -49,11 +55,16 @@ const MasonryGridCSS = () => (
         &:nth-of-type(6n + 5) { transform-origin: -50vw 100%; }
         &:nth-of-type(6n) { transform-origin: -75vw 100%; }
       }
+    }
 
+    /* Scroll-driven “fly in from away” only when the browser supports it */
+    @supports (animation-timeline: view()) {
       @media (prefers-reduced-motion: no-preference) {
-        animation: slide-in linear both;
-        animation-timeline: view();
-        animation-range: entry 0% cover 15%;
+        .masonry-card-wrapper {
+          animation: slide-in linear both;
+          animation-timeline: view();
+          animation-range: entry 0% cover 20%;
+        }
       }
     }
 

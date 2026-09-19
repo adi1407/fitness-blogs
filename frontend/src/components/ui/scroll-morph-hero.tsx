@@ -28,6 +28,7 @@ const IMG_HEIGHT = 85;
 function FlipCard({ src, index, target }: FlipCardProps) {
   return (
     <motion.div
+      initial={false}
       animate={{
         x: target.x,
         y: target.y,
@@ -46,6 +47,7 @@ function FlipCard({ src, index, target }: FlipCardProps) {
         height: IMG_HEIGHT,
         transformStyle: "preserve-3d",
         perspective: "1000px",
+        opacity: target.opacity,
       }}
       className="group cursor-pointer"
     >
@@ -117,7 +119,7 @@ const lerp = (start: number, end: number, t: number) =>
   start * (1 - t) + end * t;
 
 export default function ScrollMorphHero() {
-  const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
+  const [introPhase, setIntroPhase] = useState<AnimationPhase>("line");
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -217,12 +219,9 @@ export default function ScrollMorphHero() {
   }, [mouseX]);
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setIntroPhase("line"), 500);
-    const timer2 = setTimeout(() => setIntroPhase("circle"), 2500);
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
+    // Start in a visible line, then resolve into the circle — skip blank scatter.
+    const timer = setTimeout(() => setIntroPhase("circle"), 1200);
+    return () => clearTimeout(timer);
   }, []);
 
   const scatterPositions = useMemo(() => {
@@ -327,11 +326,10 @@ export default function ScrollMorphHero() {
                 opacity: 1,
               };
             } else {
-              const isMobile = containerSize.width < 768;
-              const minDimension = Math.min(
-                containerSize.width,
-                containerSize.height,
-              );
+              const width = containerSize.width || 800;
+              const height = containerSize.height || 560;
+              const isMobile = width < 768;
+              const minDimension = Math.min(width, height);
 
               const circleRadius = Math.min(minDimension * 0.35, 350);
               const circleAngle = (i / TOTAL_IMAGES) * 360;
@@ -342,12 +340,9 @@ export default function ScrollMorphHero() {
                 rotation: circleAngle + 90,
               };
 
-              const baseRadius = Math.min(
-                containerSize.width,
-                containerSize.height * 1.5,
-              );
+              const baseRadius = Math.min(width, height * 1.5);
               const arcRadius = baseRadius * (isMobile ? 1.4 : 1.1);
-              const arcApexY = containerSize.height * (isMobile ? 0.35 : 0.25);
+              const arcApexY = height * (isMobile ? 0.35 : 0.25);
               const arcCenterY = arcApexY + arcRadius;
               const spreadAngle = isMobile ? 100 : 130;
               const startAngle = -90 - spreadAngle / 2;

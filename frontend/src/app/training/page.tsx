@@ -38,6 +38,8 @@ export default function TrainingPage() {
         programs.
       </p>
 
+      <TrainingScrollMorph />
+
       <section className="mt-10 grid gap-4 sm:grid-cols-2">
         {[
           {
@@ -81,8 +83,6 @@ export default function TrainingPage() {
           <li>Protect sleep and manage stress — recovery is part of training</li>
         </ul>
       </section>
-
-      <TrainingScrollMorph />
     </main>
   );
 }

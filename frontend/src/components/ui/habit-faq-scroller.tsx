@@ -105,22 +105,10 @@ export default function FaqSection({ data, className }: FaqSectionProps) {
       )}
     >
       <div className="z-10 flex max-w-2xl flex-col items-center gap-4 text-center">
-        <h2
-          className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
-          style={{
-            opacity: 0,
-            animation: "fadeInUp 0.7s ease-out 0.2s forwards",
-          }}
-        >
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           {data.mainTitle}
         </h2>
-        <p
-          className="text-base text-muted-foreground sm:text-lg"
-          style={{
-            opacity: 0,
-            animation: "fadeInUp 0.7s ease-out 0.4s forwards",
-          }}
-        >
+        <p className="text-base text-muted-foreground sm:text-lg">
           {data.mainSubtitle}
         </p>
       </div>
