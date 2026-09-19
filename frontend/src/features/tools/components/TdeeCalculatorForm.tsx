@@ -44,7 +44,7 @@ export function TdeeCalculatorForm() {
   }, [sex, age, weight, height, activity]);
 
   return (
-    <EducationalCalcGate toolName="TDEE calculator">
+    <EducationalCalcGate toolName="TDEE calculator" tool="tdee-calculator">
       {({ acknowledged, requestAck }) => (
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">

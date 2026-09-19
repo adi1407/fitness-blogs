@@ -7,6 +7,7 @@ import WriterDashboardPage from "./pages/WriterDashboardPage.tsx";
 import ArticlesListPage from "./pages/ArticlesListPage.tsx";
 import ArticleEditorPage from "./pages/ArticleEditorPage.tsx";
 import ActivityLogPage from "./pages/ActivityLogPage.tsx";
+import AdminAnalyticsPage from "./pages/AdminAnalyticsPage.tsx";
 import WritersPage from "./pages/WritersPage.tsx";
 import UsersPage from "./pages/UsersPage.tsx";
 
@@ -29,6 +30,7 @@ export default function App() {
               </Route>
               <Route element={<ProtectedRoute roles={["admin"]} />}>
                 <Route path="users" element={<UsersPage />} />
+                <Route path="admin/analytics" element={<AdminAnalyticsPage />} />
                 <Route path="admin/activity" element={<ActivityLogPage />} />
               </Route>
             </Route>

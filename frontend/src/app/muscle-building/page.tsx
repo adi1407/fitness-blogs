@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MuscleBuildingVisuals } from "@/features/muscle-building/components/MuscleBuildingVisuals";
@@ -91,18 +92,20 @@ export default function MuscleBuildingPage() {
           and protein calculator to turn principles into a plan.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link
+          <TrackedHubLink
             href="/exercises"
+            label="Exercise library"
             className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
             Exercise library ?
-          </Link>
-          <Link
+          </TrackedHubLink>
+          <TrackedHubLink
             href="/tools/protein-calculator"
+            label="Protein calculator"
             className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
           >
             Protein calculator
-          </Link>
+          </TrackedHubLink>
         </div>
       </aside>
 

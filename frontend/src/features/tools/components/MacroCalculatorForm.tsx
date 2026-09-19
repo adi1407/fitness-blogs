@@ -20,7 +20,7 @@ export function MacroCalculatorForm() {
   }, [calories, weight, proteinPerKg]);
 
   return (
-    <EducationalCalcGate toolName="macro calculator">
+    <EducationalCalcGate toolName="macro calculator" tool="macro-calculator">
       {({ acknowledged, requestAck }) => (
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-3">

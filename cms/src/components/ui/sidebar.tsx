@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import {
+  BarChart3,
   ClipboardList,
   FilePenLine,
   FileText,
@@ -144,10 +145,16 @@ function navForRole(role: StaffRole): NavItem[] {
       match: (p) => p.startsWith("/users"),
     },
     {
+      to: "/admin/analytics",
+      label: "Analytics",
+      icon: BarChart3,
+      match: (p) => p === "/admin/analytics",
+    },
+    {
       to: "/admin/activity",
       label: "Activity log",
       icon: FilePenLine,
-      match: (p) => p.startsWith("/admin"),
+      match: (p) => p.startsWith("/admin/activity"),
     },
   ];
 }

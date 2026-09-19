@@ -23,7 +23,7 @@ export function BmiCalculatorForm() {
   }, [weight, height]);
 
   return (
-    <EducationalCalcGate toolName="BMI calculator">
+    <EducationalCalcGate toolName="BMI calculator" tool="bmi-calculator">
       {({ acknowledged, requestAck }) => (
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">

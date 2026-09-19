@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { WeightLossSplitSection } from "@/features/weight-loss/components/WeightLossSplitSection";
@@ -116,18 +117,20 @@ export default function WeightLossPage() {
             calculators to estimate a starting point.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link
+            <TrackedHubLink
               href="/tools/tdee-calculator"
+              label="TDEE calculator"
               className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
             >
               TDEE calculator ?
-            </Link>
-            <Link
+            </TrackedHubLink>
+            <TrackedHubLink
               href="/tools/calorie-calculator"
+              label="Calorie calculator"
               className="rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-semibold"
             >
               Calorie calculator
-            </Link>
+            </TrackedHubLink>
           </div>
         </aside>
       </div>

@@ -13,6 +13,7 @@ import {
   setToken,
   type CmsUser,
 } from "../lib/api/client";
+import { trackCmsEvent } from "../lib/analytics/openpanel";
 
 type AuthContextValue = {
   user: CmsUser | null;
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     setToken(data.token);
     setUser(data.user);
+    trackCmsEvent("cms_login", { role: data.user.role });
   }, []);
 
   const logout = useCallback(async () => {

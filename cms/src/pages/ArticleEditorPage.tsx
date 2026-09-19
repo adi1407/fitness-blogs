@@ -11,6 +11,7 @@ import {
   type Article,
   type TaxonomyCategory,
 } from "@/lib/api/client";
+import { trackCmsEvent } from "@/lib/analytics/openpanel";
 import { normalizeSlugInput, slugFromTitle } from "@/utils/articleSlug";
 
 type FaqItem = { question: string; answer: string };
@@ -420,6 +421,13 @@ export default function ArticleEditorPage() {
       applyArticle(data.article);
       setNoteDraft(data.article.editorNote || data.article.rejectReason || "");
       setDirty(false);
+      if (path === "submit") {
+        trackCmsEvent("cms_article_submit", { articleId: data.article.id });
+      } else if (path === "publish") {
+        trackCmsEvent("cms_article_publish", { articleId: data.article.id });
+      } else if (path === "reject") {
+        trackCmsEvent("cms_article_reject", { articleId: data.article.id });
+      }
       setMessage(
         path === "publish"
           ? "Published"

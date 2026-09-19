@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { apiFetch, type Article } from "@/lib/api/client";
 import { useAuth } from "@/context/AuthContext";
 import { isWriter } from "@/constants/roles";
+import { AnalyticsOverviewCards } from "@/features/dashboard/components/AnalyticsOverviewCards";
 
 function StatTile({
   label,
@@ -114,12 +115,18 @@ export default function WriterDashboardPage() {
   const live = articles.filter((a) => a.status === "published");
 
   if (user && !isWriter(user.role)) {
+    const submitted = articles.filter((a) => a.status === "submitted").length;
+    const published = articles.filter((a) => a.status === "published").length;
+    const totalViews = articles
+      .filter((a) => a.status === "published")
+      .reduce((sum, a) => sum + (a.views ?? 0), 0);
+
     return (
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <p className="mt-2 text-slate-600">
           Welcome, {user.name}. Use the sidebar to manage articles
-          {user.role === "admin" ? " and review activity logs" : ""}.
+          {user.role === "admin" ? ", analytics, and activity logs" : ""}.
         </p>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Link
@@ -138,11 +145,13 @@ export default function WriterDashboardPage() {
           </Link>
           {user.role === "admin" ? (
             <Link
-              to="/admin/activity"
+              to="/admin/analytics"
               className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-400"
             >
-              <h2 className="font-semibold">Activity log</h2>
-              <p className="mt-1 text-sm text-slate-500">Audit trail</p>
+              <h2 className="font-semibold">Analytics</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                OpenPanel + editorial KPIs
+              </p>
             </Link>
           ) : (
             <Link
@@ -154,6 +163,14 @@ export default function WriterDashboardPage() {
             </Link>
           )}
         </div>
+        {!loading ? (
+          <AnalyticsOverviewCards
+            role={user.role === "admin" ? "admin" : "editor"}
+            submitted={submitted}
+            published={published}
+            totalViews={totalViews}
+          />
+        ) : null}
       </div>
     );
   }
@@ -192,6 +209,12 @@ export default function WriterDashboardPage() {
             />
             <StatTile label="Rejected" value={stats.rejected} />
           </div>
+          <AnalyticsOverviewCards
+            role="writer"
+            submitted={stats.submitted}
+            published={stats.published}
+            totalViews={live.reduce((sum, a) => sum + (a.views ?? 0), 0)}
+          />
           <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
             <ArticleBucket title="Drafts" articles={drafts} />
             <ArticleBucket title="In review" articles={inReview} />

@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import { ProteinCalculatorForm } from "@/features/tools/components/ProteinCalculatorForm";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -53,6 +54,7 @@ export default function ProteinCalculatorPage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+      <CalcOpenBeacon tool="protein-calculator" />
       <JsonLd data={appLd} />
       <JsonLd data={breadcrumbLd} />
 

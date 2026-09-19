@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 
 export const metadata: Metadata = {
   title: "Nutrition Guides — Protein, Calories, Macros & Indian Diet",
@@ -69,24 +70,27 @@ export default function NutritionPage() {
           foods.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link
+          <TrackedHubLink
             href="/nutrition/protein"
+            label="Protein guide"
             className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
           >
             Protein guide
-          </Link>
-          <Link
+          </TrackedHubLink>
+          <TrackedHubLink
             href="/tools/protein-calculator"
+            label="Protein calculator"
             className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
           >
             Protein calculator
-          </Link>
-          <Link
+          </TrackedHubLink>
+          <TrackedHubLink
             href="/foods/indian"
+            label="Indian foods"
             className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
           >
             Indian foods
-          </Link>
+          </TrackedHubLink>
         </div>
       </section>
 

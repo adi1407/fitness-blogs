@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
@@ -103,12 +104,13 @@ export default function ProteinHubPage() {
           than sedentary adults. Start with a calculator estimate, then build
           meals from high-protein foods.
         </p>
-        <Link
+        <TrackedHubLink
           href="/tools/protein-calculator"
+          label="Calculate protein requirement"
           className="mt-4 inline-flex rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
         >
           Calculate your protein requirement ?
-        </Link>
+        </TrackedHubLink>
       </aside>
 
       <ProteinTracingBeam>

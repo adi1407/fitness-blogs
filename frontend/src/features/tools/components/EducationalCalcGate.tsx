@@ -11,11 +11,15 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@/components/animate-ui/components/base/alert-dialog";
+import { trackEvent } from "@/lib/analytics/openpanel";
 
 const STORAGE_KEY = "fitknowledge-calc-edu-ack";
 
 type Props = {
+  /** Human label shown in the dialog (e.g. "protein calculator"). */
   toolName: string;
+  /** Stable tool id for analytics (e.g. "protein-calculator"). */
+  tool: string;
   children: (args: {
     acknowledged: boolean;
     requestAck: () => void;
@@ -23,7 +27,7 @@ type Props = {
 };
 
 /** Gates calculator results behind a one-time educational acknowledgement. */
-export function EducationalCalcGate({ toolName, children }: Props) {
+export function EducationalCalcGate({ toolName, tool, children }: Props) {
   const [open, setOpen] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
 
@@ -45,6 +49,7 @@ export function EducationalCalcGate({ toolName, children }: Props) {
     }
     setAcknowledged(true);
     setOpen(false);
+    trackEvent("calc_complete", { tool });
   };
 
   return (

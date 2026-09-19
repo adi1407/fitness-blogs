@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Roboto_Slab } from "next/font/google";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
+import { OpenPanelProvider } from "@/components/analytics/OpenPanelProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
@@ -105,7 +107,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <JsonLd data={orgJsonLd} />
         <SiteHeader />
         <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
-          {children}
+          <Suspense fallback={null}>
+            <OpenPanelProvider>{children}</OpenPanelProvider>
+          </Suspense>
         </div>
         <SiteFooter />
       </body>

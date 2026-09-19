@@ -31,7 +31,7 @@ export function ProteinCalculatorForm() {
   }, [weight, unit, goal]);
 
   return (
-    <EducationalCalcGate toolName="protein calculator">
+    <EducationalCalcGate toolName="protein calculator" tool="protein-calculator">
       {({ acknowledged, requestAck }) => (
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="grid gap-6 sm:grid-cols-2">

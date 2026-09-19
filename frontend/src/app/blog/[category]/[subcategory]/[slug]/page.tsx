@@ -6,6 +6,7 @@ import {
   ArticleShare,
   ArticleToc,
 } from "@/features/blog/components/ArticleChrome";
+import { ArticleOpenBeacon } from "@/features/blog/components/ArticleOpenBeacon";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
 import { enhanceArticleHtml } from "@/features/blog/utils/articleHtml";
 import {
@@ -190,6 +191,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
       <JsonLd data={breadcrumbLd} />
       <JsonLd data={articleLd} />
       {faqLd ? <JsonLd data={faqLd} /> : null}
+
+      <ArticleOpenBeacon
+        slug={article.slug ?? slug}
+        category={category.slug}
+        subcategory={subcategory.slug}
+      />
 
       <BlogBreadcrumbs
         items={[
