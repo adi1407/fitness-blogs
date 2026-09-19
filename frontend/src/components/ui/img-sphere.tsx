@@ -6,6 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X } from "lucide-react";
 
@@ -423,7 +424,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     setImagePositions(generateSpherePositions());
   }, [generateSpherePositions]);
 
-  // Close preview on scroll / Escape; lock body scroll while open.
+  // Close preview on Escape; lock body scroll while open.
   useEffect(() => {
     if (!selectedImage) return;
 
@@ -433,14 +434,11 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closePreview();
     };
-    const onScroll = () => closePreview();
 
     window.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", onScroll);
     };
   }, [selectedImage, closePreview]);
 
@@ -563,10 +561,11 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     <>
       <div
         ref={containerRef}
-        className={`relative cursor-grab select-none active:cursor-grabbing ${className}`}
+        className={`relative mx-auto cursor-grab select-none overflow-hidden active:cursor-grabbing ${className}`}
         style={{
           width: containerSize,
           height: containerSize,
+          maxWidth: "100%",
           perspective: `${perspective}px`,
         }}
         onMouseDown={handleMouseDown}
@@ -577,73 +576,72 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         </div>
       </div>
 
-      {selectedImage ? (
-        <div
-          className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/55 p-0 sm:items-center sm:p-4"
-          onClick={closePreview}
-          onWheel={closePreview}
-          role="dialog"
-          aria-modal="true"
-          aria-label={selectedImage.title ?? selectedImage.alt}
-        >
-          <div
-            className="flex max-h-[88svh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
-          >
-            <div className="relative aspect-[4/3] w-full shrink-0 bg-brand-50 sm:aspect-[16/10]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                className="h-full w-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={closePreview}
-                className="absolute top-3 right-3 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition hover:bg-black/70"
-                aria-label="Close"
+      {selectedImage && isMounted
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[1200] flex items-end justify-center bg-black/60 p-3 backdrop-blur-[2px] sm:items-center sm:p-6"
+              onClick={closePreview}
+              role="dialog"
+              aria-modal="true"
+              aria-label={selectedImage.title ?? selectedImage.alt}
+            >
+              <div
+                className="flex w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5"
+                style={{ maxHeight: "min(86svh, 640px)" }}
+                onClick={(e) => e.stopPropagation()}
               >
-                <X size={18} />
-              </button>
-            </div>
-            {(selectedImage.title ||
-              selectedImage.description ||
-              selectedImage.href) && (
-              <div className="flex flex-col gap-3 overflow-y-auto p-5 sm:p-6">
-                {selectedImage.title ? (
-                  <h3 className="line-clamp-3 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                    {selectedImage.title}
-                  </h3>
-                ) : null}
-                {selectedImage.description ? (
-                  <p className="line-clamp-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    {selectedImage.description}
-                  </p>
-                ) : null}
-                <div className="mt-1 flex flex-wrap items-center gap-3">
-                  {selectedImage.href ? (
-                    <Link
-                      href={selectedImage.href}
-                      className="inline-flex rounded-full bg-[#FF9800] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#FFA726]"
-                      onClick={closePreview}
-                    >
-                      Read full article →
-                    </Link>
-                  ) : null}
+                <div className="relative h-44 w-full shrink-0 bg-slate-100 sm:h-52">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    className="h-full w-full object-cover"
+                  />
                   <button
                     type="button"
                     onClick={closePreview}
-                    className="inline-flex rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-brand-50"
+                    className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition hover:bg-black/75"
+                    aria-label="Close preview"
                   >
-                    Close
+                    <X size={18} />
                   </button>
                 </div>
+
+                <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain p-5">
+                  {selectedImage.title ? (
+                    <h3 className="text-lg font-semibold leading-snug tracking-tight text-foreground sm:text-xl">
+                      {selectedImage.title}
+                    </h3>
+                  ) : null}
+                  {selectedImage.description ? (
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {selectedImage.description}
+                    </p>
+                  ) : null}
+                  <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row sm:items-center">
+                    {selectedImage.href ? (
+                      <Link
+                        href={selectedImage.href}
+                        className="inline-flex flex-1 items-center justify-center rounded-full bg-[#FF9800] px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#FFA726]"
+                        onClick={closePreview}
+                      >
+                        Read full article
+                      </Link>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={closePreview}
+                      className="inline-flex items-center justify-center rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-brand-50"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-      ) : null}
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 };

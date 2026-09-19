@@ -30,33 +30,31 @@ function toSphereImages(articles: PublicBlogArticle[]): ImageData[] {
 
   if (base.length === 0) return [];
 
-  const target = Math.max(36, base.length * 2);
+  const target = Math.max(32, Math.min(48, base.length * 2));
   const out: ImageData[] = [];
   for (let i = 0; i < target; i++) {
     const item = base[i % base.length];
-    out.push({
-      ...item,
-      id: `${item.id}-${i}`,
-    });
+    out.push({ ...item, id: `${item.id}-${i}` });
   }
   return out;
 }
 
-function sphereSizeForWidth(w: number): number {
-  // Fill the hero viewport — almost full width, capped by height.
-  const byWidth = Math.min(w - 16, 900);
-  const byHeight = Math.min(window.innerHeight * 0.72, 720);
-  return Math.round(Math.min(byWidth, byHeight, w < 480 ? w - 8 : byWidth));
+function sphereSizeForWidth(w: number, h: number): number {
+  const pad = w < 480 ? 12 : 24;
+  const byW = w - pad * 2;
+  const byH = h - 120; // leave room under fixed header
+  return Math.round(Math.max(260, Math.min(byW, byH, 640)));
 }
 
-/** Full-bleed sphere hero — no left copy; covers the entire first viewport band. */
+/** Full-bleed sphere hero — sphere only, no left copy column. */
 export function HomeSphereHero({ articles }: HomeSphereHeroProps) {
-  const latest = useMemo(() => articles.slice(0, 20), [articles]);
-  const images = useMemo(() => toSphereImages(latest), [latest]);
-  const [size, setSize] = useState(360);
+  const pool = useMemo(() => articles.slice(0, 20), [articles]);
+  const images = useMemo(() => toSphereImages(pool), [pool]);
+  const [size, setSize] = useState(320);
 
   useEffect(() => {
-    const sync = () => setSize(sphereSizeForWidth(window.innerWidth));
+    const sync = () =>
+      setSize(sphereSizeForWidth(window.innerWidth, window.innerHeight));
     sync();
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
@@ -66,24 +64,24 @@ export function HomeSphereHero({ articles }: HomeSphereHeroProps) {
 
   return (
     <section
-      className="relative flex min-h-[min(78svh,720px)] w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#0B2533] via-[#0B2533] to-[#123447]"
+      className="relative flex w-full items-center justify-center overflow-hidden bg-[#0B2533]"
+      style={{ minHeight: "min(70svh, 620px)" }}
       aria-label="Latest stories sphere"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,182,246,0.22),transparent_60%)]" />
-      <div className="relative z-10 flex w-full max-w-full items-center justify-center px-1 py-4 sm:px-2 sm:py-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(41,182,246,0.2),transparent_62%)]" />
+      <div className="relative z-10 flex w-full items-center justify-center py-6">
         <SphereImageGrid
           images={images}
           containerSize={size}
-          sphereRadius={Math.round(size * 0.44)}
-          dragSensitivity={0.8}
+          sphereRadius={Math.round(size * 0.42)}
+          dragSensitivity={0.75}
           momentumDecay={0.96}
           maxRotationSpeed={5}
-          baseImageScale={size < 360 ? 0.16 : 0.14}
-          hoverScale={1.3}
-          perspective={1100}
+          baseImageScale={size < 340 ? 0.17 : 0.145}
+          hoverScale={1.25}
+          perspective={1000}
           autoRotate
-          autoRotateSpeed={0.2}
-          className="max-w-full"
+          autoRotateSpeed={0.18}
         />
       </div>
     </section>

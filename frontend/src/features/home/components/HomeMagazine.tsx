@@ -39,7 +39,7 @@ export function HomeMagazine({ articles }: HomeMagazineProps) {
   return (
     <>
       <h1 className="sr-only">FitKnowledge — latest fitness guides and news</h1>
-      <HomeSphereHero articles={latest} />
+      <HomeSphereHero articles={articles} />
       <HomeLatestList articles={latest} />
       <HomeCategorySections articles={articles} />
       <HomeCircularGalleryBand articles={articles} />
