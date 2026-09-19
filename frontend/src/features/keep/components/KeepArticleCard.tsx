@@ -39,7 +39,7 @@ export function KeepArticleCard({
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-xl border border-border bg-card transition duration-200 hover:shadow-lg hover:transition-shadow"
+      className="group block overflow-hidden rounded-xl border border-border bg-card transition duration-200 hover:border-orange-400 hover:shadow-lg hover:transition-shadow"
       onClick={() =>
         trackEvent("hub_click", {
           href,
@@ -69,7 +69,7 @@ export function KeepArticleCard({
           </ul>
         ) : null}
         <h3
-          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground group-hover:text-foreground ${
+          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground group-hover:text-orange-400 ${
             compact ? "text-xs" : "text-sm"
           }`}
         >

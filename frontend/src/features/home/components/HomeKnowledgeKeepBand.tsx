@@ -59,7 +59,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
                 className={
                   active
                     ? "rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm"
-                    : "rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-foreground/30 hover:text-foreground"
+                    : "rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-orange-400 hover:text-foreground"
                 }
               >
                 {f.label}
@@ -68,7 +68,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
           })}
           <Link
             href="/blog"
-            className="ml-auto text-xs font-semibold text-foreground hover:underline sm:text-sm"
+            className="ml-auto text-xs font-semibold text-foreground underline-offset-4 hover:text-orange-400 hover:underline sm:text-sm"
             onClick={() =>
               trackEvent("hub_click", {
                 href: "/blog",

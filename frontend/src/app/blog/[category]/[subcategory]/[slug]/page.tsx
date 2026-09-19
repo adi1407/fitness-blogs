@@ -319,7 +319,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
               {bodyHtml ? (
                 <article
-                  className="article-body mt-8 overflow-x-auto space-y-4 text-base leading-relaxed text-foreground [&_.read-also]:my-6 [&_.read-also]:rounded-xl [&_.read-also]:border [&_.read-also]:border-border [&_.read-also]:bg-muted/70 [&_.read-also]:px-4 [&_.read-also]:py-3 [&_.read-also]:text-sm [&_a]:font-medium [&_a]:text-primary [&_a]:underline-offset-2 hover:[&_a]:underline [&_h2]:scroll-mt-28 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:scroll-mt-28 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:rounded-xl [&_li]:ml-5 [&_li]:list-disc [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:text-muted-foreground [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_ul]:pl-5"
+                  className="article-body mt-8 overflow-x-auto space-y-4 text-base leading-relaxed text-foreground [&_.read-also]:my-6 [&_.read-also]:rounded-xl [&_.read-also]:border [&_.read-also]:border-border [&_.read-also]:border-l-4 [&_.read-also]:border-l-orange-400 [&_.read-also]:bg-orange-50/30 [&_.read-also]:px-4 [&_.read-also]:py-3 [&_.read-also]:text-sm [&_a]:font-medium [&_a]:text-foreground [&_a]:underline-offset-2 hover:[&_a]:text-orange-400 hover:[&_a]:underline [&_h2]:scroll-mt-28 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:scroll-mt-28 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:rounded-xl [&_li]:ml-5 [&_li]:list-disc [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:text-muted-foreground [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_ul]:pl-5"
                   dangerouslySetInnerHTML={{ __html: bodyHtml }}
                 />
               ) : null}
@@ -365,7 +365,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                             href={s.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-primary hover:underline"
+                            className="font-medium text-foreground hover:text-orange-400 hover:underline"
                           >
                             {s.title}
                           </a>
@@ -419,7 +419,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 Short link:{" "}
                 <Link
                   href={`/blog/${article.articleNumber}`}
-                  className="text-primary hover:underline"
+                  className="text-foreground hover:text-orange-400 hover:underline"
                 >
                   /blog/{article.articleNumber}
                 </Link>
@@ -436,7 +436,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
             </h2>
             <Link
               href={`/blog/${category.slug}/${subcategory.slug}`}
-              className="text-sm font-semibold text-foreground hover:underline"
+              className="text-sm font-semibold text-foreground hover:text-orange-400 hover:underline"
             >
               More in {subcategory.label} →
             </Link>
@@ -446,7 +446,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <li>
                 <Link
                   href={`/blog/${category.slug}/${subcategory.slug}`}
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-foreground hover:text-orange-400 hover:underline"
                 >
                   More in {subcategory.label}
                 </Link>
@@ -454,7 +454,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <li>
                 <Link
                   href={`/blog/${category.slug}`}
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-foreground hover:text-orange-400 hover:underline"
                 >
                   All {category.label} articles
                 </Link>

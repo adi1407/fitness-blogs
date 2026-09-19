@@ -660,7 +660,7 @@ export function CalendlyCarousel({
             >
               {isSelected && (
                 <div
-                  className="h-full rounded-[3px] bg-blue-600 dark:bg-blue-500"
+                  className="h-full rounded-[3px] bg-orange-500 dark:bg-orange-400"
                   style={{
                     transformOrigin: "0% 50%",
                     transform: `scaleX(${progress / 100})`,

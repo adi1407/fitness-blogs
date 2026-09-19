@@ -1,9 +1,9 @@
 /**
- * Brand color schema — near-black primary on white; orange for warnings only.
+ * Brand: near-black primary on white; warm orange for contrast accents
+ * (links hover, focus, secondary emphasis, disclaimer). No blue.
  */
 export const colorSchema = {
   background: "#FFFFFF",
-  /** Neutral scale (maps to brand-* utilities) */
   brand: {
     50: "#F5F5F5",
     100: "#E5E5E5",
@@ -11,11 +11,10 @@ export const colorSchema = {
     300: "#A3A3A3",
     400: "#0A0A0A",
   },
-  /** Orange — disclaimer / EEAT warning surfaces only */
   orange: {
-    50: "#FFE0B2",
-    100: "#FFCC80",
-    200: "#FFB74D",
+    50: "#FFF3E0",
+    100: "#FFE0B2",
+    200: "#FFCC80",
     300: "#FFA726",
     400: "#FF9800",
   },
@@ -27,8 +26,8 @@ export const colorSchema = {
     primary: "#0A0A0A",
     primaryHover: "#262626",
     accent: "#FF9800",
-    accentSoft: "#FFE0B2",
-    accentHover: "#FFA726",
+    accentSoft: "#FFF3E0",
+    accentHover: "#F57C00",
     foreground: "#0A0A0A",
     mutedForeground: "#525252",
   },

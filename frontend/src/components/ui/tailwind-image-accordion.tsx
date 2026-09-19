@@ -55,7 +55,7 @@ export default function TailwindImageAccordion({
       {items.map((item) => (
         <article
           key={item.id}
-          className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-linear-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:rounded-lg after:bg-white/30 after:opacity-0 after:backdrop-blur-sm after:transition-all focus-within:ring-3 focus-within:ring-sky-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:not-[&:hover]:group-hover:w-[20%] md:not-[&:hover]:group-hover:after:opacity-100 md:[&:not(:focus-within):not(:hover)]:group-focus-within:w-[20%] md:[&:not(:focus-within):not(:hover)]:group-focus-within:after:opacity-100"
+          className="group/article relative w-full overflow-hidden rounded-xl transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.15)] before:absolute before:inset-x-0 before:bottom-0 before:h-1/3 before:bg-linear-to-t before:from-black/50 before:transition-opacity after:absolute after:inset-0 after:rounded-lg after:bg-white/30 after:opacity-0 after:backdrop-blur-sm after:transition-all focus-within:ring-3 focus-within:ring-orange-300 focus-within:before:opacity-100 md:before:opacity-0 md:hover:before:opacity-100 md:not-[&:hover]:group-hover:w-[20%] md:not-[&:hover]:group-hover:after:opacity-100 md:[&:not(:focus-within):not(:hover)]:group-focus-within:w-[20%] md:[&:not(:focus-within):not(:hover)]:group-focus-within:after:opacity-100"
         >
           <Link
             className="absolute inset-0 z-10 flex flex-col justify-end p-3 text-white"

@@ -76,7 +76,7 @@ const STORIES_DATA: CarouselItem[] = [
 
 export default function ConnectedCarouselDemo() {
   return (
-    <main className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-br from-indigo-100/40 via-background to-orange-100/40 dark:from-background dark:via-background dark:to-background">
+    <main className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-br from-neutral-100/60 via-background to-orange-100/40 dark:from-background dark:via-background dark:to-background">
       <CalendlyCarousel
         items={STORIES_DATA}
         autoPlayInterval={6000}

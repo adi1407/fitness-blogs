@@ -385,7 +385,7 @@ function StackSpreadStage({
     >
       <div className="sticky top-[var(--site-header-height)] h-[calc(100svh-var(--site-header-height))] w-full overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-25 dark:opacity-15 blur-[120px]">
-          <div className="w-[50vw] h-[50vw] rounded-full bg-stone-300 dark:bg-indigo-900" />
+          <div className="w-[50vw] h-[50vw] rounded-full bg-stone-300 dark:bg-neutral-800" />
         </div>
 
         <motion.div
@@ -419,7 +419,7 @@ function StackSpreadStage({
               {titleAfter ?? (
                 <>
                   Cinematic{" "}
-                  <span className="font-normal text-indigo-500 dark:text-indigo-400">
+                  <span className="font-normal text-orange-500 dark:text-orange-400">
                     Perspective
                   </span>
                   .
