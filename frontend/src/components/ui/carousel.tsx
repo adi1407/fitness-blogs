@@ -198,28 +198,30 @@ export default function Carousel({ slides }: CarouselProps) {
 
   return (
     <div
-      className="relative mx-auto h-[70vmin] w-[70vmin]"
+      className="relative mx-auto w-full max-w-[70vmin]"
       aria-labelledby={`carousel-heading-${id}`}
       aria-roledescription="carousel"
     >
-      <ul
-        className="absolute mx-[-4vmin] flex transition-transform duration-1000 ease-in-out"
-        style={{
-          transform: `translateX(-${current * (100 / slides.length)}%)`,
-        }}
-      >
-        {slides.map((slide, index) => (
-          <Slide
-            key={`${slide.title}-${index}`}
-            slide={slide}
-            index={index}
-            current={current}
-            handleSlideClick={handleSlideClick}
-          />
-        ))}
-      </ul>
+      <div className="relative mx-auto aspect-square w-full overflow-visible">
+        <ul
+          className="absolute inset-0 mx-[-4vmin] flex transition-transform duration-1000 ease-in-out"
+          style={{
+            transform: `translateX(-${current * (100 / slides.length)}%)`,
+          }}
+        >
+          {slides.map((slide, index) => (
+            <Slide
+              key={`${slide.title}-${index}`}
+              slide={slide}
+              index={index}
+              current={current}
+              handleSlideClick={handleSlideClick}
+            />
+          ))}
+        </ul>
+      </div>
 
-      <div className="absolute top-[calc(100%+1rem)] flex w-full justify-center">
+      <div className="relative z-20 mt-6 flex w-full justify-center gap-1">
         <CarouselControl
           type="previous"
           title="Go to previous slide"

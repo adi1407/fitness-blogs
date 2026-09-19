@@ -37,8 +37,8 @@ const ORBIT = [
 
 export function AboutRadialIntro() {
   return (
-    <div className="mt-10 flex min-h-[320px] w-full items-center justify-center py-6">
-      <RadialIntro orbitItems={ORBIT} stageSize={320} imageSize={64} />
+    <div className="mt-10 flex min-h-[380px] w-full items-center justify-center overflow-visible py-10">
+      <RadialIntro orbitItems={ORBIT} stageSize={280} imageSize={72} />
     </div>
   );
 }

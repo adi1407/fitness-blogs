@@ -115,30 +115,34 @@ function RadialIntro({
         style={{ width: stageSize, height: stageSize }}
         initial={false}
       >
-        {orbitItems.map((item, i) => (
-          <motion.div
-            key={item.id}
-            data-arm
-            className="will-change-transform absolute inset-0"
-            style={{ zIndex: orbitItems.length - i }}
-            data-angle={i * step}
-            layoutId={`arm-${item.id}`}
-          >
-            <motion.img
-              data-arm-image
-              className="rounded-full object-fill absolute left-1/2 top-1/2 aspect-square translate -translate-x-1/2"
-              style={{
-                width: imageSize,
-                height: imageSize,
-                opacity: 1,
-                top: 0,
-              }}
-              src={item.src}
-              alt={item.name}
-              draggable={false}
-              layoutId={`arm-img-${item.id}`}
-            />          </motion.div>
-        ))}
+        {orbitItems.map((item, i) => {
+          const angle = i * step;
+          return (
+            <motion.div
+              key={item.id}
+              data-arm
+              className="will-change-transform absolute inset-0"
+              style={{ zIndex: orbitItems.length - i, rotate: angle }}
+              data-angle={angle}
+              layoutId={`arm-${item.id}`}
+            >
+              <motion.img
+                data-arm-image
+                className="absolute left-1/2 top-0 aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full object-cover shadow-md ring-2 ring-white"
+                style={{
+                  width: imageSize,
+                  height: imageSize,
+                  opacity: 1,
+                  rotate: -angle,
+                }}
+                src={item.src}
+                alt={item.name}
+                draggable={false}
+                layoutId={`arm-img-${item.id}`}
+              />
+            </motion.div>
+          );
+        })}
       </motion.div>
     </LayoutGroup>
   );

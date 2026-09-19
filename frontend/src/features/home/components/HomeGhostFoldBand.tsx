@@ -39,11 +39,12 @@ export function HomeGhostFoldBand() {
       )}
 
       <div className="relative z-10 fk-page">
+        <h2 className="sr-only">Train with clarity</h2>
         <FoldText
           text="Train with clarity"
           splitBy="char"
           hinge="top"
-          trigger="scroll"
+          trigger="mount"
           duration={0.65}
           stagger={0.04}
           ease="power3.out"

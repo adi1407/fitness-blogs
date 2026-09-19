@@ -49,7 +49,7 @@ const BlurText = ({
   stepDuration = 0.35,
 }: BlurTextProps) => {
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(true);
   const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const BlurText = ({
           observer.unobserve(ref.current as Element);
         }
       },
-      { threshold, rootMargin },
+      { threshold: 0.01, rootMargin: "80px" },
     );
     observer.observe(ref.current);
     return () => observer.disconnect();

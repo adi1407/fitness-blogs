@@ -106,8 +106,8 @@ const FLIP_CARDS = [
 export default function AboutPage() {
   return (
     <main className="flex w-full flex-1 flex-col">
-      <section className="relative min-h-[70svh] overflow-hidden border-b border-border">
-        <AuroraBackground className="!min-h-[70svh] bg-brand-50">
+      <section className="relative min-h-[70svh] overflow-visible border-b border-border">
+        <AuroraBackground className="!min-h-[70svh] overflow-visible bg-brand-50">
           <div className="relative z-10 fk-page flex flex-col items-center py-16 text-center">
             <p className="text-sm font-medium tracking-wide text-primary">
               About the platform

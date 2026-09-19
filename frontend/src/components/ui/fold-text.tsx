@@ -246,14 +246,24 @@ const FoldText = ({
       clearProps: 'willChange'
     };
 
-    const killTimeline = () => {
+    const visibleVars = {
+      opacity: 1,
+      rotateX: 0,
+      rotateY: 0,
+      '--fold-crease': 0,
+      transformOrigin: hingeConfig.origin,
+      clearProps: 'willChange'
+    };
+
+    const killTimeline = (restoreVisible = false) => {
       timelineRef.current?.kill();
       timelineRef.current = null;
       gsap.killTweensOf(pieces);
+      if (restoreVisible) gsap.set(pieces, visibleVars);
     };
 
     const play = (repeat: boolean): gsap.core.Timeline => {
-      killTimeline();
+      killTimeline(false);
       timelineRef.current = gsap.timeline({ repeat: repeat ? -1 : 0, repeatDelay: repeat ? 0.75 : 0 });
       timelineRef.current.fromTo(pieces, fromVars, toVars);
       return timelineRef.current;
@@ -263,27 +273,36 @@ const FoldText = ({
     let hoverHandler: (() => void) | undefined;
 
     if (trigger === 'hover') {
-      gsap.set(pieces, { opacity: 1, rotateX: 0, rotateY: 0, '--fold-crease': 0, transformOrigin: hingeConfig.origin });
+      gsap.set(pieces, visibleVars);
       hoverHandler = () => play(false);
       root.addEventListener('mouseenter', hoverHandler);
     } else if (trigger === 'scroll') {
       gsap.set(pieces, fromVars);
       scrollTrigger = ScrollTrigger.create({
         trigger: root,
-        start: 'top 82%',
+        start: 'top 90%',
         once: true,
         onEnter: () => play(false)
+      });
+      // If already in view (or ST never fires), show text immediately.
+      requestAnimationFrame(() => {
+        const rect = root.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+          play(false);
+        }
       });
     } else if (trigger === 'loop') {
       play(true);
     } else {
+      // Mount: show immediately, then play fold (avoids blank Strict Mode cleanup).
+      gsap.set(pieces, visibleVars);
       play(false);
     }
 
     return () => {
       if (hoverHandler) root.removeEventListener('mouseenter', hoverHandler);
       scrollTrigger?.kill();
-      killTimeline();
+      killTimeline(true);
     };
   }, [
     text,

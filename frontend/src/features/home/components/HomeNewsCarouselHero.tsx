@@ -55,10 +55,10 @@ export function HomeNewsCarouselHero({ articles }: Props) {
 
   return (
     <section
-      className="relative overflow-hidden border-b border-border bg-foreground py-10 sm:py-14"
+      className="relative border-b border-border bg-foreground py-10 text-white sm:py-14"
       aria-label="Featured stories"
     >
-      <div className="fk-page pb-14">
+      <div className="fk-page pb-8">
         <p className="fk-meta text-white/60">Featured</p>
         <h2 className="mt-2 max-w-xl font-sans text-2xl font-semibold tracking-tight text-white sm:text-3xl">
           Guides worth opening
