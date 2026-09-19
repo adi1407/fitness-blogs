@@ -161,7 +161,7 @@ export function WeightLossSplitSection() {
         titleAfter={
           <>
             Sustainable{" "}
-            <span className="font-normal text-sky-500">fat loss</span>.
+            <span className="font-normal text-foreground">fat loss</span>.
           </>
         }
         subtitleBefore="Calories, protein, training, and daily movement come together as one plan."

@@ -22,8 +22,8 @@ export function HomeGhostFoldBand() {
         <div className="pointer-events-none absolute inset-0 opacity-55" aria-hidden>
           <GhostFibers
             className="h-full w-full"
-            lineColor="#E1F5FE"
-            glowColor="#29B6F6"
+            lineColor="#E5E5E5"
+            glowColor="#0A0A0A"
             lightMode={false}
             speed={0.15}
             brightness={0.85}
@@ -51,7 +51,7 @@ export function HomeGhostFoldBand() {
           creaseShading={0.55}
           fontSize="clamp(2.4rem, 8vw, 5.5rem)"
           fontWeight={700}
-          color="#E1F5FE"
+          color="#0A0A0A"
         />
         <p className="mx-auto mt-6 max-w-xl px-4 text-brand-100">
           From protein questions to exercise technique — every page should push

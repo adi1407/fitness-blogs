@@ -84,7 +84,7 @@ export function SiteHeader() {
       className="pointer-events-none fixed inset-x-0 top-0 z-[1000] pt-[env(safe-area-inset-top)]"
     >
       {/* Bar 1 — logo + primary nav */}
-      <div className="pointer-events-auto border-b border-brand-100/80 bg-white/95 backdrop-blur-md">
+      <div className="pointer-events-auto border-b border-border/80 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:h-16 sm:px-6 lg:px-8">
           <Link
             href="/"
@@ -115,8 +115,10 @@ export function SiteHeader() {
                   href={item.href}
                   className="inline-flex h-9 items-center rounded-full px-4 text-[15px] font-semibold transition"
                   style={{
-                    background: active ? colorSchema.orange[400] : "transparent",
-                    color: active ? "#fff" : colorSchema.semantic.foreground,
+                    background: active ? colorSchema.semantic.primary : "transparent",
+                    color: active
+                      ? colorSchema.semantic.background
+                      : colorSchema.semantic.foreground,
                   }}
                 >
                   {item.label}
@@ -147,7 +149,7 @@ export function SiteHeader() {
       </div>
 
       {/* Bar 2 — category strip */}
-      <div className="pointer-events-auto border-b border-brand-100 bg-brand-50/90 backdrop-blur-md">
+      <div className="pointer-events-auto border-b border-border bg-white/95 backdrop-blur-md">
         <nav
           className="mx-auto flex max-w-7xl gap-1 overflow-x-auto overscroll-x-contain px-4 py-2 scrollbar-none sm:px-6 lg:px-8"
           aria-label="Categories"
@@ -160,8 +162,8 @@ export function SiteHeader() {
                 href={item.href}
                 className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold whitespace-nowrap transition ${
                   active
-                    ? "bg-primary text-white"
-                    : "text-foreground hover:bg-white"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground hover:bg-muted"
                 }`}
               >
                 {item.label}
@@ -180,7 +182,7 @@ export function SiteHeader() {
             aria-label="Close menu overlay"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute inset-x-0 top-[var(--site-header-height)] max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-b border-brand-100 bg-white shadow-lg">
+          <div className="absolute inset-x-0 top-[var(--site-header-height)] max-h-[calc(100svh-var(--site-header-height))] overflow-y-auto border-b border-border bg-white shadow-lg">
             <ul className="space-y-1 p-3">
               {PRIMARY_NAV.map((item) => (
                 <li key={item.href}>
@@ -188,8 +190,8 @@ export function SiteHeader() {
                     href={item.href}
                     className={`block rounded-xl px-4 py-3 text-base font-semibold ${
                       isActivePath(pathname, item.href)
-                        ? "bg-brand-50 text-primary"
-                        : "text-foreground hover:bg-brand-50"
+                        ? "bg-muted text-foreground"
+                        : "text-foreground hover:bg-muted"
                     }`}
                     onClick={() => setMobileOpen(false)}
                   >

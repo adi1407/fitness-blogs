@@ -58,8 +58,8 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
                 onClick={() => setFilter(f.id)}
                 className={
                   active
-                    ? "rounded-lg bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm"
-                    : "rounded-lg border border-border/80 bg-white/80 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-sky-200 hover:text-sky-700"
+                    ? "rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm"
+                    : "rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-foreground/30 hover:text-foreground"
                 }
               >
                 {f.label}
@@ -68,7 +68,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
           })}
           <Link
             href="/blog"
-            className="ml-auto text-xs font-semibold text-sky-700 hover:underline sm:text-sm"
+            className="ml-auto text-xs font-semibold text-foreground hover:underline sm:text-sm"
             onClick={() =>
               trackEvent("hub_click", {
                 href: "/blog",
@@ -99,13 +99,13 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link
                 href="/tools"
-                className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-foreground/90"
               >
                 Open tools
               </Link>
               <Link
                 href="/blog"
-                className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground hover:border-sky-200"
+                className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/40"
               >
                 Browse blog
               </Link>

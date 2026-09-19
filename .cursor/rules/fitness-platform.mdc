@@ -49,9 +49,10 @@ Follow `docs/SEO_PLAYBOOK.md`. Schema only when accurate. No thin programmatic s
 
 ## Brand (current)
 
-- Background white `#FFFFFF`  
-- Blue primary `#E1F5FE`→`#29B6F6`, orange accent `#FFE0B2`→`#FF9800`  
-- Font: **Roboto Slab** primary; Diet = optional display  
+- Background white `#FFFFFF`
+- Primary near-black `#0A0A0A` (CTAs, links, active filters); neutrals `#F5F5F5` / `#E5E5E5`
+- Orange accent `#FFE0B2`→`#FF9800` for disclaimer / warning panels only
+- Font: **Roboto Slab** primary; Diet = optional display
 
 Motion: strategic only (hero, hover, reveals, calculators) — never animation everywhere.
 

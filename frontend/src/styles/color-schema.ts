@@ -1,17 +1,17 @@
 /**
- * Brand color schema — sky blue + orange accents, white background.
+ * Brand color schema — near-black primary on white; orange for warnings only.
  */
 export const colorSchema = {
   background: "#FFFFFF",
-  /** Sky blue scale */
+  /** Neutral scale (maps to brand-* utilities) */
   brand: {
-    50: "#E1F5FE",
-    100: "#B3E5FC",
-    200: "#81D4FA",
-    300: "#4FC3F7",
-    400: "#29B6F6",
+    50: "#F5F5F5",
+    100: "#E5E5E5",
+    200: "#D4D4D4",
+    300: "#A3A3A3",
+    400: "#0A0A0A",
   },
-  /** Orange scale */
+  /** Orange — disclaimer / EEAT warning surfaces only */
   orange: {
     50: "#FFE0B2",
     100: "#FFCC80",
@@ -19,19 +19,18 @@ export const colorSchema = {
     300: "#FFA726",
     400: "#FF9800",
   },
-  /** Semantic aliases for product UI */
   semantic: {
     background: "#FFFFFF",
     surface: "#FFFFFF",
-    surfaceMuted: "#E1F5FE",
-    border: "#B3E5FC",
-    primary: "#29B6F6",
-    primaryHover: "#4FC3F7",
+    surfaceMuted: "#F5F5F5",
+    border: "#E5E5E5",
+    primary: "#0A0A0A",
+    primaryHover: "#262626",
     accent: "#FF9800",
     accentSoft: "#FFE0B2",
     accentHover: "#FFA726",
-    foreground: "#0B2533",
-    mutedForeground: "#3A6070",
+    foreground: "#0A0A0A",
+    mutedForeground: "#525252",
   },
 } as const;
 

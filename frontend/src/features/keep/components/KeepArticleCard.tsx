@@ -47,7 +47,7 @@ export function KeepArticleCard({
         })
       }
     >
-      <div className={`relative overflow-hidden ${imgH} bg-brand-50`}>
+      <div className={`relative overflow-hidden ${imgH} bg-muted`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={articleImage(article)}
@@ -69,7 +69,7 @@ export function KeepArticleCard({
           </ul>
         ) : null}
         <h3
-          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground group-hover:text-sky-700 ${
+          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground group-hover:text-foreground ${
             compact ? "text-xs" : "text-sm"
           }`}
         >

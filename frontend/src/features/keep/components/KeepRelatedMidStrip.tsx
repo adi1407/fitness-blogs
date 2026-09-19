@@ -13,8 +13,8 @@ export function KeepRelatedMidStrip({
   if (items.length === 0) return null;
 
   return (
-    <aside className="my-10 rounded-2xl border border-sky-100 bg-sky-50/50 px-4 py-5 sm:px-5">
-      <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">
+    <aside className="my-10 rounded-2xl border border-border bg-muted/60 px-4 py-5 sm:px-5">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         More in this cluster
       </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
