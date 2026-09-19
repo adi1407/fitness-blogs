@@ -10,7 +10,7 @@ import { FlipCard } from "@/components/animate-ui/components/community/flip-card
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
-  title: "About FitKnowledge — Fitness Knowledge Platform",
+  title: "About FitKnowledge â€” Fitness Knowledge Platform",
   description:
     "Why FitKnowledge exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.",
   alternates: { canonical: "/about" },
@@ -80,7 +80,7 @@ const FLIP_CARDS = [
     username: "calculators",
     image:
       "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop",
-    bio: "TDEE, protein, macros, and more — each tool teaches and links onward.",
+    bio: "TDEE, protein, macros, and more â€” each tool teaches and links onward.",
     stats: { following: 6, followers: 0, posts: 0 },
     socialLinks: {
       linkedin: "/tools",
@@ -121,7 +121,7 @@ export default function AboutPage() {
               />
             </h1>
             <BlurText
-              text="FitKnowledge is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
+              text="FitKnowledge is a searchable fitness knowledge platform â€” articles, guides, calculators, foods, and exercises â€” designed to answer real questions better than a thin blog post."
               delay={40}
               animateBy="words"
               direction="top"
@@ -151,8 +151,8 @@ export default function AboutPage() {
           Three knowledge pillars
         </h2>
         <p className="mt-2 max-w-xl text-muted-foreground">
-          Deep clusters for topical authority — muscle building, weight loss,
-          and nutrition — with articles under each subcategory.
+          Deep clusters for topical authority â€” muscle building, weight loss,
+          and nutrition â€” with articles under each subcategory.
         </p>
         <div className="mt-8">
           <TailwindImageAccordion items={PILLAR_ACCORDION} />
@@ -181,7 +181,7 @@ export default function AboutPage() {
             Tools & databases
           </h2>
           <p className="mt-2 max-w-xl text-muted-foreground">
-            Calculators and libraries that complement the blog — the product
+            Calculators and libraries that complement the blog â€” the product
             flywheel beyond articles alone.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">

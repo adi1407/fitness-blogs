@@ -3,7 +3,7 @@ import Link from "next/link";
 import { TrainingScrollMorph } from "@/features/training/components/TrainingScrollMorph";
 
 export const metadata: Metadata = {
-  title: "Training Guides — Programming, Volume, Recovery & Workouts",
+  title: "Training Guides â€” Programming, Volume, Recovery & Workouts",
   description:
     "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.",
   alternates: { canonical: "/training" },
@@ -33,7 +33,7 @@ export default function TrainingPage() {
         Training fundamentals
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Training content should answer how to progress — not just list
+        Training content should answer how to progress â€” not just list
         exercises. Start with principles, then drill into muscle groups and
         programs.
       </p>
@@ -78,7 +78,7 @@ export default function TrainingPage() {
           <li>Train each major muscle group enough times per week to progress</li>
           <li>Leave most sets near technical failure, not total failure every set</li>
           <li>Add load, reps, or better form over weeks (progressive overload)</li>
-          <li>Protect sleep and manage stress — recovery is part of training</li>
+          <li>Protect sleep and manage stress â€” recovery is part of training</li>
         </ul>
       </section>
 

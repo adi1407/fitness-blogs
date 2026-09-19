@@ -4,7 +4,7 @@ import { AuthorsFlipCards } from "@/features/about/components/AuthorsFlipCards";
 import TailwindImageAccordion from "@/components/ui/tailwind-image-accordion";
 
 export const metadata: Metadata = {
-  title: "Authors & Reviewers — FitKnowledge EEAT",
+  title: "Authors & Reviewers â€” FitKnowledge EEAT",
   description:
     "Meet the FitKnowledge editorial and review roles behind nutrition, training, and calculator content.",
   alternates: { canonical: "/authors" },
@@ -30,7 +30,7 @@ export default function AuthorsPage() {
       </h1>
       <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
         EEAT starts with clear ownership. Written by, reviewed by, and fact-checked
-        roles will expand as the CMS author profiles ship — placeholders below
+        roles will expand as the CMS author profiles ship â€” placeholders below
         show the editorial model.
       </p>
 
@@ -45,13 +45,13 @@ export default function AuthorsPage() {
           <Link href="/editorial-policy" className="text-primary underline">
             Editorial policy
           </Link>{" "}
-          — how we research and update content
+          â€” how we research and update content
         </li>
         <li>
           <Link href="/medical-disclaimer" className="text-primary underline">
             Medical disclaimer
           </Link>{" "}
-          — educational framing only
+          â€” educational framing only
         </li>
         <li>
           <Link href="/about" className="text-primary underline">

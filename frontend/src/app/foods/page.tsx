@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Foods Database — Calories, Macros & Indian Nutrition",
+  title: "Foods Database â€” Calories, Macros & Indian Nutrition",
   description:
     "Browse foods by calories and macros. Start with Indian high-protein staples for fat loss and muscle gain meal planning.",
   alternates: { canonical: "/foods" },
@@ -56,7 +56,7 @@ export default function FoodsPage() {
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
         Structured food content is a long-term SEO asset: people search for
-        specific foods, macros, and Indian staples — then need a next action.
+        specific foods, macros, and Indian staples â€” then need a next action.
       </p>
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">

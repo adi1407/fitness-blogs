@@ -26,7 +26,7 @@ export default function Page() {
         Programs
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Structured tracks for beginners, fat loss, and muscle gain — growing
+        Structured tracks for beginners, fat loss, and muscle gain â€” growing
         alongside the exercise library and calculators.
       </p>
 
