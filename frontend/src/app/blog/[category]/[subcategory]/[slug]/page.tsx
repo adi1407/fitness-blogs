@@ -200,7 +200,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
   return (
     <KeepAtmosphere className="flex-1">
-      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <main className="fk-page fk-page--content py-8 lg:py-10">
         <JsonLd data={breadcrumbLd} />
         <JsonLd data={articleLd} />
         {faqLd ? <JsonLd data={faqLd} /> : null}
@@ -226,7 +226,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
           {/* Bookmark-style preview panel */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)]">
+          <div className="fk-panel">
             {article.featuredImage ? (
               <figure className="overflow-hidden border-b border-border bg-muted">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -251,10 +251,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <header>
                 <ul className="flex flex-wrap gap-1.5">
                   {tagChips.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-600"
-                    >
+                    <li key={tag} className="fk-chip">
                       {tag}
                     </li>
                   ))}
@@ -303,10 +300,8 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </header>
 
               {article.quickAnswer ? (
-                <aside className="mt-6 rounded-xl border border-border bg-muted/60 p-4 sm:p-5">
-                  <h2 className="text-sm font-semibold uppercase tracking-wide text-foreground">
-                    Quick Answer
-                  </h2>
+                <aside className="fk-callout mt-6">
+                  <h2 className="fk-meta text-foreground">Quick Answer</h2>
                   <p className="mt-2 text-base leading-relaxed text-foreground">
                     {article.quickAnswer}
                   </p>
@@ -319,7 +314,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
               {bodyHtml ? (
                 <article
-                  className="article-body mt-8 overflow-x-auto space-y-4 text-base leading-relaxed text-foreground [&_.read-also]:my-6 [&_.read-also]:rounded-xl [&_.read-also]:border [&_.read-also]:border-border [&_.read-also]:border-l-4 [&_.read-also]:border-l-orange-400 [&_.read-also]:bg-orange-50/30 [&_.read-also]:px-4 [&_.read-also]:py-3 [&_.read-also]:text-sm [&_a]:font-medium [&_a]:text-foreground [&_a]:underline-offset-2 hover:[&_a]:text-orange-400 hover:[&_a]:underline [&_h2]:scroll-mt-28 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h3]:scroll-mt-28 [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:rounded-xl [&_li]:ml-5 [&_li]:list-disc [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:text-muted-foreground [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_th]:border [&_th]:border-border [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_ul]:pl-5"
+                  className="article-body mt-8"
                   dangerouslySetInnerHTML={{ __html: bodyHtml }}
                 />
               ) : null}
@@ -337,7 +332,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                     {article.faq.map((item, i) => (
                       <details
                         key={`${item.question}-${i}`}
-                        className="group rounded-xl border border-border bg-slate-50/50 px-4 py-3"
+                        className="fk-faq-item group"
                         open={i === 0}
                       >
                         <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
@@ -365,7 +360,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                             href={s.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-foreground hover:text-orange-400 hover:underline"
+                            className="fk-link"
                           >
                             {s.title}
                           </a>
@@ -381,7 +376,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 </section>
               ) : null}
 
-              <p className="mt-8 rounded-xl border border-orange-100 bg-orange-50/50 px-4 py-3 text-sm text-muted-foreground">
+              <p className="fk-disclaimer mt-8">
                 Educational information only — not medical advice. Consult a
                 qualified professional for personal health decisions.
               </p>
@@ -392,20 +387,15 @@ export default async function BlogArticlePage({ params }: PageProps) {
             <ArticleToc items={toc} />
             <KeepRelatedStack articles={related} limit={4} />
             {calc ? (
-              <div className="rounded-xl border border-orange-100 bg-orange-50/60 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-orange-800">
-                  Related tool
-                </p>
+              <div className="fk-tool-card">
+                <p className="fk-meta-accent">Related tool</p>
                 <h3 className="mt-2 text-base font-semibold text-foreground">
                   {calc.label}
                 </h3>
                 <p className="mt-1.5 text-sm text-muted-foreground">
                   {calc.blurb}
                 </p>
-                <Link
-                  href={calc.href}
-                  className="mt-3 inline-flex rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-foreground/90"
-                >
+                <Link href={calc.href} className="fk-btn-primary mt-3 px-3">
                   Open calculator
                 </Link>
               </div>
@@ -419,7 +409,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 Short link:{" "}
                 <Link
                   href={`/blog/${article.articleNumber}`}
-                  className="text-foreground hover:text-orange-400 hover:underline"
+                  className="fk-link"
                 >
                   /blog/{article.articleNumber}
                 </Link>
@@ -436,7 +426,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
             </h2>
             <Link
               href={`/blog/${category.slug}/${subcategory.slug}`}
-              className="text-sm font-semibold text-foreground hover:text-orange-400 hover:underline"
+              className="fk-link text-sm font-semibold"
             >
               More in {subcategory.label} →
             </Link>
@@ -446,7 +436,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <li>
                 <Link
                   href={`/blog/${category.slug}/${subcategory.slug}`}
-                  className="font-medium text-foreground hover:text-orange-400 hover:underline"
+                  className="fk-link"
                 >
                   More in {subcategory.label}
                 </Link>
@@ -454,7 +444,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <li>
                 <Link
                   href={`/blog/${category.slug}`}
-                  className="font-medium text-foreground hover:text-orange-400 hover:underline"
+                  className="fk-link"
                 >
                   All {category.label} articles
                 </Link>

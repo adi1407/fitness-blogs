@@ -1,6 +1,7 @@
 /**
- * Brand: near-black primary on white; warm orange for contrast accents
- * (links hover, focus, secondary emphasis, disclaimer). No blue.
+ * Brand: near-black primary on white; warm orange for contrast accents.
+ * Keep in sync with frontend/src/app/globals.css :root
+ * No blue.
  */
 export const colorSchema = {
   background: "#FFFFFF",

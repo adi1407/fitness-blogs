@@ -89,11 +89,11 @@ export default function WeightLossPage() {
       <JsonLd data={faqLd} />
 
       {/* SSR SEO block — constrained */}
-      <div className="mx-auto w-full max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
+      <div className="fk-page pt-16">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
           <ol className="flex flex-wrap gap-2">
             <li>
-              <Link href="/" className="hover:text-primary">
+              <Link href="/" className="fk-link-muted">
                 Home
               </Link>
             </li>
@@ -109,7 +109,7 @@ export default function WeightLossPage() {
           Pillar hub · Educational content · Not medical advice
         </p>
 
-        <aside className="mt-8 rounded-2xl border border-orange-100 bg-orange-50 p-6">
+        <aside className="fk-tool-card mt-8 p-6">
           <h2 className="text-lg font-semibold">Quick answer</h2>
           <p className="mt-2 text-muted-foreground">
             Fat loss requires a sustained calorie deficit. Pair that with enough
@@ -120,14 +120,14 @@ export default function WeightLossPage() {
             <TrackedHubLink
               href="/tools/tdee-calculator"
               label="TDEE calculator"
-              className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-300"
+              className="fk-btn-accent rounded-full"
             >
-              TDEE calculator ?
+              TDEE calculator →
             </TrackedHubLink>
             <TrackedHubLink
               href="/tools/calorie-calculator"
               label="Calorie calculator"
-              className="rounded-full border border-orange-200 bg-white px-4 py-2 text-sm font-semibold"
+              className="fk-btn-ghost rounded-full border-orange-200"
             >
               Calorie calculator
             </TrackedHubLink>
@@ -138,7 +138,7 @@ export default function WeightLossPage() {
       {/* Full-bleed sticky scroll story — outside max-width / overflow shells */}
       <WeightLossSplitSection />
 
-      <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="fk-page py-16">
         <section>
           <h2 className="text-2xl font-semibold">Core pillars</h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">

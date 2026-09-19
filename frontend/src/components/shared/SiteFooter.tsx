@@ -31,7 +31,7 @@ const resources = [
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-border bg-white">
-      <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4 lg:px-8">
+      <div className="fk-page grid gap-10 py-14 md:grid-cols-4">
         <div className="md:col-span-1">
           <p className="text-lg font-semibold text-foreground">FitKnowledge</p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -40,16 +40,11 @@ export function SiteFooter() {
           </p>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-            Explore
-          </p>
+          <p className="fk-meta text-foreground">Explore</p>
           <ul className="mt-4 space-y-2">
             {explore.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-muted-foreground hover:text-primary"
-                >
+                <Link href={item.href} className="fk-link-muted">
                   {item.label}
                 </Link>
               </li>
@@ -57,16 +52,11 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-            Tools
-          </p>
+          <p className="fk-meta text-foreground">Tools</p>
           <ul className="mt-4 space-y-2">
             {tools.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-muted-foreground hover:text-primary"
-                >
+                <Link href={item.href} className="fk-link-muted">
                   {item.label}
                 </Link>
               </li>
@@ -74,16 +64,11 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-foreground">
-            Resources
-          </p>
+          <p className="fk-meta text-foreground">Resources</p>
           <ul className="mt-4 space-y-2">
             {resources.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm text-muted-foreground hover:text-primary"
-                >
+                <Link href={item.href} className="fk-link-muted">
                   {item.label}
                 </Link>
               </li>
@@ -92,11 +77,11 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border/70">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div className="fk-page flex flex-col gap-2 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} FitKnowledge. Educational use only.</p>
           <p>
             Not medical advice — see our{" "}
-            <Link href="/medical-disclaimer" className="underline hover:text-primary">
+            <Link href="/medical-disclaimer" className="fk-link text-xs">
               disclaimer
             </Link>
             .

@@ -92,7 +92,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="fk-page fk-page--content flex-1 py-12">
       <JsonLd data={breadcrumbLd} />
       <BlogBreadcrumbs
         items={[
@@ -104,7 +104,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
       />
 
       <header className="mt-6 max-w-3xl">
-        <p className="text-sm font-medium text-primary">{category.label}</p>
+        <p className="fk-meta-accent">{category.label}</p>
         <h1 className="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">
           {subcategory.label}
         </h1>
@@ -123,7 +123,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
             topics under{" "}
             <Link
               href={`/blog/${category.slug}`}
-              className="font-medium text-primary hover:underline"
+              className="fk-link"
             >
               {category.label}
             </Link>

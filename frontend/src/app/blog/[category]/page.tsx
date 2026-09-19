@@ -85,7 +85,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="fk-page fk-page--content flex-1 py-12">
       <JsonLd data={breadcrumbLd} />
       <BlogBreadcrumbs
         items={[
@@ -106,7 +106,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
       </header>
 
       <section className="mt-10">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+        <h2 className="fk-meta text-foreground">
           Subcategories
         </h2>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -114,7 +114,7 @@ export default async function BlogCategoryPage({ params }: PageProps) {
             <li key={sub.slug}>
               <Link
                 href={`/blog/${category.slug}/${sub.slug}`}
-                className="block rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium text-foreground transition hover:border-primary hover:bg-brand-50"
+                className="block rounded-xl border border-border bg-white px-4 py-3 text-sm font-medium text-foreground transition hover:border-accent hover:bg-accent-soft/40"
               >
                 {sub.label}
               </Link>

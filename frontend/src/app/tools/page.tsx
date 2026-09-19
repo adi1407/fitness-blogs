@@ -55,7 +55,7 @@ const calculators = [
 
 export default function ToolsPage() {
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="fk-page flex-1 py-16">
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>

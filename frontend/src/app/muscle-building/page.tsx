@@ -61,14 +61,14 @@ export default function MuscleBuildingPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="fk-page flex-1 py-16">
       <JsonLd data={breadcrumbLd} />
       <JsonLd data={faqLd} />
 
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
@@ -84,7 +84,7 @@ export default function MuscleBuildingPage() {
         Pillar hub · Educational content · Not medical advice
       </p>
 
-      <aside className="mt-8 rounded-2xl border border-brand-100 bg-brand-50 p-6">
+      <aside className="fk-tool-card mt-8 p-6">
         <h2 className="text-lg font-semibold">Quick answer</h2>
         <p className="mt-2 text-muted-foreground">
           Train hard with progressive overload, eat enough protein and total
@@ -95,14 +95,14 @@ export default function MuscleBuildingPage() {
           <TrackedHubLink
             href="/exercises"
             label="Exercise library"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+            className="fk-btn-primary rounded-full"
           >
-            Exercise library ?
+            Exercise library →
           </TrackedHubLink>
           <TrackedHubLink
             href="/tools/protein-calculator"
             label="Protein calculator"
-            className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
+            className="fk-btn-ghost rounded-full"
           >
             Protein calculator
           </TrackedHubLink>

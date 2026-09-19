@@ -108,7 +108,7 @@ export default function AboutPage() {
     <main className="flex w-full flex-1 flex-col">
       <section className="relative min-h-[70svh] overflow-hidden border-b border-border">
         <AuroraBackground className="!min-h-[70svh] bg-brand-50">
-          <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-4 py-16 text-center sm:px-6 lg:px-8">
+          <div className="relative z-10 fk-page flex flex-col items-center py-16 text-center">
             <p className="text-sm font-medium tracking-wide text-primary">
               About the platform
             </p>
@@ -146,7 +146,7 @@ export default function AboutPage() {
         </AuroraBackground>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="fk-page py-14">
         <h2 className="text-2xl font-semibold tracking-tight">
           Three knowledge pillars
         </h2>
@@ -160,7 +160,7 @@ export default function AboutPage() {
       </section>
 
       <section className="border-y border-border bg-brand-50/40">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="fk-page py-14">
           <h2 className="text-2xl font-semibold tracking-tight">
             What we build
           </h2>
@@ -176,7 +176,7 @@ export default function AboutPage() {
       </section>
 
       <section className="border-b border-border bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="fk-page py-14">
           <h2 className="text-2xl font-semibold tracking-tight">
             Tools & databases
           </h2>
@@ -211,7 +211,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="fk-page py-14">
         <h2 className="text-2xl font-semibold tracking-tight">
           Editorial philosophy
         </h2>

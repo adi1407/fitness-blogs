@@ -48,7 +48,7 @@ export default async function BlogIndexPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+    <main className="fk-page flex-1 py-12">
       <JsonLd data={breadcrumbLd} />
       <BlogBreadcrumbs
         items={[{ label: "Home", href: "/" }, { label: "Latest" }]}
@@ -70,7 +70,7 @@ export default async function BlogIndexPage() {
       </div>
 
       <section className="mt-10">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-primary">
+        <h2 className="fk-meta text-foreground">
           Browse by category
         </h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -78,7 +78,7 @@ export default async function BlogIndexPage() {
             <Link
               key={cat.slug}
               href={`/blog/${cat.slug}`}
-              className="rounded-2xl border border-border bg-brand-50/50 p-5 transition hover:border-primary hover:bg-brand-50"
+              className="rounded-2xl border border-border bg-muted/40 p-5 transition hover:border-accent hover:bg-accent-soft/40"
             >
               <h3 className="text-lg font-semibold text-foreground">
                 {cat.label}
@@ -100,7 +100,7 @@ export default async function BlogIndexPage() {
           </h2>
           <Link
             href="/tools"
-            className="text-sm font-semibold text-primary hover:underline"
+            className="fk-link text-sm font-semibold"
           >
             Try a calculator →
           </Link>

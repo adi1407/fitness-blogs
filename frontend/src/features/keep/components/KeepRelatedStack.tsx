@@ -20,9 +20,7 @@ export function KeepRelatedStack({
 
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {title}
-      </h2>
+      <h2 className="fk-meta">{title}</h2>
       <ul className="mt-3 space-y-3">
         {items.map((a, i) => (
           <li key={a.id}>

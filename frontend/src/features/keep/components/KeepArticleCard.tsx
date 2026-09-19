@@ -39,7 +39,7 @@ export function KeepArticleCard({
   return (
     <Link
       href={href}
-      className="group block overflow-hidden rounded-xl border border-border bg-card transition duration-200 hover:border-orange-400 hover:shadow-lg hover:transition-shadow"
+      className="group block overflow-hidden rounded-xl border border-border bg-card transition duration-200 hover:border-accent hover:shadow-md"
       onClick={() =>
         trackEvent("hub_click", {
           href,
@@ -59,17 +59,14 @@ export function KeepArticleCard({
         {tags.length > 0 ? (
           <ul className="flex flex-wrap gap-1">
             {tags.slice(0, compact ? 2 : 3).map((tag) => (
-              <li
-                key={tag}
-                className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600"
-              >
+              <li key={tag} className="fk-chip normal-case tracking-normal">
                 {tag}
               </li>
             ))}
           </ul>
         ) : null}
         <h3
-          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground group-hover:text-orange-400 ${
+          className={`line-clamp-2 font-semibold leading-snug tracking-tight text-foreground transition-colors group-hover:text-accent ${
             compact ? "text-xs" : "text-sm"
           }`}
         >
@@ -80,7 +77,7 @@ export function KeepArticleCard({
             {article.excerpt}
           </p>
         ) : null}
-        <p className="mt-auto truncate text-[11px] text-slate-400">
+        <p className="mt-auto truncate text-[11px] text-muted-foreground/80">
           {[article.categorySlug, article.subcategorySlug]
             .filter(Boolean)
             .join(" / ") || "fitknowledge"}

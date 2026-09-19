@@ -30,6 +30,7 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -59,17 +60,22 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+  FitKnowledge palette
+  - Canvas: white
+  - Structure: near-black primary
+  - Contrast: warm orange accent (no blue)
+*/
 :root {
-  /* Black + white neutrals; orange reserved for disclaimer/warning */
   --brand-50: #f5f5f5;
   --brand-100: #e5e5e5;
   --brand-200: #d4d4d4;
   --brand-300: #a3a3a3;
   --brand-400: #0a0a0a;
 
-  --orange-50: #ffe0b2;
-  --orange-100: #ffcc80;
-  --orange-200: #ffb74d;
+  --orange-50: #fff3e0;
+  --orange-100: #ffe0b2;
+  --orange-200: #ffcc80;
   --orange-300: #ffa726;
   --orange-400: #ff9800;
 
@@ -87,6 +93,7 @@
   --muted-foreground: #525252;
   --accent: #ff9800;
   --accent-foreground: #ffffff;
+  --accent-soft: #fff3e0;
   --destructive: #e11d48;
   --border: #e5e5e5;
   --input: #e5e5e5;
@@ -105,22 +112,27 @@
   --sidebar-accent-foreground: #0a0a0a;
   --sidebar-border: #e5e5e5;
   --sidebar-ring: #ff9800;
+
+  /* Layout rhythm */
+  --site-header-height: 6.75rem;
+  --page-gutter: 1rem;
+  --page-max: 80rem;
+  --content-max: 72rem;
+  --keep-gap: 0.75rem;
 }
 
 .dark {
-  /* Stay light (no dark-mode flip for this brand) */
+  /* Light brand only — mirror :root */
   --brand-50: #f5f5f5;
   --brand-100: #e5e5e5;
   --brand-200: #d4d4d4;
   --brand-300: #a3a3a3;
   --brand-400: #0a0a0a;
-
-  --orange-50: #ffe0b2;
-  --orange-100: #ffcc80;
-  --orange-200: #ffb74d;
+  --orange-50: #fff3e0;
+  --orange-100: #ffe0b2;
+  --orange-200: #ffcc80;
   --orange-300: #ffa726;
   --orange-400: #ff9800;
-
   --background: #ffffff;
   --foreground: #0a0a0a;
   --card: #ffffff;
@@ -135,6 +147,7 @@
   --muted-foreground: #525252;
   --accent: #ff9800;
   --accent-foreground: #ffffff;
+  --accent-soft: #fff3e0;
   --destructive: #e11d48;
   --border: #e5e5e5;
   --input: #e5e5e5;
@@ -155,20 +168,240 @@
 }
 
 @layer base {
-  :root {
-    /* Fallback until SiteHeader measures real height */
-    --site-header-height: 6.75rem;
-  }
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
-    @apply font-sans;
+    @apply font-sans antialiased;
     overflow-x: clip;
+    text-rendering: optimizeLegibility;
   }
+
   body {
     @apply bg-background text-foreground;
     overflow-x: clip;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 28%, white);
+    color: var(--foreground);
+  }
+
+  a {
+    @apply underline-offset-2;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+@layer components {
+  /* ── Page shell ─────────────────────────────────────────── */
+  .fk-page {
+    @apply mx-auto w-full;
+    max-width: var(--page-max);
+    padding-inline: var(--page-gutter);
+  }
+
+  .fk-page--content {
+    max-width: var(--content-max);
+  }
+
+  @media (min-width: 640px) {
+    .fk-page {
+      --page-gutter: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .fk-page {
+      --page-gutter: 2rem;
+    }
+  }
+
+  /* ── Links ──────────────────────────────────────────────── */
+  .fk-link {
+    @apply font-medium text-foreground transition-colors hover:text-accent hover:underline;
+  }
+
+  .fk-link-muted {
+    @apply text-sm text-muted-foreground transition-colors hover:text-accent;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────── */
+  .fk-btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground/90;
+  }
+
+  .fk-btn-ghost {
+    @apply inline-flex items-center justify-center rounded-lg border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-accent;
+  }
+
+  .fk-btn-accent {
+    @apply inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-orange-300;
+  }
+
+  /* ── Chips / filters / meta ─────────────────────────────── */
+  .fk-chip {
+    @apply rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground;
+  }
+
+  .fk-meta {
+    @apply text-xs font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+
+  .fk-meta-accent {
+    @apply text-xs font-semibold uppercase tracking-wide text-accent;
+  }
+
+  .fk-filter {
+    @apply rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-accent hover:text-foreground;
+  }
+
+  .fk-filter-active {
+    @apply rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm;
+  }
+
+  /* ── Surfaces ───────────────────────────────────────────── */
+  .fk-panel {
+    @apply overflow-hidden rounded-2xl border border-border bg-card shadow-[0_1px_0_rgba(10,10,10,0.04)];
+  }
+
+  .fk-callout {
+    @apply rounded-xl border border-border bg-muted/60 p-4 sm:p-5;
+  }
+
+  .fk-faq-item {
+    @apply rounded-xl border border-border bg-muted/40 px-4 py-3;
+  }
+
+  .fk-tool-card {
+    @apply rounded-xl border border-orange-100 bg-accent-soft/60 p-4;
+  }
+
+  /* Accent callout rail (related / read-also) */
+  .fk-accent-rail {
+    @apply rounded-2xl border border-border border-l-4 border-l-accent bg-accent-soft/50;
+  }
+
+  /* Disclaimer / EEAT warning */
+  .fk-disclaimer {
+    @apply rounded-xl border border-orange-100 bg-accent-soft/60 px-4 py-3 text-sm text-muted-foreground;
+  }
+
+  /*
+    Article body — typography + keep-aligned chrome
+    Prefer this class over long Tailwind arbitrary selectors in pages.
+  */
+  .article-body {
+    @apply space-y-4 overflow-x-auto text-base leading-relaxed text-foreground;
+  }
+
+  .article-body a {
+    @apply font-medium text-foreground underline-offset-2 transition-colors hover:text-accent hover:underline;
+  }
+
+  .article-body h2 {
+    @apply mt-10 scroll-mt-28 text-2xl font-semibold tracking-tight text-foreground;
+  }
+
+  .article-body h3 {
+    @apply mt-6 scroll-mt-28 text-xl font-semibold text-foreground;
+  }
+
+  .article-body h4 {
+    @apply mt-5 scroll-mt-28 text-lg font-semibold text-foreground;
+  }
+
+  .article-body p {
+    @apply text-muted-foreground;
+  }
+
+  .article-body strong {
+    @apply font-semibold text-foreground;
+  }
+
+  .article-body ul {
+    @apply list-disc space-y-1.5 pl-5 text-muted-foreground;
+  }
+
+  .article-body ol {
+    @apply list-decimal space-y-1.5 pl-5 text-muted-foreground;
+  }
+
+  .article-body li {
+    @apply leading-relaxed;
+  }
+
+  .article-body li > ul,
+  .article-body li > ol {
+    @apply mt-1.5;
+  }
+
+  .article-body blockquote {
+    @apply border-l-4 border-l-accent bg-accent-soft/40 px-4 py-3 text-muted-foreground;
+  }
+
+  .article-body code {
+    @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.875em] text-foreground;
+  }
+
+  .article-body pre {
+    @apply overflow-x-auto rounded-xl border border-border bg-muted p-4 text-sm;
+  }
+
+  .article-body pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .article-body hr {
+    @apply my-8 border-border;
+  }
+
+  .article-body img {
+    @apply rounded-xl;
+  }
+
+  .article-body table {
+    @apply my-4 w-full border-collapse text-sm;
+  }
+
+  .article-body th {
+    @apply border border-border bg-muted/50 px-3 py-2 text-left font-semibold text-foreground;
+  }
+
+  .article-body td {
+    @apply border border-border px-3 py-2 text-muted-foreground;
+  }
+
+  .article-body .read-also {
+    @apply my-6 rounded-xl border border-border border-l-4 border-l-accent bg-accent-soft/40 px-4 py-3 text-sm;
+  }
+
+  .article-body figure,
+  .article-body .seed-hero {
+    margin: 1.25rem 0 1.75rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--muted);
+  }
+
+  .article-body figure img,
+  .article-body .seed-hero img {
+    display: block;
+    width: 100%;
+    max-height: 28rem;
+    object-fit: cover;
+  }
+
+  .article-body figure figcaption,
+  .article-body .seed-hero figcaption {
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--muted-foreground);
   }
 }
 
@@ -264,29 +497,4 @@
     black 92%,
     transparent 100%
   );
-}
-
-/* Seed / CMS lead images inside article HTML */
-.article-body figure,
-.article-body .seed-hero {
-  margin: 1.25rem 0 1.75rem;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  border: 1px solid var(--border, #e5e7eb);
-  background: #f5f5f5;
-}
-
-.article-body figure img,
-.article-body .seed-hero img {
-  display: block;
-  width: 100%;
-  max-height: 28rem;
-  object-fit: cover;
-}
-
-.article-body figure figcaption,
-.article-body .seed-hero figcaption {
-  padding: 0.625rem 1rem;
-  font-size: 0.8125rem;
-  color: var(--muted-foreground, #64748b);
 }

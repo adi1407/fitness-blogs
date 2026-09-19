@@ -85,7 +85,7 @@ export function SiteHeader() {
     >
       {/* Bar 1 — logo + primary nav */}
       <div className="pointer-events-auto border-b border-border/80 bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:h-16 sm:px-6 lg:px-8">
+        <div className="fk-page flex h-14 items-center gap-4 sm:h-16">
           <Link
             href="/"
             className="relative z-10 flex shrink-0 items-center gap-2 pr-1"
@@ -151,7 +151,7 @@ export function SiteHeader() {
       {/* Bar 2 — category strip */}
       <div className="pointer-events-auto border-b border-border bg-white/95 backdrop-blur-md">
         <nav
-          className="mx-auto flex max-w-7xl gap-1 overflow-x-auto overscroll-x-contain px-4 py-2 scrollbar-none sm:px-6 lg:px-8"
+          className="fk-page flex gap-1 overflow-x-auto overscroll-x-contain py-2 scrollbar-none"
           aria-label="Categories"
         >
           {CATEGORY_STRIP.map((item) => {

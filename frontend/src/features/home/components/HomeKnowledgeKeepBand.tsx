@@ -38,7 +38,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
 
   return (
     <KeepAtmosphere className="min-h-[calc(100svh-var(--site-header-height))]">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 pt-8 sm:px-6 sm:pt-10 lg:px-8">
+      <div className="fk-page pb-16 pt-8 sm:pt-10">
         <header className="max-w-xl">
           <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             FitKnowledge
@@ -56,11 +56,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
                 key={f.id}
                 type="button"
                 onClick={() => setFilter(f.id)}
-                className={
-                  active
-                    ? "rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm"
-                    : "rounded-lg border border-border bg-white px-3 py-1.5 text-xs font-semibold text-muted-foreground transition hover:border-orange-400 hover:text-foreground"
-                }
+                className={active ? "fk-filter-active" : "fk-filter"}
               >
                 {f.label}
               </button>
@@ -68,7 +64,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
           })}
           <Link
             href="/blog"
-            className="ml-auto text-xs font-semibold text-foreground underline-offset-4 hover:text-orange-400 hover:underline sm:text-sm"
+            className="fk-link ml-auto text-xs sm:text-sm"
             onClick={() =>
               trackEvent("hub_click", {
                 href: "/blog",
@@ -81,7 +77,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
         </div>
 
         {linkable.length === 0 ? (
-          <div className="mt-12 rounded-2xl border border-dashed border-border bg-white/70 px-6 py-16 text-center">
+          <div className="mt-12 rounded-2xl border border-dashed border-border bg-muted/40 px-6 py-16 text-center">
             <p className="text-lg font-semibold text-foreground">
               Nothing in the keep yet
             </p>
@@ -90,23 +86,17 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
               try a calculator or browse tools.
             </p>
             {apiIsLocalhost ? (
-              <p className="mt-4 text-sm text-red-600">
+              <p className="mt-4 text-sm text-destructive">
                 API is pointed at localhost. Set{" "}
                 <code className="font-mono text-xs">API_URL</code> to your
                 Render API and redeploy.
               </p>
             ) : null}
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/tools"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-foreground/90"
-              >
+              <Link href="/tools" className="fk-btn-primary">
                 Open tools
               </Link>
-              <Link
-                href="/blog"
-                className="rounded-lg border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/40"
-              >
+              <Link href="/blog" className="fk-btn-ghost">
                 Browse blog
               </Link>
             </div>
