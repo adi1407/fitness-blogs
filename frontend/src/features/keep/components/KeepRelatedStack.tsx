@@ -3,11 +3,11 @@
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import { KeepArticleCard } from "@/features/keep/components/KeepArticleCard";
 
-/** Compact related stack for article aside / mid strip. */
+/** Compact related stack for article aside. */
 export function KeepRelatedStack({
   articles,
   title = "Related",
-  limit = 4,
+  limit = 5,
   compact = true,
 }: {
   articles: PublicBlogArticle[];

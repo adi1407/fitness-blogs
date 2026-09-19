@@ -93,6 +93,7 @@ VITE_OPENPANEL_DASHBOARD_URL=https://dashboard.openpanel.dev
 |-------|--------|------------|
 | `page_view` | Frontend (auto) | `path`, `title` |
 | `article_open` | Article page | `slug`, `category`, `subcategory` |
+| `share_click` | Article share buttons | `channel` (`x` / `facebook` / `linkedin` / `copy`), `url` |
 | `calc_open` | Calculator tool page | `tool` (tdee-calculator, protein-calculator, …) |
 | `calc_complete` | Educational ack → show results | `tool` |
 | `hub_click` | Pillar hub primary CTAs | `href`, `label` |

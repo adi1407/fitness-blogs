@@ -127,10 +127,15 @@ publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
   ]);
   row.views = Number(row.views ?? 0) + 1;
   const article = mapPublic(row);
-  const related = await resolveRelatedArticles(
+  const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],
     String(article.id),
   );
+  const related = await fillRelatedArticles(curated, {
+    id: String(article.id),
+    categorySlug: (article.categorySlug as string | null) ?? null,
+    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
+  });
   res.json({ article, related });
 });
 
@@ -152,6 +157,65 @@ publicRouter.get("/articles/lookup/:articleNumber", async (req, res) => {
   res.json({ article: mapPublic(result.rows[0]) });
 });
 
+const RELATED_TARGET = 10;
+
+/** Curated → same subcategory → same category, unique, up to RELATED_TARGET. */
+async function fillRelatedArticles(
+  curated: ReturnType<typeof mapPublic>[],
+  article: {
+    id: string;
+    categorySlug: string | null;
+    subcategorySlug: string | null;
+  },
+) {
+  const relatedList = [...curated];
+  const seen = new Set(relatedList.map((a) => a.id));
+
+  async function appendFromQuery(sql: string, params: unknown[]) {
+    if (relatedList.length >= RELATED_TARGET) return;
+    const fill = await pool.query(sql, params);
+    for (const r of fill.rows.map(mapPublic)) {
+      if (seen.has(r.id)) continue;
+      relatedList.push(r);
+      seen.add(r.id);
+      if (relatedList.length >= RELATED_TARGET) break;
+    }
+  }
+
+  if (article.categorySlug && article.subcategorySlug) {
+    await appendFromQuery(
+      `${ARTICLE_SELECT}
+       WHERE a.status = 'published' AND a.slug IS NOT NULL
+         AND c.slug = $1 AND s.slug = $2 AND a.id <> $3
+       ORDER BY a.published_at DESC NULLS LAST
+       LIMIT $4`,
+      [
+        article.categorySlug,
+        article.subcategorySlug,
+        article.id,
+        RELATED_TARGET - relatedList.length,
+      ],
+    );
+  }
+
+  if (relatedList.length < RELATED_TARGET && article.categorySlug) {
+    await appendFromQuery(
+      `${ARTICLE_SELECT}
+       WHERE a.status = 'published' AND a.slug IS NOT NULL
+         AND c.slug = $1 AND a.id <> $2
+       ORDER BY a.published_at DESC NULLS LAST
+       LIMIT $3`,
+      [
+        article.categorySlug,
+        article.id,
+        RELATED_TARGET - relatedList.length,
+      ],
+    );
+  }
+
+  return relatedList;
+}
+
 publicRouter.get("/articles/:slug", async (req, res) => {
   const result = await pool.query(
     `${ARTICLE_SELECT}
@@ -169,35 +233,16 @@ publicRouter.get("/articles/:slug", async (req, res) => {
   ]);
   row.views = Number(row.views ?? 0) + 1;
   const article = mapPublic(row);
-  const related = await resolveRelatedArticles(
+  const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],
     String(article.id),
   );
 
-  // Fill related from same subcategory if curated list is short
-  let relatedList = related;
-  if (relatedList.length < 4 && article.categorySlug && article.subcategorySlug) {
-    const fill = await pool.query(
-      `${ARTICLE_SELECT}
-       WHERE a.status = 'published' AND a.slug IS NOT NULL
-         AND c.slug = $1 AND s.slug = $2 AND a.id <> $3
-       ORDER BY a.published_at DESC NULLS LAST
-       LIMIT $4`,
-      [
-        article.categorySlug,
-        article.subcategorySlug,
-        article.id,
-        4 - relatedList.length,
-      ],
-    );
-    const seen = new Set(relatedList.map((a) => a.id));
-    for (const r of fill.rows.map(mapPublic)) {
-      if (!seen.has(r.id)) {
-        relatedList.push(r);
-        seen.add(r.id);
-      }
-    }
-  }
+  const relatedList = await fillRelatedArticles(curated, {
+    id: String(article.id),
+    categorySlug: (article.categorySlug as string | null) ?? null,
+    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
+  });
 
   res.json({ article, related: relatedList });
 });

@@ -6,7 +6,11 @@ import {
   ArticleShare,
   ArticleToc,
 } from "@/features/blog/components/ArticleChrome";
+import { ArticleActionsRow } from "@/features/blog/components/ArticleActionSlots";
+import { ArticleMobileActionBar } from "@/features/blog/components/ArticleMobileActionBar";
 import { ArticleOpenBeacon } from "@/features/blog/components/ArticleOpenBeacon";
+import { ArticleReadingProgress } from "@/features/blog/components/ArticleReadingProgress";
+import { ArticleRelatedGrid } from "@/features/blog/components/ArticleRelatedGrid";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
 import { enhanceArticleHtml } from "@/features/blog/utils/articleHtml";
 import {
@@ -15,8 +19,6 @@ import {
 } from "@/lib/api/blog";
 import {
   KeepAtmosphere,
-  KeepMasonry,
-  KeepRelatedMidStrip,
   KeepRelatedStack,
 } from "@/features/keep";
 import {
@@ -36,6 +38,25 @@ type PageProps = {
     slug: string;
   }>;
 };
+
+function CalculatorCtaCard({
+  calc,
+}: {
+  calc: { href: string; label: string; blurb: string };
+}) {
+  return (
+    <div className="fk-tool-card">
+      <p className="fk-meta-accent">Related tool</p>
+      <h3 className="mt-2 text-base font-semibold text-foreground">
+        {calc.label}
+      </h3>
+      <p className="mt-1.5 text-sm text-muted-foreground">{calc.blurb}</p>
+      <Link href={calc.href} className="fk-btn-primary mt-3 px-3">
+        Open calculator
+      </Link>
+    </div>
+  );
+}
 
 export async function generateMetadata({
   params,
@@ -107,6 +128,9 @@ export default async function BlogArticlePage({ params }: PageProps) {
   const absoluteUrl = `${siteUrl}${canonicalPath}`;
   const calc = calculatorCtaForCategory(article.categorySlug);
 
+  const railRelated = related.slice(0, 5);
+  const belowRelated = related.slice(5, 10);
+
   const publishedLabel = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -125,6 +149,8 @@ export default async function BlogArticlePage({ params }: PageProps) {
           day: "numeric",
         })
       : null;
+
+  const authorName = article.authorName || "FitKnowledge Editorial";
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -170,9 +196,22 @@ export default async function BlogArticlePage({ params }: PageProps) {
     image: article.featuredImage || article.ogImage || undefined,
     author: {
       "@type": "Person",
-      name: article.authorName || "FitKnowledge Editorial",
+      name: authorName,
+      url: `${siteUrl}/authors`,
     },
-    mainEntityOfPage: absoluteUrl,
+    publisher: {
+      "@type": "Organization",
+      name: "FitKnowledge",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/logo.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absoluteUrl,
+    },
   };
 
   const faqLd =
@@ -200,7 +239,8 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
   return (
     <KeepAtmosphere className="flex-1">
-      <main className="fk-page fk-page--content py-8 lg:py-10">
+      <ArticleReadingProgress />
+      <main className="fk-page fk-page--content pb-24 pt-8 lg:pb-10 lg:py-10">
         <JsonLd data={breadcrumbLd} />
         <JsonLd data={articleLd} />
         {faqLd ? <JsonLd data={faqLd} /> : null}
@@ -224,8 +264,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           ]}
         />
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-start">
-          {/* Bookmark-style preview panel */}
+        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
           <div className="fk-panel">
             {article.featuredImage ? (
               <figure className="overflow-hidden border-b border-border bg-muted">
@@ -272,14 +311,18 @@ export default async function BlogArticlePage({ params }: PageProps) {
                       <span className="font-medium text-foreground">
                         Written by
                       </span>{" "}
-                      {article.authorName || "FitKnowledge Editorial"}
+                      <Link href="/authors" className="fk-link">
+                        {authorName}
+                      </Link>
                     </p>
                     {article.reviewerName ? (
                       <p className="mt-1">
                         <span className="font-medium text-foreground">
                           Reviewed by
                         </span>{" "}
-                        {article.reviewerName}
+                        <Link href="/authors" className="fk-link">
+                          {article.reviewerName}
+                        </Link>
                       </p>
                     ) : null}
                     <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
@@ -295,7 +338,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
                       )}
                     </p>
                   </div>
-                  <ArticleShare title={article.title} url={absoluteUrl} />
+                  <ArticleActionsRow
+                    className="hidden sm:flex"
+                    share={
+                      <ArticleShare title={article.title} url={absoluteUrl} />
+                    }
+                  />
                 </div>
               </header>
 
@@ -306,6 +354,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
                     {article.quickAnswer}
                   </p>
                 </aside>
+              ) : null}
+
+              {calc ? (
+                <div className="mt-6 lg:hidden">
+                  <CalculatorCtaCard calc={calc} />
+                </div>
               ) : null}
 
               <div className="mt-6 lg:hidden">
@@ -319,8 +373,15 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 />
               ) : null}
 
-              {related.length > 0 ? (
-                <KeepRelatedMidStrip articles={related} />
+              {/* Recs 1–5 inline on <lg (desktop uses sticky rail) */}
+              {railRelated.length > 0 ? (
+                <div className="lg:hidden">
+                  <ArticleRelatedGrid
+                    articles={railRelated}
+                    title="More in this cluster"
+                    accentRail
+                  />
+                </div>
               ) : null}
 
               {article.faq.length > 0 ? (
@@ -376,6 +437,17 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 </section>
               ) : null}
 
+              <aside className="fk-callout mt-10">
+                <p className="fk-meta text-foreground">Stay in the loop</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  New guides and calculators as we publish — educational only,
+                  never spam.
+                </p>
+                <Link href="/contact" className="fk-btn-ghost mt-3">
+                  Get in touch
+                </Link>
+              </aside>
+
               <p className="fk-disclaimer mt-8">
                 Educational information only — not medical advice. Consult a
                 qualified professional for personal health decisions.
@@ -385,21 +457,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
           <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block">
             <ArticleToc items={toc} />
-            <KeepRelatedStack articles={related} limit={4} />
-            {calc ? (
-              <div className="fk-tool-card">
-                <p className="fk-meta-accent">Related tool</p>
-                <h3 className="mt-2 text-base font-semibold text-foreground">
-                  {calc.label}
-                </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  {calc.blurb}
-                </p>
-                <Link href={calc.href} className="fk-btn-primary mt-3 px-3">
-                  Open calculator
-                </Link>
-              </div>
-            ) : null}
+            <KeepRelatedStack
+              articles={railRelated}
+              title="Related reading"
+              limit={5}
+            />
+            {calc ? <CalculatorCtaCard calc={calc} /> : null}
             <div className="rounded-xl border border-border bg-white p-4 text-sm text-muted-foreground">
               <p className="font-semibold text-foreground">Article ID</p>
               <p className="mt-1 font-mono text-base text-foreground">
@@ -418,11 +481,11 @@ export default async function BlogArticlePage({ params }: PageProps) {
           </aside>
         </div>
 
-        {/* Full related masonry */}
+        {/* Recs 6–10 (or leftover if fewer than 10) — never overlap with rail */}
         <section className="mt-12 border-t border-border/60 pt-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-xl font-semibold tracking-tight text-foreground">
-              Related reading
+              Keep reading
             </h2>
             <Link
               href={`/blog/${category.slug}/${subcategory.slug}`}
@@ -431,7 +494,13 @@ export default async function BlogArticlePage({ params }: PageProps) {
               More in {subcategory.label} →
             </Link>
           </div>
-          {related.length === 0 ? (
+          {belowRelated.length > 0 ? (
+            <ArticleRelatedGrid
+              articles={belowRelated}
+              className="mt-6"
+              compact={false}
+            />
+          ) : related.length === 0 ? (
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link
@@ -442,23 +511,27 @@ export default async function BlogArticlePage({ params }: PageProps) {
                 </Link>
               </li>
               <li>
-                <Link
-                  href={`/blog/${category.slug}`}
-                  className="fk-link"
-                >
+                <Link href={`/blog/${category.slug}`} className="fk-link">
                   All {category.label} articles
                 </Link>
               </li>
             </ul>
           ) : (
-            <KeepMasonry
-              articles={related}
-              dense
-              className="mt-6"
-            />
+            <p className="mt-4 text-sm text-muted-foreground">
+              More guides in{" "}
+              <Link
+                href={`/blog/${category.slug}/${subcategory.slug}`}
+                className="fk-link"
+              >
+                {subcategory.label}
+              </Link>{" "}
+              as we publish.
+            </p>
           )}
         </section>
       </main>
+
+      <ArticleMobileActionBar title={article.title} url={absoluteUrl} />
     </KeepAtmosphere>
   );
 }

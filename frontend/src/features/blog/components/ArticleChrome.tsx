@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { trackEvent } from "@/lib/analytics/openpanel";
 
 type TocItem = { id: string; text: string; level: 2 | 3 };
 
@@ -15,7 +16,7 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
     >
       <button
         type="button"
-        className="flex w-full items-center justify-between text-left text-sm font-semibold uppercase tracking-wide text-primary"
+        className="flex w-full items-center justify-between text-left text-sm font-semibold uppercase tracking-wide text-foreground"
         onClick={() => setOpen((v) => !v)}
       >
         On this page
@@ -32,7 +33,7 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
             >
               <a
                 href={`#${item.id}`}
-                className="text-foreground/80 hover:text-primary hover:underline"
+                className="text-foreground/80 transition-colors hover:text-accent hover:underline"
               >
                 {item.text}
               </a>
@@ -47,9 +48,11 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
 export function ArticleShare({
   title,
   url,
+  compact = false,
 }: {
   title: string;
   url: string;
+  compact?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const encoded = useMemo(
@@ -60,26 +63,37 @@ export function ArticleShare({
     [url, title],
   );
 
+  function trackShare(channel: string) {
+    trackEvent("share_click", { channel, url });
+  }
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      trackShare("copy");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       /* ignore */
     }
   }
 
+  const btn =
+    "rounded-full border border-border px-3 py-1 text-xs font-medium transition-colors hover:border-accent hover:text-accent";
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        Share
-      </span>
+      {!compact ? (
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Share
+        </span>
+      ) : null}
       <a
         href={`https://twitter.com/intent/tweet?url=${encoded.u}&text=${encoded.t}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-full border border-border px-3 py-1 text-xs font-medium hover:border-primary"
+        className={btn}
+        onClick={() => trackShare("x")}
       >
         X
       </a>
@@ -87,7 +101,8 @@ export function ArticleShare({
         href={`https://www.facebook.com/sharer/sharer.php?u=${encoded.u}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-full border border-border px-3 py-1 text-xs font-medium hover:border-primary"
+        className={btn}
+        onClick={() => trackShare("facebook")}
       >
         Facebook
       </a>
@@ -95,16 +110,13 @@ export function ArticleShare({
         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded.u}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-full border border-border px-3 py-1 text-xs font-medium hover:border-primary"
+        className={btn}
+        onClick={() => trackShare("linkedin")}
       >
         LinkedIn
       </a>
-      <button
-        type="button"
-        onClick={() => void copy()}
-        className="rounded-full border border-border px-3 py-1 text-xs font-medium hover:border-primary"
-      >
-        {copied ? "Copied" : "Copy link"}
+      <button type="button" onClick={() => void copy()} className={btn}>
+        {copied ? "Copied" : "Copy"}
       </button>
     </div>
   );

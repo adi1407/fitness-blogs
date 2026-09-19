@@ -41,7 +41,7 @@ export default async function BlogIndexPage() {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Latest",
+        name: "Blog",
         item: `${siteUrl}/blog`,
       },
     ],
@@ -51,7 +51,7 @@ export default async function BlogIndexPage() {
     <main className="fk-page flex-1 py-12">
       <JsonLd data={breadcrumbLd} />
       <BlogBreadcrumbs
-        items={[{ label: "Home", href: "/" }, { label: "Latest" }]}
+        items={[{ label: "Home", href: "/" }, { label: "Blog" }]}
       />
 
       <header className="mt-6 max-w-3xl">
