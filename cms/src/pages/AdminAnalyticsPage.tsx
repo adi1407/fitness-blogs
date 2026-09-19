@@ -17,7 +17,8 @@ export default function AdminAnalyticsPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [error, setError] = useState("");
   const dashboardUrl = openPanelDashboardUrl();
-  const opReady = isOpenPanelEnabled() || Boolean(dashboardUrl);
+  const trackingOn = isOpenPanelEnabled();
+  const opReady = trackingOn || Boolean(dashboardUrl);
 
   useEffect(() => {
     void (async () => {
@@ -55,13 +56,20 @@ export default function AdminAnalyticsPage() {
 
       {!opReady ? (
         <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          OpenPanel is not configured yet. Set{" "}
-          <code className="font-mono text-xs">VITE_OPENPANEL_CLIENT_ID</code> and{" "}
-          <code className="font-mono text-xs">
-            VITE_OPENPANEL_DASHBOARD_URL
-          </code>{" "}
-          — see{" "}
+          OpenPanel is optional. To enable the dashboard link and tracking, add
+          to <code className="font-mono text-xs">cms/.env</code>:{" "}
+          <code className="font-mono text-xs">VITE_OPENPANEL_DASHBOARD_URL</code>{" "}
+          and{" "}
+          <code className="font-mono text-xs">VITE_OPENPANEL_CLIENT_ID</code>,
+          then restart the CMS. See{" "}
           <span className="font-medium">docs/ANALYTICS_OPENPANEL.md</span>.
+        </div>
+      ) : !trackingOn ? (
+        <div className="mb-6 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-950">
+          Dashboard link is set. Add{" "}
+          <code className="font-mono text-xs">VITE_OPENPANEL_CLIENT_ID</code>{" "}
+          (from the OpenPanel project) to send CMS events. Restart Vite after
+          changing <code className="font-mono text-xs">cms/.env</code>.
         </div>
       ) : null}
 

@@ -2,14 +2,14 @@
 
 OpenPanel ([AGPL-3.0](https://github.com/Openpanel-dev/openpanel)) is the product-analytics stack for FitKnowledge. It stays a **separate service** so AGPL does not apply to the FitKnowledge monorepo.
 
-Pinned commit: `3060ca10213693cf0385be2713c8743d16733a2b`  
-Local clone: [`openpanel/`](../openpanel/) (gitignored from product secrets; optional sibling).
+Pinned commit (optional local clone): `3060ca10213693cf0385be2713c8743d16733a2b`  
+Local clone: [`openpanel/`](../openpanel/) (gitignored; optional sibling for self-host experiments).
 
 ## What OpenPanel gives us
 
 - Event stream, funnels, profiles, traffic dashboards
-- Web SDK for the public site and CMS
-- Self-hosted Postgres + ClickHouse + Redis (see upstream README)
+- Browser track API for the public site and CMS
+- Cloud hosted at [dashboard.openpanel.dev](https://dashboard.openpanel.dev) (production default)
 
 ## What stays in FitKnowledge
 
@@ -19,49 +19,73 @@ Local clone: [`openpanel/`](../openpanel/) (gitignored from product secrets; opt
 | Article `views` | Express API | Writer desk / editor |
 | Marketing page views, CTA clicks, calculator completes | OpenPanel | Admin OpenPanel dashboard + funnels |
 
-## Self-host (local)
+## Production (Vercel) — OpenPanel Cloud
+
+**Default for live site + CMS.** Do not point Production at `localhost`.
+
+1. Sign up / sign in at [dashboard.openpanel.dev](https://dashboard.openpanel.dev).
+2. Create a project → **Settings → Clients** → copy the **Client ID** (UUID; safe for browsers).
+3. Set Vercel **Production** env (then redeploy — `NEXT_PUBLIC_*` / `VITE_*` are build-time):
+
+### Frontend (Next.js on Vercel)
+
+```bash
+NEXT_PUBLIC_OPENPANEL_CLIENT_ID=<uuid-from-openpanel>
+NEXT_PUBLIC_OPENPANEL_API_URL=https://api.openpanel.dev
+NEXT_PUBLIC_OPENPANEL_DASHBOARD_URL=https://dashboard.openpanel.dev
+```
+
+### CMS (Vite on Vercel)
+
+```bash
+VITE_OPENPANEL_CLIENT_ID=<uuid-from-openpanel>
+VITE_OPENPANEL_API_URL=https://api.openpanel.dev
+VITE_OPENPANEL_DASHBOARD_URL=https://dashboard.openpanel.dev
+```
+
+Use the **same Client ID** for site + CMS if both should feed one OpenPanel project.
+
+When Client ID is empty, tracking is a no-op. Dashboard URL alone enables the CMS “Open OpenPanel” deep link.
+
+## Self-host (local, optional)
 
 Prerequisites: Docker, Docker Compose, Node, pnpm.
 
 ```bash
 cd openpanel
-# if not checked out yet:
 # git checkout --detach 3060ca10213693cf0385be2713c8743d16733a2b
 pnpm install
 cp .env.example .env
-# Follow upstream: API_URL for apps/start, dock:up, migrate, codegen, dev
 pnpm dock:up
 pnpm codegen
 pnpm migrate:deploy
 pnpm dev
 ```
 
-Typical URLs (upstream defaults):
+Typical self-host URLs:
 
-- Dashboard: `https://localhost:3000` or `http://localhost:3000`
+- Dashboard: `http://localhost:3000`
 - API: `http://localhost:3333`
 
-Create a project + client ID in OpenPanel UI, then set env below.
+Then set local env to those URLs instead of the cloud hosts above.
 
-## FitKnowledge env
+## Local env files
 
-### Frontend (`frontend/.env.local`)
+### Frontend (`frontend/.env.local`) — cloud defaults
 
 ```bash
 NEXT_PUBLIC_OPENPANEL_CLIENT_ID=
-NEXT_PUBLIC_OPENPANEL_API_URL=http://localhost:3333
-NEXT_PUBLIC_OPENPANEL_DASHBOARD_URL=http://localhost:3000
+NEXT_PUBLIC_OPENPANEL_API_URL=https://api.openpanel.dev
+NEXT_PUBLIC_OPENPANEL_DASHBOARD_URL=https://dashboard.openpanel.dev
 ```
 
-### CMS (`cms/.env`)
+### CMS (`cms/.env`) — cloud defaults
 
 ```bash
 VITE_OPENPANEL_CLIENT_ID=
-VITE_OPENPANEL_API_URL=http://localhost:3333
-VITE_OPENPANEL_DASHBOARD_URL=http://localhost:3000
+VITE_OPENPANEL_API_URL=https://api.openpanel.dev
+VITE_OPENPANEL_DASHBOARD_URL=https://dashboard.openpanel.dev
 ```
-
-When client ID is empty, tracking is a no-op (safe for local/dev).
 
 ## Event taxonomy (FitKnowledge)
 
