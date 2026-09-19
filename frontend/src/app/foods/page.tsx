@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FoodsImageStrip } from "@/features/foods/components/FoodsImageStrip";
 
 export const metadata: Metadata = {
   title: "Foods Database — Calories, Macros & Indian Nutrition",
@@ -58,6 +59,8 @@ export default function FoodsPage() {
         Structured food content is a long-term SEO asset: people search for
         specific foods, macros, and Indian staples — then need a next action.
       </p>
+
+      <FoodsImageStrip />
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">
         {collections.map((item) => (
