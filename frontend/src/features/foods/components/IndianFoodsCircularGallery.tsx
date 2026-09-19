@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CircularGallery } from "@/components/ui/circular-gallery";
-import { FITNESS_GALLERY_ITEMS } from "@/components/circular-gallery-demo";
+import { FITNESS_GALLERY_ITEMS } from "@/features/foods/data/galleryItems";
 
 /** Sticky scroll-driven circular gallery for Indian foods hub (full-bleed). */
 export function IndianFoodsCircularGallery() {

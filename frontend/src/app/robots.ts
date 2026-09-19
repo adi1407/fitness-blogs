@@ -7,13 +7,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Demo / lab routes — keep out of the index until they are product pages
-      disallow: [
-        "/halo-reel",
-        "/bento",
-        "/connected-carousel",
-        "/split-axis",
-      ],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,

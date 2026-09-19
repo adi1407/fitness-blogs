@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 
 export default function MedicalDisclaimerPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="fk-page fk-page--content flex-1 py-16">
       <h1 className="text-4xl font-semibold tracking-tight">
         Medical disclaimer
       </h1>
-      <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
+      <div className="fk-disclaimer mt-6 space-y-4 leading-relaxed">
         <p>
           Content on FitKnowledge — including articles, calculators, food data,
           and exercise guidance — is for educational purposes only. It is not
@@ -33,7 +33,7 @@ export default function MedicalDisclaimerPage() {
           high-protein or calorie-restricted approaches.
         </p>
       </div>
-      <Link href="/contact" className="mt-8 inline-block text-primary underline">
+      <Link href="/contact" className="fk-link mt-8 inline-block">
         Contact us
       </Link>
     </main>

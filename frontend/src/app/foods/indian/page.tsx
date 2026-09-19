@@ -74,13 +74,13 @@ export default function IndianFoodsPage() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link href="/foods" className="hover:text-primary">
+            <Link href="/foods" className="fk-link-muted">
               Foods
             </Link>
           </li>

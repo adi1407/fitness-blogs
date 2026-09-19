@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
+import { NutritionFocusCards } from "@/features/nutrition/components/NutritionFocusCards";
 
 export const metadata: Metadata = {
   title: "Nutrition Guides — Protein, Calories, Macros & Indian Diet",
@@ -44,7 +45,7 @@ export default function NutritionPage() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
@@ -62,7 +63,7 @@ export default function NutritionPage() {
         thin keyword posts.
       </p>
 
-      <section className="mt-8 rounded-2xl border border-brand-100 bg-brand-50 p-6">
+      <aside className="fk-tool-card mt-8 p-6">
         <h2 className="text-lg font-semibold">Quick start</h2>
         <p className="mt-2 text-muted-foreground">
           Most readers arrive asking about protein or calories. Start with the
@@ -73,26 +74,28 @@ export default function NutritionPage() {
           <TrackedHubLink
             href="/nutrition/protein"
             label="Protein guide"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+            className="fk-btn-primary rounded-full"
           >
             Protein guide
           </TrackedHubLink>
           <TrackedHubLink
             href="/tools/protein-calculator"
             label="Protein calculator"
-            className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
+            className="fk-btn-ghost rounded-full"
           >
             Protein calculator
           </TrackedHubLink>
           <TrackedHubLink
             href="/foods/indian"
             label="Indian foods"
-            className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold"
+            className="fk-btn-ghost rounded-full"
           >
             Indian foods
           </TrackedHubLink>
         </div>
-      </section>
+      </aside>
+
+      <NutritionFocusCards />
 
       <section className="mt-12">
         <h2 className="text-2xl font-semibold">Core topics</h2>
@@ -101,7 +104,7 @@ export default function NutritionPage() {
             <li key={topic.href}>
               <Link
                 href={topic.href}
-                className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+                className="fk-panel block p-5 transition hover:border-accent"
               >
                 <h3 className="text-lg font-semibold">{topic.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{topic.text}</p>

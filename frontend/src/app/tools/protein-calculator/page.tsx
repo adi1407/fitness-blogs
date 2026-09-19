@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
@@ -53,7 +53,7 @@ export default function ProteinCalculatorPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="fk-page fk-page--content flex-1 py-16">
       <CalcOpenBeacon tool="protein-calculator" />
       <JsonLd data={appLd} />
       <JsonLd data={breadcrumbLd} />
@@ -61,13 +61,13 @@ export default function ProteinCalculatorPage() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link href="/tools" className="hover:text-primary">
+            <Link href="/tools" className="fk-link-muted">
               Tools
             </Link>
           </li>

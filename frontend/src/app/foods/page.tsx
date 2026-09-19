@@ -42,7 +42,7 @@ export default function FoodsPage() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
@@ -64,7 +64,7 @@ export default function FoodsPage() {
           <li key={item.href}>
             <Link
               href={item.href}
-              className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+              className="block h-full rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
             >
               <h2 className="text-lg font-semibold">{item.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{item.text}</p>

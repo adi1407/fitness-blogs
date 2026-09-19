@@ -157,7 +157,7 @@ export default function MuscleBuildingPage() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+                className="block h-full rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
               >
                 <h3 className="text-lg font-semibold">{item.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{item.text}</p>

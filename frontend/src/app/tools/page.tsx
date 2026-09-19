@@ -59,7 +59,7 @@ export default function ToolsPage() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
@@ -92,7 +92,7 @@ export default function ToolsPage() {
           <li key={tool.href}>
             <Link
               href={tool.href}
-              className="block h-full rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+              className="fk-panel block h-full p-5 transition hover:border-accent"
             >
               <h2 className="text-lg font-semibold">{tool.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{tool.intent}</p>

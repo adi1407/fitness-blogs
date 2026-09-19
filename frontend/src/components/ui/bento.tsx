@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { clsx } from "clsx";
 import { motion } from "motion/react";
 
-/** Dark bento showcase used on Tools + /bento demo. */
+/** Dark bento grid used on the Tools hub. */
 export default function FUIBentoGridDark() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col rounded-2xl bg-[#0B2533] p-6 sm:p-10">

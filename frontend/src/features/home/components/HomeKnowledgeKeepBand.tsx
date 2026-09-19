@@ -40,9 +40,9 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
     <KeepAtmosphere className="min-h-[calc(100svh-var(--site-header-height))]">
       <div className="fk-page pb-16 pt-8 sm:pt-10">
         <header className="max-w-xl">
-          <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             FitKnowledge
-          </h1>
+          </h2>
           <p className="mt-2 text-sm text-muted-foreground sm:text-base">
             Guides worth opening — browse like a keep.
           </p>

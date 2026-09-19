@@ -13,7 +13,7 @@ export default function Page() {
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
@@ -35,7 +35,7 @@ export default function Page() {
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
         <Link
           href="/exercises"
-          className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+          className="rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
         >
           <h2 className="text-lg font-semibold">Exercise library</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -44,7 +44,7 @@ export default function Page() {
         </Link>
         <Link
           href="/training"
-          className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:bg-brand-50"
+          className="rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
         >
           <h2 className="text-lg font-semibold">Training principles</h2>
           <p className="mt-2 text-sm text-muted-foreground">

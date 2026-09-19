@@ -67,7 +67,7 @@ export function CalculatorPageShell({
       : null;
 
   return (
-    <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
+    <main className="fk-page fk-page--content flex-1 py-16">
       <CalcOpenBeacon tool={slug} />
       <JsonLd data={appLd} />
       <JsonLd data={breadcrumbLd} />
@@ -76,13 +76,13 @@ export function CalculatorPageShell({
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
-            <Link href="/" className="hover:text-primary">
+            <Link href="/" className="fk-link-muted">
               Home
             </Link>
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link href="/tools" className="hover:text-primary">
+            <Link href="/tools" className="fk-link-muted">
               Tools
             </Link>
           </li>
@@ -117,7 +117,7 @@ export function CalculatorPageShell({
 
       <p className="mt-10 text-xs text-muted-foreground">
         Educational tool only.{" "}
-        <Link href="/medical-disclaimer" className="underline">
+        <Link href="/medical-disclaimer" className="fk-link">
           Medical disclaimer
         </Link>
         .

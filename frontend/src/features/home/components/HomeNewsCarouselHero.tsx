@@ -1,0 +1,45 @@
+"use client";
+
+import Carousel from "@/components/ui/carousel";
+import type { PublicBlogArticle } from "@/lib/api/blog";
+import { articleHref, articleImage } from "@/features/home/utils/articleMedia";
+
+type Props = {
+  articles: PublicBlogArticle[];
+};
+
+/** NewsKothari-style lead stories — full-bleed carousel above the keep band. */
+export function HomeNewsCarouselHero({ articles }: Props) {
+  const slides = articles
+    .map((a) => {
+      const href = articleHref(a);
+      if (!href) return null;
+      return {
+        title: a.title,
+        button: a.categoryLabel ? `Read · ${a.categoryLabel}` : "Read article",
+        src: articleImage(a),
+        href,
+      };
+    })
+    .filter((s): s is NonNullable<typeof s> => Boolean(s))
+    .slice(0, 6);
+
+  if (slides.length === 0) return null;
+
+  return (
+    <section
+      className="relative overflow-hidden border-b border-border bg-foreground py-10 sm:py-14"
+      aria-label="Featured stories"
+    >
+      <div className="fk-page pb-14">
+        <p className="fk-meta text-white/60">Featured</p>
+        <h2 className="mt-2 max-w-xl font-sans text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+          Guides worth opening
+        </h2>
+        <div className="mt-8">
+          <Carousel slides={slides} />
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,3 +1,4 @@
 export { HomeMagazine } from "./components/HomeMagazine";
-export { HomeMagazineBands } from "./components/HomeMagazineBands";
-export { HomePageContent } from "./components/HomePageContent";
+export { HomeNewsCarouselHero } from "./components/HomeNewsCarouselHero";
+export { HomeKnowledgeKeepBand } from "./components/HomeKnowledgeKeepBand";
+export { HomeGhostFoldBand } from "./components/HomeGhostFoldBand";

@@ -1,6 +1,4 @@
-"use client";
-
-import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
+import type { GalleryItem } from "@/components/ui/circular-gallery";
 
 /** Fitness / Indian-food themed gallery (Unsplash). */
 export const FITNESS_GALLERY_ITEMS: GalleryItem[] = [
@@ -28,7 +26,7 @@ export const FITNESS_GALLERY_ITEMS: GalleryItem[] = [
     common: "Eggs",
     binomial: "Complete protein",
     photo: {
-      url: "https://images.unsplash.com/photo-1482049016681-2f6fad4a4ea4?q=80&w=800&auto=format&fit=crop",
+      url: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=800&auto=format&fit=crop",
       text: "Eggs for convenient protein",
       pos: "50% 45%",
       by: "Unsplash",
@@ -78,32 +76,10 @@ export const FITNESS_GALLERY_ITEMS: GalleryItem[] = [
     common: "Meal prep",
     binomial: "Protein-forward plates",
     photo: {
-      url: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop",
-      text: "Healthy prepared meals",
-      pos: "50% 35%",
+      url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
+      text: "Prepared high-protein meals",
+      pos: "50% 40%",
       by: "Unsplash",
     },
   },
 ];
-
-export default function CircularGalleryDemo() {
-  return (
-    <div className="w-full bg-background text-foreground" style={{ height: "400vh" }}>
-      <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden">
-        <div className="absolute top-20 z-10 text-center">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Food gallery
-          </h1>
-          <p className="text-muted-foreground">Scroll to rotate</p>
-        </div>
-        <div className="h-full w-full">
-          <CircularGallery
-            items={FITNESS_GALLERY_ITEMS}
-            radius={480}
-            autoRotateSpeed={0.025}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
