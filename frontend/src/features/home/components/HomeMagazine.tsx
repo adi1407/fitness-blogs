@@ -2,6 +2,7 @@ import { getApiBase } from "@/lib/api/client";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import { HomeSphereHero } from "@/features/home/components/HomeSphereHero";
 import { HomeLatestList } from "@/features/home/components/HomeLatestList";
+import { HomeKnowledgeKeepBand } from "@/features/home/components/HomeKnowledgeKeepBand";
 import { HomeCategorySections } from "@/features/home/components/HomeCategorySections";
 import { HomeCircularGalleryBand } from "@/features/home/components/HomeCircularGalleryBand";
 import { HomeMagazineBands } from "@/features/home/components/HomeMagazineBands";
@@ -41,6 +42,7 @@ export function HomeMagazine({ articles }: HomeMagazineProps) {
       <h1 className="sr-only">FitKnowledge — latest fitness guides and news</h1>
       <HomeSphereHero articles={articles} />
       <HomeLatestList articles={latest} />
+      <HomeKnowledgeKeepBand articles={articles} />
       <HomeCategorySections articles={articles} />
       <HomeCircularGalleryBand articles={articles} />
       <HomeMagazineBands />
