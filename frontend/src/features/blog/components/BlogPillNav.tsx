@@ -12,14 +12,14 @@ const ITEMS = [
   { label: "Tools", href: "/tools" },
 ] as const;
 
-/** Inline category chips — not a second site header. */
+/** Topic strip — MNT-like underline active state (not heavy pills). */
 export function BlogPillNav() {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="Blog sections"
-      className="flex flex-wrap gap-2 border-b border-border pb-4"
+      className="flex gap-1 overflow-x-auto border-b border-border scrollbar-none"
     >
       {ITEMS.map((item) => {
         const active =
@@ -31,10 +31,10 @@ export function BlogPillNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "rounded-full px-3.5 py-1.5 text-sm font-semibold transition",
+              "shrink-0 border-b-2 px-3.5 py-3 text-sm font-semibold transition",
               active
-                ? "bg-primary text-white"
-                : "bg-brand-50 text-foreground hover:bg-brand-100",
+                ? "border-accent text-foreground"
+                : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
             )}
           >
             {item.label}

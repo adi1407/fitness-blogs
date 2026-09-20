@@ -9,6 +9,7 @@ type ArticleCardProps = {
   article: PublicBlogArticle;
 };
 
+/** Compact latest-feed row — image + category + title + dek. */
 export function ArticleCard({ article }: ArticleCardProps) {
   const href = articleHref(article);
   if (!href) return null;
@@ -24,17 +25,22 @@ export function ArticleCard({ article }: ArticleCardProps) {
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            {article.categoryLabel && (
-              <span className="rounded-full bg-brand-50 px-2.5 py-0.5 font-medium text-foreground ring-1 ring-brand-100">
+            {article.categoryLabel ? (
+              <span className="font-semibold uppercase tracking-wide text-accent">
                 {article.categoryLabel}
               </span>
-            )}
-            {article.subcategoryLabel && <span>{article.subcategoryLabel}</span>}
-            {article.readingTime > 0 && (
+            ) : null}
+            {article.subcategoryLabel ? (
+              <span>· {article.subcategoryLabel}</span>
+            ) : null}
+            {article.readingTime > 0 ? (
               <span>· {article.readingTime} min read</span>
-            )}
+            ) : null}
+            {article.authorName ? (
+              <span>· {article.authorName}</span>
+            ) : null}
           </div>
-          <h3 className="mt-2 text-xl font-semibold tracking-tight text-foreground group-hover:text-primary">
+          <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground group-hover:text-primary sm:text-xl">
             {article.title}
           </h3>
           {article.excerpt ? (
