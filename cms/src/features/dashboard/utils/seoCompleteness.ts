@@ -13,7 +13,9 @@ export type SeoCheckId =
   | "metaDescription"
   | "primaryKeyword"
   | "faq"
-  | "tags";
+  | "tags"
+  | "sources"
+  | "related";
 
 export type SeoCheck = {
   id: SeoCheckId;
@@ -99,4 +101,50 @@ export function seoCompleteness(article: Article): {
   const missing = checks.filter((c) => !c.pass).map((c) => c.label);
 
   return { checks, passed, total, percent, missing };
+}
+
+/** Editor publish gates — SEO checklist plus sources & related links. */
+export function editorQuality(article: Article): {
+  checks: SeoCheck[];
+  passed: number;
+  total: number;
+  percent: number;
+  missing: string[];
+  ready: boolean;
+  criticalFail: boolean;
+} {
+  const base = seoCompleteness(article);
+  const sources = (article.sources || []).filter((s) => s.title?.trim());
+  const related = article.relatedArticleNumbers || [];
+
+  const extra: SeoCheck[] = [
+    {
+      id: "sources",
+      label: "At least 1 source",
+      pass: sources.length >= 1,
+    },
+    {
+      id: "related",
+      label: "Related article link",
+      pass: related.length >= 1,
+    },
+  ];
+
+  const checks = [...base.checks, ...extra];
+  const passed = checks.filter((c) => c.pass).length;
+  const total = checks.length;
+  const percent = total === 0 ? 0 : Math.round((passed / total) * 100);
+  const missing = checks.filter((c) => !c.pass).map((c) => c.label);
+
+  const byId = Object.fromEntries(checks.map((c) => [c.id, c.pass]));
+  const criticalFail = !(
+    byId.title &&
+    byId.slug &&
+    byId.taxonomy &&
+    byId.body &&
+    byId.featuredImage
+  );
+  const ready = percent >= 85 && !criticalFail;
+
+  return { checks, passed, total, percent, missing, ready, criticalFail };
 }

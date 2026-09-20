@@ -4,6 +4,7 @@ import { apiFetch, type Article } from "@/lib/api/client";
 import { useAuth } from "@/context/AuthContext";
 import { isWriter } from "@/constants/roles";
 import { AnalyticsOverviewCards } from "@/features/dashboard/components/AnalyticsOverviewCards";
+import { EditorDesk } from "@/features/dashboard/components/EditorDesk";
 import { WriterResumeCard } from "@/features/dashboard/components/WriterResumeCard";
 import { WriterWeeklyGoal } from "@/features/dashboard/components/WriterWeeklyGoal";
 import { WriterFeedbackInbox } from "@/features/dashboard/components/WriterFeedbackInbox";
@@ -43,6 +44,10 @@ export default function WriterDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (user && !isWriter(user.role)) {
+      setLoading(false);
+      return;
+    }
     void (async () => {
       try {
         const data = await apiFetch<{ articles: Article[] }>(
@@ -55,7 +60,7 @@ export default function WriterDashboardPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [user]);
 
   const stats = useMemo(() => {
     const total = articles.length;
@@ -92,63 +97,12 @@ export default function WriterDashboardPage() {
   const rejectedList = articles.filter((a) => a.status === "rejected");
 
   if (user && !isWriter(user.role)) {
-    const submitted = articles.filter((a) => a.status === "submitted").length;
-    const published = articles.filter((a) => a.status === "published").length;
-    const totalViews = articles
-      .filter((a) => a.status === "published")
-      .reduce((sum, a) => sum + (a.views ?? 0), 0);
-
     return (
-      <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="mt-2 text-slate-600">
-          Welcome, {user.name}. Use the sidebar to manage articles
-          {user.role === "admin" ? ", analytics, and activity logs" : ""}.
-        </p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          <Link
-            to="/articles"
-            className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-400"
-          >
-            <h2 className="font-semibold">Articles</h2>
-            <p className="mt-1 text-sm text-slate-500">Browse and edit</p>
-          </Link>
-          <Link
-            to="/articles/new"
-            className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-400"
-          >
-            <h2 className="font-semibold">New article</h2>
-            <p className="mt-1 text-sm text-slate-500">Write with taxonomy</p>
-          </Link>
-          {user.role === "admin" ? (
-            <Link
-              to="/admin/analytics"
-              className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-400"
-            >
-              <h2 className="font-semibold">Analytics</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                OpenPanel + editorial KPIs
-              </p>
-            </Link>
-          ) : (
-            <Link
-              to="/articles?status=submitted"
-              className="rounded-xl border border-slate-200 bg-white p-5 hover:border-sky-400"
-            >
-              <h2 className="font-semibold">Review queue</h2>
-              <p className="mt-1 text-sm text-slate-500">Submitted pieces</p>
-            </Link>
-          )}
-        </div>
-        {!loading ? (
-          <AnalyticsOverviewCards
-            role={user.role === "admin" ? "admin" : "editor"}
-            submitted={submitted}
-            published={published}
-            totalViews={totalViews}
-          />
-        ) : null}
-      </div>
+      <EditorDesk
+        userId={user.id}
+        userName={user.name}
+        isAdmin={user.role === "admin"}
+      />
     );
   }
 
