@@ -9,6 +9,8 @@ const envSchema = z.object({
     .default("http://localhost:3000,http://localhost:5173"),
   JWT_SECRET: z.string().min(8).default("dev-fitknowledge-jwt-change-me"),
   JWT_EXPIRES_IN: z.string().default("7d"),
+  /** Absolute origin for uploaded assets (e.g. https://api.example.com). Empty = request host. */
+  PUBLIC_ASSET_BASE_URL: z.string().default(""),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -25,4 +27,5 @@ export const env = {
   corsOrigins: parsed.data.CORS_ORIGINS.split(",").map((o) => o.trim()),
   jwtSecret: parsed.data.JWT_SECRET,
   jwtExpiresIn: parsed.data.JWT_EXPIRES_IN,
+  publicAssetBaseUrl: parsed.data.PUBLIC_ASSET_BASE_URL,
 };

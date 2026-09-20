@@ -7,11 +7,16 @@ import { healthRouter } from "./routes/health.routes";
 import { apiRouter } from "./routes/api.routes";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFoundHandler } from "./middleware/notFoundHandler";
+import { uploadsRoot } from "./routes/uploads.routes";
 
 export function createApp() {
   const app = express();
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
   app.use(
     cors({
       origin: env.corsOrigins,
@@ -20,6 +25,14 @@ export function createApp() {
   );
   app.use(express.json({ limit: "2mb" }));
   app.use(morgan(env.nodeEnv === "production" ? "combined" : "dev"));
+
+  app.use(
+    "/uploads",
+    express.static(uploadsRoot, {
+      maxAge: env.nodeEnv === "production" ? "7d" : 0,
+      fallthrough: true,
+    }),
+  );
 
   app.use("/health", healthRouter);
   app.use("/api/v1", apiRouter);

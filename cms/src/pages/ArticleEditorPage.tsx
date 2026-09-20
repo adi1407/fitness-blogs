@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import RichTextEditor from "@/components/RichTextEditor";
+import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "@/constants/blogTaxonomy";
 import { canPublish } from "@/constants/roles";
@@ -12,7 +13,7 @@ import {
   type TaxonomyCategory,
 } from "@/lib/api/client";
 import { trackCmsEvent } from "@/lib/analytics/openpanel";
-import { normalizeSlugInput, slugFromTitle } from "@/utils/articleSlug";
+import { normalizeSlugInput, slugFromTitle, formatSlugAsYouType, formatTagsAsYouType, tagsFromInput, tagsToInput } from "@/utils/articleSlug";
 
 type FaqItem = { question: string; answer: string };
 type SourceItem = { title: string; url: string; note: string };
@@ -186,7 +187,7 @@ export default function ArticleEditorPage() {
           featuredImageAlt: a.featuredImageAlt || "",
           featuredImageCaption: a.featuredImageCaption || "",
           quickAnswer: a.quickAnswer,
-          tagsCsv: (a.tags || []).join(", "),
+          tagsCsv: tagsToInput(a.tags || []),
           topics: a.topics || [],
           faq: (a.faq || []).map((f) => ({
             question: f.question,
@@ -278,10 +279,7 @@ export default function ArticleEditorPage() {
   }
 
   function buildPayloadFrom(state: FormState) {
-    const tags = state.tagsCsv
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean);
+    const tags = tagsFromInput(state.tagsCsv);
     return {
       title: state.title,
       slug: normalizeSlugInput(state.slug) || slugFromTitle(state.title),
@@ -646,11 +644,17 @@ export default function ArticleEditorPage() {
               value={form.slug}
               onChange={(e) => {
                 setSlugTouched(true);
-                patch("slug", normalizeSlugInput(e.target.value));
+                patch("slug", formatSlugAsYouType(e.target.value));
+              }}
+              onBlur={() => {
+                if (form.slug) patch("slug", normalizeSlugInput(form.slug));
               }}
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 font-mono text-sm"
               placeholder="how-much-protein-do-i-need"
             />
+            <span className="mt-1 block text-xs font-normal text-slate-500">
+              Spaces become hyphens automatically.
+            </span>
           </label>
           <label className="block text-sm font-medium">
             Category
@@ -694,13 +698,17 @@ export default function ArticleEditorPage() {
             />
           </label>
           <label className="block text-sm font-medium">
-            Tags (comma-separated)
+            Tags
             <input
               value={form.tagsCsv}
-              onChange={(e) => patch("tagsCsv", e.target.value)}
+              onChange={(e) => patch("tagsCsv", formatTagsAsYouType(e.target.value))}
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              placeholder="protein, indian diet, beginners"
+              placeholder="#protein #indian-diet #beginners"
             />
+            <span className="mt-1 block text-xs font-normal text-slate-500">
+              Type a word — <code className="rounded bg-slate-100 px-1">#</code> is
+              added for you. Space or comma starts the next tag.
+            </span>
           </label>
           <fieldset className="sm:col-span-2">
             <legend className="text-sm font-medium">Topics</legend>
@@ -757,10 +765,15 @@ export default function ArticleEditorPage() {
 
         <section className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="text-lg font-semibold">Body</h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Place the cursor where the image should appear, then click{" "}
+            <strong>Add image</strong> and choose a file from your computer.
+          </p>
           <div className="mt-3">
             <RichTextEditor
               value={form.body}
               onChange={(html) => patch("body", html)}
+              disabled={!canEditContent}
               placeholder="Write the full article…"
             />
           </div>
@@ -793,28 +806,34 @@ export default function ArticleEditorPage() {
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
             />
           </label>
-        <label className="block text-sm font-medium">
-          Featured image URL
-          <input
+        <div className="sm:col-span-2">
+          <ImageUrlUploadField
+            label="Featured / cover image"
             value={form.featuredImage}
-            onChange={(e) => patch("featuredImage", e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+            onChange={(url) => {
+              patch("featuredImage", url);
+              if (!form.ogImage.trim()) patch("ogImage", url);
+            }}
+            disabled={!canEditContent}
+            hint="Best: 1920×1080 (16:9), JPEG/WebP under 5 MB — article hero + social share."
           />
-        </label>
-        <label className="block text-sm font-medium">
-          OG image URL
-          <input
+        </div>
+        <div className="sm:col-span-2">
+          <ImageUrlUploadField
+            label="OG image (optional override)"
             value={form.ogImage}
-            onChange={(e) => patch("ogImage", e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+            onChange={(url) => patch("ogImage", url)}
+            disabled={!canEditContent}
+            hint="Defaults to the featured image. Same 1920×1080 guidance if you override."
           />
-        </label>
+        </div>
         <label className="block text-sm font-medium">
           Cover alt text
           <input
             value={form.featuredImageAlt}
             onChange={(e) => patch("featuredImageAlt", e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+            disabled={!canEditContent}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
           />
         </label>
         <label className="block text-sm font-medium">
@@ -822,7 +841,8 @@ export default function ArticleEditorPage() {
           <input
             value={form.featuredImageCaption}
             onChange={(e) => patch("featuredImageCaption", e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+            disabled={!canEditContent}
+            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
           />
         </label>
       </section>

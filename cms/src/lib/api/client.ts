@@ -41,6 +41,34 @@ export async function apiFetch<T>(
   return response.json() as Promise<T>;
 }
 
+/** Multipart upload — do not set Content-Type (browser sets boundary). */
+export async function apiUpload<T>(
+  path: string,
+  formData: FormData,
+): Promise<T> {
+  const token = getToken();
+  const response = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    let message = `Upload failed (${response.status})`;
+    try {
+      const data = (await response.json()) as { message?: string };
+      if (data.message) message = data.message;
+    } catch {
+      /* ignore */
+    }
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export type StaffRole = "admin" | "editor" | "writer";
 
 export type CmsUser = {
