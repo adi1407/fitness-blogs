@@ -13,7 +13,16 @@ import {
   type TaxonomyCategory,
 } from "@/lib/api/client";
 import { trackCmsEvent } from "@/lib/analytics/openpanel";
-import { normalizeSlugInput, slugFromTitle, formatSlugAsYouType, formatTagsAsYouType, tagsFromInput, tagsToInput } from "@/utils/articleSlug";
+import {
+  normalizeSlugInput,
+  slugFromTitle,
+  formatSlugAsYouType,
+  insertSlugHyphenAt,
+  formatTagsAsYouType,
+  finalizeTagsInput,
+  tagsFromInput,
+  tagsToInput,
+} from "@/utils/articleSlug";
 
 type FaqItem = { question: string; answer: string };
 type SourceItem = { title: string; url: string; note: string };
@@ -646,6 +655,19 @@ export default function ArticleEditorPage() {
                 setSlugTouched(true);
                 patch("slug", formatSlugAsYouType(e.target.value));
               }}
+              onKeyDown={(e) => {
+                if (e.key !== " " && e.code !== "Space") return;
+                e.preventDefault();
+                setSlugTouched(true);
+                const el = e.currentTarget;
+                const start = el.selectionStart ?? form.slug.length;
+                const end = el.selectionEnd ?? form.slug.length;
+                const { next, caret } = insertSlugHyphenAt(form.slug, start, end);
+                patch("slug", next);
+                requestAnimationFrame(() => {
+                  el.setSelectionRange(caret, caret);
+                });
+              }}
               onBlur={() => {
                 if (form.slug) patch("slug", normalizeSlugInput(form.slug));
               }}
@@ -653,7 +675,7 @@ export default function ArticleEditorPage() {
               placeholder="how-much-protein-do-i-need"
             />
             <span className="mt-1 block text-xs font-normal text-slate-500">
-              Spaces become hyphens automatically.
+              Press space → inserts a hyphen, then type the next word.
             </span>
           </label>
           <label className="block text-sm font-medium">
@@ -701,13 +723,22 @@ export default function ArticleEditorPage() {
             Tags
             <input
               value={form.tagsCsv}
-              onChange={(e) => patch("tagsCsv", formatTagsAsYouType(e.target.value))}
+              onChange={(e) =>
+                patch("tagsCsv", formatTagsAsYouType(e.target.value))
+              }
+              onBlur={() => {
+                if (form.tagsCsv.trim()) {
+                  patch("tagsCsv", finalizeTagsInput(form.tagsCsv));
+                }
+              }}
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              placeholder="#protein #indian-diet #beginners"
+              placeholder="protein indian-diet beginners"
             />
             <span className="mt-1 block text-xs font-normal text-slate-500">
-              Type a word — <code className="rounded bg-slate-100 px-1">#</code> is
-              added for you. Space or comma starts the next tag.
+              Type a word, then press space —{" "}
+              <code className="rounded bg-slate-100 px-1">#</code> is added in
+              front (e.g. <code className="rounded bg-slate-100 px-1">protein</code>{" "}
+              → <code className="rounded bg-slate-100 px-1">#protein</code>).
             </span>
           </label>
           <fieldset className="sm:col-span-2">
