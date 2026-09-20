@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { isWriter } from "@/constants/roles";
 import { AnalyticsOverviewCards } from "@/features/dashboard/components/AnalyticsOverviewCards";
 import { EditorDesk } from "@/features/dashboard/components/EditorDesk";
+import { AdminDesk } from "@/features/dashboard/components/AdminDesk";
 import { WriterResumeCard } from "@/features/dashboard/components/WriterResumeCard";
 import { WriterWeeklyGoal } from "@/features/dashboard/components/WriterWeeklyGoal";
 import { WriterFeedbackInbox } from "@/features/dashboard/components/WriterFeedbackInbox";
@@ -97,11 +98,14 @@ export default function WriterDashboardPage() {
   const rejectedList = articles.filter((a) => a.status === "rejected");
 
   if (user && !isWriter(user.role)) {
+    if (user.role === "admin") {
+      return <AdminDesk userName={user.name} />;
+    }
     return (
       <EditorDesk
         userId={user.id}
         userName={user.name}
-        isAdmin={user.role === "admin"}
+        isAdmin={false}
       />
     );
   }
