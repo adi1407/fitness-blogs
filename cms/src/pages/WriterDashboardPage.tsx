@@ -4,6 +4,17 @@ import { apiFetch, type Article } from "@/lib/api/client";
 import { useAuth } from "@/context/AuthContext";
 import { isWriter } from "@/constants/roles";
 import { AnalyticsOverviewCards } from "@/features/dashboard/components/AnalyticsOverviewCards";
+import { WriterResumeCard } from "@/features/dashboard/components/WriterResumeCard";
+import { WriterWeeklyGoal } from "@/features/dashboard/components/WriterWeeklyGoal";
+import { WriterFeedbackInbox } from "@/features/dashboard/components/WriterFeedbackInbox";
+import { WriterReviewQueue } from "@/features/dashboard/components/WriterReviewQueue";
+import { WriterSeoChecklist } from "@/features/dashboard/components/WriterSeoChecklist";
+import { WriterPillarClusters } from "@/features/dashboard/components/WriterPillarClusters";
+import { WriterTopViews } from "@/features/dashboard/components/WriterTopViews";
+import {
+  pickResumeArticle,
+  publishedThisWeek,
+} from "@/features/dashboard/utils/writerMetrics";
 
 function StatTile({
   label,
@@ -22,56 +33,6 @@ function StatTile({
       <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
       {hint ? <p className="mt-1 text-xs text-slate-400">{hint}</p> : null}
     </div>
-  );
-}
-
-function ArticleBucket({
-  title,
-  articles,
-  showViews,
-}: {
-  title: string;
-  articles: Article[];
-  showViews?: boolean;
-}) {
-  return (
-    <section className="rounded-xl border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 px-4 py-3">
-        <h2 className="font-semibold text-slate-900">{title}</h2>
-      </div>
-      <ul className="divide-y divide-slate-100">
-        {articles.length === 0 ? (
-          <li className="px-4 py-6 text-sm text-slate-500">None yet.</li>
-        ) : (
-          articles.map((a) => (
-            <li key={a.id} className="flex items-center justify-between gap-3 px-4 py-3">
-              <div className="min-w-0">
-                <Link
-                  to={`/articles/${a.id}`}
-                  className="font-medium text-sky-700 hover:underline"
-                >
-                  {a.title || "Untitled"}
-                </Link>
-                <p className="truncate text-xs text-slate-500">
-                  {a.articleNumber ? `#${a.articleNumber}` : "—"}
-                  {a.categoryLabel ? ` · ${a.categoryLabel}` : ""}
-                  {a.subcategoryLabel ? ` / ${a.subcategoryLabel}` : ""}
-                </p>
-              </div>
-              {showViews ? (
-                <span className="shrink-0 text-xs font-semibold text-slate-500">
-                  {a.views} views
-                </span>
-              ) : (
-                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs capitalize">
-                  {a.status}
-                </span>
-              )}
-            </li>
-          ))
-        )}
-      </ul>
-    </section>
   );
 }
 
@@ -104,15 +65,31 @@ export default function WriterDashboardPage() {
       (a) => a.status === "changes_requested",
     ).length;
     const rejected = articles.filter((a) => a.status === "rejected").length;
-    return { total, published, submitted, needsChanges, rejected };
+    const live = articles.filter((a) => a.status === "published");
+    const totalViews = live.reduce((sum, a) => sum + (a.views ?? 0), 0);
+    const avgViews =
+      live.length === 0 ? 0 : Math.round(totalViews / live.length);
+    return {
+      total,
+      published,
+      submitted,
+      needsChanges,
+      rejected,
+      totalViews,
+      avgViews,
+    };
   }, [articles]);
 
-  const drafts = articles.filter((a) => a.status === "draft");
+  const resume = useMemo(() => pickResumeArticle(articles), [articles]);
+  const weekPublishes = useMemo(
+    () => publishedThisWeek(articles).length,
+    [articles],
+  );
   const inReview = articles.filter((a) => a.status === "submitted");
-  const needsChanges = articles.filter(
+  const needsChangesList = articles.filter(
     (a) => a.status === "changes_requested",
   );
-  const live = articles.filter((a) => a.status === "published");
+  const rejectedList = articles.filter((a) => a.status === "rejected");
 
   if (user && !isWriter(user.role)) {
     const submitted = articles.filter((a) => a.status === "submitted").length;
@@ -181,8 +158,8 @@ export default function WriterDashboardPage() {
         <div>
           <h1 className="text-2xl font-bold">Writer desk</h1>
           <p className="mt-1 text-slate-600">
-            Track drafts, reviews, and live articles — with view counts on
-            published pieces.
+            Resume drafts, clear editor feedback, hit your weekly goal, and
+            deepen pillar clusters — with views on live pieces.
           </p>
         </div>
         <Link
@@ -197,31 +174,62 @@ export default function WriterDashboardPage() {
       {loading ? (
         <p className="mt-8 text-slate-500">Loading…</p>
       ) : (
-        <>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-8 space-y-8">
+          <WriterResumeCard article={resume} />
+
+          {user ? (
+            <WriterWeeklyGoal
+              userId={user.id}
+              publishedThisWeek={weekPublishes}
+            />
+          ) : null}
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <StatTile label="Total" value={stats.total} />
             <StatTile label="Live" value={stats.published} hint="Published" />
-            <StatTile label="In review" value={stats.submitted} hint="Submitted" />
+            <StatTile
+              label="In review"
+              value={stats.submitted}
+              hint="Submitted"
+            />
             <StatTile
               label="Needs changes"
               value={stats.needsChanges}
               hint="Sent back"
             />
-            <StatTile label="Rejected" value={stats.rejected} />
+            <StatTile
+              label="Total views"
+              value={stats.totalViews}
+              hint="Across live pieces"
+            />
+            <StatTile
+              label="Avg views"
+              value={stats.avgViews}
+              hint="Per live article"
+            />
           </div>
+
           <AnalyticsOverviewCards
             role="writer"
             submitted={stats.submitted}
             published={stats.published}
-            totalViews={live.reduce((sum, a) => sum + (a.views ?? 0), 0)}
+            totalViews={stats.totalViews}
           />
-          <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-            <ArticleBucket title="Drafts" articles={drafts} />
-            <ArticleBucket title="In review" articles={inReview} />
-            <ArticleBucket title="Needs changes" articles={needsChanges} />
-            <ArticleBucket title="Live" articles={live} showViews />
+
+          <WriterFeedbackInbox
+            needsChanges={needsChangesList}
+            rejected={rejectedList}
+          />
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <WriterReviewQueue articles={inReview} />
+            <WriterSeoChecklist articles={articles} />
           </div>
-        </>
+
+          <WriterPillarClusters articles={articles} />
+
+          <WriterTopViews articles={articles} />
+        </div>
       )}
     </div>
   );
