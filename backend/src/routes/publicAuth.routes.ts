@@ -213,15 +213,9 @@ publicAuthRouter.get("/google/callback", async (req, res) => {
       summary: `Google sign-in ${memberRow.email}`,
     });
 
-    const member = mapMember(memberRow);
-    const dest = new URL("/auth/callback", env.publicSiteUrl);
+    const dest = new URL("/api/auth/session", env.publicSiteUrl);
     dest.searchParams.set("token", token);
     dest.searchParams.set("next", next);
-    // So the frontend can finish login without a cross-origin /me round-trip.
-    dest.searchParams.set(
-      "member",
-      Buffer.from(JSON.stringify(member), "utf8").toString("base64url"),
-    );
     res.redirect(dest.toString());
   } catch (err) {
     console.error("[google-auth]", err);

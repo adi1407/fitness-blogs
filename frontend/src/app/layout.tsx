@@ -5,6 +5,8 @@ import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import { OpenPanelProvider } from "@/components/analytics/OpenPanelProvider";
 import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
+import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
+import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
@@ -111,13 +113,16 @@ export default function RootLayout({
         <JsonLd data={websiteJsonLd} />
         <JsonLd data={orgJsonLd} />
         <MemberAuthProvider>
-          <SiteHeader />
-          <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
-            <Suspense fallback={null}>
-              <OpenPanelProvider>{children}</OpenPanelProvider>
-            </Suspense>
-          </div>
-          <SiteFooter />
+          <CookieConsentProvider>
+            <SiteHeader />
+            <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
+              <Suspense fallback={null}>
+                <OpenPanelProvider>{children}</OpenPanelProvider>
+              </Suspense>
+            </div>
+            <SiteFooter />
+            <CookieBanner />
+          </CookieConsentProvider>
         </MemberAuthProvider>
       </body>
     </html>

@@ -3,65 +3,26 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import {
-  useMemberAuth,
-  type Member,
-} from "@/features/auth/MemberAuthContext";
-
-function decodeMemberParam(raw: string | null): Member | null {
-  if (!raw) return null;
-  try {
-    const padded =
-      raw.replace(/-/g, "+").replace(/_/g, "/") +
-      "=".repeat((4 - (raw.length % 4)) % 4);
-    const json = atob(padded);
-    const parsed = JSON.parse(json) as Member;
-    if (
-      typeof parsed?.id === "string" &&
-      typeof parsed?.email === "string"
-    ) {
-      return {
-        id: parsed.id,
-        email: parsed.email,
-        name: typeof parsed.name === "string" ? parsed.name : "",
-        picture: typeof parsed.picture === "string" ? parsed.picture : "",
-      };
-    }
-  } catch {
-    /* ignore */
-  }
-  return null;
-}
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 
 function CallbackInner() {
   const router = useRouter();
   const search = useSearchParams();
-  const { setSession } = useMemberAuth();
+  const { refresh } = useMemberAuth();
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = search.get("token");
     const next = search.get("next");
     const dest =
       next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
-    const member = decodeMemberParam(search.get("member"));
-
-    if (!token) {
-      setError("Missing sign-in token.");
-      return;
-    }
 
     void (async () => {
-      try {
-        await setSession(token, member);
-        router.replace(dest);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Could not complete sign-in.",
-        );
-      }
-    })();
-  }, [search, setSession, router]);
+      await refresh();
+      router.replace(dest);
+    })().catch(() => {
+      setError("Could not complete sign-in.");
+    });
+  }, [search, refresh, router]);
 
   if (error) {
     return (

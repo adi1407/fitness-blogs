@@ -10,8 +10,6 @@ import {
   type ReactNode,
 } from "react";
 
-const TOKEN_KEY = "fk_member_token";
-
 export type Member = {
   id: string;
   email: string;
@@ -21,18 +19,16 @@ export type Member = {
 
 type MemberAuthContextValue = {
   member: Member | null;
-  token: string | null;
   loading: boolean;
-  setSession: (token: string, member?: Member | null) => Promise<void>;
   logout: () => void;
   refresh: () => Promise<void>;
 };
 
 const MemberAuthContext = createContext<MemberAuthContextValue | null>(null);
 
-/** Same-origin Next proxies — do not call Render from the browser. */
 const ME_URL = "/api/auth/me";
 const LOGOUT_URL = "/api/auth/logout";
+const LEGACY_TOKEN_KEY = "fk_member_token";
 
 function isMember(value: unknown): value is Member {
   if (!value || typeof value !== "object") return false;
@@ -47,31 +43,26 @@ function isMember(value: unknown): value is Member {
 
 export function MemberAuthProvider({ children }: { children: ReactNode }) {
   const [member, setMember] = useState<Member | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
-    const stored =
-      typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
-    if (!stored) {
-      setMember(null);
-      setToken(null);
-      setLoading(false);
-      return;
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(LEGACY_TOKEN_KEY);
+      } catch {
+        /* ignore */
+      }
     }
     try {
       const res = await fetch(ME_URL, {
-        headers: { Authorization: `Bearer ${stored}` },
         cache: "no-store",
+        credentials: "same-origin",
       });
       if (!res.ok) throw new Error("invalid");
       const data = (await res.json()) as { member: Member };
       if (!isMember(data.member)) throw new Error("invalid");
-      setToken(stored);
       setMember(data.member);
     } catch {
-      localStorage.removeItem(TOKEN_KEY);
-      setToken(null);
       setMember(null);
     } finally {
       setLoading(false);
@@ -82,56 +73,16 @@ export function MemberAuthProvider({ children }: { children: ReactNode }) {
     void refresh();
   }, [refresh]);
 
-  const setSession = useCallback(
-    async (nextToken: string, bootstrapMember?: Member | null) => {
-      localStorage.setItem(TOKEN_KEY, nextToken);
-      setToken(nextToken);
-      setLoading(true);
-      try {
-        // Prefer member from OAuth redirect — avoids /me when proxy isn't ready.
-        if (isMember(bootstrapMember)) {
-          setMember(bootstrapMember);
-          return;
-        }
-
-        const res = await fetch(ME_URL, {
-          headers: { Authorization: `Bearer ${nextToken}` },
-          cache: "no-store",
-        });
-        const data = (await res.json().catch(() => ({}))) as {
-          member?: Member;
-          message?: string;
-        };
-        if (!res.ok || !isMember(data.member)) {
-          throw new Error(
-            data.message || `Session check failed (${res.status})`,
-          );
-        }
-        setMember(data.member);
-      } catch (err) {
-        localStorage.removeItem(TOKEN_KEY);
-        setToken(null);
-        setMember(null);
-        throw err instanceof Error
-          ? err
-          : new Error("Could not establish session");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
   const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
     setMember(null);
-    void fetch(LOGOUT_URL, { method: "POST" }).catch(() => undefined);
+    void fetch(LOGOUT_URL, { method: "POST", credentials: "same-origin" }).catch(
+      () => undefined,
+    );
   }, []);
 
   const value = useMemo(
-    () => ({ member, token, loading, setSession, logout, refresh }),
-    [member, token, loading, setSession, logout, refresh],
+    () => ({ member, loading, logout, refresh }),
+    [member, loading, logout, refresh],
   );
 
   return (

@@ -82,8 +82,9 @@ export default function PrivacyPage() {
           your member id.
         </li>
         <li>
-          <strong>Session</strong>: a signed token stored in your browser
-          (currently local storage) so we know you are signed in.
+          <strong>Session</strong>: an HttpOnly cookie (fk_member) on this
+          site after Google sign-in. JavaScript cannot read it. Next.js
+          forwards it to our API as a Bearer token server-side.
         </li>
         <li>
           <strong>Technical logs</strong>: IP address, user agent, request
@@ -160,7 +161,10 @@ export default function PrivacyPage() {
         <Link href="/cookie-policy" className="fk-link">
           Cookie Policy
         </Link>{" "}
-        for essential vs analytics use and how to control them.
+        for essential vs analytics use. A consent banner lets you accept all,
+        keep essential only, or customize. You can reopen{" "}
+        <strong>Cookie settings</strong> from the footer at any time. Analytics
+        (OpenPanel) does not run until you opt in.
       </p>
 
       <LegalH2 id="retention">8. Retention</LegalH2>

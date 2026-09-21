@@ -1,17 +1,5 @@
 import { NextResponse } from "next/server";
-
-function apiBase() {
-  const fromEnv = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL) {
-    return "https://fitness-blogs-xkec.onrender.com/api/v1";
-  }
-  return "http://localhost:4000/api/v1";
-}
+import { apiBase, MEMBER_COOKIE } from "@/lib/auth/memberCookie";
 
 export async function POST() {
   try {
@@ -22,5 +10,13 @@ export async function POST() {
   } catch {
     /* ignore */
   }
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(MEMBER_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+  return res;
 }

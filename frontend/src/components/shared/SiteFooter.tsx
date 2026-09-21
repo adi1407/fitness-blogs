@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/shared/CookieBanner";
 
 const explore = [
   { href: "/", label: "Home" },
@@ -112,6 +113,8 @@ export function SiteFooter() {
             <Link href="/privacy" className="fk-link text-xs">
               Privacy
             </Link>
+            {" · "}
+            <CookieSettingsButton />
             .
           </p>
         </div>

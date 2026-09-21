@@ -1,17 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function apiBase() {
-  const fromEnv = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL) {
-    return "https://fitness-blogs-xkec.onrender.com/api/v1";
-  }
-  return "http://localhost:4000/api/v1";
-}
+import { apiBase, bearerFromRequest } from "@/lib/auth/memberCookie";
 
 async function proxy(
   req: NextRequest,
@@ -19,7 +7,7 @@ async function proxy(
   suffix: string,
   method: string,
 ) {
-  const auth = req.headers.get("authorization");
+  const auth = bearerFromRequest(req);
   const headers: HeadersInit = {};
   if (auth) headers.Authorization = auth;
 

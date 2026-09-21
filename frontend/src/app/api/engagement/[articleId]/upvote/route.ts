@@ -1,21 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function apiBase() {
-  const fromEnv = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL) {
-    return "https://fitness-blogs-xkec.onrender.com/api/v1";
-  }
-  return "http://localhost:4000/api/v1";
-}
+import { apiBase, bearerFromRequest } from "@/lib/auth/memberCookie";
 
 async function proxy(req: NextRequest, articleId: string, method: string) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) {
+  const auth = bearerFromRequest(req);
+  if (!auth) {
     return NextResponse.json(
       { message: "Sign in required", code: "AUTH_REQUIRED" },
       { status: 401 },

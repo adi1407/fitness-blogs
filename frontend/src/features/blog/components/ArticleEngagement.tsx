@@ -13,13 +13,10 @@ type EngagementState = {
   bookmarked: boolean;
 };
 
-async function fetchEngagement(
-  articleId: string,
-  token: string | null,
-): Promise<EngagementState> {
+async function fetchEngagement(articleId: string): Promise<EngagementState> {
   const res = await fetch(`/api/engagement/${encodeURIComponent(articleId)}`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     cache: "no-store",
+    credentials: "same-origin",
   });
   if (!res.ok) {
     return { upvoteCount: 0, upvoted: false, bookmarked: false };
@@ -36,7 +33,7 @@ export function ArticleEngagement({
   className?: string;
   compact?: boolean;
 }) {
-  const { member, token, loading: authLoading } = useMemberAuth();
+  const { member, loading: authLoading } = useMemberAuth();
   const [state, setState] = useState<EngagementState>({
     upvoteCount: 0,
     upvoted: false,
@@ -47,17 +44,17 @@ export function ArticleEngagement({
 
   const load = useCallback(async () => {
     if (!articleId) return;
-    const next = await fetchEngagement(articleId, token);
+    const next = await fetchEngagement(articleId);
     setState(next);
-  }, [articleId, token]);
+  }, [articleId]);
 
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, member]);
 
   function requireSignIn(actionLabel: string) {
     if (authLoading) return false;
-    if (!member || !token) {
+    if (!member) {
       setGateAction(actionLabel);
       return false;
     }
@@ -73,8 +70,8 @@ export function ArticleEngagement({
         `/api/engagement/${encodeURIComponent(articleId)}/upvote`,
         {
           method,
-          headers: { Authorization: `Bearer ${token}` },
           cache: "no-store",
+          credentials: "same-origin",
         },
       );
       const data = (await res.json().catch(() => ({}))) as {
@@ -113,8 +110,8 @@ export function ArticleEngagement({
         `/api/engagement/${encodeURIComponent(articleId)}/bookmark`,
         {
           method,
-          headers: { Authorization: `Bearer ${token}` },
           cache: "no-store",
+          credentials: "same-origin",
         },
       );
       const data = (await res.json().catch(() => ({}))) as {
