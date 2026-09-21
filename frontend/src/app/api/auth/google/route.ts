@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 function apiBase() {
-  return (
+  const fromEnv = (
     process.env.API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:4000/api/v1"
+    ""
   ).replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  if (process.env.VERCEL) {
+    return "https://fitness-blogs-xkec.onrender.com/api/v1";
+  }
+  return "http://localhost:4000/api/v1";
 }
 
 /**
