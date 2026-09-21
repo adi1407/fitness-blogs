@@ -11,6 +11,7 @@ import {
   AlertDialogCancel,
 } from "@/components/animate-ui/components/base/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { LEGAL_CONTACT_MAILTO } from "@/lib/legal";
 
 export function ContactEmailDialog() {
   return (
@@ -34,7 +35,7 @@ export function ContactEmailDialog() {
         </AlertDialogPopup>
       </AlertDialog>
       <a
-        href="mailto:hello@fitknowledge.example"
+        href={LEGAL_CONTACT_MAILTO}
         className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/80"
       >
         Email us

@@ -170,6 +170,12 @@ export default function AboutPage() {
           <Link href="/medical-disclaimer" className="hover:underline">
             Medical disclaimer
           </Link>
+          <Link href="/terms" className="hover:underline">
+            Terms
+          </Link>
+          <Link href="/privacy" className="hover:underline">
+            Privacy
+          </Link>
           <Link href="/authors" className="hover:underline">
             Authors
           </Link>

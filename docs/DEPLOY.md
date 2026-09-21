@@ -82,6 +82,17 @@ Free web services **sleep**. First hit after idle can take ~30–60s. Prefer a p
 2. Confirm **Root Directory** = `frontend`.
 3. **Deployments** → Redeploy (required — `NEXT_PUBLIC_*` is build-time).
 
+### Google OAuth consent screen (required for public sign-in)
+
+After the frontend is live, in Google Cloud Console → **OAuth consent screen**, set:
+
+- Privacy policy: `https://YOUR-FRONTEND.vercel.app/privacy`
+- Terms of service: `https://YOUR-FRONTEND.vercel.app/terms`
+
+Production example: `https://fitness-blogs-liard.vercel.app/privacy` and `/terms`.
+
+These pages are educational-site policy templates, not a licensed legal opinion.
+
 ---
 
 ## D. Vercel — CMS (new project)

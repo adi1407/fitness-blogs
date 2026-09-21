@@ -19,19 +19,28 @@ const tools = [
   { href: "/tools/bmi-calculator", label: "BMI Calculator" },
 ];
 
-const resources = [
+const trust = [
   { href: "/about", label: "About" },
   { href: "/authors", label: "Authors" },
   { href: "/editorial-policy", label: "Editorial Policy" },
-  { href: "/medical-disclaimer", label: "Medical Disclaimer" },
   { href: "/contact", label: "Contact" },
+];
+
+const legal = [
+  { href: "/terms", label: "Terms of Use" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/cookie-policy", label: "Cookie Policy" },
+  { href: "/medical-disclaimer", label: "Medical Disclaimer" },
+  { href: "/nutrition-disclaimer", label: "Nutrition Disclaimer" },
+  { href: "/affiliate-disclosure", label: "Affiliate Disclosure" },
+  { href: "/corrections", label: "Corrections" },
 ];
 
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-border bg-white">
-      <div className="fk-page grid gap-10 py-14 md:grid-cols-4">
-        <div className="md:col-span-1">
+      <div className="fk-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
+        <div>
           <p className="text-lg font-semibold text-foreground">FitKnowledge</p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             Evidence-informed fitness, nutrition, and training — built as a
@@ -63,9 +72,21 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="fk-meta text-foreground">Resources</p>
+          <p className="fk-meta text-foreground">Trust</p>
           <ul className="mt-4 space-y-2">
-            {resources.map((item) => (
+            {trust.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="fk-link-muted">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="fk-meta text-foreground">Legal</p>
+          <ul className="mt-4 space-y-2">
+            {legal.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="fk-link-muted">
                   {item.label}
@@ -79,9 +100,17 @@ export function SiteFooter() {
         <div className="fk-page flex flex-col gap-2 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} FitKnowledge. Educational use only.</p>
           <p>
-            Not medical advice — see our{" "}
+            Not medical advice —{" "}
             <Link href="/medical-disclaimer" className="fk-link text-xs">
-              disclaimer
+              Medical disclaimer
+            </Link>
+            {" · "}
+            <Link href="/terms" className="fk-link text-xs">
+              Terms
+            </Link>
+            {" · "}
+            <Link href="/privacy" className="fk-link text-xs">
+              Privacy
             </Link>
             .
           </p>

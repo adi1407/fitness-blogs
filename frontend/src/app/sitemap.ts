@@ -27,6 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/authors",
     "/editorial-policy",
     "/medical-disclaimer",
+    "/nutrition-disclaimer",
+    "/terms",
+    "/privacy",
+    "/cookie-policy",
+    "/affiliate-disclosure",
+    "/corrections",
     "/contact",
   ];
 

@@ -56,6 +56,8 @@ const MOBILE_TRUST = [
   { label: "About", href: "/about" },
   { label: "Authors", href: "/authors" },
   { label: "Editorial policy", href: "/editorial-policy" },
+  { label: "Terms of Use", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
   { label: "Contact", href: "/contact" },
 ] as const;
 

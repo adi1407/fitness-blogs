@@ -69,8 +69,14 @@ export default function EditorialPolicyPage() {
         <Link href="/medical-disclaimer" className="fk-link">
           Medical disclaimer
         </Link>
+        <Link href="/corrections" className="fk-link">
+          Corrections
+        </Link>
         <Link href="/authors" className="fk-link">
           Authors
+        </Link>
+        <Link href="/privacy" className="fk-link">
+          Privacy
         </Link>
       </div>
     </main>
