@@ -169,6 +169,21 @@ CREATE TABLE IF NOT EXISTS staff_notifications (
 
 CREATE INDEX IF NOT EXISTS idx_staff_notifications_user
   ON staff_notifications(user_id, is_read, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL DEFAULT '',
+  picture TEXT NOT NULL DEFAULT '',
+  google_sub TEXT NOT NULL UNIQUE,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_login_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_members_google_sub ON members(google_sub);
+CREATE INDEX IF NOT EXISTS idx_members_email ON members(email);
 `;
 
 const SEED_USERS = [

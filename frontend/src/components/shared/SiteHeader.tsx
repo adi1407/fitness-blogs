@@ -10,12 +10,15 @@ import {
   ChevronDown,
   Dumbbell,
   Home,
+  LogOut,
   Salad,
   Sparkles,
+  UserRound,
   X,
 } from "lucide-react";
 import { colorSchema } from "@/styles/color-schema";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 
 const PRIMARY_NAV = [
   { label: "Home", href: "/" },
@@ -75,6 +78,7 @@ function isCategoryActive(pathname: string, href: string) {
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { member, loading: authLoading, logout } = useMemberAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openPillar, setOpenPillar] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -186,6 +190,39 @@ export function SiteHeader() {
                 </Link>
               );
             })}
+            {!authLoading && member ? (
+              <div className="ml-2 flex items-center gap-2 pl-2">
+                {member.picture ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={member.picture}
+                    alt=""
+                    className="size-8 rounded-full object-cover ring-1 ring-border"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="inline-flex size-8 items-center justify-center rounded-full bg-muted">
+                    <UserRound className="size-4" />
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                >
+                  <LogOut className="size-3.5" />
+                  Sign out
+                </button>
+              </div>
+            ) : !authLoading ? (
+              <Link
+                href={`/login?next=${encodeURIComponent(pathname)}`}
+                className="ml-2 inline-flex h-9 items-center rounded-full px-4 text-[15px] font-semibold text-white transition hover:opacity-90"
+                style={{ background: brand }}
+              >
+                Sign in
+              </Link>
+            ) : null}
           </nav>
 
           <button
@@ -519,6 +556,51 @@ export function SiteHeader() {
               </div>
 
               <div className="border-t border-border bg-muted/50 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                {!authLoading && member ? (
+                  <div className="mb-3 flex items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3">
+                    {member.picture ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={member.picture}
+                        alt=""
+                        className="size-10 rounded-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="inline-flex size-10 items-center justify-center rounded-full bg-muted">
+                        <UserRound className="size-4" />
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {member.name || member.email}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {member.email}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setMobileOpen(false);
+                      }}
+                      className="inline-flex size-10 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                      aria-label="Sign out"
+                    >
+                      <LogOut className="size-4" />
+                    </button>
+                  </div>
+                ) : !authLoading ? (
+                  <Link
+                    href={`/login?next=${encodeURIComponent(pathname)}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="mb-3 flex w-full items-center justify-center rounded-2xl px-4 py-3.5 text-sm font-semibold text-white"
+                    style={{ background: brand }}
+                  >
+                    Sign in with Google
+                  </Link>
+                ) : null}
                 <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
                   Educational only — not medical advice. Consult a professional
                   for personal decisions.

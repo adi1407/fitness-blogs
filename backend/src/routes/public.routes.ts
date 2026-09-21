@@ -4,12 +4,15 @@ import { pool } from "../db/pool";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "../constants/blogTaxonomy";
 import { env } from "../config/env";
 import { resolveRedirect } from "../services/urlRedirects";
+import { publicAuthRouter } from "./publicAuth.routes";
 import {
   mapArticle,
   resolveRelatedArticles,
 } from "./articles.routes";
 
 export const publicRouter = Router();
+
+publicRouter.use("/auth", publicAuthRouter);
 
 const ARTICLE_SELECT = `
   SELECT a.*,
