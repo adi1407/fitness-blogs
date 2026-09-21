@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SocialLinks } from "@/components/ui/social-links";
 import {
   ArticleShare,
   ArticleToc,
@@ -523,7 +524,14 @@ export function BlogArticleView({
       </main>
 
       {!preview ? (
-        <ArticleMobileActionBar title={article.title} url={absoluteUrl} />
+        <>
+          <SocialLinks
+            url={absoluteUrl}
+            title={article.title}
+            floatingButtonColor="bg-[#0A0A0A]"
+          />
+          <ArticleMobileActionBar title={article.title} url={absoluteUrl} />
+        </>
       ) : null}
     </KeepAtmosphere>
   );
