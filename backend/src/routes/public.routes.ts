@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "../constants/blogTaxonomy";
 import { env } from "../config/env";
+import { resolveRedirect } from "../services/urlRedirects";
 import {
   mapArticle,
   resolveRelatedArticles,
@@ -29,6 +30,17 @@ const ARTICLE_SELECT = `
 function mapPublic(row: Record<string, unknown>) {
   return mapArticle(row);
 }
+
+publicRouter.get("/redirects/resolve", async (req, res) => {
+  const path =
+    typeof req.query.path === "string" ? req.query.path : "";
+  const to = await resolveRedirect(path);
+  if (!to) {
+    res.status(404).json({ message: "No redirect" });
+    return;
+  }
+  res.json({ from: path, to });
+});
 
 publicRouter.get("/taxonomy", async (_req, res) => {
   const cats = await pool.query(

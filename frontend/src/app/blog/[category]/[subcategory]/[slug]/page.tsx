@@ -38,6 +38,10 @@ export async function generateMetadata({
   return {
     title,
     description,
+    robots:
+      article.robotsIndex === false
+        ? { index: false, follow: true }
+        : undefined,
     alternates: {
       canonical: article.path ?? undefined,
     },

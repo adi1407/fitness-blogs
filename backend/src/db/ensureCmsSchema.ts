@@ -140,6 +140,35 @@ CREATE TABLE IF NOT EXISTS article_revisions (
 
 CREATE INDEX IF NOT EXISTS idx_article_revisions_article
   ON article_revisions(article_id, revision_number DESC);
+
+CREATE TABLE IF NOT EXISTS url_redirects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  from_path TEXT NOT NULL,
+  to_path TEXT NOT NULL,
+  article_id UUID REFERENCES articles(id) ON DELETE SET NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT uq_url_redirects_from UNIQUE (from_path)
+);
+
+CREATE INDEX IF NOT EXISTS idx_url_redirects_active
+  ON url_redirects(from_path) WHERE is_active = TRUE;
+
+CREATE TABLE IF NOT EXISTS staff_notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind TEXT NOT NULL DEFAULT 'info',
+  title TEXT NOT NULL DEFAULT '',
+  body TEXT NOT NULL DEFAULT '',
+  href TEXT NOT NULL DEFAULT '',
+  article_id UUID REFERENCES articles(id) ON DELETE SET NULL,
+  is_read BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_staff_notifications_user
+  ON staff_notifications(user_id, is_read, created_at DESC);
 `;
 
 const SEED_USERS = [
@@ -186,6 +215,8 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS related_article_numbers INT[] NOT NULL DEFAULT '{}';
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]'::jsonb;
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS sources JSONB NOT NULL DEFAULT '[]'::jsonb;
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS robots_index BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE articles ADD COLUMN IF NOT EXISTS last_reviewed_at TIMESTAMPTZ;
   `);
 
   // Allow changes_requested status on existing DBs

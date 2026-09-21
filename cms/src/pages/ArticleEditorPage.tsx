@@ -5,6 +5,8 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
 import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
+import { PublishGatesPanel } from "@/features/articles/components/PublishGatesPanel";
+import { SerpSocialPreview } from "@/features/articles/components/SerpSocialPreview";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "@/constants/blogTaxonomy";
 import { canPublish } from "@/constants/roles";
 import { useAuth } from "@/context/AuthContext";
@@ -54,6 +56,8 @@ type FormState = {
   topics: string[];
   faq: FaqItem[];
   sources: SourceItem[];
+  robotsIndex: boolean;
+  lastReviewedAt: string;
 };
 
 const emptyForm: FormState = {
@@ -76,6 +80,8 @@ const emptyForm: FormState = {
   topics: [],
   faq: [],
   sources: [],
+  robotsIndex: true,
+  lastReviewedAt: "",
 };
 
 const SITE_ORIGIN =
@@ -118,6 +124,7 @@ export default function ArticleEditorPage() {
   const [dirty, setDirty] = useState(false);
   const [linkedArticles, setLinkedArticles] = useState<LinkedArticle[]>([]);
   const [assignment, setAssignment] = useState<AssignmentBrief | null>(null);
+  const [gatesRefresh, setGatesRefresh] = useState(0);
 
   const formRef = useRef(form);
   const articleIdRef = useRef(articleId);
@@ -227,6 +234,10 @@ export default function ArticleEditorPage() {
             url: s.url || "",
             note: s.note || "",
           })),
+          robotsIndex: a.robotsIndex !== false,
+          lastReviewedAt: a.lastReviewedAt
+            ? String(a.lastReviewedAt).slice(0, 10)
+            : "",
         });
         setLinkedArticles(
           (a.relatedArticleNumbers || []).map((n) => ({
@@ -330,6 +341,10 @@ export default function ArticleEditorPage() {
       relatedArticleNumbers: linkedRef.current.map((l) => l.articleNumber),
       faq: state.faq.filter((f) => f.question.trim() && f.answer.trim()),
       sources: state.sources.filter((s) => s.title.trim()),
+      robotsIndex: state.robotsIndex,
+      lastReviewedAt: state.lastReviewedAt
+        ? new Date(`${state.lastReviewedAt}T12:00:00.000Z`).toISOString()
+        : null,
     };
   }
 
@@ -373,6 +388,10 @@ export default function ArticleEditorPage() {
         url: s.url || "",
         note: s.note || "",
       })),
+      robotsIndex: a.robotsIndex !== false,
+      lastReviewedAt: a.lastReviewedAt
+        ? String(a.lastReviewedAt).slice(0, 10)
+        : "",
     });
     setLinkedArticles(
       (a.relatedArticleNumbers || []).map((n) => ({
@@ -384,6 +403,7 @@ export default function ArticleEditorPage() {
     setDirty(false);
     setSaveState("saved");
     setLastSavedAt(new Date(a.updatedAt));
+    setGatesRefresh((n) => n + 1);
     queueMicrotask(() => {
       skipAutosave.current = false;
     });
@@ -420,6 +440,7 @@ export default function ArticleEditorPage() {
     setDirty(false);
     setSaveState("saved");
     setLastSavedAt(new Date());
+    setGatesRefresh((n) => n + 1);
     return data.article.id;
   }
 
@@ -748,6 +769,24 @@ export default function ArticleEditorPage() {
       ) : null}
 
       {articleId ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <PublishGatesPanel
+            articleId={articleId}
+            refreshKey={gatesRefresh}
+          />
+          <SerpSocialPreview
+            title={form.title}
+            metaTitle={form.metaTitle}
+            metaDescription={form.metaDescription}
+            path={publicPath}
+            siteOrigin={SITE_ORIGIN}
+            ogImage={form.ogImage}
+            featuredImage={form.featuredImage}
+          />
+        </div>
+      ) : null}
+
+      {articleId ? (
         <ArticleRevisionsPanel
           articleId={articleId}
           canRestore={canEditContent}
@@ -1000,6 +1039,27 @@ export default function ArticleEditorPage() {
               onChange={(e) => patch("metaKeywords", e.target.value)}
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
             />
+          </label>
+          <label className="flex items-center gap-2 text-sm font-medium sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={form.robotsIndex}
+              onChange={(e) => patch("robotsIndex", e.target.checked)}
+              className="size-4 rounded border-slate-300"
+            />
+            Allow search indexing (robots index)
+          </label>
+          <label className="block text-sm font-medium">
+            Last reviewed
+            <input
+              type="date"
+              value={form.lastReviewedAt}
+              onChange={(e) => patch("lastReviewedAt", e.target.value)}
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
+            />
+            <span className="mt-1 block text-xs font-normal text-slate-500">
+              Used for the stale-content queue. Set when you refresh a live URL.
+            </span>
           </label>
         <div className="sm:col-span-2">
           <ImageUrlUploadField

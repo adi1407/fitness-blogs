@@ -4,10 +4,12 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import {
   BarChart3,
+  Bell,
   ClipboardList,
   FilePenLine,
   FileText,
   LayoutDashboard,
+  Link2,
   ListTodo,
   LogOut,
   PenLine,
@@ -100,6 +102,12 @@ function navForRole(role: StaffRole): NavItem[] {
         icon: ListTodo,
         match: (p) => p.startsWith("/assignments"),
       },
+      {
+        to: "/notifications",
+        label: "Notifications",
+        icon: Bell,
+        match: (p) => p.startsWith("/notifications"),
+      },
     ];
   }
   if (role === "editor") {
@@ -136,6 +144,18 @@ function navForRole(role: StaffRole): NavItem[] {
         icon: ListTodo,
         match: (p) => p.startsWith("/assignments"),
       },
+      {
+        to: "/redirects",
+        label: "Redirects",
+        icon: Link2,
+        match: (p) => p.startsWith("/redirects"),
+      },
+      {
+        to: "/notifications",
+        label: "Notifications",
+        icon: Bell,
+        match: (p) => p.startsWith("/notifications"),
+      },
     ];
   }
   return [
@@ -145,18 +165,30 @@ function navForRole(role: StaffRole): NavItem[] {
       icon: LayoutDashboard,
       match: (p) => p === "/",
     },
-      {
-        to: "/articles",
-        label: "All articles",
-        icon: FileText,
-        match: (p) => p.startsWith("/articles"),
-      },
-      {
-        to: "/assignments",
-        label: "Assignments",
-        icon: ListTodo,
-        match: (p) => p.startsWith("/assignments"),
-      },
+    {
+      to: "/articles",
+      label: "All articles",
+      icon: FileText,
+      match: (p) => p.startsWith("/articles"),
+    },
+    {
+      to: "/assignments",
+      label: "Assignments",
+      icon: ListTodo,
+      match: (p) => p.startsWith("/assignments"),
+    },
+    {
+      to: "/redirects",
+      label: "Redirects",
+      icon: Link2,
+      match: (p) => p.startsWith("/redirects"),
+    },
+    {
+      to: "/notifications",
+      label: "Notifications",
+      icon: Bell,
+      match: (p) => p.startsWith("/notifications"),
+    },
     {
       to: "/users",
       label: "Users",

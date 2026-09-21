@@ -10,6 +10,15 @@ import {
   maybeRecordRevision,
   type ArticleSnapshot,
 } from "../services/articleRevisions";
+import {
+  notifyEditorsAndAdmins,
+  notifyUsers,
+} from "../services/notifications";
+import {
+  evaluatePublishGates,
+  failingGates,
+} from "../services/publishGates";
+import { upsertRedirect } from "../services/urlRedirects";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
 import { env } from "../config/env";
@@ -58,6 +67,10 @@ const articleBodySchema = z.object({
     .optional(),
   faq: z.array(faqItemSchema).max(20).optional(),
   sources: z.array(sourceItemSchema).max(30).optional(),
+  robotsIndex: z.boolean().optional(),
+  lastReviewedAt: z
+    .union([z.string().min(1), z.null()])
+    .optional(),
 });
 
 const ARTICLE_SELECT = `
@@ -154,6 +167,8 @@ export function mapArticle(row: Record<string, unknown>) {
     rejectReason: row.reject_reason,
     editorNote: row.reject_reason,
     publishedAt: row.published_at,
+    lastReviewedAt: row.last_reviewed_at ?? null,
+    robotsIndex: row.robots_index !== false,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -719,6 +734,11 @@ articlesRouter.put("/:id", async (req, res) => {
   const sources =
     data.sources !== undefined ? data.sources : parseJsonArray(row.sources);
 
+  const beforeFull = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [
+    row.id,
+  ]);
+  const oldPath = mapArticle(beforeFull.rows[0]).path as string | null;
+
   await maybeRecordRevision({
     articleId: String(row.id),
     row,
@@ -726,6 +746,15 @@ articlesRouter.put("/:id", async (req, res) => {
     actorName: req.user!.name || req.user!.email,
     reason: "save",
   });
+
+  const robotsIndex =
+    data.robotsIndex !== undefined
+      ? data.robotsIndex
+      : row.robots_index !== false;
+  const lastReviewedAt =
+    data.lastReviewedAt !== undefined
+      ? data.lastReviewedAt
+      : row.last_reviewed_at;
 
   await pool.query(
     `UPDATE articles SET
@@ -736,8 +765,9 @@ articlesRouter.put("/:id", async (req, res) => {
       featured_image_alt = $13, featured_image_caption = $14,
       quick_answer = $15, tags = $16, topics = $17,
       related_article_numbers = $18, faq = $19::jsonb, sources = $20::jsonb,
-      reading_time = $21, updated_at = NOW()
-     WHERE id = $22`,
+      reading_time = $21, robots_index = $22, last_reviewed_at = $23,
+      updated_at = NOW()
+     WHERE id = $24`,
     [
       title,
       slug,
@@ -760,12 +790,23 @@ articlesRouter.put("/:id", async (req, res) => {
       JSON.stringify(faq),
       JSON.stringify(sources),
       estimateReadingTime(body),
+      robotsIndex,
+      lastReviewedAt,
       row.id,
     ],
   );
 
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
-  res.json({ article: mapArticle(full.rows[0]) });
+  const article = mapArticle(full.rows[0]);
+  const newPath = article.path as string | null;
+  if (oldPath && newPath && oldPath !== newPath) {
+    await upsertRedirect({
+      fromPath: oldPath,
+      toPath: newPath,
+      articleId: String(row.id),
+    });
+  }
+  res.json({ article });
 });
 
 articlesRouter.patch("/:id/submit", async (req, res) => {
@@ -823,6 +864,14 @@ articlesRouter.patch("/:id/submit", async (req, res) => {
     entityId: String(article.id),
     summary: `Submitted “${article.title}”`,
   });
+  await notifyEditorsAndAdmins({
+    kind: "submitted",
+    title: `Submitted: ${article.title || "Untitled"}`,
+    body: `${req.user!.name} sent an article for review.`,
+    href: `/articles/${article.id}`,
+    articleId: String(article.id),
+    excludeUserId: req.user!.id,
+  });
   res.json({ article });
 });
 
@@ -858,6 +907,16 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
     return;
   }
 
+  const gates = await evaluatePublishGates(row);
+  const failed = failingGates(gates);
+  if (failed.length) {
+    res.status(400).json({
+      message: `Publish blocked: ${failed.map((g) => g.label).join("; ")}`,
+      gates,
+    });
+    return;
+  }
+
   await maybeRecordRevision({
     articleId: String(row.id),
     row,
@@ -869,7 +928,9 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
   await pool.query(
     `UPDATE articles SET
       status = 'published', published_at = COALESCE(published_at, NOW()),
-      published_by = $1, reviewer_id = $1, reject_reason = '', updated_at = NOW()
+      published_by = $1, reviewer_id = $1, reject_reason = '',
+      last_reviewed_at = COALESCE(last_reviewed_at, NOW()),
+      updated_at = NOW()
      WHERE id = $2`,
     [req.user!.id, row.id],
   );
@@ -882,7 +943,17 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
     entityId: String(article.id),
     summary: `Published “${article.title}”`,
   });
-  res.json({ article });
+  if (row.author_id && row.author_id !== req.user!.id) {
+    await notifyUsers({
+      userIds: [String(row.author_id)],
+      kind: "published",
+      title: `Published: ${article.title || "Untitled"}`,
+      body: "Your article is live.",
+      href: `/articles/${article.id}`,
+      articleId: String(article.id),
+    });
+  }
+  res.json({ article, gates });
 });
 
 articlesRouter.patch("/:id/unpublish", async (req, res) => {
@@ -954,6 +1025,16 @@ articlesRouter.patch("/:id/reject", async (req, res) => {
     summary: `Rejected “${article.title}”`,
     meta: { reason },
   });
+  if (row.author_id) {
+    await notifyUsers({
+      userIds: [String(row.author_id)],
+      kind: "rejected",
+      title: `Rejected: ${article.title || "Untitled"}`,
+      body: reason || "Your article was rejected.",
+      href: `/articles/${article.id}`,
+      articleId: String(article.id),
+    });
+  }
   res.json({ article });
 });
 
@@ -994,7 +1075,27 @@ articlesRouter.patch("/:id/request-changes", async (req, res) => {
     summary: `Requested changes on “${article.title}”`,
     meta: { reason },
   });
+  if (row.author_id) {
+    await notifyUsers({
+      userIds: [String(row.author_id)],
+      kind: "changes_requested",
+      title: `Changes requested: ${article.title || "Untitled"}`,
+      body: reason || "An editor requested changes.",
+      href: `/articles/${article.id}`,
+      articleId: String(article.id),
+    });
+  }
   res.json({ article });
+});
+
+articlesRouter.get("/:id/publish-gates", async (req, res) => {
+  const row = await assertArticleAccess(req, req.params.id);
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  const gates = await evaluatePublishGates(row);
+  res.json({ gates, ok: failingGates(gates).length === 0 });
 });
 
 articlesRouter.delete("/:id", async (req, res) => {

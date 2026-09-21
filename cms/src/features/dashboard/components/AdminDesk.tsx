@@ -10,6 +10,7 @@ import { AdminContentHealth } from "@/features/dashboard/components/AdminContent
 import { AdminEeatGaps } from "@/features/dashboard/components/AdminEeatGaps";
 import { AdminInactiveWriters } from "@/features/dashboard/components/AdminInactiveWriters";
 import { AdminTopViews } from "@/features/dashboard/components/AdminTopViews";
+import { StaleContentQueue } from "@/features/dashboard/components/StaleContentQueue";
 import { publishedThisWeek } from "@/features/dashboard/utils/writerMetrics";
 import {
   eeatGaps,
@@ -218,6 +219,8 @@ export function AdminDesk({ userName }: Props) {
             <AdminEeatGaps gaps={gaps} />
             <AdminInactiveWriters writers={inactive} />
           </div>
+
+          <StaleContentQueue articles={articles} />
 
           <AdminTopViews articles={top} />
         </div>

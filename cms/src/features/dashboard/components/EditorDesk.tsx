@@ -5,6 +5,7 @@ import { EditorNoteTemplates } from "@/features/dashboard/components/EditorNoteT
 import { EditorReviewQueue } from "@/features/dashboard/components/EditorReviewQueue";
 import { EditorBulkBar } from "@/features/dashboard/components/EditorBulkBar";
 import { EditorWriterCoaching } from "@/features/dashboard/components/EditorWriterCoaching";
+import { StaleContentQueue } from "@/features/dashboard/components/StaleContentQueue";
 import { editorQuality } from "@/features/dashboard/utils/seoCompleteness";
 import { daysWaiting, publishedThisWeek } from "@/features/dashboard/utils/writerMetrics";
 import {
@@ -287,6 +288,8 @@ export function EditorDesk({ userId, userName, isAdmin }: Props) {
             onClear={() => setSelectedIds(new Set())}
             onAction={(action) => void handleBulk(action)}
           />
+
+          <StaleContentQueue articles={allArticles} />
 
           <EditorWriterCoaching articles={allArticles} />
         </div>

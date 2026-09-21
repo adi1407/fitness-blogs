@@ -11,6 +11,8 @@ import AdminAnalyticsPage from "./pages/AdminAnalyticsPage.tsx";
 import WritersPage from "./pages/WritersPage.tsx";
 import UsersPage from "./pages/UsersPage.tsx";
 import AssignmentsPage from "./pages/AssignmentsPage.tsx";
+import NotificationsPage from "./pages/NotificationsPage.tsx";
+import RedirectsPage from "./pages/RedirectsPage.tsx";
 
 export default function App() {
   return (
@@ -25,10 +27,12 @@ export default function App() {
               <Route path="articles/new" element={<ArticleEditorPage />} />
               <Route path="articles/:id" element={<ArticleEditorPage />} />
               <Route path="assignments" element={<AssignmentsPage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
               <Route
                 element={<ProtectedRoute roles={["editor", "admin"]} />}
               >
                 <Route path="writers" element={<WritersPage />} />
+                <Route path="redirects" element={<RedirectsPage />} />
               </Route>
               <Route element={<ProtectedRoute roles={["admin"]} />}>
                 <Route path="users" element={<UsersPage />} />

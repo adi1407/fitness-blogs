@@ -44,6 +44,8 @@ export type PublicBlogArticle = {
   reviewerName?: string | null;
   /** Present on preview payloads only. */
   status?: string;
+  robotsIndex?: boolean;
+  lastReviewedAt?: string | null;
 };
 
 export type PublicTaxonomyCategory = {

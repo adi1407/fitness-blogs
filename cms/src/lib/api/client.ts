@@ -115,6 +115,8 @@ export type Article = {
   rejectReason: string;
   editorNote?: string;
   publishedAt: string | null;
+  lastReviewedAt?: string | null;
+  robotsIndex?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -146,6 +148,33 @@ export type AssignmentBrief = {
   articleTitle: string | null;
   articleStatus: string | null;
   status: "open" | "in_progress" | "done" | "cancelled";
+};
+
+export type StaffNotification = {
+  id: string;
+  kind: string;
+  title: string;
+  body: string;
+  href: string;
+  articleId: string | null;
+  isRead: boolean;
+  createdAt: string;
+};
+
+export type UrlRedirect = {
+  id: string;
+  fromPath: string;
+  toPath: string;
+  articleId: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PublishGate = {
+  id: string;
+  label: string;
+  pass: boolean;
 };
 
 export type TaxonomyCategory = {
