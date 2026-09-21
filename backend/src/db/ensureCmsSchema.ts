@@ -102,6 +102,29 @@ CREATE TABLE IF NOT EXISTS audit_events (
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_events(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_events(action);
 CREATE INDEX IF NOT EXISTS idx_audit_actor ON audit_events(actor_id);
+
+CREATE TABLE IF NOT EXISTS article_briefs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  target_query TEXT NOT NULL,
+  working_title TEXT NOT NULL DEFAULT '',
+  category_id UUID NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
+  subcategory_id UUID NOT NULL REFERENCES subcategories(id) ON DELETE RESTRICT,
+  outline TEXT NOT NULL DEFAULT '',
+  required_links TEXT NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '',
+  due_on DATE,
+  writer_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+  assigned_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  article_id UUID UNIQUE REFERENCES articles(id) ON DELETE SET NULL,
+  status TEXT NOT NULL DEFAULT 'open'
+    CHECK (status IN ('open', 'in_progress', 'done', 'cancelled')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_article_briefs_writer ON article_briefs(writer_id);
+CREATE INDEX IF NOT EXISTS idx_article_briefs_status ON article_briefs(status);
+CREATE INDEX IF NOT EXISTS idx_article_briefs_article ON article_briefs(article_id);
 `;
 
 const SEED_USERS = [

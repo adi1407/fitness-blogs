@@ -6,7 +6,6 @@ import BlurText from "@/components/ui/blur-text";
 import TailwindImageAccordion, {
   type AccordionItem,
 } from "@/components/ui/tailwind-image-accordion";
-import { FlipCard } from "@/components/animate-ui/components/community/flip-card";
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
@@ -58,48 +57,6 @@ const SECONDARY_HUBS = [
     blurb: "Browse by muscle group, then connect to guidance.",
     src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop",
     href: "/exercises",
-  },
-];
-
-const FLIP_CARDS = [
-  {
-    name: "Guides",
-    username: "articles",
-    image:
-      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=400&auto=format&fit=crop",
-    bio: "Intent-complete articles across muscle building, weight loss, and nutrition.",
-    stats: { following: 3, followers: 0, posts: 0 },
-    socialLinks: {
-      linkedin: "/blog",
-      github: "/blog",
-      twitter: "/about",
-    },
-  },
-  {
-    name: "Tools",
-    username: "calculators",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop",
-    bio: "TDEE, protein, macros, and more — each tool teaches and links onward.",
-    stats: { following: 6, followers: 0, posts: 0 },
-    socialLinks: {
-      linkedin: "/tools",
-      github: "/tools/protein-calculator",
-      twitter: "/tools/tdee-calculator",
-    },
-  },
-  {
-    name: "Databases",
-    username: "foods-exercises",
-    image:
-      "https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=400&auto=format&fit=crop",
-    bio: "Indian foods and exercise libraries that support real search intent.",
-    stats: { following: 2, followers: 0, posts: 0 },
-    socialLinks: {
-      linkedin: "/foods/indian",
-      github: "/exercises",
-      twitter: "/recipes",
-    },
   },
 ];
 
@@ -159,23 +116,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-y border-border bg-brand-50/40">
-        <div className="fk-page py-14">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            What we build
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            Flip a card to explore guides, tools, and databases.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-6">
-            {FLIP_CARDS.map((card) => (
-              <FlipCard key={card.username} data={card} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-border bg-white">
+      <section className="border-y border-border bg-white">
         <div className="fk-page py-14">
           <h2 className="text-2xl font-semibold tracking-tight">
             Tools & databases

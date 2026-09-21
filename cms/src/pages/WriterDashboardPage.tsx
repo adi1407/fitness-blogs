@@ -12,6 +12,7 @@ import { WriterFeedbackInbox } from "@/features/dashboard/components/WriterFeedb
 import { WriterReviewQueue } from "@/features/dashboard/components/WriterReviewQueue";
 import { WriterSeoChecklist } from "@/features/dashboard/components/WriterSeoChecklist";
 import { WriterPillarClusters } from "@/features/dashboard/components/WriterPillarClusters";
+import { WriterAssignments } from "@/features/dashboard/components/WriterAssignments";
 import { WriterTopViews } from "@/features/dashboard/components/WriterTopViews";
 import {
   pickResumeArticle,
@@ -133,6 +134,7 @@ export default function WriterDashboardPage() {
         <p className="mt-8 text-slate-500">Loading…</p>
       ) : (
         <div className="mt-8 space-y-8">
+          <WriterAssignments />
           <WriterResumeCard article={resume} />
 
           {user ? (

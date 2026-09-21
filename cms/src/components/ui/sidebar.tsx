@@ -8,6 +8,7 @@ import {
   FilePenLine,
   FileText,
   LayoutDashboard,
+  ListTodo,
   LogOut,
   PenLine,
   Users,
@@ -93,6 +94,12 @@ function navForRole(role: StaffRole): NavItem[] {
         icon: PenLine,
         match: (p) => p === "/articles/new",
       },
+      {
+        to: "/assignments",
+        label: "Assignments",
+        icon: ListTodo,
+        match: (p) => p.startsWith("/assignments"),
+      },
     ];
   }
   if (role === "editor") {
@@ -123,6 +130,12 @@ function navForRole(role: StaffRole): NavItem[] {
         icon: Users,
         match: (p) => p.startsWith("/writers"),
       },
+      {
+        to: "/assignments",
+        label: "Assignments",
+        icon: ListTodo,
+        match: (p) => p.startsWith("/assignments"),
+      },
     ];
   }
   return [
@@ -132,12 +145,18 @@ function navForRole(role: StaffRole): NavItem[] {
       icon: LayoutDashboard,
       match: (p) => p === "/",
     },
-    {
-      to: "/articles",
-      label: "All articles",
-      icon: FileText,
-      match: (p) => p.startsWith("/articles"),
-    },
+      {
+        to: "/articles",
+        label: "All articles",
+        icon: FileText,
+        match: (p) => p.startsWith("/articles"),
+      },
+      {
+        to: "/assignments",
+        label: "Assignments",
+        icon: ListTodo,
+        match: (p) => p.startsWith("/assignments"),
+      },
     {
       to: "/users",
       label: "Users",

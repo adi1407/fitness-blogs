@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   apiFetch,
   type Article,
+  type AssignmentBrief,
   type TaxonomyCategory,
 } from "@/lib/api/client";
 import { trackCmsEvent } from "@/lib/analytics/openpanel";
@@ -115,6 +116,7 @@ export default function ArticleEditorPage() {
   const [loaded, setLoaded] = useState(isNew);
   const [dirty, setDirty] = useState(false);
   const [linkedArticles, setLinkedArticles] = useState<LinkedArticle[]>([]);
+  const [assignment, setAssignment] = useState<AssignmentBrief | null>(null);
 
   const formRef = useRef(form);
   const articleIdRef = useRef(articleId);
@@ -164,6 +166,23 @@ export default function ArticleEditorPage() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!articleId) {
+      setAssignment(null);
+      return;
+    }
+    void (async () => {
+      try {
+        const data = await apiFetch<{ briefs: AssignmentBrief[] }>(
+          `/briefs?articleId=${articleId}`,
+        );
+        setAssignment(data.briefs[0] ?? null);
+      } catch {
+        setAssignment(null);
+      }
+    })();
+  }, [articleId]);
 
   useEffect(() => {
     if (isNew) return;
@@ -602,6 +621,37 @@ export default function ArticleEditorPage() {
         <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </p>
+      ) : null}
+
+      {assignment ? (
+        <section className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Assignment
+          </p>
+          <h2 className="mt-1 text-lg font-semibold text-slate-900">
+            {assignment.workingTitle || assignment.targetQuery}
+          </h2>
+          <p className="mt-1 text-slate-600">
+            Query: {assignment.targetQuery}
+            {assignment.dueOn ? ` · Due ${assignment.dueOn}` : ""}
+            {assignment.categoryLabel
+              ? ` · ${assignment.categoryLabel} / ${assignment.subcategoryLabel}`
+              : ""}
+          </p>
+          {assignment.outline ? (
+            <pre className="mt-3 whitespace-pre-wrap text-slate-700">
+              {assignment.outline}
+            </pre>
+          ) : null}
+          {assignment.requiredLinks ? (
+            <p className="mt-2 text-slate-600">
+              Required links: {assignment.requiredLinks}
+            </p>
+          ) : null}
+          {assignment.notes ? (
+            <p className="mt-2 text-slate-600">{assignment.notes}</p>
+          ) : null}
+        </section>
       ) : null}
 
       {articleNumber ? (

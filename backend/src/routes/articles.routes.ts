@@ -223,6 +223,36 @@ async function resolveTaxonomyPair(
   return { ok: true, categoryId, subcategoryId };
 }
 
+async function syncBriefOnArticle(
+  articleId: string,
+  next: "done" | "in_progress" | "reopen" | "resume",
+): Promise<void> {
+  if (next === "reopen") {
+    await pool.query(
+      `UPDATE article_briefs
+       SET status = 'open', article_id = NULL, updated_at = NOW()
+       WHERE article_id = $1 AND status = 'in_progress'`,
+      [articleId],
+    );
+    return;
+  }
+  if (next === "resume") {
+    await pool.query(
+      `UPDATE article_briefs
+       SET status = 'in_progress', updated_at = NOW()
+       WHERE article_id = $1 AND status = 'done'`,
+      [articleId],
+    );
+    return;
+  }
+  await pool.query(
+    `UPDATE article_briefs
+     SET status = $2, updated_at = NOW()
+     WHERE article_id = $1 AND status <> 'cancelled' AND status <> 'done'`,
+    [articleId, next],
+  );
+}
+
 articlesRouter.use(authenticate);
 
 /** Lookup published or any article by 9-digit ID (CMS linking). */
@@ -585,6 +615,7 @@ articlesRouter.patch("/:id/submit", async (req, res) => {
      WHERE id = $1`,
     [row.id],
   );
+  await syncBriefOnArticle(String(row.id), "in_progress");
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
   const article = mapArticle(full.rows[0]);
   await recordAudit(req, {
@@ -635,6 +666,7 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
      WHERE id = $2`,
     [req.user!.id, row.id],
   );
+  await syncBriefOnArticle(String(row.id), "done");
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
   const article = mapArticle(full.rows[0]);
   await recordAudit(req, {
@@ -670,6 +702,7 @@ articlesRouter.patch("/:id/unpublish", async (req, res) => {
     `UPDATE articles SET status = 'draft', updated_at = NOW() WHERE id = $1`,
     [row.id],
   );
+  await syncBriefOnArticle(String(row.id), "resume");
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
   const article = mapArticle(full.rows[0]);
   await recordAudit(req, {
@@ -778,6 +811,7 @@ articlesRouter.delete("/:id", async (req, res) => {
     return;
   }
 
+  await syncBriefOnArticle(String(row.id), "reopen");
   await pool.query(`DELETE FROM articles WHERE id = $1`, [row.id]);
   await recordAudit(req, {
     action: "article.deleted",

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authRouter } from "./auth.routes";
 import { articlesRouter } from "./articles.routes";
+import { briefsRouter } from "./briefs.routes";
 import { adminRouter } from "./admin.routes";
 import { publicRouter } from "./public.routes";
 import { uploadsRouter } from "./uploads.routes";
@@ -11,12 +12,13 @@ apiRouter.get("/", (_req, res) => {
   res.json({
     message: "FitKnowledge API",
     clients: ["frontend", "cms"],
-    endpoints: ["/auth", "/articles", "/admin", "/public", "/uploads"],
+    endpoints: ["/auth", "/articles", "/briefs", "/admin", "/public", "/uploads"],
   });
 });
 
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/public", publicRouter);
 apiRouter.use("/articles", articlesRouter);
+apiRouter.use("/briefs", briefsRouter);
 apiRouter.use("/admin", adminRouter);
 apiRouter.use("/uploads", uploadsRouter);

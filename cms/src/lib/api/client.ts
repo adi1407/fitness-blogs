@@ -128,6 +128,26 @@ export type StaffUser = {
   createdAt: string;
 };
 
+export type AssignmentBrief = {
+  id: string;
+  targetQuery: string;
+  workingTitle: string;
+  categoryId: string;
+  subcategoryId: string;
+  categoryLabel: string;
+  subcategoryLabel: string;
+  outline: string;
+  requiredLinks: string;
+  notes: string;
+  dueOn: string | null;
+  writerId: string;
+  writerName: string;
+  articleId: string | null;
+  articleTitle: string | null;
+  articleStatus: string | null;
+  status: "open" | "in_progress" | "done" | "cancelled";
+};
+
 export type TaxonomyCategory = {
   id: string;
   slug: string;
