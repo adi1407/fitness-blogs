@@ -3,7 +3,8 @@
 import * as React from "react";
 import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { AlertTriangle, Loader2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,12 @@ export type AuthFormProps = {
   /** Path to return to after Google OAuth (must start with /). */
   nextPath?: string;
 };
+
+function safeNextPath(raw: string | null | undefined) {
+  return raw && raw.startsWith("/") && !raw.startsWith("//")
+    ? raw
+    : "/account";
+}
 
 function GoogleGlyph({ className }: { className?: string }) {
   return (
@@ -51,9 +58,17 @@ export function AuthForm({
   nextPath,
 }: AuthFormProps) {
   const search = useSearchParams();
+  const router = useRouter();
+  const { member, loading: authLoading } = useMemberAuth();
   const [authMode, setAuthMode] = useState<AuthMode>(initialMode);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  React.useEffect(() => {
+    if (!authLoading && member) {
+      router.replace("/account");
+    }
+  }, [authLoading, member, router]);
 
   React.useEffect(() => {
     const err = search.get("error");
@@ -74,14 +89,25 @@ export function AuthForm({
   async function startGoogle() {
     setIsLoading(true);
     setError("");
-    const next =
-      nextPath && nextPath.startsWith("/")
-        ? nextPath
-        : search.get("next")?.startsWith("/")
-          ? (search.get("next") as string)
-          : "/";
+    const next = safeNextPath(nextPath ?? search.get("next"));
     // Same-origin Next route proxies to the API — no cross-origin fetch.
     window.location.href = `/api/auth/google?next=${encodeURIComponent(next)}`;
+  }
+
+  if (authLoading || member) {
+    return (
+      <div
+        className={cn(
+          "rounded-2xl border border-border bg-white p-8 text-center",
+          className,
+        )}
+      >
+        <Loader2 className="mx-auto size-6 animate-spin text-foreground" />
+        <p className="mt-3 text-sm text-muted-foreground">
+          {member ? "Taking you to your account…" : "Loading…"}
+        </p>
+      </div>
+    );
   }
 
   return (

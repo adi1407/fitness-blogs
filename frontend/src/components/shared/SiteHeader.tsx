@@ -193,20 +193,29 @@ export function SiteHeader() {
               );
             })}
             {!authLoading && member ? (
-              <div className="ml-2 flex items-center gap-2 pl-2">
-                {member.picture ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={member.picture}
-                    alt=""
-                    className="size-8 rounded-full object-cover ring-1 ring-border"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <span className="inline-flex size-8 items-center justify-center rounded-full bg-muted">
-                    <UserRound className="size-4" />
+              <div className="ml-2 flex items-center gap-1 pl-2">
+                <Link
+                  href="/account"
+                  className="inline-flex items-center gap-2 rounded-full py-1 pr-2 pl-1 transition hover:bg-muted"
+                  aria-current={pathname === "/account" ? "page" : undefined}
+                >
+                  {member.picture ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={member.picture}
+                      alt=""
+                      className="size-8 rounded-full object-cover ring-1 ring-border"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span className="inline-flex size-8 items-center justify-center rounded-full bg-muted">
+                      <UserRound className="size-4" />
+                    </span>
+                  )}
+                  <span className="max-w-36 truncate text-sm font-semibold text-foreground">
+                    Profile
                   </span>
-                )}
+                </Link>
                 <button
                   type="button"
                   onClick={() => logout()}
@@ -559,35 +568,41 @@ export function SiteHeader() {
 
               <div className="border-t border-border bg-muted/50 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                 {!authLoading && member ? (
-                  <div className="mb-3 flex items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3">
-                    {member.picture ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={member.picture}
-                        alt=""
-                        className="size-10 rounded-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <span className="inline-flex size-10 items-center justify-center rounded-full bg-muted">
-                        <UserRound className="size-4" />
-                      </span>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-foreground">
-                        {member.name || member.email}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {member.email}
-                      </p>
-                    </div>
+                  <div className="mb-3 flex items-center gap-2">
+                    <Link
+                      href="/account"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl border border-border bg-white px-3 py-3 transition hover:bg-muted/60"
+                    >
+                      {member.picture ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={member.picture}
+                          alt=""
+                          className="size-10 rounded-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <span className="inline-flex size-10 items-center justify-center rounded-full bg-muted">
+                          <UserRound className="size-4" />
+                        </span>
+                      )}
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="truncate text-sm font-semibold text-foreground">
+                          {member.name || "Profile"}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          View account
+                        </p>
+                      </div>
+                    </Link>
                     <button
                       type="button"
                       onClick={() => {
                         logout();
                         setMobileOpen(false);
                       }}
-                      className="inline-flex size-10 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                      className="inline-flex size-12 shrink-0 items-center justify-center rounded-2xl border border-border bg-white text-muted-foreground transition hover:bg-muted hover:text-foreground"
                       aria-label="Sign out"
                     >
                       <LogOut className="size-4" />

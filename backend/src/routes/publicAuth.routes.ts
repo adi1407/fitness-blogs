@@ -58,9 +58,11 @@ publicAuthRouter.get("/google", (req, res) => {
   }
 
   const next =
-    typeof req.query.next === "string" && req.query.next.startsWith("/")
+    typeof req.query.next === "string" &&
+    req.query.next.startsWith("/") &&
+    !req.query.next.startsWith("//")
       ? req.query.next
-      : "/";
+      : "/account";
   const state = Buffer.from(JSON.stringify({ next }), "utf8").toString(
     "base64url",
   );
@@ -97,12 +99,14 @@ publicAuthRouter.get("/google/callback", async (req, res) => {
     return;
   }
 
-  let next = "/";
+  let next = "/account";
   try {
     const parsed = JSON.parse(
       Buffer.from(stateRaw, "base64url").toString("utf8"),
     ) as { next?: string };
-    if (parsed.next?.startsWith("/")) next = parsed.next;
+    if (parsed.next?.startsWith("/") && !parsed.next.startsWith("//")) {
+      next = parsed.next;
+    }
   } catch {
     /* ignore bad state */
   }

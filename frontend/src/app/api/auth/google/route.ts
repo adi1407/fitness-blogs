@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const next =
     nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
       ? nextParam
-      : "/";
+      : "/account";
 
   const loginError = (reason: string) =>
     NextResponse.redirect(

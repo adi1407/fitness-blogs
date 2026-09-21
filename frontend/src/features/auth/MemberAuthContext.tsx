@@ -15,6 +15,8 @@ export type Member = {
   email: string;
   name: string;
   picture: string;
+  createdAt?: string;
+  lastLoginAt?: string;
 };
 
 type MemberAuthContextValue = {

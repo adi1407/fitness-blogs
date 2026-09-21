@@ -36,8 +36,8 @@ export function bearerFromRequest(req: NextRequest): string | null {
 }
 
 export function safeNextPath(raw: string | null): string {
-  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/";
-  if (raw.includes("\\") || raw.includes("://")) return "/";
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/account";
+  if (raw.includes("\\") || raw.includes("://")) return "/account";
   return raw;
 }
 

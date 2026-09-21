@@ -14,7 +14,9 @@ function CallbackInner() {
   useEffect(() => {
     const next = search.get("next");
     const dest =
-      next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
+      next && next.startsWith("/") && !next.startsWith("//")
+        ? next
+        : "/account";
 
     void (async () => {
       await refresh();

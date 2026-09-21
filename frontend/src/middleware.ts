@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { MEMBER_COOKIE } from "@/lib/auth/memberCookie";
 
 const API_BASE = (
   process.env.API_URL ||
@@ -9,6 +10,17 @@ const API_BASE = (
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/account") {
+    const token = request.cookies.get(MEMBER_COOKIE)?.value;
+    if (!token) {
+      const login = new URL("/login", request.url);
+      login.searchParams.set("next", "/account");
+      return NextResponse.redirect(login);
+    }
+    return NextResponse.next();
+  }
+
   if (!pathname.startsWith("/blog/") || pathname.includes(".")) {
     return NextResponse.next();
   }
@@ -31,5 +43,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/blog/:path*"],
+  matcher: ["/blog/:path*", "/account"],
 };

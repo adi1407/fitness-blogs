@@ -8,6 +8,7 @@ import { publicAuthRouter } from "./publicAuth.routes";
 import {
   publicBookmarksRouter,
   publicEngagementRouter,
+  publicUpvotesRouter,
 } from "./publicEngagement.routes";
 import {
   mapArticle,
@@ -18,6 +19,7 @@ export const publicRouter = Router();
 
 publicRouter.use("/auth", publicAuthRouter);
 publicRouter.use("/me/bookmarks", publicBookmarksRouter);
+publicRouter.use("/me/upvotes", publicUpvotesRouter);
 publicRouter.use("/articles/:articleId/engagement", publicEngagementRouter);
 
 const ARTICLE_SELECT = `

@@ -114,6 +114,30 @@ publicEngagementRouter.delete("/bookmark", requireMember, async (req, res) => {
   res.json({ bookmarked: false });
 });
 
+function mapLibraryArticle(
+  r: Record<string, unknown>,
+  extra: Record<string, unknown>,
+) {
+  return {
+    id: r.id,
+    title: r.title,
+    slug: r.slug,
+    excerpt: r.excerpt ?? "",
+    articleNumber: r.article_number,
+    publishedAt: r.published_at,
+    featuredImage: r.featured_image ?? "",
+    categorySlug: r.category_slug,
+    subcategorySlug: r.subcategory_slug,
+    path:
+      r.category_slug && r.subcategory_slug && r.slug
+        ? `/blog/${r.category_slug}/${r.subcategory_slug}/${r.slug}`
+        : r.article_number
+          ? `/blog/${r.article_number}`
+          : null,
+    ...extra,
+  };
+}
+
 /** List bookmarked articles for the signed-in member. */
 export const publicBookmarksRouter = Router();
 
@@ -134,23 +158,34 @@ publicBookmarksRouter.get("/", requireMember, async (req, res) => {
   );
 
   res.json({
-    bookmarks: result.rows.map((r) => ({
-      id: r.id,
-      title: r.title,
-      slug: r.slug,
-      excerpt: r.excerpt ?? "",
-      articleNumber: r.article_number,
-      publishedAt: r.published_at,
-      featuredImage: r.featured_image ?? "",
-      categorySlug: r.category_slug,
-      subcategorySlug: r.subcategory_slug,
-      path:
-        r.category_slug && r.subcategory_slug && r.slug
-          ? `/blog/${r.category_slug}/${r.subcategory_slug}/${r.slug}`
-          : r.article_number
-            ? `/blog/${r.article_number}`
-            : null,
-      bookmarkedAt: r.bookmarked_at,
-    })),
+    bookmarks: result.rows.map((r) =>
+      mapLibraryArticle(r, { bookmarkedAt: r.bookmarked_at }),
+    ),
+  });
+});
+
+/** List upvoted articles for the signed-in member. */
+export const publicUpvotesRouter = Router();
+
+publicUpvotesRouter.get("/", requireMember, async (req, res) => {
+  const result = await pool.query(
+    `SELECT a.id, a.title, a.slug, a.excerpt, a.article_number,
+            a.published_at, a.featured_image,
+            c.slug AS category_slug, s.slug AS subcategory_slug,
+            u.created_at AS upvoted_at
+     FROM member_article_upvotes u
+     JOIN articles a ON a.id = u.article_id
+     LEFT JOIN categories c ON c.id = a.category_id
+     LEFT JOIN subcategories s ON s.id = a.subcategory_id
+     WHERE u.member_id = $1 AND a.status = 'published'
+     ORDER BY u.created_at DESC
+     LIMIT 100`,
+    [req.member!.id],
+  );
+
+  res.json({
+    upvotes: result.rows.map((r) =>
+      mapLibraryArticle(r, { upvotedAt: r.upvoted_at }),
+    ),
   });
 });
