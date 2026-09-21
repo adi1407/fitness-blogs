@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AlertTriangle, Loader2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getApiBase } from "@/lib/api/client";
 
 type AuthMode = "login" | "signup";
 
@@ -75,29 +74,14 @@ export function AuthForm({
   async function startGoogle() {
     setIsLoading(true);
     setError("");
-    try {
-      const next =
-        nextPath && nextPath.startsWith("/")
-          ? nextPath
-          : search.get("next")?.startsWith("/")
-            ? (search.get("next") as string)
-            : "/";
-      const res = await fetch(
-        `${getApiBase()}/public/auth/google?next=${encodeURIComponent(next)}`,
-        { cache: "no-store" },
-      );
-      const data = (await res.json()) as { url?: string; message?: string };
-      if (!res.ok || !data.url) {
-        throw new Error(
-          data.message ||
-            "Google sign-in is not available. Add Google credentials on the API.",
-        );
-      }
-      window.location.href = data.url;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not start Google sign-in");
-      setIsLoading(false);
-    }
+    const next =
+      nextPath && nextPath.startsWith("/")
+        ? nextPath
+        : search.get("next")?.startsWith("/")
+          ? (search.get("next") as string)
+          : "/";
+    // Same-origin Next route proxies to the API — no cross-origin fetch.
+    window.location.href = `/api/auth/google?next=${encodeURIComponent(next)}`;
   }
 
   return (
