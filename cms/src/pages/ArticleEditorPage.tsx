@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
+import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "@/constants/blogTaxonomy";
 import { canPublish } from "@/constants/roles";
 import { useAuth } from "@/context/AuthContext";
@@ -339,6 +340,53 @@ export default function ArticleEditorPage() {
     setPublicPath(a.path);
     setViews(a.views);
     setEditorNote(a.editorNote || a.rejectReason || "");
+  }
+
+  function hydrateFromArticle(a: Article) {
+    skipAutosave.current = true;
+    applyArticle(a);
+    setSlugTouched(Boolean(a.slug));
+    setForm({
+      title: a.title,
+      slug: a.slug || "",
+      excerpt: a.excerpt,
+      body: a.body,
+      categoryId: a.categoryId || "",
+      subcategoryId: a.subcategoryId || "",
+      metaTitle: a.metaTitle,
+      metaDescription: a.metaDescription,
+      metaKeywords: a.metaKeywords,
+      primaryKeyword: a.primaryKeyword,
+      ogImage: a.ogImage,
+      featuredImage: a.featuredImage,
+      featuredImageAlt: a.featuredImageAlt || "",
+      featuredImageCaption: a.featuredImageCaption || "",
+      quickAnswer: a.quickAnswer,
+      tagsCsv: tagsToInput(a.tags || []),
+      topics: a.topics || [],
+      faq: (a.faq || []).map((f) => ({
+        question: f.question,
+        answer: f.answer,
+      })),
+      sources: (a.sources || []).map((s) => ({
+        title: s.title,
+        url: s.url || "",
+        note: s.note || "",
+      })),
+    });
+    setLinkedArticles(
+      (a.relatedArticleNumbers || []).map((n) => ({
+        articleNumber: n,
+        title: `Article #${n}`,
+        path: null,
+      })),
+    );
+    setDirty(false);
+    setSaveState("saved");
+    setLastSavedAt(new Date(a.updatedAt));
+    queueMicrotask(() => {
+      skipAutosave.current = false;
+    });
   }
 
   async function persistDraft(opts?: {
@@ -697,6 +745,27 @@ export default function ArticleEditorPage() {
             <p className="mt-2 text-slate-600">{assignment.notes}</p>
           ) : null}
         </section>
+      ) : null}
+
+      {articleId ? (
+        <ArticleRevisionsPanel
+          articleId={articleId}
+          canRestore={canEditContent}
+          current={{
+            title: form.title,
+            slug: form.slug,
+            excerpt: form.excerpt,
+            body: form.body,
+            metaTitle: form.metaTitle,
+            metaDescription: form.metaDescription,
+            primaryKeyword: form.primaryKeyword,
+            quickAnswer: form.quickAnswer,
+          }}
+          onRestored={(raw) => {
+            hydrateFromArticle(raw as Article);
+            setMessage("Revision restored");
+          }}
+        />
       ) : null}
 
       {articleNumber ? (

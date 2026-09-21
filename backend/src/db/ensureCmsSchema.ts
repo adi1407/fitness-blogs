@@ -125,6 +125,21 @@ CREATE TABLE IF NOT EXISTS article_briefs (
 CREATE INDEX IF NOT EXISTS idx_article_briefs_writer ON article_briefs(writer_id);
 CREATE INDEX IF NOT EXISTS idx_article_briefs_status ON article_briefs(status);
 CREATE INDEX IF NOT EXISTS idx_article_briefs_article ON article_briefs(article_id);
+
+CREATE TABLE IF NOT EXISTS article_revisions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  article_id UUID NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+  revision_number INT NOT NULL,
+  snapshot JSONB NOT NULL,
+  reason TEXT NOT NULL DEFAULT 'save',
+  actor_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  actor_name TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (article_id, revision_number)
+);
+
+CREATE INDEX IF NOT EXISTS idx_article_revisions_article
+  ON article_revisions(article_id, revision_number DESC);
 `;
 
 const SEED_USERS = [

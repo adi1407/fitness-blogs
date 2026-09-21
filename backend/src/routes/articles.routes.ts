@@ -5,6 +5,11 @@ import { pool } from "../db/pool";
 import { allocateArticleNumber } from "../db/ensureCmsSchema";
 import { authenticate } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
+import {
+  mapRevisionRow,
+  maybeRecordRevision,
+  type ArticleSnapshot,
+} from "../services/articleRevisions";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
 import { env } from "../config/env";
@@ -391,6 +396,160 @@ articlesRouter.get("/:id", async (req, res) => {
   res.json({ article: mapArticle(row) });
 });
 
+async function assertArticleAccess(
+  req: { user?: { id: string; role: string } },
+  articleId: string,
+): Promise<Record<string, unknown> | null> {
+  const result = await pool.query(`SELECT * FROM articles WHERE id = $1`, [
+    articleId,
+  ]);
+  const row = result.rows[0] as Record<string, unknown> | undefined;
+  if (!row) return null;
+  if (req.user?.role === "writer" && row.author_id !== req.user.id) {
+    return null;
+  }
+  return row;
+}
+
+articlesRouter.get("/:id/revisions", async (req, res) => {
+  const row = await assertArticleAccess(req, req.params.id);
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  const result = await pool.query(
+    `SELECT id, article_id, revision_number, reason, actor_id, actor_name, created_at,
+            snapshot->>'title' AS title,
+            snapshot->>'status' AS status,
+            LEFT(COALESCE(snapshot->>'body', ''), 120) AS body_preview
+     FROM article_revisions
+     WHERE article_id = $1
+     ORDER BY revision_number DESC
+     LIMIT 80`,
+    [req.params.id],
+  );
+  res.json({
+    revisions: result.rows.map((r) => ({
+      id: r.id,
+      articleId: r.article_id,
+      revisionNumber: Number(r.revision_number),
+      reason: r.reason,
+      actorId: r.actor_id,
+      actorName: r.actor_name,
+      createdAt: r.created_at,
+      title: r.title ?? "",
+      status: r.status ?? "",
+      bodyPreview: r.body_preview ?? "",
+    })),
+  });
+});
+
+articlesRouter.get("/:id/revisions/:revisionId", async (req, res) => {
+  const row = await assertArticleAccess(req, req.params.id);
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  const result = await pool.query(
+    `SELECT * FROM article_revisions WHERE id = $1 AND article_id = $2`,
+    [req.params.revisionId, req.params.id],
+  );
+  if (!result.rowCount) {
+    res.status(404).json({ message: "Revision not found" });
+    return;
+  }
+  res.json({ revision: mapRevisionRow(result.rows[0]) });
+});
+
+articlesRouter.post("/:id/revisions/:revisionId/restore", async (req, res) => {
+  const existing = await pool.query(`SELECT * FROM articles WHERE id = $1`, [
+    req.params.id,
+  ]);
+  const row = existing.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  if (
+    !canEditArticle(req.user!.role, row.author_id, req.user!.id, row.status)
+  ) {
+    res.status(403).json({ message: "Cannot edit this article" });
+    return;
+  }
+
+  const rev = await pool.query(
+    `SELECT * FROM article_revisions WHERE id = $1 AND article_id = $2`,
+    [req.params.revisionId, req.params.id],
+  );
+  if (!rev.rowCount) {
+    res.status(404).json({ message: "Revision not found" });
+    return;
+  }
+
+  await maybeRecordRevision({
+    articleId: String(row.id),
+    row,
+    actorId: req.user!.id,
+    actorName: req.user!.name || req.user!.email,
+    reason: "before_restore",
+  });
+
+  const snap = rev.rows[0].snapshot as ArticleSnapshot;
+  const tax = await resolveTaxonomyPair(snap.categoryId, snap.subcategoryId);
+  if (!tax.ok) {
+    res.status(400).json({ message: tax.message });
+    return;
+  }
+
+  await pool.query(
+    `UPDATE articles SET
+      title = $1, slug = $2, excerpt = $3, body = $4,
+      category_id = $5, subcategory_id = $6,
+      meta_title = $7, meta_description = $8, meta_keywords = $9,
+      primary_keyword = $10, og_image = $11, featured_image = $12,
+      featured_image_alt = $13, featured_image_caption = $14,
+      quick_answer = $15, tags = $16, topics = $17,
+      related_article_numbers = $18, faq = $19::jsonb, sources = $20::jsonb,
+      reading_time = $21, updated_at = NOW()
+     WHERE id = $22`,
+    [
+      snap.title,
+      snap.slug,
+      snap.excerpt,
+      snap.body,
+      tax.categoryId,
+      tax.subcategoryId,
+      snap.metaTitle,
+      snap.metaDescription,
+      snap.metaKeywords,
+      snap.primaryKeyword,
+      snap.ogImage,
+      snap.featuredImage,
+      snap.featuredImageAlt,
+      snap.featuredImageCaption,
+      snap.quickAnswer,
+      snap.tags,
+      snap.topics,
+      snap.relatedArticleNumbers,
+      JSON.stringify(snap.faq ?? []),
+      JSON.stringify(snap.sources ?? []),
+      estimateReadingTime(snap.body),
+      row.id,
+    ],
+  );
+
+  const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
+  const article = mapArticle(full.rows[0]);
+  await recordAudit(req, {
+    action: "article.revision_restored",
+    entityType: "article",
+    entityId: String(row.id),
+    summary: `Restored revision #${rev.rows[0].revision_number}`,
+    meta: { revisionId: req.params.revisionId },
+  });
+  res.json({ article });
+});
+
 /** Short-lived token so the public site can render unpublished drafts. */
 articlesRouter.post("/:id/preview-token", async (req, res) => {
   const result = await pool.query(`SELECT * FROM articles WHERE id = $1`, [
@@ -560,6 +719,14 @@ articlesRouter.put("/:id", async (req, res) => {
   const sources =
     data.sources !== undefined ? data.sources : parseJsonArray(row.sources);
 
+  await maybeRecordRevision({
+    articleId: String(row.id),
+    row,
+    actorId: req.user!.id,
+    actorName: req.user!.name || req.user!.email,
+    reason: "save",
+  });
+
   await pool.query(
     `UPDATE articles SET
       title = $1, slug = $2, excerpt = $3, body = $4,
@@ -690,6 +857,14 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
       .json({ message: "Category and subcategory required to publish" });
     return;
   }
+
+  await maybeRecordRevision({
+    articleId: String(row.id),
+    row,
+    actorId: req.user!.id,
+    actorName: req.user!.name || req.user!.email,
+    reason: "publish",
+  });
 
   await pool.query(
     `UPDATE articles SET
