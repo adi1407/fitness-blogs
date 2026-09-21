@@ -11,6 +11,8 @@ import {
 } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics/openpanel";
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
+import { SignInGateModal } from "@/features/auth/SignInGateModal";
 
 export type SharePlatform =
   | "x"
@@ -39,6 +41,8 @@ export interface SocialLinksProps {
    */
   floatingButtonColor?: string;
   className?: string;
+  /** Require Google sign-in before sharing / copying */
+  requireAuth?: boolean;
 }
 
 interface PlatformStyle {
@@ -147,7 +151,9 @@ export function SocialLinks({
   showOnMobile = true,
   floatingButtonColor = "bg-[#0A0A0A]",
   className,
+  requireAuth = false,
 }: SocialLinksProps) {
+  const { member, loading: authLoading } = useMemberAuth();
   const links = React.useMemo(
     () => buildShareLinks(url, title, platforms),
     [url, title, platforms],
@@ -156,9 +162,25 @@ export function SocialLinks({
     React.useState<SharePlatform | null>(null);
   const [mobileDockOpen, setMobileDockOpen] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const [gateOpen, setGateOpen] = React.useState(false);
 
   function trackShare(channel: string) {
     trackEvent("share_click", { channel, url });
+  }
+
+  function ensureAuth(e?: React.MouseEvent) {
+    if (!requireAuth) return true;
+    if (authLoading) {
+      e?.preventDefault();
+      return false;
+    }
+    if (!member) {
+      e?.preventDefault();
+      setGateOpen(true);
+      setMobileDockOpen(false);
+      return false;
+    }
+    return true;
   }
 
   async function copyLink() {
@@ -176,6 +198,7 @@ export function SocialLinks({
     e: React.MouseEvent,
     platform: SharePlatform,
   ) {
+    if (!ensureAuth(e)) return;
     if (platform === "copy") {
       e.preventDefault();
       await copyLink();
@@ -282,9 +305,7 @@ export function SocialLinks({
                     rel={platform === "copy" ? undefined : "noreferrer"}
                     onClick={(e) => {
                       void onActivate(e, platform);
-                      if (platform === "copy") {
-                        /* keep dock open briefly so user sees Copied */
-                      } else {
+                      if (platform !== "copy") {
                         setMobileDockOpen(false);
                       }
                     }}
@@ -312,7 +333,13 @@ export function SocialLinks({
 
             <button
               type="button"
-              onClick={() => setMobileDockOpen((v) => !v)}
+              onClick={() => {
+                if (requireAuth && !member && !authLoading) {
+                  setGateOpen(true);
+                  return;
+                }
+                setMobileDockOpen((v) => !v);
+              }}
               className={cn(
                 "relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-border shadow-2xl transition-all duration-300 active:scale-95",
                 fabClass,
@@ -332,6 +359,12 @@ export function SocialLinks({
           </div>
         </div>
       ) : null}
+
+      <SignInGateModal
+        open={gateOpen}
+        actionLabel="share"
+        onClose={() => setGateOpen(false)}
+      />
     </div>
   );
 }

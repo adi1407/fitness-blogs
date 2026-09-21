@@ -6,6 +6,10 @@ import { env } from "../config/env";
 import { resolveRedirect } from "../services/urlRedirects";
 import { publicAuthRouter } from "./publicAuth.routes";
 import {
+  publicBookmarksRouter,
+  publicEngagementRouter,
+} from "./publicEngagement.routes";
+import {
   mapArticle,
   resolveRelatedArticles,
 } from "./articles.routes";
@@ -13,6 +17,8 @@ import {
 export const publicRouter = Router();
 
 publicRouter.use("/auth", publicAuthRouter);
+publicRouter.use("/me/bookmarks", publicBookmarksRouter);
+publicRouter.use("/articles/:articleId/engagement", publicEngagementRouter);
 
 const ARTICLE_SELECT = `
   SELECT a.*,

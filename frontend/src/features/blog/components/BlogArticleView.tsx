@@ -317,6 +317,7 @@ export function BlogArticleView({
                   {!preview ? (
                     <ArticleActionsRow
                       className="hidden sm:flex"
+                      articleId={article.id}
                       share={
                         <ArticleShare title={article.title} url={absoluteUrl} />
                       }
@@ -529,8 +530,9 @@ export function BlogArticleView({
             url={absoluteUrl}
             title={article.title}
             floatingButtonColor="bg-[#0A0A0A]"
+            requireAuth
           />
-          <ArticleMobileActionBar title={article.title} url={absoluteUrl} />
+          <ArticleMobileActionBar articleId={article.id} />
         </>
       ) : null}
     </KeepAtmosphere>

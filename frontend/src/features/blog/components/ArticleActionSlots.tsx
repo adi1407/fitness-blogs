@@ -1,46 +1,50 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { ArticleEngagement } from "@/features/blog/components/ArticleEngagement";
 
-/**
- * Reserved engagement mounts for Medium-like bookmark / react.
- * Real components drop in later without layout shift.
- */
 export function ArticleBookmarkSlot({
+  articleId,
   className = "",
 }: {
+  articleId?: string;
   className?: string;
 }) {
+  if (!articleId) return null;
   return (
-    <div
-      data-slot="article-bookmark"
-      className={`inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-dashed border-border bg-muted/40 px-3 text-[11px] font-medium text-muted-foreground ${className}`}
-      aria-hidden
-      title="Bookmark coming soon"
-    >
-      Save
-    </div>
+    <ArticleEngagement
+      articleId={articleId}
+      className={className}
+      compact
+    />
   );
 }
 
-export function ArticleReactSlot({ className = "" }: { className?: string }) {
+/** @deprecated Use ArticleEngagement — kept for compatibility. */
+export function ArticleReactSlot({
+  articleId,
+  className = "",
+}: {
+  articleId?: string;
+  className?: string;
+}) {
+  if (!articleId) return null;
   return (
-    <div
-      data-slot="article-react"
-      className={`inline-flex h-9 min-w-9 items-center justify-center rounded-full border border-dashed border-border bg-muted/40 px-3 text-[11px] font-medium text-muted-foreground ${className}`}
-      aria-hidden
-      title="Reactions coming soon"
-    >
-      Like
-    </div>
+    <ArticleEngagement
+      articleId={articleId}
+      className={className}
+      compact
+    />
   );
 }
 
 export function ArticleActionsRow({
   share,
+  articleId,
   className = "",
 }: {
   share: ReactNode;
+  articleId: string;
   className?: string;
 }) {
   return (
@@ -49,8 +53,7 @@ export function ArticleActionsRow({
       data-slot="article-actions"
     >
       {share}
-      <ArticleBookmarkSlot />
-      <ArticleReactSlot />
+      <ArticleEngagement articleId={articleId} />
     </div>
   );
 }

@@ -184,6 +184,26 @@ CREATE TABLE IF NOT EXISTS members (
 
 CREATE INDEX IF NOT EXISTS idx_members_google_sub ON members(google_sub);
 CREATE INDEX IF NOT EXISTS idx_members_email ON members(email);
+
+CREATE TABLE IF NOT EXISTS member_article_upvotes (
+  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  article_id UUID NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (member_id, article_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_upvotes_article
+  ON member_article_upvotes(article_id);
+
+CREATE TABLE IF NOT EXISTS member_article_bookmarks (
+  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  article_id UUID NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (member_id, article_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_bookmarks_member
+  ON member_article_bookmarks(member_id, created_at DESC);
 `;
 
 const SEED_USERS = [

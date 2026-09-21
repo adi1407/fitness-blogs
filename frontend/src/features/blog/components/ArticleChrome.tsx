@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { trackEvent } from "@/lib/analytics/openpanel";
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
+import { SignInGateModal } from "@/features/auth/SignInGateModal";
 
 type TocItem = { id: string; text: string; level: 2 | 3 };
 
@@ -54,7 +56,9 @@ export function ArticleShare({
   url: string;
   compact?: boolean;
 }) {
+  const { member, loading: authLoading } = useMemberAuth();
   const [copied, setCopied] = useState(false);
+  const [gateOpen, setGateOpen] = useState(false);
   const encoded = useMemo(
     () => ({
       u: encodeURIComponent(url),
@@ -63,11 +67,25 @@ export function ArticleShare({
     [url, title],
   );
 
+  function requireAuth(e?: MouseEvent) {
+    if (authLoading) {
+      e?.preventDefault();
+      return false;
+    }
+    if (!member) {
+      e?.preventDefault();
+      setGateOpen(true);
+      return false;
+    }
+    return true;
+  }
+
   function trackShare(channel: string) {
     trackEvent("share_click", { channel, url });
   }
 
   async function copy() {
+    if (!requireAuth()) return;
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -82,42 +100,58 @@ export function ArticleShare({
     "rounded-full border border-border px-3 py-1 text-xs font-medium transition-colors hover:border-accent hover:text-accent";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      {!compact ? (
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Share
-        </span>
-      ) : null}
-      <a
-        href={`https://twitter.com/intent/tweet?url=${encoded.u}&text=${encoded.t}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={btn}
-        onClick={() => trackShare("x")}
-      >
-        X
-      </a>
-      <a
-        href={`https://www.facebook.com/sharer/sharer.php?u=${encoded.u}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={btn}
-        onClick={() => trackShare("facebook")}
-      >
-        Facebook
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded.u}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={btn}
-        onClick={() => trackShare("linkedin")}
-      >
-        LinkedIn
-      </a>
-      <button type="button" onClick={() => void copy()} className={btn}>
-        {copied ? "Copied" : "Copy"}
-      </button>
-    </div>
+    <>
+      <div className="flex flex-wrap items-center gap-2">
+        {!compact ? (
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Share
+          </span>
+        ) : null}
+        <a
+          href={`https://twitter.com/intent/tweet?url=${encoded.u}&text=${encoded.t}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={btn}
+          onClick={(e) => {
+            if (!requireAuth(e)) return;
+            trackShare("x");
+          }}
+        >
+          X
+        </a>
+        <a
+          href={`https://www.facebook.com/sharer/sharer.php?u=${encoded.u}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={btn}
+          onClick={(e) => {
+            if (!requireAuth(e)) return;
+            trackShare("facebook");
+          }}
+        >
+          Facebook
+        </a>
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded.u}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={btn}
+          onClick={(e) => {
+            if (!requireAuth(e)) return;
+            trackShare("linkedin");
+          }}
+        >
+          LinkedIn
+        </a>
+        <button type="button" onClick={() => void copy()} className={btn}>
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <SignInGateModal
+        open={gateOpen}
+        actionLabel="share"
+        onClose={() => setGateOpen(false)}
+      />
+    </>
   );
 }
