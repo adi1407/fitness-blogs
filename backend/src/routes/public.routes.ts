@@ -1,6 +1,8 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "../constants/blogTaxonomy";
+import { env } from "../config/env";
 import {
   mapArticle,
   resolveRelatedArticles,
@@ -215,6 +217,47 @@ async function fillRelatedArticles(
 
   return relatedList;
 }
+
+/** Staff preview — any status, no view increment, requires signed token. */
+publicRouter.get("/articles/preview/:token", async (req, res) => {
+  let articleId = "";
+  try {
+    const decoded = jwt.verify(req.params.token, env.jwtSecret) as {
+      purpose?: string;
+      articleId?: string;
+    };
+    if (decoded.purpose !== "article_preview" || !decoded.articleId) {
+      res.status(401).json({ message: "Invalid preview token" });
+      return;
+    }
+    articleId = decoded.articleId;
+  } catch {
+    res.status(401).json({ message: "Preview link expired or invalid" });
+    return;
+  }
+
+  const result = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1 LIMIT 1`, [
+    articleId,
+  ]);
+  const row = result.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+
+  const article = mapPublic(row);
+  const curated = await resolveRelatedArticles(
+    (article.relatedArticleNumbers as number[]) ?? [],
+    String(article.id),
+  );
+  const relatedList = await fillRelatedArticles(curated, {
+    id: String(article.id),
+    categorySlug: (article.categorySlug as string | null) ?? null,
+    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
+  });
+
+  res.json({ article, related: relatedList, preview: true });
+});
 
 publicRouter.get("/articles/:slug", async (req, res) => {
   const result = await pool.query(

@@ -481,6 +481,41 @@ export default function ArticleEditorPage() {
     }
   }
 
+  async function openPreview() {
+    setError("");
+    setSaving(true);
+    try {
+      if (dirty || !articleIdRef.current) {
+        const id = await persistDraft({ createIfEmpty: true });
+        if (!id) {
+          setError("Save a title or body before previewing");
+          return;
+        }
+        setDirty(false);
+        setSaveState("saved");
+        setLastSavedAt(new Date());
+      }
+      const id = articleIdRef.current;
+      if (!id) {
+        setError("Save the article before previewing");
+        return;
+      }
+      const data = await apiFetch<{ token: string }>(
+        `/articles/${id}/preview-token`,
+        { method: "POST" },
+      );
+      window.open(
+        `${SITE_ORIGIN}/preview/article/${encodeURIComponent(data.token)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Preview failed");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const publicUrl = publicPath ? `${SITE_ORIGIN}${publicPath}` : null;
   const numberUrl = articleNumber
     ? `${SITE_ORIGIN}/blog/${articleNumber}`
@@ -528,6 +563,16 @@ export default function ArticleEditorPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          {canEditContent || articleId ? (
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => void openPreview()}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50"
+            >
+              Preview
+            </button>
+          ) : null}
           {canEditContent ? (
             <button
               type="submit"

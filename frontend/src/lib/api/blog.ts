@@ -42,6 +42,8 @@ export type PublicBlogArticle = {
   ogImage?: string;
   authorName?: string | null;
   reviewerName?: string | null;
+  /** Present on preview payloads only. */
+  status?: string;
 };
 
 export type PublicTaxonomyCategory = {
@@ -127,6 +129,30 @@ export async function fetchPublishedArticleBySlug(
       article: PublicBlogArticle;
       related?: PublicBlogArticle[];
     }>(`/public/articles/${encodeURIComponent(slug)}`);
+    if (!data.article) return null;
+    return {
+      article: {
+        ...data.article,
+        relatedArticleNumbers: data.article.relatedArticleNumbers ?? [],
+        faq: data.article.faq ?? [],
+        sources: data.article.sources ?? [],
+      },
+      related: data.related ?? [],
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Staff preview of any status via short-lived token. */
+export async function fetchArticlePreview(
+  token: string,
+): Promise<{ article: PublicBlogArticle; related: PublicBlogArticle[] } | null> {
+  try {
+    const data = await apiFetch<{
+      article: PublicBlogArticle;
+      related?: PublicBlogArticle[];
+    }>(`/public/articles/preview/${encodeURIComponent(token)}`);
     if (!data.article) return null;
     return {
       article: {

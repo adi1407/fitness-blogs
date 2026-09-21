@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { z } from "zod";
+import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
 import { allocateArticleNumber } from "../db/ensureCmsSchema";
 import { authenticate } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
+import { env } from "../config/env";
 import {
   estimateReadingTime,
   normalizeSlugInput,
@@ -387,6 +389,36 @@ articlesRouter.get("/:id", async (req, res) => {
     return;
   }
   res.json({ article: mapArticle(row) });
+});
+
+/** Short-lived token so the public site can render unpublished drafts. */
+articlesRouter.post("/:id/preview-token", async (req, res) => {
+  const result = await pool.query(`SELECT * FROM articles WHERE id = $1`, [
+    req.params.id,
+  ]);
+  const row = result.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  if (req.user?.role === "writer" && row.author_id !== req.user.id) {
+    res.status(403).json({ message: "Forbidden" });
+    return;
+  }
+
+  const expiresIn = "30m";
+  const token = jwt.sign(
+    { purpose: "article_preview", articleId: String(row.id) },
+    env.jwtSecret,
+    { expiresIn },
+  );
+  await recordAudit(req, {
+    action: "article.preview_token",
+    entityType: "article",
+    entityId: String(row.id),
+    summary: `Minted preview for “${row.title || "Untitled"}”`,
+  });
+  res.json({ token, expiresInSeconds: 30 * 60 });
 });
 
 articlesRouter.post("/", async (req, res) => {
