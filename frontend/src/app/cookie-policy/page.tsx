@@ -10,14 +10,14 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "How FitKnowledge uses essential cookies, optional analytics (OpenPanel), and how you can change your choices. We do not use advertising cookies.",
+    "How fitlives uses essential cookies, optional analytics (OpenPanel), and how you can change your choices. We do not use advertising cookies.",
   alternates: { canonical: "/cookie-policy" },
 };
 
 const toc = [
   { id: "what", label: "What cookies are" },
   { id: "uses", label: "What they can be used for" },
-  { id: "we-use", label: "What FitKnowledge uses" },
+  { id: "we-use", label: "What fitlives uses" },
   { id: "essential", label: "Essential" },
   { id: "analytics", label: "Analytics" },
   { id: "ads", label: "Advertising" },
@@ -28,7 +28,7 @@ export default function CookiePolicyPage() {
   return (
     <LegalDocument
       title="Cookie Policy"
-      intro="This page explains cookies and similar storage on FitKnowledge. Use Accept or Reject on the banner (or Cookie settings in the footer). Reject turns off analytics only — sign-in still uses an essential HttpOnly session cookie."
+      intro="This page explains cookies and similar storage on fitlives. Use Accept or Reject on the banner (or Cookie settings in the footer). Reject turns off analytics only — sign-in still uses an essential HttpOnly session cookie."
       toc={toc}
       related={[LEGAL_RELATED.privacy, LEGAL_RELATED.terms, LEGAL_RELATED.contact]}
     >
@@ -86,7 +86,7 @@ export default function CookiePolicyPage() {
         Marketing cookies are optional and should be off until you agree.
       </p>
 
-      <LegalH2 id="we-use">3. What FitKnowledge uses today</LegalH2>
+      <LegalH2 id="we-use">3. What fitlives uses today</LegalH2>
       <p>
         We keep the set small on purpose:
       </p>

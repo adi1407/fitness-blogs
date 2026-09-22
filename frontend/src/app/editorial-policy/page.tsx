@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Editorial Policy",
   description:
-    "How FitKnowledge researches, reviews, updates, and corrects fitness and nutrition content.",
+    "How fitlives researches, reviews, updates, and corrects fitness and nutrition content.",
   alternates: { canonical: "/editorial-policy" },
 };
 

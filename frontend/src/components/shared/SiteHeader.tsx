@@ -19,6 +19,8 @@ import {
 import { colorSchema } from "@/styles/color-schema";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
+import { BrandLogo } from "@/components/shared/BrandLogo";
+import { BRAND_NAME } from "@/lib/brand";
 
 const PRIMARY_NAV = [
   { label: "Home", href: "/" },
@@ -147,26 +149,7 @@ export function SiteHeader() {
       {/* Bar 1 — logo + primary nav */}
       <div className="pointer-events-auto border-b border-border/80 bg-white/95 backdrop-blur-md">
         <div className="fk-page flex h-14 items-center gap-4 sm:h-16">
-          <Link
-            href="/"
-            className="relative z-10 flex shrink-0 items-center gap-2 pr-1"
-            aria-label="FitKnowledge home"
-          >
-            <span
-              className="inline-flex size-9 items-center justify-center overflow-hidden rounded-full sm:size-10"
-              style={{ background: brand }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo.svg"
-                alt=""
-                className="size-6 object-contain sm:size-7"
-              />
-            </span>
-            <span className="text-sm font-semibold tracking-tight text-foreground sm:text-base">
-              FitKnowledge
-            </span>
-          </Link>
+          <BrandLogo size="md" variant="full" />
 
           <nav
             className="ml-auto hidden items-center gap-1 md:flex"
@@ -326,25 +309,10 @@ export function SiteHeader() {
                 <div className="relative flex items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2.5">
-                      <span className="inline-flex size-10 items-center justify-center overflow-hidden rounded-full bg-white/10 ring-1 ring-white/15">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src="/logo.svg"
-                          alt=""
-                          className="size-6 object-contain"
-                        />
-                      </span>
-                      <div>
-                        <p
-                          id={titleId}
-                          className="text-base font-semibold tracking-tight"
-                        >
-                          FitKnowledge
-                        </p>
-                        <p className="text-xs text-white/60">
-                          Guides · tools · databases
-                        </p>
-                      </div>
+                      <BrandLogo href={undefined} variant="full" size="sm" />
+                      <p className="sr-only" id={titleId}>
+                        {BRAND_NAME}
+                      </p>
                     </div>
                     <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-white/70">
                       Searchable fitness knowledge — not a thin blog.

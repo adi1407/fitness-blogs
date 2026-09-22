@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Browse exercises by muscle group with form-focused guidance. Connect training to muscle building, programs, and recovery.",
   alternates: { canonical: "/exercises" },
   openGraph: {
-    title: "Exercise Library | FitKnowledge",
+    title: "Exercise Library | fitlives",
     description: "Muscle-group hubs for technique and programming pathways.",
     url: "/exercises",
   },

@@ -33,7 +33,7 @@ export async function generateMetadata({
     article.metaDescription ||
     article.excerpt ||
     article.quickAnswer ||
-    "Educational fitness article from FitKnowledge.";
+    "Educational fitness article from fitlives.";
 
   return {
     title,

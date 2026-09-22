@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Practical Indian foods for protein goals: paneer, dal, eggs, curd, soya, and more — with links to protein and macro calculators.",
   alternates: { canonical: "/foods/indian" },
   openGraph: {
-    title: "Indian High-Protein Foods | FitKnowledge",
+    title: "Indian High-Protein Foods | fitlives",
     description:
       "Everyday Indian staples mapped to protein and meal planning.",
     url: "/foods/indian",

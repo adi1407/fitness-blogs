@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Free protein calculator by body weight and goal (general health, fat loss, muscle). Get a daily gram estimate, then explore foods and guides.",
   alternates: { canonical: "/tools/protein-calculator" },
   openGraph: {
-    title: "Protein Calculator | FitKnowledge",
+    title: "Protein Calculator | fitlives",
     description:
       "Estimate daily protein needs and continue into Indian foods and guides.",
     url: "/tools/protein-calculator",

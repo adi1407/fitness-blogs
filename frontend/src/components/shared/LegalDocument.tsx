@@ -41,7 +41,7 @@ export function LegalDocument({
       </p>
 
       <aside className="fk-disclaimer mt-6 max-w-3xl text-sm leading-relaxed">
-        These pages describe how FitKnowledge operates. They are written
+        These pages describe how fitlives operates. They are written
         carefully for an educational fitness site, but they are{" "}
         <strong>not a substitute for advice from a licensed lawyer</strong> in
         your jurisdiction. If something here conflicts with applicable law, the

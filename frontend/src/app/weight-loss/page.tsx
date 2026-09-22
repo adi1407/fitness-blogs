@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Learn how weight loss works: calorie deficit, protein, training, habits, and plateaus. Use TDEE and calorie calculators, then build a realistic plan.",
   alternates: { canonical: "/weight-loss" },
   openGraph: {
-    title: "Weight Loss Guide | FitKnowledge",
+    title: "Weight Loss Guide | fitlives",
     description:
       "Sustainable fat-loss pillars with calculators and nutrition next steps.",
     url: "/weight-loss",

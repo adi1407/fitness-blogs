@@ -11,10 +11,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   title: "Athlete Fitness Stories — Lessons From Public Careers",
   description:
-    "Original FitKnowledge commentary on fitness themes from public athletic careers — consistency, power, recovery, and discipline. Not biographies or endorsements.",
+    "Original fitlives commentary on fitness themes from public athletic careers — consistency, power, recovery, and discipline. Not biographies or endorsements.",
   alternates: { canonical: "/athletes" },
   openGraph: {
-    title: "Athlete Fitness Stories | FitKnowledge",
+    title: "Athlete Fitness Stories | fitlives",
     description:
       "Educational lessons inspired by publicly discussed athletic habits — with tools and guides to apply them carefully.",
     url: "/athletes",
@@ -58,7 +58,7 @@ export default function AthletesHubPage() {
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
         Editorial commentary on themes that appear in public discussions of
         athletic careers — consistency, explosive strength, recovery, and
-        discipline. These pages are written by FitKnowledge for education, not
+        discipline. These pages are written by fitlives for education, not
         as official biographies or training prescriptions.
       </p>
 

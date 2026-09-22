@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Learn nutrition for fat loss and muscle gain: protein, calories, carbs, fats, hydration, meal timing, and Indian diet guidance with calculators.",
   alternates: { canonical: "/nutrition" },
   openGraph: {
-    title: "Nutrition Guides | FitKnowledge",
+    title: "Nutrition Guides | fitlives",
     description:
       "Evidence-informed nutrition pillars with calculators and food database links.",
     url: "/nutrition",

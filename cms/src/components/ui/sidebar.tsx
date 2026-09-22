@@ -356,7 +356,7 @@ function DesktopRail({
               variants={labelVariants}
               className="overflow-hidden whitespace-nowrap text-sm font-semibold text-slate-900"
             >
-              {!isCollapsed ? "FitKnowledge CMS" : null}
+              {!isCollapsed ? "fitlives CMS" : null}
             </motion.span>
           </Link>
         </div>
@@ -521,7 +521,7 @@ function MobileNav({
 
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-slate-900">
-              FitKnowledge
+              fitlives
             </p>
             <p className="truncate text-xs text-slate-500">{currentLabel}</p>
           </div>
@@ -582,7 +582,7 @@ function MobileNav({
                       </Avatar>
                       <div>
                         <p className="text-sm font-semibold tracking-tight">
-                          FitKnowledge
+                          fitlives
                         </p>
                         <p className="text-xs text-white/65">CMS workspace</p>
                       </div>

@@ -9,9 +9,9 @@ import TailwindImageAccordion, {
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 
 export const metadata: Metadata = {
-  title: "About FitKnowledge — Fitness Knowledge Platform",
+  title: "About fitlives — Fitness Knowledge Platform",
   description:
-    "Why FitKnowledge exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.",
+    "Why fitlives exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.",
   alternates: { canonical: "/about" },
 };
 
@@ -78,7 +78,7 @@ export default function AboutPage() {
               />
             </h1>
             <BlurText
-              text="FitKnowledge is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
+              text="fitlives is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
               delay={40}
               animateBy="words"
               direction="top"

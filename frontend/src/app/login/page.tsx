@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { AuthForm } from "@/components/ui/premium-auth";
 
 export const metadata: Metadata = {
-  title: "Sign in — FitKnowledge",
+  title: "Sign in — fitlives",
   description: "Sign in or create an account with Google.",
   robots: { index: false, follow: false },
 };

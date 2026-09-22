@@ -49,6 +49,8 @@ Follow `docs/SEO_PLAYBOOK.md`. Schema only when accurate. No thin programmatic s
 
 ## Brand (current)
 
+- Brand name: **fitlives** (lowercase wordmark)
+- Logo: `/brand/logofitness.png` via `BrandLogo` / `/logo.svg` mark
 - Background white `#FFFFFF`
 - Primary near-black `#0A0A0A` (CTAs, type, active filters)
 - Contrast accent orange `#FF9800` (focus rings, hover emphasis, secondary highlights, disclaimer panels) — **no blue**

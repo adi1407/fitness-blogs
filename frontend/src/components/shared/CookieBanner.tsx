@@ -38,7 +38,7 @@ export function CookieBanner() {
               id="cookie-banner-title"
               className="text-sm font-semibold tracking-tight text-foreground"
             >
-              Cookies on FitKnowledge
+              Cookies on fitlives
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
               <strong className="font-medium text-foreground">Accept</strong>{" "}

@@ -33,12 +33,12 @@ const PILLARS: TeamMember[] = [
   },
 ];
 
-/** Brand-first home hero: FitKnowledge + three category pillars. */
+/** Brand-first home hero: fitlives + three category pillars. */
 export function HomePillarsHero() {
   return (
     <TeamShowcase
       className="border-b border-border bg-white"
-      title="FitKnowledge"
+      title="fitlives"
       description="Searchable guides for muscle building, weight loss, and nutrition — built for real questions, not thin blog posts."
       buttonText="Browse all guides"
       buttonHref="/blog"

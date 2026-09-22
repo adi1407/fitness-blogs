@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/shared/CookieBanner";
+import { BrandLogo } from "@/components/shared/BrandLogo";
+import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
 
 const explore = [
   { href: "/", label: "Home" },
@@ -43,10 +45,9 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-border bg-white">
       <div className="fk-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
         <div>
-          <p className="text-lg font-semibold text-foreground">FitKnowledge</p>
+          <BrandLogo size="md" variant="full" />
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Evidence-informed fitness, nutrition, and training — built as a
-            searchable knowledge platform, not a thin blog.
+            {BRAND_TAGLINE}
           </p>
         </div>
         <div>
@@ -100,7 +101,9 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border/70">
         <div className="fk-page flex flex-col gap-2 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} FitKnowledge. Educational use only.</p>
+          <p>
+            © {new Date().getFullYear()} {BRAND_NAME}. Educational use only.
+          </p>
           <p>
             Not medical advice —{" "}
             <Link href="/medical-disclaimer" className="fk-link text-xs">

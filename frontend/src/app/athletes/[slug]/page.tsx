@@ -33,7 +33,7 @@ export async function generateMetadata({
     description: story.excerpt,
     alternates: { canonical: `/athletes/${story.slug}` },
     openGraph: {
-      title: `${story.title} | FitKnowledge`,
+      title: `${story.title} | fitlives`,
       description: story.excerpt,
       url: `/athletes/${story.slug}`,
       type: "article",
@@ -76,12 +76,12 @@ export default async function AthleteStoryPage({ params }: PageProps) {
     dateModified: story.updatedAt,
     author: {
       "@type": "Organization",
-      name: "FitKnowledge",
+      name: "fitlives",
       url: siteUrl,
     },
     publisher: {
       "@type": "Organization",
-      name: "FitKnowledge",
+      name: "fitlives",
       url: siteUrl,
     },
     mainEntityOfPage: url,
@@ -122,7 +122,7 @@ export default async function AthleteStoryPage({ params }: PageProps) {
         {story.title}
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Written by FitKnowledge · Updated {updatedLabel} ·{" "}
+        Written by fitlives · Updated {updatedLabel} ·{" "}
         {story.readingMinutes} min read
       </p>
 
@@ -232,7 +232,7 @@ export default async function AthleteStoryPage({ params }: PageProps) {
           This commentary summarizes durable fitness themes that appear across
           years of public coverage of athletic careers. We do not reproduce
           interviews, social captions, or copyrighted reporting. For training
-          and nutrition decisions, use FitKnowledge tools and guides — and
+          and nutrition decisions, use fitlives tools and guides — and
           consult a qualified professional for personal advice.
         </p>
       </section>

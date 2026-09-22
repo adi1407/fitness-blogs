@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Nutrition Disclaimer",
   description:
-    "Food data, macros, and Indian food listings on FitKnowledge are educational estimates — not dietetic care or allergen-certified labels.",
+    "Food data, macros, and Indian food listings on fitlives are educational estimates — not dietetic care or allergen-certified labels.",
   alternates: { canonical: "/nutrition-disclaimer" },
 };
 

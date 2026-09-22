@@ -13,7 +13,7 @@ import {
 } from "@/components/animate-ui/components/base/alert-dialog";
 import { trackEvent } from "@/lib/analytics/openpanel";
 
-const STORAGE_KEY = "fitknowledge-calc-edu-ack";
+const STORAGE_KEY = "fitlives-calc-edu-ack";
 
 type Props = {
   /** Human label shown in the dialog (e.g. "protein calculator"). */

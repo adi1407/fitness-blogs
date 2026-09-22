@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Terms of Use",
   description:
-    "Terms of Use for FitKnowledge — educational fitness content, calculators, and Google member accounts. Not medical advice.",
+    "Terms of Use for fitlives — educational fitness content, calculators, and Google member accounts. Not medical advice.",
   alternates: { canonical: "/terms" },
 };
 
@@ -43,7 +43,7 @@ export default function TermsPage() {
   return (
     <LegalDocument
       title="Terms of Use"
-      intro="These Terms govern your use of the FitKnowledge website, calculators, and member features (including Google sign-in, upvotes, bookmarks, and sharing)."
+      intro="These Terms govern your use of the fitlives website, calculators, and member features (including Google sign-in, upvotes, bookmarks, and sharing)."
       toc={toc}
       related={[
         LEGAL_RELATED.privacy,
@@ -55,7 +55,7 @@ export default function TermsPage() {
     >
       <LegalH2 id="agreement">1. Agreement to these Terms</LegalH2>
       <p>
-        By accessing or using FitKnowledge (the “Site”), including signing in
+        By accessing or using fitlives (the “Site”), including signing in
         with Google, you agree to these Terms of Use and to our{" "}
         <Link href="/privacy" className="fk-link">
           Privacy Policy
@@ -147,7 +147,7 @@ export default function TermsPage() {
           content we reasonably consider harmful, defamatory, or misleading.
         </li>
         <li>
-          Impersonate FitKnowledge, staff, or another person.
+          Impersonate fitlives, staff, or another person.
         </li>
         <li>
           Circumvent educational disclaimers or calculator gates.
@@ -186,7 +186,7 @@ export default function TermsPage() {
 
       <LegalH2 id="liability">11. Limitation of liability</LegalH2>
       <p>
-        To the maximum extent permitted by applicable Indian law, FitKnowledge
+        To the maximum extent permitted by applicable Indian law, fitlives
         and its operator will not be liable for indirect, incidental, special,
         consequential, or punitive damages, or for loss of data, profits, or
         health outcomes arising from your use of the Site. Our total liability
@@ -199,7 +199,7 @@ export default function TermsPage() {
 
       <LegalH2 id="indemnity">12. Indemnity</LegalH2>
       <p>
-        You agree to indemnify and hold harmless FitKnowledge and its operator
+        You agree to indemnify and hold harmless fitlives and its operator
         from claims, damages, and reasonable legal costs arising from your
         misuse of the Site, your violation of these Terms, or your
         infringement of another person’s rights, except to the extent caused

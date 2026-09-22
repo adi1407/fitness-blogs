@@ -19,7 +19,7 @@ const HOME_FAQS = [
       "Hitting each major muscle group about 2× per week works well for most people. Progress load or reps when form stays solid.",
   },
   {
-    question: "Are FitKnowledge calculators medical advice?",
+    question: "Are fitlives calculators medical advice?",
     answer:
       "No. Tools and articles are educational only. Talk with a qualified professional for personal medical or diet decisions.",
   },

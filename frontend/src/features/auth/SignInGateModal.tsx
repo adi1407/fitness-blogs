@@ -49,7 +49,7 @@ export function SignInGateModal({
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Use Google to save guides, upvote what helps, and share from your
-          FitKnowledge account.
+          fitlives account.
         </p>
         <Link
           href={loginHref}

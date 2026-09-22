@@ -24,7 +24,7 @@ export function ContactEmailDialog() {
           <AlertDialogHeader>
             <AlertDialogTitle>Educational platform only</AlertDialogTitle>
             <AlertDialogDescription>
-              FitKnowledge cannot provide medical diagnosis or emergency care.
+              fitlives cannot provide medical diagnosis or emergency care.
               For clinical concerns, contact a qualified professional or local
               emergency services. Corrections and partnerships are welcome.
             </AlertDialogDescription>

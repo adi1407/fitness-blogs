@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "FitKnowledge — Latest Fitness Guides & News",
+    absolute: "fitlives — Latest Fitness Guides & News",
   },
   description:
-    "Latest FitKnowledge articles on muscle building, weight loss, and nutrition — plus free calculators and educational tools.",
+    "Latest fitlives articles on muscle building, weight loss, and nutrition — plus free calculators and educational tools.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "FitKnowledge — Latest Fitness Guides & News",
+    title: "fitlives — Latest Fitness Guides & News",
     description:
       "Browse the latest evidence-informed fitness articles across muscle building, weight loss, and nutrition.",
     url: "/",

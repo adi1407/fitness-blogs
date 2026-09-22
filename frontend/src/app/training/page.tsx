@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.",
   alternates: { canonical: "/training" },
   openGraph: {
-    title: "Training Guides | FitKnowledge",
+    title: "Training Guides | fitlives",
     description: "Programming principles that connect to exercises and goals.",
     url: "/training",
   },

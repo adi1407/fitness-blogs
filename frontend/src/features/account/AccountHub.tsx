@@ -191,7 +191,7 @@ export function AccountHub() {
           <CookieSettingsButton className="fk-link text-sm" />
         </div>
         <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-          Name and photo come from Google. To delete your FitKnowledge member
+          Name and photo come from Google. To delete your fitlives member
           data, email{" "}
           <a href={LEGAL_CONTACT_MAILTO} className="fk-link text-xs">
             a deletion request

@@ -20,7 +20,7 @@ export function WriterTopViews({ articles }: Props) {
       <div className="border-b border-slate-100 px-4 py-3">
         <h2 className="font-semibold text-slate-900">Your top articles</h2>
         <p className="text-xs text-slate-500">
-          Live pieces ranked by views on FitKnowledge.
+          Live pieces ranked by views on fitlives.
         </p>
       </div>
       <ul className="divide-y divide-slate-100">

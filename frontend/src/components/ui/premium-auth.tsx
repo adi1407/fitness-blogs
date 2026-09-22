@@ -49,7 +49,7 @@ function GoogleGlyph({ className }: { className?: string }) {
 }
 
 /**
- * Google-only public auth card (FitKnowledge members).
+ * Google-only public auth card (fitlives members).
  * Email/password flows are deferred — use Continue with Google.
  */
 export function AuthForm({

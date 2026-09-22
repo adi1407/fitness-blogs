@@ -20,10 +20,10 @@ const RAIL_SIZE = 4;
 export const metadata: Metadata = {
   title: "Latest — Muscle Building, Weight Loss & Nutrition Guides",
   description:
-    "Latest FitKnowledge articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
+    "Latest fitlives articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Latest | FitKnowledge",
+    title: "Latest | fitlives",
     description:
       "Recent fitness articles across three pillars: muscle building, weight loss, and nutrition.",
     url: "/blog",

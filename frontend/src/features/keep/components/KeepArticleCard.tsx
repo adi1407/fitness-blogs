@@ -80,7 +80,7 @@ export function KeepArticleCard({
         <p className="mt-auto truncate text-[11px] text-muted-foreground/80">
           {[article.categorySlug, article.subcategorySlug]
             .filter(Boolean)
-            .join(" / ") || "fitknowledge"}
+            .join(" / ") || "fitlives"}
           {article.readingTime > 0 ? ` · ${article.readingTime} min` : ""}
         </p>
       </div>

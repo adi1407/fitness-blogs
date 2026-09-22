@@ -8,6 +8,7 @@ import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
 import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
 import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { BRAND_NAME } from "@/lib/brand";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -22,13 +23,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "FitKnowledge — Fitness, Nutrition & Training Guides",
-    template: "%s | FitKnowledge",
+    default: `${BRAND_NAME} — Fitness, Nutrition & Training Guides`,
+    template: `%s | ${BRAND_NAME}`,
   },
   description:
     "Evidence-informed fitness knowledge platform: nutrition guides, weight loss, muscle building, exercise library, Indian foods, and free calculators.",
-  applicationName: "FitKnowledge",
-  authors: [{ name: "FitKnowledge" }],
+  applicationName: BRAND_NAME,
+  authors: [{ name: BRAND_NAME }],
   keywords: [
     "fitness",
     "nutrition",
@@ -38,6 +39,7 @@ export const metadata: Metadata = {
     "TDEE calculator",
     "Indian diet",
     "workout exercises",
+    "fitlives",
   ],
   alternates: {
     canonical: "/",
@@ -46,16 +48,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: siteUrl,
-    siteName: "FitKnowledge",
-    title: "FitKnowledge — Fitness, Nutrition & Training Guides",
+    siteName: BRAND_NAME,
+    title: `${BRAND_NAME} — Fitness, Nutrition & Training Guides`,
     description:
       "Guides, calculators, foods, and exercises built to answer real search questions.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FitKnowledge — Fitness Knowledge Platform",
+    title: `${BRAND_NAME} — Fitness Knowledge Platform`,
     description:
       "Evidence-informed fitness, nutrition, and training — with tools that teach.",
+  },
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/brand/logofitness.png" }],
   },
   robots: {
     index: true,
@@ -82,7 +88,7 @@ export const viewport: Viewport = {
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "FitKnowledge",
+  name: BRAND_NAME,
   url: siteUrl,
   potentialAction: {
     "@type": "SearchAction",
@@ -94,9 +100,9 @@ const websiteJsonLd = {
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "FitKnowledge",
+  name: BRAND_NAME,
   url: siteUrl,
-  logo: `${siteUrl}/logo.svg`,
+  logo: `${siteUrl}/brand/logofitness.png`,
 };
 
 export default function RootLayout({

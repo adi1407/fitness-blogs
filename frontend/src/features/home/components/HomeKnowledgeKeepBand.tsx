@@ -41,7 +41,7 @@ export function HomeKnowledgeKeepBand({ articles }: Props) {
       <div className="fk-page pb-16 pt-8 sm:pt-10">
         <header className="max-w-xl">
           <h2 className="font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            FitKnowledge
+            fitlives
           </h2>
           <p className="mt-2 text-sm text-muted-foreground sm:text-base">
             Guides worth opening — browse like a keep.

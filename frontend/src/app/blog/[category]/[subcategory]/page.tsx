@@ -44,7 +44,7 @@ export async function generateMetadata({
     },
     robots: articles.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: {
-      title: `${subcategory.label} | FitKnowledge`,
+      title: `${subcategory.label} | fitlives`,
       description,
       url: `/blog/${category.slug}/${subcategory.slug}`,
     },

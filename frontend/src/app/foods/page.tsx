@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Browse foods by calories and macros. Start with Indian high-protein staples for fat loss and muscle gain meal planning.",
   alternates: { canonical: "/foods" },
   openGraph: {
-    title: "Foods Database | FitKnowledge",
+    title: "Foods Database | fitlives",
     description: "Structured food pathways into recipes, protein, and calculators.",
     url: "/foods",
   },

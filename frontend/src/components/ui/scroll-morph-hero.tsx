@@ -423,7 +423,7 @@ export default function ScrollMorphHero() {
           className="absolute top-[9%] left-1/2 z-10 w-[min(92%,36rem)] -translate-x-1/2 px-3 text-center sm:top-[10%]"
         >
           <h2 className="mb-2 text-2xl font-semibold tracking-tight text-foreground sm:mb-4 sm:text-3xl md:text-5xl">
-            Explore FitKnowledge
+            Explore fitlives
           </h2>
           <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm md:text-base">
             Nutrition, training, tools, and Indian foods — scroll through the

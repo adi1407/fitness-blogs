@@ -99,7 +99,7 @@ export function BlogArticleView({
         })
       : null;
 
-  const authorName = article.authorName || "FitKnowledge Editorial";
+  const authorName = article.authorName || "fitlives Editorial";
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -158,7 +158,7 @@ export function BlogArticleView({
     },
     publisher: {
       "@type": "Organization",
-      name: "FitKnowledge",
+      name: "fitlives",
       url: siteUrl,
       logo: {
         "@type": "ImageObject",

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Free fitness calculators for TDEE, calories, macros, protein, BMR, and BMI. Each tool links into guides and food databases.",
   alternates: { canonical: "/tools" },
   openGraph: {
-    title: "Fitness Calculators | FitKnowledge",
+    title: "Fitness Calculators | fitlives",
     description:
       "Calculator hub designed for search intent and educational next steps.",
     url: "/tools",

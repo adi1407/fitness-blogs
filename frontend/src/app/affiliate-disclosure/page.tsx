@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Affiliate Disclosure",
   description:
-    "FitKnowledge currently has no paid affiliate links. If that changes, we will disclose it here.",
+    "fitlives currently has no paid affiliate links. If that changes, we will disclose it here.",
   alternates: { canonical: "/affiliate-disclosure" },
 };
 
@@ -35,7 +35,7 @@ export default function AffiliateDisclosurePage() {
     >
       <LegalH2 id="current">1. Current status</LegalH2>
       <p>
-        As of the date above, FitKnowledge <strong>does not</strong> use paid
+        As of the date above, fitlives <strong>does not</strong> use paid
         affiliate links, sponsored product placements, or commission-based
         shopping widgets. Calculators, food pages, and articles are
         educational. If a page mentions a food, supplement category, or
@@ -59,7 +59,7 @@ export default function AffiliateDisclosurePage() {
 
       <LegalH2 id="health">3. No product prescriptions</LegalH2>
       <p>
-        Even if a future affiliate link appears, FitKnowledge will not tell
+        Even if a future affiliate link appears, fitlives will not tell
         you to take a drug, stop a medication, or treat a disease. See the{" "}
         <Link href="/medical-disclaimer" className="fk-link">
           Medical Disclaimer

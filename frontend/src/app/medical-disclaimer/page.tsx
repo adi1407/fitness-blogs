@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Medical Disclaimer",
   description:
-    "FitKnowledge provides educational fitness and nutrition information only — not medical advice, diagnosis, treatment, or emergency care.",
+    "fitlives provides educational fitness and nutrition information only — not medical advice, diagnosis, treatment, or emergency care.",
   alternates: { canonical: "/medical-disclaimer" },
 };
 
@@ -28,7 +28,7 @@ export default function MedicalDisclaimerPage() {
   return (
     <LegalDocument
       title="Medical Disclaimer"
-      intro="Read this before using articles, calculators, food data, or exercise guidance on FitKnowledge."
+      intro="Read this before using articles, calculators, food data, or exercise guidance on fitlives."
       toc={toc}
       related={[
         LEGAL_RELATED.nutrition,
@@ -39,7 +39,7 @@ export default function MedicalDisclaimerPage() {
     >
       <LegalH2 id="not-advice">1. Educational information only</LegalH2>
       <p>
-        Content on FitKnowledge is for <strong>general education</strong>. It
+        Content on fitlives is for <strong>general education</strong>. It
         is <strong>not</strong> medical advice, diagnosis, or treatment. It
         does <strong>not</strong> create a doctor–patient, therapist–client,
         or other professional relationship with you.
@@ -57,7 +57,7 @@ export default function MedicalDisclaimerPage() {
         If you think you are having a medical emergency (including chest
         pain, trouble breathing, severe injury, fainting, or thoughts of
         self-harm), contact <strong>local emergency services immediately</strong>.
-        Do not email FitKnowledge for emergency care. We cannot provide
+        Do not email fitlives for emergency care. We cannot provide
         clinical or crisis services.
       </p>
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Learn how much protein you need per day for general health, muscle growth, and fat loss. Includes calculator links and Indian high-protein food pathways.",
   alternates: { canonical: "/nutrition/protein" },
   openGraph: {
-    title: "Protein Guide | FitKnowledge",
+    title: "Protein Guide | fitlives",
     description:
       "Protein requirements by goal, with calculators and Indian food next steps.",
     url: "/nutrition/protein",

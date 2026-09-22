@@ -33,7 +33,7 @@ export default function LoginPage() {
       >
         <h1 className="text-2xl font-bold text-slate-900">CMS login</h1>
         <p className="mt-2 text-sm text-slate-500">
-          FitKnowledge editorial desk — roles from newsroom workflow (admin /
+          fitlives editorial desk — roles from newsroom workflow (admin /
           editor / writer).
         </p>
         {error ? (

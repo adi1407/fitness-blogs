@@ -4,8 +4,8 @@ import { FlipCard, type FlipCardData } from "@/components/animate-ui/components/
 
 const AUTHORS: FlipCardData[] = [
   {
-    name: "FitKnowledge Editorial",
-    username: "@fitknowledge",
+    name: "fitlives Editorial",
+    username: "@fitlives",
     image:
       "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
     bio: "Evidence-informed fitness and nutrition explainers, calculators, and Indian diet pathways.",

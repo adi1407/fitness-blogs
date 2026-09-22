@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Learn how to build muscle: progressive overload, protein targets, recovery, and programming. Explore exercise libraries and protein calculators.",
   alternates: { canonical: "/muscle-building" },
   openGraph: {
-    title: "Muscle Building Guide | FitKnowledge",
+    title: "Muscle Building Guide | fitlives",
     description:
       "Hypertrophy fundamentals with tools, exercises, and nutrition links.",
     url: "/muscle-building",

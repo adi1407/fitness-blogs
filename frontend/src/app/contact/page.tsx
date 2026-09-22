@@ -9,9 +9,9 @@ import {
 } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Contact FitKnowledge",
+  title: "Contact fitlives",
   description:
-    "Contact FitKnowledge for corrections, privacy requests, partnerships, and support. Not for medical emergencies.",
+    "Contact fitlives for corrections, privacy requests, partnerships, and support. Not for medical emergencies.",
   alternates: { canonical: "/contact" },
 };
 

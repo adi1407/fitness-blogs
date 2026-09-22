@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Corrections Policy",
   description:
-    "How to request a factual correction on FitKnowledge. We do not provide clinical second opinions.",
+    "How to request a factual correction on fitlives. We do not provide clinical second opinions.",
   alternates: { canonical: "/corrections" },
 };
 
@@ -29,7 +29,7 @@ export default function CorrectionsPage() {
   return (
     <LegalDocument
       title="Corrections Policy"
-      intro="We want readers to trust FitKnowledge. If you find a factual error, tell us."
+      intro="We want readers to trust fitlives. If you find a factual error, tell us."
       toc={toc}
       related={[
         LEGAL_RELATED.editorial,

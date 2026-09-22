@@ -15,7 +15,7 @@ import {
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How FitKnowledge collects and uses personal data for Google sign-in, member features, hosting, and analytics. India-operated educational site.",
+    "How fitlives collects and uses personal data for Google sign-in, member features, hosting, and analytics. India-operated educational site.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
   return (
     <LegalDocument
       title="Privacy Policy"
-      intro="This notice explains what personal data FitKnowledge processes when you read the Site, sign in with Google, save or upvote articles, or when we measure traffic."
+      intro="This notice explains what personal data fitlives processes when you read the Site, sign in with Google, save or upvote articles, or when we measure traffic."
       toc={toc}
       related={[
         LEGAL_RELATED.cookies,
@@ -120,7 +120,7 @@ export default function PrivacyPage() {
       <p>
         Sign-in uses Google OAuth with scopes limited to{" "}
         <strong>openid, email, and profile</strong>. Google’s own privacy
-        policy applies to your Google account. You can revoke FitKnowledge’s
+        policy applies to your Google account. You can revoke fitlives’s
         access in your Google account settings. After revoke, your Site session
         will stop working; you may also email us to delete your member row.
       </p>

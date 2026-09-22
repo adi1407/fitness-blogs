@@ -38,7 +38,7 @@ export default function AdminAnalyticsPage() {
           <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-600">
             Product traffic and funnels live in OpenPanel. Editorial ops
-            (publishes, logins) stay in the FitKnowledge activity log.
+            (publishes, logins) stay in the fitlives activity log.
           </p>
         </div>
         {dashboardUrl ? (
@@ -127,7 +127,7 @@ export default function AdminAnalyticsPage() {
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="font-semibold text-slate-900">Editorial ops</h2>
           <p className="mt-2 text-sm text-slate-600">
-            Audit trail for EEAT and staff actions stays in FitKnowledge.
+            Audit trail for EEAT and staff actions stays in fitlives.
           </p>
           <Link
             to="/admin/activity"

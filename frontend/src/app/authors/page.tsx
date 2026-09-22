@@ -4,9 +4,9 @@ import { AuthorsFlipCards } from "@/features/about/components/AuthorsFlipCards";
 import TailwindImageAccordion from "@/components/ui/tailwind-image-accordion";
 
 export const metadata: Metadata = {
-  title: "Authors & Reviewers — FitKnowledge EEAT",
+  title: "Authors & Reviewers — fitlives EEAT",
   description:
-    "Meet the FitKnowledge editorial and review roles behind nutrition, training, and calculator content.",
+    "Meet the fitlives editorial and review roles behind nutrition, training, and calculator content.",
   alternates: { canonical: "/authors" },
 };
 
@@ -55,7 +55,7 @@ export default function AuthorsPage() {
         </li>
         <li>
           <Link href="/about" className="text-primary underline">
-            About FitKnowledge
+            About fitlives
           </Link>
         </li>
       </ul>

@@ -36,7 +36,7 @@ export type AthleteStory = {
 };
 
 export const ATHLETE_AFFILIATION_NOTE =
-  "FitKnowledge is not affiliated with, endorsed by, or sponsored by any athlete, team, federation, or brand named on these pages. Names appear only for educational commentary. This is not a biography, interview transcript, or training prescription.";
+  "fitlives is not affiliated with, endorsed by, or sponsored by any athlete, team, federation, or brand named on these pages. Names appear only for educational commentary. This is not a biography, interview transcript, or training prescription.";
 
 export const ATHLETE_STORIES: AthleteStory[] = [
   {
@@ -105,7 +105,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
         id: "boundaries",
         heading: "Boundaries for this commentary",
         paragraphs: [
-          "This page is FitKnowledge editorial commentary. It is not Kohli’s training program, not medical advice, and not an official biography. Individual needs differ by age, injury history, and sport. Consult a qualified professional before major changes.",
+          "This page is fitlives editorial commentary. It is not Kohli’s training program, not medical advice, and not an official biography. Individual needs differ by age, injury history, and sport. Consult a qualified professional before major changes.",
         ],
       },
     ],
@@ -120,7 +120,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
       {
         question: "Is this Virat Kohli’s official training plan?",
         answer:
-          "No. This is independent educational commentary on themes that appear in public discussions of his career. FitKnowledge is not affiliated with him or any cricket board.",
+          "No. This is independent educational commentary on themes that appear in public discussions of his career. fitlives is not affiliated with him or any cricket board.",
       },
       {
         question: "How many days a week should I train if I want consistency?",
@@ -222,7 +222,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
         id: "boundaries",
         heading: "Boundaries for this commentary",
         paragraphs: [
-          "FitKnowledge is not affiliated with Neeraj Chopra, Athletics Federation of India, or any sponsor. This page does not prescribe throwing volumes or competition peaking. Seek a qualified coach for sport-specific training.",
+          "fitlives is not affiliated with Neeraj Chopra, Athletics Federation of India, or any sponsor. This page does not prescribe throwing volumes or competition peaking. Seek a qualified coach for sport-specific training.",
         ],
       },
     ],
@@ -310,7 +310,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
         heading: "What longevity at high intensity usually requires",
         paragraphs: [
           "Badminton demands repeated accelerations, lunges, and overhead power. Public commentary on long careers in the sport often credits more than talent: conditioning that matches rallies, strength that protects joints, and recovery that prevents chronic overload.",
-          "For FitKnowledge readers, the transferable idea is simple: if your sport or training is high intensity, recovery is not optional. Sleep, rest days, and managing weekly hard-session count matter as much as the sessions themselves.",
+          "For fitlives readers, the transferable idea is simple: if your sport or training is high intensity, recovery is not optional. Sleep, rest days, and managing weekly hard-session count matter as much as the sessions themselves.",
         ],
       },
       {
@@ -334,7 +334,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
         id: "boundaries",
         heading: "Boundaries for this commentary",
         paragraphs: [
-          "FitKnowledge is not affiliated with P.V. Sindhu, Badminton Association of India, or any sponsor. This is educational commentary, not a coaching plan or medical guidance.",
+          "fitlives is not affiliated with P.V. Sindhu, Badminton Association of India, or any sponsor. This is educational commentary, not a coaching plan or medical guidance.",
         ],
       },
     ],
@@ -446,7 +446,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
         id: "boundaries",
         heading: "Boundaries for this commentary",
         paragraphs: [
-          "FitKnowledge is not affiliated with Mary Kom or any boxing federation or brand. We do not provide fight camps, weight-cut advice, or medical guidance. Combat sports carry injury risk — train under qualified coaches.",
+          "fitlives is not affiliated with Mary Kom or any boxing federation or brand. We do not provide fight camps, weight-cut advice, or medical guidance. Combat sports carry injury risk — train under qualified coaches.",
         ],
       },
     ],
@@ -487,7 +487,7 @@ export const ATHLETE_STORIES: AthleteStory[] = [
       },
       {
         href: "/about",
-        label: "About FitKnowledge",
+        label: "About fitlives",
         blurb: "How we approach educational fitness content.",
       },
     ],
