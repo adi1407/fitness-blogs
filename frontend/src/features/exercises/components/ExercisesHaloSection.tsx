@@ -2,46 +2,47 @@
 
 import { useEffect, useState } from "react";
 import { HaloReel, type HaloReelItem } from "@/components/ui/halo-reel";
+import { HUB } from "@/lib/hubImages";
 
 const ITEMS: HaloReelItem[] = [
   {
-    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=800&auto=format&fit=crop",
-    alt: "Chest training",
+    src: HUB.bicepCurlWide,
+    alt: "Chest and upper-body training",
     title: "Chest",
     subtitle: "Presses & flyes",
   },
   {
-    src: "https://images.unsplash.com/photo-1603287681836-b174ce5074c2?q=80&w=800&auto=format&fit=crop",
+    src: HUB.dumbbellRow,
     alt: "Back training",
     title: "Back",
     subtitle: "Rows & pulls",
   },
   {
-    src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop",
-    alt: "Shoulder training",
+    src: HUB.deadlift,
+    alt: "Shoulder and full-body training",
     title: "Shoulders",
     subtitle: "Presses & raises",
   },
   {
-    src: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=800&auto=format&fit=crop",
+    src: HUB.bicepFocus,
     alt: "Arm training",
     title: "Arms",
     subtitle: "Biceps & triceps",
   },
   {
-    src: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?q=80&w=800&auto=format&fit=crop",
+    src: HUB.barbellSquat,
     alt: "Leg training",
     title: "Legs",
     subtitle: "Squats & hinges",
   },
   {
-    src: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop",
-    alt: "Core training",
+    src: HUB.mobilityStretch,
+    alt: "Core and mobility",
     title: "Core",
     subtitle: "Stability work",
   },
   {
-    src: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=800&auto=format&fit=crop",
+    src: HUB.outdoorRun,
     alt: "Cardio training",
     title: "Cardio",
     subtitle: "Conditioning",

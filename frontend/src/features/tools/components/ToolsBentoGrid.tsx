@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BentoCard } from "@/components/ui/bento";
+import { HUB } from "@/lib/hubImages";
 
 const TOOLS = [
   {
@@ -10,8 +11,7 @@ const TOOLS = [
     title: "TDEE Calculator",
     description:
       "Estimate maintenance calories, then set a deficit or surplus with educational next steps.",
-    image:
-      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop",
+    image: HUB.powerBowl,
     className: "max-lg:rounded-t-4xl lg:col-span-3 lg:rounded-tl-4xl",
   },
   {
@@ -20,8 +20,7 @@ const TOOLS = [
     title: "Protein Calculator",
     description:
       "Daily protein targets by body weight and goal — then jump into Indian foods.",
-    image:
-      "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1200&auto=format&fit=crop",
+    image: HUB.chickenBowl,
     className: "lg:col-span-3 lg:rounded-tr-4xl",
   },
   {
@@ -29,8 +28,7 @@ const TOOLS = [
     eyebrow: "Macros",
     title: "Macro Calculator",
     description: "Turn calorie targets into protein, carbs, and fat splits.",
-    image:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1200&auto=format&fit=crop",
+    image: HUB.veggieBowl,
     className: "lg:col-span-2 lg:rounded-bl-4xl",
   },
   {
@@ -38,8 +36,7 @@ const TOOLS = [
     eyebrow: "Goals",
     title: "Calorie Calculator",
     description: "Practical daily calorie ranges for fat loss or muscle gain.",
-    image:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1200&auto=format&fit=crop",
+    image: HUB.saladBowl,
     className: "lg:col-span-2",
   },
   {
@@ -48,8 +45,7 @@ const TOOLS = [
     title: "BMI & BMR",
     description:
       "Quick screening metrics with clear limits — not a full health assessment.",
-    image:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
+    image: HUB.checkup,
     className: "max-lg:rounded-b-4xl lg:col-span-2 lg:rounded-br-4xl",
   },
 ] as const;

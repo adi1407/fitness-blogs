@@ -12,24 +12,17 @@ import {
   type MotionValue,
 } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { WEIGHT_LOSS_IMAGES } from "@/lib/hubImages";
 
 const IMG = {
-  angle1:
-    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1000&auto=format&fit=crop",
-  angle2:
-    "https://images.unsplash.com/photo-1503376780353-7b46111d95a5?q=80&w=1000&auto=format&fit=crop",
-  angle3:
-    "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=1000&auto=format&fit=crop",
-  angle4:
-    "https://images.unsplash.com/photo-1553440569-bcc63803a379?q=80&w=1000&auto=format&fit=crop",
-  angle5:
-    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1000&auto=format&fit=crop",
-  angle6:
-    "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=1000&auto=format&fit=crop",
-  angle7:
-    "https://images.unsplash.com/photo-1583121274602-3e282ef62575?q=80&w=1000&auto=format&fit=crop",
-  angle8:
-    "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=1000&auto=format&fit=crop",
+  angle1: WEIGHT_LOSS_IMAGES[0],
+  angle2: WEIGHT_LOSS_IMAGES[1],
+  angle3: WEIGHT_LOSS_IMAGES[2],
+  angle4: WEIGHT_LOSS_IMAGES[3],
+  angle5: WEIGHT_LOSS_IMAGES[4],
+  angle6: WEIGHT_LOSS_IMAGES[5],
+  angle7: WEIGHT_LOSS_IMAGES[6],
+  angle8: WEIGHT_LOSS_IMAGES[7],
 } as const;
 
 const SCALE: Partial<Record<number, number>> = {

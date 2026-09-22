@@ -7,6 +7,7 @@ import TailwindImageAccordion, {
   type AccordionItem,
 } from "@/components/ui/tailwind-image-accordion";
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
+import { HUB } from "@/lib/hubImages";
 
 export const metadata: Metadata = {
   title: "About fitlives — Fitness Knowledge Platform",
@@ -18,21 +19,21 @@ export const metadata: Metadata = {
 const PILLAR_ACCORDION: AccordionItem[] = [
   {
     id: "muscle-building",
-    url: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=960&auto=format&fit=crop",
+    url: HUB.deadlift,
     title: "Muscle Building",
     description: "Hypertrophy & strength",
     href: "/blog/muscle-building",
   },
   {
     id: "weight-loss",
-    url: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=960&auto=format&fit=crop",
+    url: HUB.outdoorRun,
     title: "Weight Loss",
     description: "Deficit done right",
     href: "/blog/weight-loss",
   },
   {
     id: "nutrition",
-    url: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=960&auto=format&fit=crop",
+    url: HUB.chickenBowl,
     title: "Nutrition",
     description: "Protein, macros & meals",
     href: "/blog/nutrition",
@@ -43,19 +44,19 @@ const SECONDARY_HUBS = [
   {
     title: "Calculators",
     blurb: "Educational tools that teach and link into guides.",
-    src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.healthConsult,
     href: "/tools",
   },
   {
     title: "Indian Foods",
     blurb: "High-protein staples mapped to real goals.",
-    src: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.indianThali,
     href: "/foods/indian",
   },
   {
     title: "Exercises",
     blurb: "Browse by muscle group, then connect to guidance.",
-    src: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.gymFloor,
     href: "/exercises",
   },
 ];

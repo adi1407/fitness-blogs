@@ -12,17 +12,7 @@ import {
   PreviewLinkCardImage,
 } from "@/components/animate-ui/components/radix/preview-link-card";
 import { HomeGhostFoldBand } from "@/features/home/components/HomeGhostFoldBand";
-
-const TOOL_SLIDER_IMAGES = [
-  "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
-];
+import { HUB, TOOL_SLIDER_IMAGES } from "@/lib/hubImages";
 
 const TOOL_STORIES: CarouselItem[] = [
   {
@@ -32,10 +22,8 @@ const TOOL_STORIES: CarouselItem[] = [
       "Estimate daily protein targets by body weight and goal — then jump into foods and guides.",
     author: "Protein Calculator",
     role: "Tools · Nutrition",
-    defaultImage:
-      "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1200&auto=format&fit=crop",
-    selectedImage:
-      "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1200&auto=format&fit=crop",
+    defaultImage: HUB.chickenBowl,
+    selectedImage: HUB.deadliftWide,
     alt: "Protein and training",
   },
   {
@@ -45,10 +33,8 @@ const TOOL_STORIES: CarouselItem[] = [
       "Maintenance, fat loss, and surplus ranges with educational next steps — not a dead-end number.",
     author: "TDEE Calculator",
     role: "Tools · Weight Loss",
-    defaultImage:
-      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop",
-    selectedImage:
-      "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1200&auto=format&fit=crop",
+    defaultImage: HUB.powerBowl,
+    selectedImage: HUB.saladBowl,
     alt: "Healthy meal planning",
   },
   {
@@ -58,10 +44,8 @@ const TOOL_STORIES: CarouselItem[] = [
       "Turn calorie targets into protein, carbs, and fat — then explore Indian meal ideas.",
     author: "Macro Calculator",
     role: "Tools · Nutrition",
-    defaultImage:
-      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1200&auto=format&fit=crop",
-    selectedImage:
-      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop",
+    defaultImage: HUB.veggieBowl,
+    selectedImage: HUB.deadlift,
     alt: "Macros and training",
   },
 ];

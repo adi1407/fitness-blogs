@@ -1,85 +1,86 @@
 import type { GalleryItem } from "@/components/ui/circular-gallery";
+import { HUB } from "@/lib/hubImages";
 
-/** Fitness / Indian-food themed gallery (Unsplash). */
+/** Fitness / Indian-food themed gallery (local hub assets). */
 export const FITNESS_GALLERY_ITEMS: GalleryItem[] = [
   {
     common: "Paneer",
     binomial: "High-protein dairy",
     photo: {
-      url: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=800&auto=format&fit=crop",
-      text: "Paneer cubes for high-protein Indian meals",
+      url: HUB.indianThali,
+      text: "Paneer and Indian thali staples",
       pos: "50% 40%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
     common: "Dal",
     binomial: "Lentil protein + fiber",
     photo: {
-      url: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?q=80&w=800&auto=format&fit=crop",
-      text: "Bowl of dal lentils",
+      url: HUB.indianThaliWide,
+      text: "Dal and balanced Indian plate",
       pos: "50% 50%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
     common: "Eggs",
     binomial: "Complete protein",
     photo: {
-      url: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=800&auto=format&fit=crop",
-      text: "Eggs for convenient protein",
+      url: HUB.healthyBreakfast,
+      text: "Breakfast protein staples",
       pos: "50% 45%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
     common: "Curd",
-    binomial: "Strained yogurt protein",
+    binomial: "Dairy protein",
     photo: {
-      url: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=800&auto=format&fit=crop",
-      text: "Yogurt bowl",
+      url: HUB.powerBowl,
+      text: "Dairy and balanced bowls",
       pos: "50% 40%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
     common: "Chicken",
     binomial: "Lean animal protein",
     photo: {
-      url: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=800&auto=format&fit=crop",
-      text: "Grilled chicken",
+      url: HUB.chickenBowl,
+      text: "Grilled chicken protein bowl",
       pos: "50% 40%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
-    common: "Fish",
-    binomial: "Lean protein + omega-3s",
+    common: "Produce",
+    binomial: "Micronutrient density",
     photo: {
-      url: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=800&auto=format&fit=crop",
-      text: "Cooked fish fillet",
+      url: HUB.produceSpread,
+      text: "Fresh vegetables and fruit",
       pos: "50% 45%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
-    common: "Soya / tofu",
+    common: "Plant bowl",
     binomial: "Plant protein staple",
     photo: {
-      url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
+      url: HUB.veggieBowl,
       text: "Plant-based protein plate",
       pos: "50% 40%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
   {
     common: "Meal prep",
     binomial: "Protein-forward plates",
     photo: {
-      url: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
+      url: HUB.mealPrep,
       text: "Prepared high-protein meals",
       pos: "50% 40%",
-      by: "Unsplash",
+      by: "fitlives",
     },
   },
 ];

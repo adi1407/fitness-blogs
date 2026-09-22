@@ -2,8 +2,9 @@ import { apiFetch } from "@/lib/api/client";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import type { LearnArticle, LearnCategory } from "../data/learnArticles";
 
-const FALLBACK_IMG =
-  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop";
+import { HUB } from "@/lib/hubImages";
+
+const FALLBACK_IMG = HUB.gymInterior;
 
 function toLearnCategory(
   categorySlug: string | null,

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { HUB } from "@/lib/hubImages";
 
 export type AccordionItem = {
   id: string;
@@ -15,7 +16,7 @@ export type AccordionItem = {
 const DEFAULT_ITEMS: AccordionItem[] = [
   {
     id: "1",
-    url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=960&auto=format&fit=crop",
+    url: HUB.checkup,
     title: "Editorial",
     description: "Writers & guides",
     href: "/authors",
@@ -23,7 +24,7 @@ const DEFAULT_ITEMS: AccordionItem[] = [
   },
   {
     id: "2",
-    url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=960&auto=format&fit=crop",
+    url: HUB.healthConsult,
     title: "Review desk",
     description: "Fact check & sources",
     href: "/editorial-policy",
@@ -31,7 +32,7 @@ const DEFAULT_ITEMS: AccordionItem[] = [
   },
   {
     id: "3",
-    url: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=960&auto=format&fit=crop",
+    url: HUB.deadlift,
     title: "Tools team",
     description: "Calculators & education",
     href: "/tools",

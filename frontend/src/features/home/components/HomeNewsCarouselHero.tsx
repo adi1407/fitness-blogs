@@ -3,6 +3,7 @@
 import Carousel from "@/components/ui/carousel";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import { articleHref, articleImage } from "@/features/home/utils/articleMedia";
+import { HUB } from "@/lib/hubImages";
 
 type Props = {
   articles: PublicBlogArticle[];
@@ -12,25 +13,25 @@ const FALLBACK_SLIDES = [
   {
     title: "How much protein do you need?",
     button: "Read · Nutrition",
-    src: "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1400&auto=format&fit=crop",
+    src: HUB.chickenBowl,
     href: "/nutrition/protein",
   },
   {
     title: "Build muscle with progressive overload",
     button: "Read · Muscle Building",
-    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1400&auto=format&fit=crop",
+    src: HUB.barbellSquat,
     href: "/muscle-building",
   },
   {
     title: "Sustainable fat loss basics",
     button: "Read · Weight Loss",
-    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1400&auto=format&fit=crop",
+    src: HUB.outdoorRun,
     href: "/weight-loss",
   },
   {
     title: "Free TDEE & protein calculators",
     button: "Open tools",
-    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1400&auto=format&fit=crop",
+    src: HUB.healthConsult,
     href: "/tools",
   },
 ];

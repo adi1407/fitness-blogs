@@ -2,21 +2,22 @@
 
 import Link from "next/link";
 import { FocusCards } from "@/components/ui/focus-cards";
+import { HUB } from "@/lib/hubImages";
 
 const PILLAR_CARDS = [
   {
     title: "Protein",
-    src: "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.chickenBowl,
     href: "/nutrition/protein",
   },
   {
     title: "Calories & macros",
-    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.powerBowl,
     href: "/tools/macro-calculator",
   },
   {
     title: "Indian foods",
-    src: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?q=80&w=1200&auto=format&fit=crop",
+    src: HUB.indianThali,
     href: "/foods/indian",
   },
 ];

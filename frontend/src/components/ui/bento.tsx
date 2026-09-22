@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { clsx } from "clsx";
 import { motion } from "motion/react";
+import { HUB } from "@/lib/hubImages";
 
 /** Dark bento grid used on the Tools hub. */
 export default function FUIBentoGridDark() {
@@ -24,10 +25,7 @@ export default function FUIBentoGridDark() {
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1600&auto=format&fit=crop)",
-              }}
+              style={{ backgroundImage: `url(${HUB.powerBowl})` }}
             />
           }
           className="max-lg:rounded-t-4xl lg:col-span-3 lg:rounded-tl-4xl"
@@ -40,10 +38,7 @@ export default function FUIBentoGridDark() {
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=1600&auto=format&fit=crop)",
-              }}
+              style={{ backgroundImage: `url(${HUB.chickenBowl})` }}
             />
           }
           className="lg:col-span-3 lg:rounded-tr-4xl"
@@ -56,10 +51,7 @@ export default function FUIBentoGridDark() {
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1600&auto=format&fit=crop)",
-              }}
+              style={{ backgroundImage: `url(${HUB.veggieBowl})` }}
             />
           }
           className="lg:col-span-2 lg:rounded-bl-4xl"
@@ -72,10 +64,7 @@ export default function FUIBentoGridDark() {
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1600&auto=format&fit=crop)",
-              }}
+              style={{ backgroundImage: `url(${HUB.checkup})` }}
             />
           }
           className="lg:col-span-2"
@@ -88,10 +77,7 @@ export default function FUIBentoGridDark() {
           graphic={
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url(https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1600&auto=format&fit=crop)",
-              }}
+              style={{ backgroundImage: `url(${HUB.deadlift})` }}
             />
           }
           className="max-lg:rounded-b-4xl lg:col-span-2 lg:rounded-br-4xl"

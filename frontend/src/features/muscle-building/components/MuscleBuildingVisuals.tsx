@@ -3,26 +3,27 @@
 import Link from "next/link";
 import BlurText from "@/components/ui/blur-text";
 import { FocusCards } from "@/components/ui/focus-cards";
+import { HUB } from "@/lib/hubImages";
 
 const CARDS = [
   {
     title: "Chest",
-    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=800&auto=format&fit=crop",
+    src: HUB.bicepCurlWide,
     href: "/exercises/chest",
   },
   {
     title: "Back",
-    src: "https://images.unsplash.com/photo-1603287681836-b174ce5074c2?q=80&w=800&auto=format&fit=crop",
+    src: HUB.dumbbellRow,
     href: "/exercises/back",
   },
   {
     title: "Legs",
-    src: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?q=80&w=800&auto=format&fit=crop",
+    src: HUB.barbellSquat,
     href: "/exercises/legs",
   },
   {
     title: "Protein",
-    src: "https://images.unsplash.com/photo-1532550907401-a532f99ecef3?q=80&w=800&auto=format&fit=crop",
+    src: HUB.chickenBowl,
     href: "/nutrition/protein",
   },
 ];

@@ -2,52 +2,53 @@
 
 import { useEffect, useState } from "react";
 import SphereImageGrid, { type ImageData } from "@/components/ui/img-sphere";
+import { HUB } from "@/lib/hubImages";
 
 const BASE: Omit<ImageData, "id">[] = [
   {
-    src: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=600&auto=format&fit=crop",
+    src: HUB.bicepCurlWide,
     alt: "Chest training",
     title: "Chest",
     description: "Presses and fly patterns — open the chest exercise hub.",
   },
   {
-    src: "https://images.unsplash.com/photo-1603287681836-b174ce5074c2?q=80&w=600&auto=format&fit=crop",
+    src: HUB.dumbbellRow,
     alt: "Back training",
     title: "Back",
     description: "Rows and pulldowns for thickness and width.",
   },
   {
-    src: "https://images.unsplash.com/photo-1434682881908-b43dcb7017cd?q=80&w=600&auto=format&fit=crop",
+    src: HUB.barbellSquat,
     alt: "Legs training",
     title: "Legs",
     description: "Squats, hinges, and lunges for lower-body strength.",
   },
   {
-    src: "https://images.unsplash.com/photo-1583454110551-21d2be4aaa31?q=80&w=600&auto=format&fit=crop",
+    src: HUB.deadlift,
     alt: "Shoulders training",
     title: "Shoulders",
     description: "Presses and raises for stable deltoid development.",
   },
   {
-    src: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=600&auto=format&fit=crop",
+    src: HUB.bicepFocus,
     alt: "Arms training",
     title: "Arms",
     description: "Elbow flexors and extensors as accessories.",
   },
   {
-    src: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=600&auto=format&fit=crop",
+    src: HUB.mobilityStretch,
     alt: "Core training",
     title: "Core",
     description: "Anti-extension and anti-rotation for bracing under load.",
   },
   {
-    src: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=600&auto=format&fit=crop",
+    src: HUB.outdoorRun,
     alt: "Cardio",
     title: "Cardio",
     description: "Conditioning that supports health and fat-loss goals.",
   },
   {
-    src: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop",
+    src: HUB.gymFloor,
     alt: "Full gym",
     title: "Full library",
     description: "Browse every muscle-group hub below the sphere.",

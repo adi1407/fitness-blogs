@@ -2,18 +2,10 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { TOOL_SLIDER_IMAGES } from "@/lib/hubImages";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_IMAGES = [
-  "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=800&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=800&auto=format&fit=crop",
-];
+const DEFAULT_IMAGES = TOOL_SLIDER_IMAGES;
 
 export type ImageAutoSliderItem = {
   src: string;

@@ -6,26 +6,19 @@ import SplitAxisConvergence, {
   type StackSpreadCard,
 } from "@/components/ui/split-axis-convergence";
 
-const FITNESS_IMGS = [
-  "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=1000&auto=format&fit=crop",
-];
+import { WEIGHT_LOSS_IMAGES } from "@/lib/hubImages";
+
+const FITNESS_IMGS = WEIGHT_LOSS_IMAGES;
 
 const ALTS = [
+  "Outdoor running for fat loss",
+  "Balanced power bowl",
   "Strength training",
-  "Meal planning",
-  "Gym workout",
-  "Fresh vegetables",
-  "Running outdoors",
-  "Balanced plate",
-  "Weight room",
-  "Core training",
+  "Fresh salad bowl",
+  "Mobility and recovery",
+  "Meal prep container",
+  "Health checkup",
+  "Vegetable Buddha bowl",
 ];
 
 function buildCards(): StackSpreadCard[] {
