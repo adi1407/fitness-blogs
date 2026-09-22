@@ -16,7 +16,7 @@ export function HomeScrollMorphBand() {
           Images start in a line, then resolve into a circle. Scroll inside the
           frame to open the arc — same interaction as the training hub.
         </p>
-        <div className="mx-auto mt-8 h-[420px] w-full overflow-hidden rounded-2xl border border-border bg-muted/30 sm:h-[560px]">
+        <div className="relative mx-auto mt-8 h-[min(70dvh,460px)] min-h-[360px] w-full overflow-hidden rounded-2xl border border-border bg-muted/30 sm:h-[500px] md:h-[560px] lg:h-[620px]">
           <ScrollMorphHero />
         </div>
         <p className="mt-4 text-sm text-muted-foreground">

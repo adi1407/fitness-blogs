@@ -14,7 +14,7 @@ export function TrainingScrollMorph() {
         Scroll inside the frame to morph the image cluster from a circle into an
         open arc.
       </p>
-      <div className="mx-auto mt-6 h-[480px] w-full overflow-hidden rounded-2xl border border-border bg-muted/40 sm:h-[640px]">
+      <div className="relative mx-auto mt-6 h-[min(72dvh,500px)] min-h-[380px] w-full overflow-hidden rounded-2xl border border-border bg-muted/40 sm:h-[540px] md:h-[600px] lg:h-[660px]">
         <ScrollMorphHero />
       </div>
       <p className="mt-4 text-sm text-muted-foreground">
