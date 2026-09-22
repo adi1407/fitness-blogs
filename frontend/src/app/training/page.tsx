@@ -62,11 +62,6 @@ export default function TrainingPage() {
             title: "Programs",
             text: "Structured plans as content depth grows.",
           },
-          {
-            href: "/athletes",
-            title: "Athlete stories",
-            text: "Consistency, power, and recovery lessons from public careers.",
-          },
         ].map((item) => (
           <Link
             key={item.href}

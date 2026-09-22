@@ -54,9 +54,6 @@ Pillar marketing hubs (`/nutrition`, `/weight-loss`, `/muscle-building`) stay as
 /authors
 /authors/[slug]
 
-/athletes                           → commentary hub (not blog taxonomy)
-/athletes/[slug]                    → e.g. virat-kohli, neeraj-chopra
-
 /about
 /editorial-policy
 /medical-disclaimer

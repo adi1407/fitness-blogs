@@ -11,7 +11,6 @@ const explore = [
   { href: "/blog/nutrition", label: "Nutrition" },
   { href: "/exercises", label: "Exercises" },
   { href: "/foods/indian", label: "Indian Foods" },
-  { href: "/athletes", label: "Athlete stories" },
 ];
 
 const tools = [

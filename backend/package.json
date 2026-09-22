@@ -12,7 +12,7 @@
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f postgres",
-    "db:seed-demo": "tsx src/db/runSeedDemo.ts"
+    "db:clear-seed-articles": "tsx src/db/runSeedDemo.ts"
   },
   "engines": {
     "node": ">=20"

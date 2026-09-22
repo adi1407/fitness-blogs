@@ -2,6 +2,7 @@ import "dotenv/config";
 import { ensureCmsSchema } from "./ensureCmsSchema";
 import { pool } from "./pool";
 
+/** Ensures schema and removes any leftover `seed-*` demo articles. */
 async function main() {
   await ensureCmsSchema();
   const r = await pool.query(

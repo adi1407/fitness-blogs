@@ -153,11 +153,6 @@ export default function MuscleBuildingPage() {
               title: "Programs",
               text: "Structured plans (coming as content expands).",
             },
-            {
-              href: "/athletes",
-              title: "Athlete stories",
-              text: "What public athletic careers suggest about consistency and strength.",
-            },
           ].map((item) => (
             <li key={item.href}>
               <Link
