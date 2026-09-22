@@ -29,7 +29,7 @@ const TOOLS = [
     title: "Macro Calculator",
     description: "Turn calorie targets into protein, carbs, and fat splits.",
     image: HUB.veggieBowl,
-    className: "lg:col-span-2 lg:rounded-bl-4xl",
+    className: "lg:col-span-2",
   },
   {
     href: "/tools/calorie-calculator",
@@ -40,23 +40,41 @@ const TOOLS = [
     className: "lg:col-span-2",
   },
   {
+    href: "/tools/bmr-calculator",
+    eyebrow: "Resting",
+    title: "BMR Calculator",
+    description:
+      "Estimate resting burn before activity — then continue into TDEE.",
+    image: HUB.deadlift,
+    className: "lg:col-span-2",
+  },
+  {
     href: "/tools/bmi-calculator",
     eyebrow: "Screening",
-    title: "BMI & BMR",
+    title: "BMI Calculator",
     description:
-      "Quick screening metrics with clear limits — not a full health assessment.",
+      "A simple height-weight screening metric with clear educational limits.",
     image: HUB.checkup,
-    className: "max-lg:rounded-b-4xl lg:col-span-2 lg:rounded-br-4xl",
+    className: "max-lg:rounded-b-4xl lg:col-span-3 lg:rounded-bl-4xl",
+  },
+  {
+    href: "/tools/tdee-calculator",
+    eyebrow: "Next step",
+    title: "From BMR to TDEE",
+    description:
+      "Add activity to resting burn and set cut, maintain, or surplus targets.",
+    image: HUB.gymFloor,
+    className: "lg:col-span-3 lg:rounded-br-4xl",
   },
 ] as const;
 
 export function ToolsBentoGrid() {
   return (
     <div className="mt-12">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:grid-rows-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-6 lg:grid-rows-3">
         {TOOLS.map((tool) => (
           <Link
-            key={tool.href}
+            key={`${tool.href}-${tool.title}`}
             href={tool.href}
             className={`block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${tool.className}`}
           >

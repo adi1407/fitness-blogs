@@ -7,10 +7,12 @@ import { X } from "lucide-react";
 export function SignInGateModal({
   open,
   actionLabel,
+  description = "Use Google to save guides, upvote what helps, and unlock educational calculators from your fitlives account.",
   onClose,
 }: {
   open: boolean;
   actionLabel: string;
+  description?: string;
   onClose: () => void;
 }) {
   const pathname = usePathname();
@@ -48,8 +50,7 @@ export function SignInGateModal({
           Sign in to {actionLabel}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Use Google to save guides, upvote what helps, and share from your
-          fitlives account.
+          {description}
         </p>
         <Link
           href={loginHref}
@@ -57,6 +58,9 @@ export function SignInGateModal({
         >
           Continue with Google
         </Link>
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          Sign in or create an account — same Google step
+        </p>
         <button
           type="button"
           onClick={onClose}

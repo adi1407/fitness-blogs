@@ -1,99 +1,242 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
-import { EducationalCalcGate } from "@/features/tools/components/EducationalCalcGate";
-
-function mifflinBmr(
-  sex: "male" | "female",
-  kg: number,
-  cm: number,
-  age: number,
-) {
-  const base = 10 * kg + 6.25 * cm - 5 * age;
-  return sex === "male" ? base + 5 : base - 161;
-}
+import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
+import {
+  CalcInput,
+  CalcWorkspace,
+  FieldLabel,
+  ResultHero,
+  SegmentedControl,
+} from "@/features/tools/components/CalcWorkspace";
+import {
+  cmToFtIn,
+  ftInToCm,
+  kgToLb,
+  lbToKg,
+  mifflinBmr,
+  type Sex,
+} from "@/features/tools/lib/calcMath";
+import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
 
 export function BmrCalculatorForm() {
-  const [sex, setSex] = useState<"male" | "female">("male");
+  return (
+    <CalcAuthGate
+      toolName="BMR calculator"
+      tool="bmr-calculator"
+      actionLabel="unlock your BMR estimate"
+    >
+      {(gate) => <BmrInner {...gate} />}
+    </CalcAuthGate>
+  );
+}
+
+function BmrInner({
+  memberId,
+  memberName,
+  isSignedIn,
+  acknowledged,
+  requestAck,
+  requestSignIn,
+}: {
+  memberId: string | null;
+  memberName: string | null;
+  isSignedIn: boolean;
+  acknowledged: boolean;
+  requestAck: () => void;
+  requestSignIn: () => void;
+}) {
+  const [sex, setSex] = useState<Sex>("male");
   const [age, setAge] = useState(30);
   const [weight, setWeight] = useState(70);
-  const [height, setHeight] = useState(170);
+  const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
+  const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
+  const [heightCm, setHeightCm] = useState(170);
+  const [ft, setFt] = useState(5);
+  const [inches, setInches] = useState(7);
 
+  useEffect(() => {
+    if (!memberId) return;
+    const prefs = loadCalcPrefs(memberId);
+    if (prefs.sex) setSex(prefs.sex);
+    if (prefs.age) setAge(prefs.age);
+    if (prefs.weightKg) {
+      setWeight(
+        prefs.weightUnit === "lb"
+          ? Math.round(kgToLb(prefs.weightKg))
+          : Math.round(prefs.weightKg),
+      );
+      setWeightUnit(prefs.weightUnit ?? "kg");
+    }
+    if (prefs.heightCm) {
+      setHeightCm(prefs.heightCm);
+      const fi = cmToFtIn(prefs.heightCm);
+      setFt(fi.ft);
+      setInches(fi.inches);
+      setHeightUnit(prefs.heightUnit ?? "cm");
+    }
+  }, [memberId]);
+
+  const weightKg = weightUnit === "kg" ? weight : lbToKg(weight);
+  const height = heightUnit === "cm" ? heightCm : ftInToCm(ft, inches);
   const bmr = useMemo(
-    () => Math.round(mifflinBmr(sex, weight, height, age)),
-    [sex, age, weight, height],
+    () => Math.round(mifflinBmr(sex, weightKg, height, age)),
+    [sex, weightKg, height, age],
   );
 
   return (
-    <EducationalCalcGate toolName="BMR calculator" tool="bmr-calculator">
-      {({ acknowledged, requestAck }) => (
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block text-sm">
-              <span className="font-medium">Sex</span>
-              <select
-                className="mt-2 w-full rounded-xl border border-border px-3 py-2"
-                value={sex}
-                onChange={(e) => setSex(e.target.value as "male" | "female")}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </label>
-            <label className="block text-sm">
-              <span className="font-medium">Age</span>
-              <input
+    <CalcWorkspace
+      title="Resting burn"
+      purpose="Estimate calories before activity using Mifflin–St Jeor — educational only."
+      signedInAs={isSignedIn ? memberName : null}
+      locked={!isSignedIn}
+      lockTitle="Sign in to calculate BMR"
+      onUnlockClick={requestSignIn}
+      inputs={
+        <>
+          <FieldLabel label="Sex">
+            <SegmentedControl
+              value={sex}
+              onChange={setSex}
+              options={[
+                { id: "male", label: "Male" },
+                { id: "female", label: "Female" },
+              ]}
+            />
+          </FieldLabel>
+          <FieldLabel label="Age">
+            <CalcInput
+              type="number"
+              min={15}
+              max={100}
+              value={age}
+              onChange={(e) => setAge(Number(e.target.value) || 0)}
+            />
+          </FieldLabel>
+          <FieldLabel label="Weight">
+            <div className="flex gap-2">
+              <CalcInput
                 type="number"
-                className="mt-2 w-full rounded-xl border border-border px-3 py-2"
-                value={age}
-                onChange={(e) => setAge(Number(e.target.value) || 0)}
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="font-medium">Weight (kg)</span>
-              <input
-                type="number"
-                className="mt-2 w-full rounded-xl border border-border px-3 py-2"
                 value={weight}
                 onChange={(e) => setWeight(Number(e.target.value) || 0)}
               />
-            </label>
-            <label className="block text-sm">
-              <span className="font-medium">Height (cm)</span>
-              <input
-                type="number"
-                className="mt-2 w-full rounded-xl border border-border px-3 py-2"
-                value={height}
-                onChange={(e) => setHeight(Number(e.target.value) || 0)}
+              <SegmentedControl
+                value={weightUnit}
+                onChange={(u) => {
+                  if (u === weightUnit) return;
+                  setWeight(
+                    u === "lb"
+                      ? Math.round(kgToLb(weight))
+                      : Math.round(lbToKg(weight)),
+                  );
+                  setWeightUnit(u);
+                }}
+                options={[
+                  { id: "kg", label: "kg" },
+                  { id: "lb", label: "lb" },
+                ]}
               />
-            </label>
-          </div>
-
-          {!acknowledged ? (
-            <div className="mt-6">
-              <Button type="button" onClick={requestAck}>
-                Calculate BMR
-              </Button>
             </div>
-          ) : (
-            <div className="mt-8 rounded-xl bg-brand-50 p-5">
-              <p className="text-sm text-muted-foreground">
-                Estimated BMR (Mifflin–St Jeor)
-              </p>
-              <p className="mt-1 text-4xl font-semibold">{bmr} kcal/day</p>
+          </FieldLabel>
+          <FieldLabel label="Height">
+            <div className="space-y-2">
+              <SegmentedControl
+                value={heightUnit}
+                onChange={(u) => {
+                  if (u === "ft" && heightUnit === "cm") {
+                    const fi = cmToFtIn(heightCm);
+                    setFt(fi.ft);
+                    setInches(fi.inches);
+                  } else if (u === "cm" && heightUnit === "ft") {
+                    setHeightCm(ftInToCm(ft, inches));
+                  }
+                  setHeightUnit(u);
+                }}
+                options={[
+                  { id: "cm", label: "cm" },
+                  { id: "ft", label: "ft / in" },
+                ]}
+              />
+              {heightUnit === "cm" ? (
+                <CalcInput
+                  type="number"
+                  value={heightCm}
+                  onChange={(e) => setHeightCm(Number(e.target.value) || 0)}
+                />
+              ) : (
+                <div className="flex gap-2">
+                  <CalcInput
+                    type="number"
+                    value={ft}
+                    onChange={(e) => setFt(Number(e.target.value) || 0)}
+                  />
+                  <CalcInput
+                    type="number"
+                    value={inches}
+                    onChange={(e) => setInches(Number(e.target.value) || 0)}
+                  />
+                </div>
+              )}
             </div>
-          )}
-
-          <Link
-            href="/tools/tdee-calculator"
-            className="mt-6 inline-block text-sm text-primary underline"
+          </FieldLabel>
+        </>
+      }
+      calculateSlot={
+        !acknowledged ? (
+          <Button
+            type="button"
+            onClick={() => {
+              requestAck();
+              saveCalcPrefs(memberId, {
+                sex,
+                age,
+                weightKg,
+                heightCm: height,
+                weightUnit,
+                heightUnit,
+              });
+            }}
           >
-            Convert BMR → TDEE
-          </Link>
-        </div>
-      )}
-    </EducationalCalcGate>
+            Calculate BMR
+          </Button>
+        ) : null
+      }
+      results={
+        <>
+          <ResultHero
+            show={acknowledged}
+            label="Estimated BMR"
+            value={bmr}
+            unit="kcal/day"
+          />
+          {acknowledged ? (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Calories before activity. Add training and daily movement in the
+              TDEE calculator for a maintenance estimate.
+            </p>
+          ) : null}
+        </>
+      }
+      footer={
+        <Link
+          href="/tools/tdee-calculator"
+          className="fk-link text-sm font-semibold"
+          onClick={() =>
+            saveCalcPrefs(memberId, {
+              sex,
+              age,
+              weightKg,
+              heightCm: height,
+              weightUnit,
+              heightUnit,
+            })
+          }
+        >
+          Add activity → TDEE calculator
+        </Link>
+      }
+    />
   );
 }

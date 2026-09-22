@@ -1,118 +1,194 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
-import { EducationalCalcGate } from "@/features/tools/components/EducationalCalcGate";
-
-const GOALS = [
-  { id: "general", label: "General health", factor: 1.2 },
-  { id: "fat-loss", label: "Fat loss", factor: 1.8 },
-  { id: "muscle", label: "Muscle building", factor: 2.0 },
-] as const;
-
-type GoalId = (typeof GOALS)[number]["id"];
+import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
+import {
+  CalcInput,
+  CalcWorkspace,
+  FieldLabel,
+  ResultHero,
+  SegmentedControl,
+} from "@/features/tools/components/CalcWorkspace";
+import {
+  PROTEIN_GOALS,
+  calcProtein,
+  kgToLb,
+  lbToKg,
+  type ProteinGoalId,
+} from "@/features/tools/lib/calcMath";
+import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { cn } from "@/lib/utils";
 
 export function ProteinCalculatorForm() {
+  return (
+    <CalcAuthGate
+      toolName="protein calculator"
+      tool="protein-calculator"
+      actionLabel="unlock your protein estimate"
+    >
+      {(gate) => <ProteinInner {...gate} />}
+    </CalcAuthGate>
+  );
+}
+
+function ProteinInner({
+  memberId,
+  memberName,
+  isSignedIn,
+  acknowledged,
+  requestAck,
+  requestSignIn,
+}: {
+  memberId: string | null;
+  memberName: string | null;
+  isSignedIn: boolean;
+  acknowledged: boolean;
+  requestAck: () => void;
+  requestSignIn: () => void;
+}) {
   const [weight, setWeight] = useState(70);
   const [unit, setUnit] = useState<"kg" | "lb">("kg");
-  const [goal, setGoal] = useState<GoalId>("muscle");
+  const [goal, setGoal] = useState<ProteinGoalId>("muscle");
 
-  const result = useMemo(() => {
-    const kg = unit === "kg" ? weight : weight * 0.453592;
-    const factor = GOALS.find((g) => g.id === goal)?.factor ?? 1.6;
-    const grams = Math.round(kg * factor);
-    return {
-      kg,
-      grams,
-      low: Math.round(kg * (factor - 0.2)),
-      high: Math.round(kg * (factor + 0.2)),
-    };
-  }, [weight, unit, goal]);
+  useEffect(() => {
+    if (!memberId) return;
+    const prefs = loadCalcPrefs(memberId);
+    if (prefs.weightKg) {
+      setWeight(
+        prefs.weightUnit === "lb"
+          ? Math.round(kgToLb(prefs.weightKg))
+          : Math.round(prefs.weightKg),
+      );
+      setUnit(prefs.weightUnit ?? "kg");
+    }
+    if (prefs.proteinGoal) setGoal(prefs.proteinGoal);
+  }, [memberId]);
+
+  const weightKg = unit === "kg" ? weight : lbToKg(weight);
+  const result = useMemo(
+    () => calcProtein(weightKg, goal),
+    [weightKg, goal],
+  );
 
   return (
-    <EducationalCalcGate toolName="protein calculator" tool="protein-calculator">
-      {({ acknowledged, requestAck }) => (
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="grid gap-6 sm:grid-cols-2">
-            <label className="block">
-              <span className="text-sm font-medium">Body weight</span>
-              <div className="mt-2 flex gap-2">
-                <input
-                  type="number"
-                  min={30}
-                  max={400}
-                  value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value) || 0)}
-                  className="w-full rounded-xl border border-border bg-white px-3 py-2 outline-none focus:border-primary"
-                />
-                <select
-                  value={unit}
-                  onChange={(e) => setUnit(e.target.value as "kg" | "lb")}
-                  className="rounded-xl border border-border bg-white px-3 py-2"
+    <CalcWorkspace
+      title="Daily protein"
+      purpose="Estimate grams per day from body weight and goal — then use foods to hit the target."
+      signedInAs={isSignedIn ? memberName : null}
+      locked={!isSignedIn}
+      lockTitle="Sign in to calculate protein"
+      onUnlockClick={requestSignIn}
+      inputs={
+        <>
+          <FieldLabel label="Body weight">
+            <div className="flex gap-2">
+              <CalcInput
+                type="number"
+                min={30}
+                max={400}
+                value={weight}
+                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+              />
+              <SegmentedControl
+                value={unit}
+                onChange={(u) => {
+                  if (u === unit) return;
+                  setWeight(
+                    u === "lb"
+                      ? Math.round(kgToLb(weight))
+                      : Math.round(lbToKg(weight)),
+                  );
+                  setUnit(u);
+                }}
+                options={[
+                  { id: "kg", label: "kg" },
+                  { id: "lb", label: "lb" },
+                ]}
+              />
+            </div>
+          </FieldLabel>
+          <div>
+            <p className="text-sm font-medium">Goal</p>
+            <div className="mt-2 grid gap-2">
+              {PROTEIN_GOALS.map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => setGoal(g.id)}
+                  className={cn(
+                    "flex items-center justify-between rounded-xl border px-4 py-3 text-left transition",
+                    goal === g.id
+                      ? "border-primary bg-[#0A0A0A] text-white"
+                      : "border-border bg-white hover:border-primary/40",
+                  )}
                 >
-                  <option value="kg">kg</option>
-                  <option value="lb">lb</option>
-                </select>
-              </div>
-            </label>
-            <label className="block">
-              <span className="text-sm font-medium">Goal</span>
-              <select
-                value={goal}
-                onChange={(e) => setGoal(e.target.value as GoalId)}
-                className="mt-2 w-full rounded-xl border border-border bg-white px-3 py-2"
-              >
-                {GOALS.map((g) => (
-                  <option key={g.id} value={g.id}>
-                    {g.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          {!acknowledged ? (
-            <div className="mt-6">
-              <Button type="button" onClick={requestAck}>
-                Calculate protein
-              </Button>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Acknowledge the educational disclaimer to reveal your estimate.
-              </p>
+                  <span className="text-sm font-semibold">{g.label}</span>
+                  <span
+                    className={cn(
+                      "text-xs",
+                      goal === g.id ? "text-white/70" : "text-muted-foreground",
+                    )}
+                  >
+                    {g.factor} g/kg
+                  </span>
+                </button>
+              ))}
             </div>
-          ) : (
-            <div className="mt-8 rounded-xl bg-brand-50 p-5">
-              <p className="text-sm text-muted-foreground">Estimated daily protein</p>
-              <p className="mt-1 text-4xl font-semibold tracking-tight">
-                {result.grams}
-                <span className="ml-2 text-lg font-medium text-muted-foreground">
-                  g/day
-                </span>
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Practical range ~{result.low}–{result.high} g based on ~
-                {result.kg.toFixed(1)} kg. Educational estimate only.
-              </p>
-            </div>
-          )}
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/nutrition/protein"
-              className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
-            >
-              Read protein guide
-            </Link>
-            <Link
-              href="/foods/indian"
-              className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
-            >
-              Indian high-protein foods
-            </Link>
           </div>
+        </>
+      }
+      calculateSlot={
+        !acknowledged ? (
+          <Button
+            type="button"
+            onClick={() => {
+              requestAck();
+              saveCalcPrefs(memberId, {
+                weightKg,
+                weightUnit: unit,
+                proteinGoal: goal,
+                proteinPerKg: result.factor,
+              });
+            }}
+          >
+            Calculate protein
+          </Button>
+        ) : null
+      }
+      results={
+        <>
+          <ResultHero
+            show={acknowledged}
+            label="Estimated daily protein"
+            value={result.grams}
+            unit="g/day"
+          />
+          {acknowledged ? (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Practical range ~{result.low}–{result.high} g based on ~
+              {result.kg.toFixed(1)} kg. Educational estimate only.
+            </p>
+          ) : null}
+        </>
+      }
+      footer={
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/nutrition/protein"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
+          >
+            Read protein guide
+          </Link>
+          <Link
+            href="/foods/indian"
+            className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
+          >
+            Indian high-protein foods
+          </Link>
         </div>
-      )}
-    </EducationalCalcGate>
+      }
+    />
   );
 }
