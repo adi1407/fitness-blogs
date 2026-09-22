@@ -1,8 +1,8 @@
 "use client";
 
-import { IconArrowNarrowRight } from "@tabler/icons-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useState, useRef, useId, useEffect } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 export interface SlideData {
   title: string;
@@ -12,227 +12,147 @@ export interface SlideData {
   href?: string;
 }
 
-interface SlideProps {
-  slide: SlideData;
-  index: number;
-  current: number;
-  handleSlideClick: (index: number) => void;
-}
-
-const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
-  const slideRef = useRef<HTMLLIElement>(null);
-
-  const xRef = useRef(0);
-  const yRef = useRef(0);
-  const frameRef = useRef<number | undefined>(undefined);
-
-  useEffect(() => {
-    const animate = () => {
-      if (!slideRef.current) return;
-
-      const x = xRef.current;
-      const y = yRef.current;
-
-      slideRef.current.style.setProperty("--x", `${x}px`);
-      slideRef.current.style.setProperty("--y", `${y}px`);
-
-      frameRef.current = requestAnimationFrame(animate);
-    };
-
-    frameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
-    };
-  }, []);
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    const el = slideRef.current;
-    if (!el) return;
-
-    const r = el.getBoundingClientRect();
-    xRef.current = event.clientX - (r.left + Math.floor(r.width / 2));
-    yRef.current = event.clientY - (r.top + Math.floor(r.height / 2));
-  };
-
-  const handleMouseLeave = () => {
-    xRef.current = 0;
-    yRef.current = 0;
-  };
-
-  const imageLoaded = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    event.currentTarget.style.opacity = "1";
-  };
-
-  const { src, button, title, href } = slide;
-
-  const cta = (
-    <span className="mt-6 inline-flex h-12 w-fit items-center justify-center rounded-2xl border border-transparent bg-white px-4 py-2 text-xs text-foreground shadow-sm transition duration-200 hover:bg-accent hover:text-accent-foreground sm:text-sm">
-      {button}
-    </span>
-  );
-
-  return (
-    <div className="[perspective:1200px] [transform-style:preserve-3d]">
-      <li
-        ref={slideRef}
-        className="relative z-10 mx-[4vmin] flex h-[70vmin] w-[70vmin] flex-1 flex-col items-center justify-center text-center text-white opacity-100 transition-all duration-300 ease-in-out"
-        onClick={() => handleSlideClick(index)}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          transform:
-            current !== index
-              ? "scale(0.98) rotateX(8deg)"
-              : "scale(1) rotateX(0deg)",
-          transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-          transformOrigin: "bottom",
-        }}
-      >
-        <div
-          className="absolute top-0 left-0 h-full w-full overflow-hidden rounded-[1%] bg-foreground transition-all duration-150 ease-out"
-          style={{
-            transform:
-              current === index
-                ? "translate3d(calc(var(--x) / 30), calc(var(--y) / 30), 0)"
-                : "none",
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="absolute inset-0 h-[120%] w-[120%] object-cover transition-opacity duration-600 ease-in-out"
-            style={{
-              opacity: current === index ? 1 : 0.5,
-            }}
-            alt={title}
-            src={src}
-            onLoad={imageLoaded}
-            loading="eager"
-            decoding="sync"
-          />
-          {current === index && (
-            <div className="absolute inset-0 bg-black/30 transition-all duration-1000" />
-          )}
-        </div>
-
-        <article
-          className={`relative p-[4vmin] transition-opacity duration-1000 ease-in-out ${
-            current === index ? "visible opacity-100" : "invisible opacity-0"
-          }`}
-        >
-          <h2 className="relative text-lg font-semibold md:text-2xl lg:text-4xl">
-            {title}
-          </h2>
-          <div className="flex justify-center">
-            {href ? (
-              <Link
-                href={href}
-                className="contents"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {cta}
-              </Link>
-            ) : (
-              cta
-            )}
-          </div>
-        </article>
-      </li>
-    </div>
-  );
-};
-
-interface CarouselControlProps {
-  type: string;
-  title: string;
-  handleClick: () => void;
-}
-
-const CarouselControl = ({
-  type,
-  title,
-  handleClick,
-}: CarouselControlProps) => {
-  return (
-    <button
-      type="button"
-      className={`mx-2 flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent bg-muted transition duration-200 hover:-translate-y-0.5 focus:border-accent focus:outline-none active:translate-y-0.5 ${
-        type === "previous" ? "rotate-180" : ""
-      }`}
-      title={title}
-      onClick={handleClick}
-    >
-      <IconArrowNarrowRight className="text-foreground" />
-    </button>
-  );
-};
-
 interface CarouselProps {
   slides: SlideData[];
 }
 
 export default function Carousel({ slides }: CarouselProps) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
-
-  const handlePreviousClick = () => {
-    const previous = current - 1;
-    setCurrent(previous < 0 ? slides.length - 1 : previous);
-  };
-
-  const handleNextClick = () => {
-    const next = current + 1;
-    setCurrent(next === slides.length ? 0 : next);
-  };
-
-  const handleSlideClick = (index: number) => {
-    if (current !== index) {
-      setCurrent(index);
-    }
-  };
-
   const id = useId();
+
+  const scrollToIndex = useCallback(
+    (index: number, behavior: ScrollBehavior = "smooth") => {
+      const el = scrollerRef.current;
+      if (!el || slides.length === 0) return;
+      const next = ((index % slides.length) + slides.length) % slides.length;
+      el.scrollTo({ left: next * el.clientWidth, behavior });
+      setCurrent(next);
+    },
+    [slides.length],
+  );
+
+  const syncFromScroll = useCallback(() => {
+    const el = scrollerRef.current;
+    if (!el || el.clientWidth === 0) return;
+    const index = Math.round(el.scrollLeft / el.clientWidth);
+    const clamped = Math.min(Math.max(index, 0), slides.length - 1);
+    setCurrent(clamped);
+  }, [slides.length]);
+
+  useEffect(() => {
+    const onResize = () => scrollToIndex(current, "auto");
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [current, scrollToIndex]);
 
   if (slides.length === 0) return null;
 
   return (
     <div
-      className="relative mx-auto w-full max-w-[70vmin]"
+      className="relative w-full"
       aria-labelledby={`carousel-heading-${id}`}
       aria-roledescription="carousel"
     >
-      <div className="relative mx-auto aspect-square w-full overflow-visible">
-        <ul
-          className="absolute inset-0 mx-[-4vmin] flex transition-transform duration-1000 ease-in-out"
-          style={{
-            transform: `translateX(-${current * (100 / slides.length)}%)`,
+      <div className="relative">
+        <div
+          ref={scrollerRef}
+          onScroll={syncFromScroll}
+          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth rounded-2xl border border-border bg-muted scrollbar-none"
+          style={{ WebkitOverflowScrolling: "touch" }}
+          tabIndex={0}
+          role="region"
+          aria-label="Staples carousel"
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              scrollToIndex(current - 1);
+            } else if (e.key === "ArrowRight") {
+              e.preventDefault();
+              scrollToIndex(current + 1);
+            }
           }}
         >
           {slides.map((slide, index) => (
-            <Slide
+            <article
               key={`${slide.title}-${index}`}
-              slide={slide}
-              index={index}
-              current={current}
-              handleSlideClick={handleSlideClick}
-            />
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${slides.length}: ${slide.title}`}
+              aria-hidden={index !== current}
+              className="relative h-[min(58dvh,400px)] min-h-[260px] w-full shrink-0 grow-0 basis-full snap-center sm:h-[min(52dvh,460px)] md:h-[480px] lg:h-[520px]"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={slide.src}
+                alt=""
+                draggable={false}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/35" />
+              <div className="relative z-10 flex h-full flex-col items-center justify-center px-12 text-center text-white sm:px-16">
+                <h3 className="max-w-lg text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+                  {slide.title}
+                </h3>
+                {slide.href ? (
+                  <Link
+                    href={slide.href}
+                    className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:bg-[#FF9800] hover:text-foreground"
+                  >
+                    {slide.button}
+                  </Link>
+                ) : (
+                  <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm">
+                    {slide.button}
+                  </span>
+                )}
+              </div>
+            </article>
           ))}
-        </ul>
+        </div>
+
+        {slides.length > 1 ? (
+          <>
+            <button
+              type="button"
+              title="Previous slide"
+              aria-label="Previous slide"
+              onClick={() => scrollToIndex(current - 1)}
+              className="absolute top-1/2 left-2 z-20 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white/95 text-foreground shadow-sm transition hover:bg-white sm:left-3"
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+            <button
+              type="button"
+              title="Next slide"
+              aria-label="Next slide"
+              onClick={() => scrollToIndex(current + 1)}
+              className="absolute top-1/2 right-2 z-20 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white/95 text-foreground shadow-sm transition hover:bg-white sm:right-3"
+            >
+              <ChevronRight className="size-5" />
+            </button>
+          </>
+        ) : null}
       </div>
 
-      <div className="relative z-20 mt-6 flex w-full justify-center gap-1">
-        <CarouselControl
-          type="previous"
-          title="Go to previous slide"
-          handleClick={handlePreviousClick}
-        />
-        <CarouselControl
-          type="next"
-          title="Go to next slide"
-          handleClick={handleNextClick}
-        />
-      </div>
+      {slides.length > 1 ? (
+        <div className="mt-4 flex justify-center gap-2" role="tablist" aria-label="Slides">
+          {slides.map((slide, index) => (
+            <button
+              key={`${slide.title}-dot-${index}`}
+              type="button"
+              role="tab"
+              aria-selected={index === current}
+              aria-label={`Go to ${slide.title}`}
+              onClick={() => scrollToIndex(index)}
+              className={`h-2 rounded-full transition-all ${
+                index === current
+                  ? "w-8 bg-foreground"
+                  : "w-2 bg-foreground/25 hover:bg-foreground/50"
+              }`}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

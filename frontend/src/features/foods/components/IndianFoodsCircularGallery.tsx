@@ -1,44 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { CircularGallery } from "@/components/ui/circular-gallery";
 import { FITNESS_GALLERY_ITEMS } from "@/features/foods/data/galleryItems";
 
 /** Sticky scroll-driven circular gallery for Indian foods hub (full-bleed). */
 export function IndianFoodsCircularGallery() {
-  const [radius, setRadius] = useState(240);
-  const [scrollH, setScrollH] = useState("180svh");
-
-  useEffect(() => {
-    const sync = () => {
-      const w = window.innerWidth;
-      if (w < 480) {
-        setRadius(200);
-        setScrollH("170svh");
-      } else if (w < 768) {
-        setRadius(280);
-        setScrollH("180svh");
-      } else {
-        setRadius(440);
-        setScrollH("220svh");
-      }
-    };
-    sync();
-    window.addEventListener("resize", sync);
-    return () => window.removeEventListener("resize", sync);
-  }, []);
-
   return (
     <section
       className="relative mt-14 w-screen max-w-[100vw] bg-brand-50/30"
       style={{
-        height: scrollH,
+        height: "min(170svh, 1100px)",
         marginLeft: "calc(50% - 50vw)",
         marginRight: "calc(50% - 50vw)",
       }}
       aria-label="Indian foods circular gallery"
     >
-      <div className="sticky top-[var(--site-header-height)] flex h-[calc(100svh-var(--site-header-height))] w-full flex-col overflow-hidden">
+      <div className="sticky top-[var(--site-header-height,6.75rem)] mx-auto flex h-[min(72svh,560px)] w-full max-w-[1100px] flex-col">
         <div className="z-10 shrink-0 px-4 pb-2 pt-4 text-center sm:pt-6">
           <h2 className="text-xl font-semibold tracking-tight sm:text-3xl">
             Spin through staples
@@ -50,8 +27,7 @@ export function IndianFoodsCircularGallery() {
         <div className="min-h-0 w-full flex-1">
           <CircularGallery
             items={FITNESS_GALLERY_ITEMS}
-            radius={radius}
-            autoRotateSpeed={0.02}
+            autoRotateSpeed={0.08}
           />
         </div>
       </div>

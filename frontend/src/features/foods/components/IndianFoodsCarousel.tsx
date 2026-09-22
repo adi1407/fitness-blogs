@@ -27,8 +27,10 @@ const SLIDES = [
 
 export function IndianFoodsCarousel() {
   return (
-    <section className="mt-12 overflow-hidden py-4">
-      <h2 className="mb-6 text-2xl font-semibold">Staples in focus</h2>
+    <section className="mt-12 py-4">
+      <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+        Staples in focus
+      </h2>
       <Carousel slides={SLIDES} />
     </section>
   );

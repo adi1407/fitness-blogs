@@ -1,9 +1,10 @@
 "use client";
 
 import React, {
-  useState,
   useEffect,
+  useLayoutEffect,
   useRef,
+  useState,
   type HTMLAttributes,
 } from "react";
 import { cn } from "@/lib/utils";
@@ -29,111 +30,122 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   (
-    { items, className, radius = 600, autoRotateSpeed = 0.02, ...props },
+    { items, className, radius: radiusProp, autoRotateSpeed = 0.08, ...props },
     ref,
   ) => {
-    const [rotation, setRotation] = useState(0);
-    const [isScrolling, setIsScrolling] = useState(false);
-    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-      null,
-    );
-    const animationFrameRef = useRef<number | null>(null);
+    const rootRef = useRef<HTMLDivElement>(null);
+    const stageRef = useRef<HTMLDivElement>(null);
+    const rotationRef = useRef(0);
+    const scrollingRef = useRef(false);
+    const lastScrollY = useRef(0);
+    const rafRef = useRef<number | null>(null);
+    const scrollStopRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [radius, setRadius] = useState(radiusProp ?? 140);
+
+    useLayoutEffect(() => {
+      const el = rootRef.current;
+      if (!el) return;
+
+      const measure = () => {
+        const w = el.clientWidth;
+        const h = el.clientHeight;
+        if (w < 8 || h < 8) return;
+        const compact = w < 640;
+        const next = Math.round(
+          Math.max(
+            compact ? 100 : 150,
+            Math.min(
+              radiusProp ?? 400,
+              (Math.min(w, h) - (compact ? 90 : 140)) / 2,
+            ),
+          ),
+        );
+        setRadius((prev) => (prev === next ? prev : next));
+      };
+
+      measure();
+      const observer = new ResizeObserver(measure);
+      observer.observe(el);
+      return () => observer.disconnect();
+    }, [radiusProp]);
 
     useEffect(() => {
-      const handleScroll = () => {
-        setIsScrolling(true);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-        }
-
-        const scrollableHeight =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress =
-          scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
-        setRotation(scrollProgress * 360);
-
-        scrollTimeoutRef.current = setTimeout(() => {
-          setIsScrolling(false);
-        }, 150);
-      };
-
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
+      const apply = () => {
+        if (stageRef.current) {
+          stageRef.current.style.transform = `rotateY(${rotationRef.current}deg)`;
         }
       };
-    }, []);
 
-    useEffect(() => {
-      const autoRotate = () => {
-        if (!isScrolling) {
-          setRotation((prev) => prev + autoRotateSpeed);
+      const tick = () => {
+        if (!scrollingRef.current) {
+          rotationRef.current += autoRotateSpeed;
         }
-        animationFrameRef.current = requestAnimationFrame(autoRotate);
+        apply();
+        rafRef.current = requestAnimationFrame(tick);
       };
 
-      animationFrameRef.current = requestAnimationFrame(autoRotate);
+      rafRef.current = requestAnimationFrame(tick);
+
+      const onScroll = () => {
+        const y = window.scrollY;
+        const dy = y - lastScrollY.current;
+        lastScrollY.current = y;
+        scrollingRef.current = true;
+        rotationRef.current += dy * 0.12;
+        if (scrollStopRef.current) clearTimeout(scrollStopRef.current);
+        scrollStopRef.current = setTimeout(() => {
+          scrollingRef.current = false;
+        }, 140);
+      };
+
+      lastScrollY.current = window.scrollY;
+      window.addEventListener("scroll", onScroll, { passive: true });
 
       return () => {
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-        }
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        if (scrollStopRef.current) clearTimeout(scrollStopRef.current);
+        window.removeEventListener("scroll", onScroll);
       };
-    }, [isScrolling, autoRotateSpeed]);
+    }, [autoRotateSpeed]);
 
     const anglePerItem = 360 / Math.max(items.length, 1);
-    const compact = radius < 300;
 
     return (
       <div
-        ref={ref}
+        ref={(node) => {
+          rootRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
         role="region"
-        aria-label="Circular 3D Gallery"
+        aria-label="Circular food gallery"
         className={cn(
           "relative flex h-full w-full items-center justify-center",
           className,
         )}
-        style={{ perspective: "2000px" }}
+        style={{ perspective: "1100px" }}
         {...props}
       >
         <div
-          className="relative h-full w-full"
-          style={{
-            transform: `rotateY(${rotation}deg)`,
-            transformStyle: "preserve-3d",
-          }}
+          ref={stageRef}
+          className="relative h-full w-full will-change-transform"
+          style={{ transformStyle: "preserve-3d", transform: "rotateY(0deg)" }}
         >
           {items.map((item, i) => {
             const itemAngle = i * anglePerItem;
-            const totalRotation = rotation % 360;
-            const relativeAngle = (itemAngle + totalRotation + 360) % 360;
-            const normalizedAngle = Math.abs(
-              relativeAngle > 180 ? 360 - relativeAngle : relativeAngle,
-            );
-            const opacity = Math.max(0.3, 1 - normalizedAngle / 180);
-
             return (
               <div
                 key={`${item.common}-${item.photo.url}`}
                 role="group"
                 aria-label={item.common}
-                className={cn(
-                  "absolute",
-                  compact
-                    ? "h-[220px] w-[160px]"
-                    : "h-[260px] w-[190px] sm:h-[360px] sm:w-[270px] lg:h-[400px] lg:w-[300px]",
-                )}
+                className="absolute h-[150px] w-[108px] sm:h-[220px] sm:w-[156px] md:h-[280px] md:w-[196px]"
                 style={{
-                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translate(-50%, -50%)`,
                   left: "50%",
                   top: "50%",
-                  opacity,
-                  transition: "opacity 0.3s linear",
+                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) translate(-50%, -50%)`,
                 }}
               >
-                <div className="group relative h-full w-full overflow-hidden rounded-lg border border-border bg-card/70 shadow-2xl backdrop-blur-lg">
+                <div className="relative h-full w-full overflow-hidden rounded-xl border border-border bg-card shadow-lg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.photo.url}
@@ -141,16 +153,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     className="absolute inset-0 h-full w-full object-cover"
                     style={{ objectPosition: item.photo.pos || "center" }}
                     loading="lazy"
+                    draggable={false}
                   />
-                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3 text-white sm:p-4">
-                    <h2 className="line-clamp-2 text-base font-bold sm:text-xl">
+                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/80 to-transparent p-2.5 text-white sm:p-3">
+                    <h2 className="line-clamp-1 text-sm font-bold sm:text-base">
                       {item.common}
                     </h2>
-                    <em className="line-clamp-1 text-xs italic opacity-80 sm:text-sm">
+                    <p className="line-clamp-1 text-[10px] italic opacity-80 sm:text-xs">
                       {item.binomial}
-                    </em>
-                    <p className="mt-1 line-clamp-1 text-[10px] opacity-70 sm:mt-2 sm:text-xs">
-                      Photo by: {item.photo.by}
                     </p>
                   </div>
                 </div>
