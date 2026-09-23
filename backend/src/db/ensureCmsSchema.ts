@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
+import { seedKnowledgeContent } from "./seedKnowledgeContent";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -202,6 +203,89 @@ CREATE TABLE IF NOT EXISTS member_article_bookmarks (
 
 CREATE INDEX IF NOT EXISTS idx_member_bookmarks_member
   ON member_article_bookmarks(member_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS exercises (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  muscle_group TEXT NOT NULL
+    CHECK (muscle_group IN ('chest','back','shoulders','arms','legs','core','cardio')),
+  slug TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  excerpt TEXT NOT NULL DEFAULT '',
+  quick_answer TEXT NOT NULL DEFAULT '',
+  body_html TEXT NOT NULL DEFAULT '',
+  form_cues TEXT[] NOT NULL DEFAULT '{}',
+  common_mistakes TEXT[] NOT NULL DEFAULT '{}',
+  programming_notes TEXT NOT NULL DEFAULT '',
+  equipment TEXT[] NOT NULL DEFAULT '{}',
+  difficulty TEXT NOT NULL DEFAULT 'intermediate'
+    CHECK (difficulty IN ('beginner','intermediate','advanced')),
+  primary_muscles TEXT[] NOT NULL DEFAULT '{}',
+  secondary_muscles TEXT[] NOT NULL DEFAULT '{}',
+  meta_title TEXT NOT NULL DEFAULT '',
+  meta_description TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'draft'
+    CHECK (status IN ('draft','published')),
+  robots_index BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INT NOT NULL DEFAULT 0,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (muscle_group, slug)
+);
+
+CREATE INDEX IF NOT EXISTS idx_exercises_group_status
+  ON exercises(muscle_group, status, sort_order);
+CREATE INDEX IF NOT EXISTS idx_exercises_status ON exercises(status);
+
+CREATE TABLE IF NOT EXISTS recipes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL DEFAULT '',
+  excerpt TEXT NOT NULL DEFAULT '',
+  quick_answer TEXT NOT NULL DEFAULT '',
+  body_html TEXT NOT NULL DEFAULT '',
+  ingredients JSONB NOT NULL DEFAULT '[]'::jsonb,
+  steps JSONB NOT NULL DEFAULT '[]'::jsonb,
+  calories INT,
+  protein_g NUMERIC(6,1),
+  carbs_g NUMERIC(6,1),
+  fat_g NUMERIC(6,1),
+  cuisine_tags TEXT[] NOT NULL DEFAULT '{}',
+  meal_type TEXT NOT NULL DEFAULT '',
+  meta_title TEXT NOT NULL DEFAULT '',
+  meta_description TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'draft'
+    CHECK (status IN ('draft','published')),
+  robots_index BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INT NOT NULL DEFAULT 0,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_recipes_status ON recipes(status, sort_order);
+
+CREATE TABLE IF NOT EXISTS knowledge_pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  section TEXT NOT NULL CHECK (section IN ('programs','reviews')),
+  slug TEXT NOT NULL,
+  title TEXT NOT NULL DEFAULT '',
+  excerpt TEXT NOT NULL DEFAULT '',
+  body_html TEXT NOT NULL DEFAULT '',
+  meta_title TEXT NOT NULL DEFAULT '',
+  meta_description TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'draft'
+    CHECK (status IN ('draft','published')),
+  robots_index BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order INT NOT NULL DEFAULT 0,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (section, slug)
+);
+
+CREATE INDEX IF NOT EXISTS idx_knowledge_pages_section
+  ON knowledge_pages(section, status, sort_order);
 `;
 
 const SEED_USERS = [
@@ -405,4 +489,5 @@ export async function ensureCmsSchema(): Promise<void> {
   }
 
   await removeSeededArticles();
+  await seedKnowledgeContent();
 }

@@ -2,8 +2,18 @@ import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "../constants/blogTaxonomy";
+import {
+  isKnowledgeSection,
+  isMuscleGroup,
+  KNOWLEDGE_HUB_SLUG,
+} from "../constants/knowledgeContent";
 import { env } from "../config/env";
 import { resolveRedirect } from "../services/urlRedirects";
+import {
+  mapExercise,
+  mapKnowledgePage,
+  mapRecipe,
+} from "../utils/knowledgeMappers";
 import { publicAuthRouter } from "./publicAuth.routes";
 import {
   publicBookmarksRouter,
@@ -311,4 +321,138 @@ publicRouter.get("/articles/:slug", async (req, res) => {
   });
 
   res.json({ article, related: relatedList });
+});
+
+publicRouter.get("/exercises", async (req, res) => {
+  const group =
+    typeof req.query.group === "string" ? req.query.group : undefined;
+  const params: unknown[] = ["published"];
+  let where = `WHERE status = $1 AND robots_index = TRUE`;
+  if (group && isMuscleGroup(group)) {
+    params.push(group);
+    where += ` AND muscle_group = $${params.length}`;
+  }
+  const result = await pool.query(
+    `SELECT * FROM exercises ${where}
+     ORDER BY muscle_group ASC, sort_order ASC, title ASC`,
+    params,
+  );
+  res.json({ exercises: result.rows.map(mapExercise) });
+});
+
+publicRouter.get("/exercises/:group/:slug", async (req, res) => {
+  const { group, slug } = req.params;
+  if (!isMuscleGroup(group)) {
+    res.status(404).json({ message: "Exercise group not found" });
+    return;
+  }
+  const result = await pool.query(
+    `SELECT * FROM exercises
+     WHERE muscle_group = $1 AND slug = $2 AND status = 'published'
+     LIMIT 1`,
+    [group, slug],
+  );
+  if (!result.rows[0]) {
+    res.status(404).json({ message: "Exercise not found" });
+    return;
+  }
+  const related = await pool.query(
+    `SELECT * FROM exercises
+     WHERE muscle_group = $1 AND status = 'published' AND id <> $2
+     ORDER BY sort_order ASC, title ASC
+     LIMIT 6`,
+    [group, result.rows[0].id],
+  );
+  res.json({
+    exercise: mapExercise(result.rows[0]),
+    related: related.rows.map(mapExercise),
+  });
+});
+
+publicRouter.get("/recipes", async (_req, res) => {
+  const result = await pool.query(
+    `SELECT * FROM recipes
+     WHERE status = 'published' AND robots_index = TRUE
+     ORDER BY sort_order ASC, title ASC`,
+  );
+  res.json({ recipes: result.rows.map(mapRecipe) });
+});
+
+publicRouter.get("/recipes/:slug", async (req, res) => {
+  const result = await pool.query(
+    `SELECT * FROM recipes
+     WHERE slug = $1 AND status = 'published'
+     LIMIT 1`,
+    [req.params.slug],
+  );
+  if (!result.rows[0]) {
+    res.status(404).json({ message: "Recipe not found" });
+    return;
+  }
+  const related = await pool.query(
+    `SELECT * FROM recipes
+     WHERE status = 'published' AND id <> $1
+     ORDER BY sort_order ASC, title ASC
+     LIMIT 4`,
+    [result.rows[0].id],
+  );
+  res.json({
+    recipe: mapRecipe(result.rows[0]),
+    related: related.rows.map(mapRecipe),
+  });
+});
+
+publicRouter.get("/knowledge/:section", async (req, res) => {
+  const section = req.params.section;
+  if (!isKnowledgeSection(section)) {
+    res.status(404).json({ message: "Section not found" });
+    return;
+  }
+  const hub = await pool.query(
+    `SELECT * FROM knowledge_pages
+     WHERE section = $1 AND slug = $2 AND status = 'published'
+     LIMIT 1`,
+    [section, KNOWLEDGE_HUB_SLUG],
+  );
+  const pages = await pool.query(
+    `SELECT * FROM knowledge_pages
+     WHERE section = $1 AND status = 'published' AND slug <> $2
+       AND robots_index = TRUE
+     ORDER BY sort_order ASC, title ASC`,
+    [section, KNOWLEDGE_HUB_SLUG],
+  );
+  res.json({
+    hub: hub.rows[0] ? mapKnowledgePage(hub.rows[0]) : null,
+    pages: pages.rows.map(mapKnowledgePage),
+  });
+});
+
+publicRouter.get("/knowledge/:section/:slug", async (req, res) => {
+  const { section, slug } = req.params;
+  if (!isKnowledgeSection(section) || slug === KNOWLEDGE_HUB_SLUG) {
+    res.status(404).json({ message: "Page not found" });
+    return;
+  }
+  const result = await pool.query(
+    `SELECT * FROM knowledge_pages
+     WHERE section = $1 AND slug = $2 AND status = 'published'
+     LIMIT 1`,
+    [section, slug],
+  );
+  if (!result.rows[0]) {
+    res.status(404).json({ message: "Page not found" });
+    return;
+  }
+  const related = await pool.query(
+    `SELECT * FROM knowledge_pages
+     WHERE section = $1 AND status = 'published'
+       AND slug <> $2 AND slug <> $3
+     ORDER BY sort_order ASC, title ASC
+     LIMIT 4`,
+    [section, slug, KNOWLEDGE_HUB_SLUG],
+  );
+  res.json({
+    page: mapKnowledgePage(result.rows[0]),
+    related: related.rows.map(mapKnowledgePage),
+  });
 });

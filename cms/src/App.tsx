@@ -13,6 +13,12 @@ import UsersPage from "./pages/UsersPage.tsx";
 import AssignmentsPage from "./pages/AssignmentsPage.tsx";
 import NotificationsPage from "./pages/NotificationsPage.tsx";
 import RedirectsPage from "./pages/RedirectsPage.tsx";
+import ExercisesListPage from "./pages/ExercisesListPage.tsx";
+import ExerciseEditorPage from "./pages/ExerciseEditorPage.tsx";
+import RecipesListPage from "./pages/RecipesListPage.tsx";
+import RecipeEditorPage from "./pages/RecipeEditorPage.tsx";
+import KnowledgePagesListPage from "./pages/KnowledgePagesListPage.tsx";
+import KnowledgePageEditorPage from "./pages/KnowledgePageEditorPage.tsx";
 
 export default function App() {
   return (
@@ -33,6 +39,33 @@ export default function App() {
               >
                 <Route path="writers" element={<WritersPage />} />
                 <Route path="redirects" element={<RedirectsPage />} />
+                <Route path="exercises" element={<ExercisesListPage />} />
+                <Route path="exercises/new" element={<ExerciseEditorPage />} />
+                <Route path="exercises/:id" element={<ExerciseEditorPage />} />
+                <Route path="recipes" element={<RecipesListPage />} />
+                <Route path="recipes/new" element={<RecipeEditorPage />} />
+                <Route path="recipes/:id" element={<RecipeEditorPage />} />
+                <Route
+                  path="programs"
+                  element={<KnowledgePagesListPage />}
+                />
+                <Route
+                  path="programs/new"
+                  element={<KnowledgePageEditorPage />}
+                />
+                <Route
+                  path="programs/:id"
+                  element={<KnowledgePageEditorPage />}
+                />
+                <Route path="reviews" element={<KnowledgePagesListPage />} />
+                <Route
+                  path="reviews/new"
+                  element={<KnowledgePageEditorPage />}
+                />
+                <Route
+                  path="reviews/:id"
+                  element={<KnowledgePageEditorPage />}
+                />
               </Route>
               <Route element={<ProtectedRoute roles={["admin"]} />}>
                 <Route path="users" element={<UsersPage />} />

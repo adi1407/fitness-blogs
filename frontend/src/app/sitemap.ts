@@ -1,6 +1,12 @@
 import type { MetadataRoute } from "next";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { fetchPublishedArticles } from "@/lib/api/blog";
+import {
+  fetchExercises,
+  fetchKnowledgeSection,
+  fetchRecipes,
+  MUSCLE_GROUPS,
+} from "@/lib/api/knowledge";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -23,8 +29,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/exercises",
     "/foods",
     "/foods/indian",
+    "/recipes",
+    "/programs",
+    "/reviews",
     "/about",
-    "/authors",
     "/editorial-policy",
     "/medical-disclaimer",
     "/nutrition-disclaimer",
@@ -37,8 +45,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const blogCategoryPaths = BLOG_TAXONOMY.map((c) => `/blog/${c.slug}`);
+  const exerciseGroupPaths = MUSCLE_GROUPS.map((g) => `/exercises/${g}`);
 
-  const staticEntries = paths.map((path, index) => ({
+  const staticEntries = [...paths, ...exerciseGroupPaths].map((path, index) => ({
     url: `${siteUrl}${path}`,
     lastModified: new Date(),
     changeFrequency: (path === "" || path === "/blog"
@@ -56,6 +65,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   let articleEntries: MetadataRoute.Sitemap = [];
   let subcategoryEntries: MetadataRoute.Sitemap = [];
+  let exerciseEntries: MetadataRoute.Sitemap = [];
+  let recipeEntries: MetadataRoute.Sitemap = [];
+  let knowledgeEntries: MetadataRoute.Sitemap = [];
 
   try {
     const articles = await fetchPublishedArticles({ limit: 500 });
@@ -89,7 +101,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }));
   } catch {
-    /* API unavailable — static + category entries still ship */
+    /* API unavailable */
+  }
+
+  try {
+    const exercises = await fetchExercises();
+    exerciseEntries = exercises
+      .filter((e) => e.robotsIndex !== false && e.path)
+      .map((e) => ({
+        url: `${siteUrl}${e.path}`,
+        lastModified: e.updatedAt ? new Date(e.updatedAt) : new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.75,
+      }));
+  } catch {
+    /* ignore */
+  }
+
+  try {
+    const recipes = await fetchRecipes();
+    recipeEntries = recipes
+      .filter((r) => r.robotsIndex !== false && r.path)
+      .map((r) => ({
+        url: `${siteUrl}${r.path}`,
+        lastModified: r.updatedAt ? new Date(r.updatedAt) : new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      }));
+  } catch {
+    /* ignore */
+  }
+
+  try {
+    for (const section of ["programs", "reviews"] as const) {
+      const { pages } = await fetchKnowledgeSection(section);
+      for (const p of pages) {
+        if (p.robotsIndex === false || !p.path) continue;
+        knowledgeEntries.push({
+          url: `${siteUrl}${p.path}`,
+          lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+          changeFrequency: "weekly",
+          priority: 0.7,
+        });
+      }
+    }
+  } catch {
+    /* ignore */
   }
 
   return [
@@ -97,5 +154,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogCategoryEntries,
     ...subcategoryEntries,
     ...articleEntries,
+    ...exerciseEntries,
+    ...recipeEntries,
+    ...knowledgeEntries,
   ];
 }

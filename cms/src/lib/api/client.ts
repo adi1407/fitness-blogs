@@ -184,3 +184,74 @@ export type TaxonomyCategory = {
   description: string;
   subcategories: { id: string; slug: string; label: string }[];
 };
+
+export type CmsExercise = {
+  id: string;
+  muscleGroup: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  quickAnswer: string;
+  bodyHtml: string;
+  formCues: string[];
+  commonMistakes: string[];
+  programmingNotes: string;
+  equipment: string[];
+  difficulty: "beginner" | "intermediate" | "advanced";
+  primaryMuscles: string[];
+  secondaryMuscles: string[];
+  metaTitle: string;
+  metaDescription: string;
+  status: "draft" | "published";
+  robotsIndex: boolean;
+  sortOrder: number;
+  path: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CmsRecipe = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  quickAnswer: string;
+  bodyHtml: string;
+  ingredients: unknown[];
+  steps: unknown[];
+  calories: number | null;
+  proteinG: number | null;
+  carbsG: number | null;
+  fatG: number | null;
+  cuisineTags: string[];
+  mealType: string;
+  metaTitle: string;
+  metaDescription: string;
+  status: "draft" | "published";
+  robotsIndex: boolean;
+  sortOrder: number;
+  path: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CmsKnowledgePage = {
+  id: string;
+  section: "programs" | "reviews";
+  slug: string;
+  isHub: boolean;
+  title: string;
+  excerpt: string;
+  bodyHtml: string;
+  metaTitle: string;
+  metaDescription: string;
+  status: "draft" | "published";
+  robotsIndex: boolean;
+  sortOrder: number;
+  path: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
