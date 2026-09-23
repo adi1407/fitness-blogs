@@ -115,8 +115,17 @@ export function blogArticlePath(
   categorySlug: string,
   subcategorySlug: string,
   articleSlug: string,
+  articleNumber?: number | null,
 ): string {
-  return `/blog/${categorySlug}/${subcategorySlug}/${articleSlug}`;
+  const base = `/blog/${categorySlug}/${subcategorySlug}/${articleSlug}`;
+  if (
+    articleNumber != null &&
+    Number.isFinite(Number(articleNumber)) &&
+    Number(articleNumber) > 0
+  ) {
+    return `${base}/${articleNumber}`;
+  }
+  return base;
 }
 
 export function findCategory(slug: string): BlogCategoryDef | undefined {

@@ -16,7 +16,8 @@ function isUsableImageUrl(value: string | undefined | null): value is string {
 export function articleHref(article: PublicBlogArticle): string | null {
   if (article.path) return article.path;
   if (article.categorySlug && article.subcategorySlug && article.slug) {
-    return `/blog/${article.categorySlug}/${article.subcategorySlug}/${article.slug}`;
+    const base = `/blog/${article.categorySlug}/${article.subcategorySlug}/${article.slug}`;
+    return article.articleNumber ? `${base}/${article.articleNumber}` : base;
   }
   return null;
 }

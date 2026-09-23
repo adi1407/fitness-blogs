@@ -3,8 +3,7 @@
 export const MAX_RELATED_LINKS = 5;
 
 export const RELATED_LINK_RE =
-  /<a\s+[^>]*href=["']\/blog\/(?:[a-z0-9-]+\/){0,2}(?:[a-z0-9-]+-)?(\d{9})["'][^>]*>([\s\S]*?)<\/a>/gi;
-
+  /<a\s+[^>]*href=["']\/blog\/(?:[a-z0-9-]+\/)*(\d{9})["'][^>]*>([\s\S]*?)<\/a>/gi;
 export function collectRelatedNumbersFromHtml(html: string): number[] {
   const found: number[] = [];
   RELATED_LINK_RE.lastIndex = 0;

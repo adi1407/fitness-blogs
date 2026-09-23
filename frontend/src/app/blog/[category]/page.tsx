@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { fetchPublishedArticleByNumber } from "@/lib/api/blog";
 
 const CATEGORIES = new Set([
   "muscle-building",
@@ -14,6 +15,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
+  if (/^\d{9}$/.test(category)) {
+    return { title: "Article", robots: { index: false } };
+  }
   if (!CATEGORIES.has(category)) return { title: "Blog" };
   return {
     title: `${category.replace(/-/g, " ")} articles`,
@@ -21,9 +25,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** Category index — send readers to the pillar hub until listing is deeper. */
+/**
+ * Category index — or resolve `/blog/{9-digit-article-number}` to the
+ * canonical `/blog/{cat}/{sub}/{slug}/{articleNumber}` URL (no on-page ID UI).
+ */
 export default async function BlogCategoryPage({ params }: Props) {
   const { category } = await params;
+
+  if (/^\d{9}$/.test(category)) {
+    const articleNumber = Number(category);
+    const article = await fetchPublishedArticleByNumber(articleNumber);
+    if (
+      !article?.categorySlug ||
+      !article.subcategorySlug ||
+      !article.slug ||
+      article.articleNumber == null
+    ) {
+      notFound();
+    }
+    redirect(
+      `/blog/${article.categorySlug}/${article.subcategorySlug}/${article.slug}/${article.articleNumber}`,
+    );
+  }
+
   if (!CATEGORIES.has(category)) notFound();
 
   if (category === "muscle-building") redirect("/muscle-building");

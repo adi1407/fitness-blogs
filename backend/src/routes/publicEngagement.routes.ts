@@ -129,11 +129,13 @@ function mapLibraryArticle(
     categorySlug: r.category_slug,
     subcategorySlug: r.subcategory_slug,
     path:
-      r.category_slug && r.subcategory_slug && r.slug
-        ? `/blog/${r.category_slug}/${r.subcategory_slug}/${r.slug}`
-        : r.article_number
-          ? `/blog/${r.article_number}`
-          : null,
+      r.category_slug && r.subcategory_slug && r.slug && r.article_number
+        ? `/blog/${r.category_slug}/${r.subcategory_slug}/${r.slug}/${r.article_number}`
+        : r.category_slug && r.subcategory_slug && r.slug
+          ? `/blog/${r.category_slug}/${r.subcategory_slug}/${r.slug}`
+          : r.article_number
+            ? `/blog/${r.article_number}`
+            : null,
     ...extra,
   };
 }

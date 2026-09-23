@@ -110,7 +110,16 @@ export function mapArticle(row: Record<string, unknown>) {
   const slug = typeof row.slug === "string" ? row.slug : null;
   const path =
     categorySlug && subcategorySlug && slug
-      ? blogArticlePath(categorySlug, subcategorySlug, slug)
+      ? blogArticlePath(
+          categorySlug,
+          subcategorySlug,
+          slug,
+          typeof row.article_number === "number"
+            ? row.article_number
+            : row.article_number != null
+              ? Number(row.article_number)
+              : null,
+        )
       : null;
 
   const relatedRaw = row.related_article_numbers;

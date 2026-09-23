@@ -460,23 +460,6 @@ export function BlogArticleView({
               limit={5}
             />
             {calc ? <CalculatorCtaCard calc={calc} /> : null}
-            <div className="rounded-xl border border-border bg-white p-4 text-sm text-muted-foreground">
-              <p className="font-semibold text-foreground">Article ID</p>
-              <p className="mt-1 font-mono text-base text-foreground">
-                {article.articleNumber ?? "—"}
-              </p>
-              {article.articleNumber ? (
-                <p className="mt-2 text-xs">
-                  Short link:{" "}
-                  <Link
-                    href={`/blog/${article.articleNumber}`}
-                    className="fk-link"
-                  >
-                    /blog/{article.articleNumber}
-                  </Link>
-                </p>
-              ) : null}
-            </div>
           </aside>
         </div>
 

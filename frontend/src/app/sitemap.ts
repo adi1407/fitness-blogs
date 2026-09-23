@@ -78,7 +78,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((a) => {
         const path =
           a.path ??
-          `/blog/${a.categorySlug}/${a.subcategorySlug}/${a.slug}`;
+          (a.categorySlug && a.subcategorySlug && a.slug && a.articleNumber
+            ? `/blog/${a.categorySlug}/${a.subcategorySlug}/${a.slug}/${a.articleNumber}`
+            : a.categorySlug && a.subcategorySlug && a.slug
+              ? `/blog/${a.categorySlug}/${a.subcategorySlug}/${a.slug}`
+              : null);
+        if (!path) return null;
         if (a.categorySlug && a.subcategorySlug) {
           subcatsWithContent.add(`${a.categorySlug}/${a.subcategorySlug}`);
         }
@@ -92,7 +97,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           changeFrequency: "weekly" as const,
           priority: 0.8,
         };
-      });
+      })
+      .filter((e): e is NonNullable<typeof e> => e != null);
 
     subcategoryEntries = [...subcatsWithContent].map((key) => ({
       url: `${siteUrl}/blog/${key}`,
