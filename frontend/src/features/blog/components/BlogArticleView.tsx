@@ -254,7 +254,7 @@ export function BlogArticleView({
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
           <div className="fk-panel">
             {article.featuredImage ? (
-              <figure className="overflow-hidden border-b border-border bg-muted">
+              <figure className="border-b border-border bg-muted">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={article.featuredImage}
@@ -263,7 +263,7 @@ export function BlogArticleView({
                     article.title ||
                     "Article cover image"
                   }
-                  className="aspect-video w-full object-cover"
+                  className="mx-auto max-h-[min(70vh,640px)] w-full object-contain"
                 />
                 {article.featuredImageCaption ? (
                   <figcaption className="px-4 py-2 text-center text-xs text-muted-foreground">

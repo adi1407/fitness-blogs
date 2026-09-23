@@ -17,12 +17,14 @@ export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <article className="group border-b border-border py-5 last:border-b-0">
       <Link href={href} className="flex gap-4 sm:gap-5">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={articleImage(article)}
-          alt=""
-          className="h-20 w-28 shrink-0 rounded-lg object-cover sm:h-24 sm:w-36"
-        />
+        <span className="block h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-24 sm:w-36">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={articleImage(article)}
+            alt=""
+            className="size-full object-contain object-center"
+          />
+        </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             {article.categoryLabel ? (

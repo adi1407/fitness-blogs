@@ -27,12 +27,12 @@ export function BlogFeaturedLead({ article }: Props) {
         href={href}
         className="group mt-4 grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-10"
       >
-        <div className="overflow-hidden rounded-xl border border-border bg-muted">
+        <div className="aspect-video overflow-hidden rounded-xl border border-border bg-muted">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={image}
             alt={alt}
-            className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            className="size-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
           />
         </div>
         <div className="min-w-0">

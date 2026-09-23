@@ -8,8 +8,6 @@ import {
 } from "@/features/home/utils/articleMedia";
 import { trackEvent } from "@/lib/analytics/openpanel";
 
-const IMAGE_HEIGHTS = ["h-28", "h-40", "h-32", "h-48", "h-36", "h-44"] as const;
-
 type Props = {
   article: PublicBlogArticle;
   index?: number;
@@ -27,9 +25,6 @@ export function KeepArticleCard({
   const href = articleHref(article);
   if (!href) return null;
 
-  const imgH = compact
-    ? "h-28"
-    : IMAGE_HEIGHTS[index % IMAGE_HEIGHTS.length];
   const tags = [
     article.categoryLabel,
     article.subcategoryLabel,
@@ -44,15 +39,16 @@ export function KeepArticleCard({
         trackEvent("hub_click", {
           href,
           label: trackLabel ?? article.title,
+          position: index,
         })
       }
     >
-      <div className={`relative overflow-hidden ${imgH} bg-muted`}>
+      <div className="relative aspect-video w-full bg-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={articleImage(article)}
           alt=""
-          className="size-full object-cover transition duration-500 group-hover:scale-[1.02]"
+          className="size-full object-contain object-center transition duration-500 group-hover:scale-[1.02]"
         />
       </div>
       <div className={`flex flex-col gap-1.5 ${compact ? "p-2.5" : "p-3"}`}>
