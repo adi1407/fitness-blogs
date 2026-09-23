@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthorsFlipCards } from "@/features/about/components/AuthorsFlipCards";
-import TailwindImageAccordion from "@/components/ui/tailwind-image-accordion";
 
 export const metadata: Metadata = {
   title: "Authors & Reviewers — fitlives EEAT",
   description:
-    "Meet the fitlives editorial and review roles behind nutrition, training, and calculator content.",
+    "Authors and reviewers for fitlives content. Profiles will appear here as the editorial roster grows.",
   alternates: { canonical: "/authors" },
+  robots: { index: false, follow: true },
 };
 
 export default function AuthorsPage() {
@@ -29,14 +29,9 @@ export default function AuthorsPage() {
         Authors & reviewers
       </h1>
       <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-        EEAT starts with clear ownership. Written by, reviewed by, and fact-checked
-        roles will expand as the CMS author profiles ship — placeholders below
-        show the editorial model.
+        EEAT starts with clear ownership. This page is empty for now — real
+        written-by and reviewed-by profiles will list here when they are ready.
       </p>
-
-      <div className="mt-10">
-        <TailwindImageAccordion />
-      </div>
 
       <AuthorsFlipCards />
 

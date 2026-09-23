@@ -99,7 +99,8 @@ export function BlogArticleView({
         })
       : null;
 
-  const authorName = article.authorName || "fitlives Editorial";
+  const authorName = article.authorName?.trim() || null;
+  const reviewerName = article.reviewerName?.trim() || null;
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -151,11 +152,21 @@ export function BlogArticleView({
     articleSection: catLabel,
     keywords: [...article.tags, ...article.topics].join(", ") || undefined,
     image: article.featuredImage || article.ogImage || undefined,
-    author: {
-      "@type": "Person",
-      name: authorName,
-      url: `${siteUrl}/authors`,
-    },
+    ...(authorName
+      ? {
+          author: {
+            "@type": "Person",
+            name: authorName,
+            url: `${siteUrl}/authors`,
+          },
+        }
+      : {
+          author: {
+            "@type": "Organization",
+            name: "fitlives",
+            url: siteUrl,
+          },
+        }),
     publisher: {
       "@type": "Organization",
       name: "fitlives",
@@ -283,25 +294,29 @@ export function BlogArticleView({
 
                 <div className="mt-5 flex flex-wrap items-start justify-between gap-4 border-y border-border py-4">
                   <div className="text-sm text-muted-foreground">
-                    <p>
-                      <span className="font-medium text-foreground">
-                        Written by
-                      </span>{" "}
-                      <Link href="/authors" className="fk-link">
-                        {authorName}
-                      </Link>
-                    </p>
-                    {article.reviewerName ? (
-                      <p className="mt-1">
+                    {authorName ? (
+                      <p>
+                        <span className="font-medium text-foreground">
+                          Written by
+                        </span>{" "}
+                        <Link href="/authors" className="fk-link">
+                          {authorName}
+                        </Link>
+                      </p>
+                    ) : null}
+                    {reviewerName ? (
+                      <p className={authorName ? "mt-1" : undefined}>
                         <span className="font-medium text-foreground">
                           Reviewed by
                         </span>{" "}
                         <Link href="/authors" className="fk-link">
-                          {article.reviewerName}
+                          {reviewerName}
                         </Link>
                       </p>
                     ) : null}
-                    <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                    <p
+                      className={`flex flex-wrap gap-x-3 gap-y-1 text-xs ${authorName || reviewerName ? "mt-1" : ""}`}
+                    >
                       {publishedLabel && (
                         <span>Published {publishedLabel}</span>
                       )}
