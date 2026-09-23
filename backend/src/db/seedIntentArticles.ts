@@ -4,6 +4,7 @@ import { batch1 } from "./intentArticles/batch1";
 import { batch2 } from "./intentArticles/batch2";
 import { batch3 } from "./intentArticles/batch3";
 import { batch4 } from "./intentArticles/batch4";
+import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
 
 const ARTICLES: IntentArticleDef[] = [
@@ -90,6 +91,7 @@ async function insertIfMissing(
   const articleNumber = await allocateArticleNumber();
   const readingTime = estimateReadingTime(def.body);
   const publishedAt = publishedAtFor(def.dayOffset);
+  const cover = coverForSlug(def.slug);
 
   await pool.query(
     `INSERT INTO articles (
@@ -97,15 +99,15 @@ async function insertIfMissing(
       category_id, subcategory_id, status,
       meta_title, meta_description, primary_keyword,
       quick_answer, tags, topics, faq, sources,
-      featured_image_alt, reading_time, author_id,
+      featured_image, og_image, featured_image_alt, reading_time, author_id,
       published_by, published_at, robots_index, views
     ) VALUES (
       $1,$2,$3,$4,$5,
       $6,$7,'published',
       $8,$9,$10,
       $11,$12,$13,$14::jsonb,$15::jsonb,
-      $16,$17,$18,
-      $18,$19,TRUE,0
+      $16,$16,$17,$18,$19,
+      $19,$20,TRUE,0
     )`,
     [
       articleNumber,
@@ -123,6 +125,7 @@ async function insertIfMissing(
       def.topics,
       JSON.stringify(def.faq),
       JSON.stringify(def.sources),
+      cover,
       def.featuredImageAlt,
       readingTime,
       authorId,
@@ -130,6 +133,35 @@ async function insertIfMissing(
     ],
   );
   return "inserted";
+}
+
+/** Always attach the planned hero/OG cover for the 20 intent slugs. */
+async function syncIntentCovers(): Promise<number> {
+  let updated = 0;
+  for (const def of ARTICLES) {
+    const cover = coverForSlug(def.slug);
+    if (!cover) continue;
+    const result = await pool.query(
+      `UPDATE articles
+       SET featured_image = $1,
+           og_image = $1,
+           featured_image_alt = CASE
+             WHEN featured_image_alt IS NULL OR featured_image_alt = '' THEN $2
+             ELSE featured_image_alt
+           END,
+           updated_at = NOW()
+       WHERE slug = $3
+         AND (
+           featured_image IS DISTINCT FROM $1
+           OR og_image IS DISTINCT FROM $1
+           OR featured_image_alt IS NULL
+           OR featured_image_alt = ''
+         )`,
+      [cover, def.featuredImageAlt, def.slug],
+    );
+    updated += result.rowCount ?? 0;
+  }
+  return updated;
 }
 
 async function linkRelatedArticles(): Promise<void> {
@@ -174,8 +206,9 @@ export async function seedIntentArticles(): Promise<void> {
   }
 
   await linkRelatedArticles();
+  const coversUpdated = await syncIntentCovers();
 
   console.log(
-    `[db] intent articles: ${inserted} inserted, ${skipped} skipped (already present), author=${AUTHOR_EMAIL}`,
+    `[db] intent articles: ${inserted} inserted, ${skipped} skipped, ${coversUpdated} covers synced, author=${AUTHOR_EMAIL}`,
   );
 }
