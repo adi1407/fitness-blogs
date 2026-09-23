@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { seedKnowledgeContent } from "./seedKnowledgeContent";
+import { seedIntentArticles } from "./seedIntentArticles";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -307,6 +308,12 @@ const SEED_USERS = [
     name: "FitKnowledge Writer",
     role: "writer",
   },
+  {
+    email: "aditya@fitknowledge.local",
+    password: "ChangeMeAditya123!",
+    name: "Aditya Choudhary",
+    role: "writer",
+  },
 ] as const;
 
 async function migrateLegacySchema(): Promise<void> {
@@ -490,4 +497,5 @@ export async function ensureCmsSchema(): Promise<void> {
 
   await removeSeededArticles();
   await seedKnowledgeContent();
+  await seedIntentArticles();
 }
