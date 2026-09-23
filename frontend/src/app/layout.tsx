@@ -8,7 +8,7 @@ import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
 import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
 import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { BRAND_NAME } from "@/lib/brand";
+import { BRAND_LOGO_SRC, BRAND_NAME } from "@/lib/brand";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -60,8 +60,13 @@ export const metadata: Metadata = {
       "Evidence-informed fitness, nutrition, and training — with tools that teach.",
   },
   icons: {
-    icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/brand/logofitness.png" }],
+    icon: [
+      { url: BRAND_LOGO_SRC, type: "image/png" },
+      { url: BRAND_LOGO_SRC, type: "image/png", sizes: "32x32" },
+      { url: BRAND_LOGO_SRC, type: "image/png", sizes: "192x192" },
+    ],
+    shortcut: [{ url: BRAND_LOGO_SRC, type: "image/png" }],
+    apple: [{ url: BRAND_LOGO_SRC, type: "image/png", sizes: "180x180" }],
   },
   robots: {
     index: true,
