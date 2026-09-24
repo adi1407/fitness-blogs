@@ -12,6 +12,13 @@ import {
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
 import {
+  numField,
+  parseNum,
+  roundNumField,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
+import {
   PROTEIN_GOALS,
   calcProtein,
   kgToLb,
@@ -19,6 +26,7 @@ import {
   type ProteinGoalId,
 } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 import { cn } from "@/lib/utils";
 
 export function ProteinCalculatorForm() {
@@ -48,29 +56,44 @@ function ProteinInner({
   requestAck: () => void;
   requestSignIn: () => void;
 }) {
-  const [weight, setWeight] = useState(70);
+  const [weight, setWeight] = useState<NumField>(numField(70));
   const [unit, setUnit] = useState<"kg" | "lb">("kg");
   const [goal, setGoal] = useState<ProteinGoalId>("muscle");
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
     if (prefs.weightKg) {
       setWeight(
         prefs.weightUnit === "lb"
-          ? Math.round(kgToLb(prefs.weightKg))
-          : Math.round(prefs.weightKg),
+          ? roundNumField(kgToLb(prefs.weightKg))
+          : roundNumField(prefs.weightKg),
       );
       setUnit(prefs.weightUnit ?? "kg");
     }
     if (prefs.proteinGoal) setGoal(prefs.proteinGoal);
+    setPrefsReady(true);
   }, [memberId]);
 
-  const weightKg = unit === "kg" ? weight : lbToKg(weight);
-  const result = useMemo(
-    () => calcProtein(weightKg, goal),
-    [weightKg, goal],
-  );
+  const weightN = parseNum(weight);
+  const weightKg =
+    weightN == null ? null : unit === "kg" ? weightN : lbToKg(weightN);
+  const inputsValid = weightKg != null && weightKg > 0;
+
+  const result = useMemo(() => {
+    if (!inputsValid || weightKg == null) return null;
+    return calcProtein(weightKg, goal);
+  }, [inputsValid, weightKg, goal]);
 
   return (
     <CalcWorkspace
@@ -89,17 +112,19 @@ function ProteinInner({
                 min={30}
                 max={400}
                 value={weight}
-                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+                onChange={(e) => setNumField(e.target.value, setWeight)}
               />
               <SegmentedControl
                 value={unit}
                 onChange={(u) => {
                   if (u === unit) return;
-                  setWeight(
-                    u === "lb"
-                      ? Math.round(kgToLb(weight))
-                      : Math.round(lbToKg(weight)),
-                  );
+                  if (weightN != null) {
+                    setWeight(
+                      u === "lb"
+                        ? roundNumField(kgToLb(weightN))
+                        : roundNumField(lbToKg(weightN)),
+                    );
+                  }
                   setUnit(u);
                 }}
                 options={[
@@ -140,11 +165,13 @@ function ProteinInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
+            disabled={!prefsReady || !inputsValid || !result}
             onClick={() => {
-              requestAck();
+              if (!inputsValid || weightKg == null || !result) return;
+              runCalculate();
               saveCalcPrefs(memberId, {
                 weightKg,
                 weightUnit: unit,
@@ -160,12 +187,12 @@ function ProteinInner({
       results={
         <>
           <ResultHero
-            show={acknowledged}
+            show={revealed && result != null}
             label="Estimated daily protein"
-            value={result.grams}
+            value={result?.grams ?? ""}
             unit="g/day"
           />
-          {acknowledged ? (
+          {revealed && result ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Practical range ~{result.low}–{result.high} g based on ~
               {result.kg.toFixed(1)} kg. Educational estimate only.

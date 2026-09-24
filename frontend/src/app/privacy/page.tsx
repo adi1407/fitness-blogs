@@ -146,7 +146,11 @@ export default function PrivacyPage() {
           (API and database).
         </li>
         <li>
-          <strong>OpenPanel</strong> — product analytics.
+          <strong>OpenPanel</strong> — product analytics (optional, consent).
+        </li>
+        <li>
+          <strong>Google Analytics 4</strong> — traffic analytics (optional,
+          consent).
         </li>
       </LegalUl>
       <p>
@@ -164,7 +168,7 @@ export default function PrivacyPage() {
         for essential vs analytics use. A consent banner lets you accept all,
         keep essential only, or customize. You can reopen{" "}
         <strong>Cookie settings</strong> from the footer at any time. Analytics
-        (OpenPanel) does not run until you opt in.
+        (OpenPanel / Google Analytics) does not run until you opt in.
       </p>
 
       <LegalH2 id="retention">8. Retention</LegalH2>
@@ -172,9 +176,9 @@ export default function PrivacyPage() {
         Member accounts and engagement records are kept while the account is
         active and for a reasonable period after last login (or until you
         request deletion). Server logs are rotated on a typical hosting
-        schedule. Analytics data follows OpenPanel’s retention for our
-        workspace. Backups may persist for a limited time after deletion
-        requests complete.
+        schedule. Analytics data follows OpenPanel and Google Analytics
+        retention for our properties. Backups may persist for a limited time
+        after deletion requests complete.
       </p>
 
       <LegalH2 id="rights">9. Your rights</LegalH2>
@@ -207,7 +211,8 @@ export default function PrivacyPage() {
 
       <LegalH2 id="transfers">12. Where data is processed</LegalH2>
       <p>
-        We operate from India. Processors (Google, Vercel, Render, OpenPanel)
+        We operate from India. Processors (Google, Vercel, Render, OpenPanel /
+        Google Analytics)
         may store or process data in other countries. By using the Site you
         understand that data may be processed outside India subject to those
         providers’ safeguards.

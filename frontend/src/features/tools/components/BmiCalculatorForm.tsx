@@ -12,6 +12,13 @@ import {
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
 import {
+  numField,
+  parseNum,
+  roundNumField,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
+import {
   calcBmi,
   cmToFtIn,
   ftInToCm,
@@ -19,6 +26,7 @@ import {
   lbToKg,
 } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 
 export function BmiCalculatorForm() {
   return (
@@ -47,39 +55,64 @@ function BmiInner({
   requestAck: () => void;
   requestSignIn: () => void;
 }) {
-  const [weight, setWeight] = useState(70);
+  const [weight, setWeight] = useState<NumField>(numField(70));
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
-  const [heightCm, setHeightCm] = useState(170);
-  const [ft, setFt] = useState(5);
-  const [inches, setInches] = useState(7);
+  const [heightCm, setHeightCm] = useState<NumField>(numField(170));
+  const [ft, setFt] = useState<NumField>(numField(5));
+  const [inches, setInches] = useState<NumField>(numField(7));
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
     if (prefs.weightKg) {
       setWeight(
         prefs.weightUnit === "lb"
-          ? Math.round(kgToLb(prefs.weightKg))
-          : Math.round(prefs.weightKg),
+          ? roundNumField(kgToLb(prefs.weightKg))
+          : roundNumField(prefs.weightKg),
       );
       setWeightUnit(prefs.weightUnit ?? "kg");
     }
     if (prefs.heightCm) {
-      setHeightCm(prefs.heightCm);
+      setHeightCm(numField(prefs.heightCm));
       const fi = cmToFtIn(prefs.heightCm);
-      setFt(fi.ft);
-      setInches(fi.inches);
+      setFt(numField(fi.ft));
+      setInches(numField(fi.inches));
       setHeightUnit(prefs.heightUnit ?? "cm");
     }
+    setPrefsReady(true);
   }, [memberId]);
 
-  const weightKg = weightUnit === "kg" ? weight : lbToKg(weight);
-  const height = heightUnit === "cm" ? heightCm : ftInToCm(ft, inches);
-  const result = useMemo(
-    () => calcBmi(weightKg, height),
-    [weightKg, height],
-  );
+  const weightN = parseNum(weight);
+  const heightCmN = parseNum(heightCm);
+  const ftN = parseNum(ft);
+  const inN = parseNum(inches);
+
+  const weightKg =
+    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
+  const height =
+    heightUnit === "cm"
+      ? heightCmN
+      : ftN == null || inN == null
+        ? null
+        : ftInToCm(ftN, inN);
+
+  const inputsValid = weightKg != null && height != null && height > 0;
+
+  const result = useMemo(() => {
+    if (!inputsValid || weightKg == null || height == null) return null;
+    return calcBmi(weightKg, height);
+  }, [inputsValid, weightKg, height]);
 
   return (
     <CalcWorkspace
@@ -96,17 +129,19 @@ function BmiInner({
               <CalcInput
                 type="number"
                 value={weight}
-                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+                onChange={(e) => setNumField(e.target.value, setWeight)}
               />
               <SegmentedControl
                 value={weightUnit}
                 onChange={(u) => {
                   if (u === weightUnit) return;
-                  setWeight(
-                    u === "lb"
-                      ? Math.round(kgToLb(weight))
-                      : Math.round(lbToKg(weight)),
-                  );
+                  if (weightN != null) {
+                    setWeight(
+                      u === "lb"
+                        ? roundNumField(kgToLb(weightN))
+                        : roundNumField(lbToKg(weightN)),
+                    );
+                  }
                   setWeightUnit(u);
                 }}
                 options={[
@@ -121,12 +156,17 @@ function BmiInner({
               <SegmentedControl
                 value={heightUnit}
                 onChange={(u) => {
-                  if (u === "ft" && heightUnit === "cm") {
-                    const fi = cmToFtIn(heightCm);
-                    setFt(fi.ft);
-                    setInches(fi.inches);
-                  } else if (u === "cm" && heightUnit === "ft") {
-                    setHeightCm(ftInToCm(ft, inches));
+                  if (u === "ft" && heightUnit === "cm" && heightCmN != null) {
+                    const fi = cmToFtIn(heightCmN);
+                    setFt(numField(fi.ft));
+                    setInches(numField(fi.inches));
+                  } else if (
+                    u === "cm" &&
+                    heightUnit === "ft" &&
+                    ftN != null &&
+                    inN != null
+                  ) {
+                    setHeightCm(numField(ftInToCm(ftN, inN)));
                   }
                   setHeightUnit(u);
                 }}
@@ -139,19 +179,19 @@ function BmiInner({
                 <CalcInput
                   type="number"
                   value={heightCm}
-                  onChange={(e) => setHeightCm(Number(e.target.value) || 0)}
+                  onChange={(e) => setNumField(e.target.value, setHeightCm)}
                 />
               ) : (
                 <div className="flex gap-2">
                   <CalcInput
                     type="number"
                     value={ft}
-                    onChange={(e) => setFt(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setFt)}
                   />
                   <CalcInput
                     type="number"
                     value={inches}
-                    onChange={(e) => setInches(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setInches)}
                   />
                 </div>
               )}
@@ -160,11 +200,13 @@ function BmiInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
+            disabled={!prefsReady || !inputsValid}
             onClick={() => {
-              requestAck();
+              if (!inputsValid || weightKg == null || height == null) return;
+              runCalculate();
               saveCalcPrefs(memberId, {
                 weightKg,
                 heightCm: height,
@@ -180,11 +222,11 @@ function BmiInner({
       results={
         <>
           <ResultHero
-            show={acknowledged}
+            show={revealed && result != null}
             label="BMI"
-            value={result.bmi}
+            value={result?.bmi ?? ""}
           />
-          {acknowledged ? (
+          {revealed && result ? (
             <div className="mt-4 space-y-3">
               <span className="inline-flex rounded-full border border-border bg-white px-3 py-1 text-sm font-medium text-foreground">
                 {result.categoryLabel}

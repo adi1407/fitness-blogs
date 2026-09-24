@@ -20,6 +20,8 @@ type Props = {
   toolName: string;
   /** Stable tool id for analytics (e.g. "protein-calculator"). */
   tool: string;
+  /** Called after the visitor accepts the educational disclaimer. */
+  onAccepted?: () => void;
   children: (args: {
     acknowledged: boolean;
     requestAck: () => void;
@@ -27,7 +29,12 @@ type Props = {
 };
 
 /** Gates calculator results behind a one-time educational acknowledgement. */
-export function EducationalCalcGate({ toolName, tool, children }: Props) {
+export function EducationalCalcGate({
+  toolName,
+  tool,
+  onAccepted,
+  children,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
 
@@ -50,6 +57,7 @@ export function EducationalCalcGate({ toolName, tool, children }: Props) {
     setAcknowledged(true);
     setOpen(false);
     trackEvent("calc_complete", { tool });
+    onAccepted?.();
   };
 
   return (

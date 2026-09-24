@@ -42,7 +42,8 @@ export function CookieBanner() {
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
               <strong className="font-medium text-foreground">Accept</strong>{" "}
-              allows optional analytics (OpenPanel) so we can improve guides.{" "}
+              allows optional analytics (OpenPanel and Google Analytics) so we
+              can improve guides.{" "}
               <strong className="font-medium text-foreground">Reject</strong>{" "}
               turns analytics off. Essential cookies still run either way
               (sign-in session and remembering this choice). We do not use
@@ -65,8 +66,9 @@ export function CookieBanner() {
                     Analytics
                   </span>
                   <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                    Page views and events via OpenPanel. Rejecting optional
-                    cookies leaves this off. Sign-in still works.
+                    Page views and events via OpenPanel and Google Analytics.
+                    Rejecting optional cookies leaves this off. Sign-in still
+                    works.
                   </span>
                 </span>
               </label>

@@ -13,6 +13,13 @@ import {
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
 import {
+  numField,
+  parseNum,
+  roundNumField,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
+import {
   ACTIVITY_LEVELS,
   calcTdee,
   cmToFtIn,
@@ -23,6 +30,7 @@ import {
   type Sex,
 } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 import { cn } from "@/lib/utils";
 
 export function TdeeCalculatorForm() {
@@ -53,53 +61,79 @@ function TdeeInner({
   requestSignIn: () => void;
 }) {
   const [sex, setSex] = useState<Sex>("male");
-  const [age, setAge] = useState(30);
-  const [weight, setWeight] = useState(70);
+  const [age, setAge] = useState<NumField>(numField(30));
+  const [weight, setWeight] = useState<NumField>(numField(70));
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
-  const [heightCm, setHeightCm] = useState(170);
-  const [ft, setFt] = useState(5);
-  const [inches, setInches] = useState(7);
+  const [heightCm, setHeightCm] = useState<NumField>(numField(170));
+  const [ft, setFt] = useState<NumField>(numField(5));
+  const [inches, setInches] = useState<NumField>(numField(7));
   const [activity, setActivity] = useState<ActivityId>("moderate");
-  const [hydrated, setHydrated] = useState(false);
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
     if (prefs.sex) setSex(prefs.sex);
-    if (prefs.age) setAge(prefs.age);
+    if (prefs.age) setAge(numField(prefs.age));
     if (prefs.weightKg) {
       setWeight(
         prefs.weightUnit === "lb"
-          ? Math.round(kgToLb(prefs.weightKg))
-          : Math.round(prefs.weightKg),
+          ? roundNumField(kgToLb(prefs.weightKg))
+          : roundNumField(prefs.weightKg),
       );
       setWeightUnit(prefs.weightUnit ?? "kg");
     }
     if (prefs.heightCm) {
-      setHeightCm(prefs.heightCm);
+      setHeightCm(numField(prefs.heightCm));
       const fi = cmToFtIn(prefs.heightCm);
-      setFt(fi.ft);
-      setInches(fi.inches);
+      setFt(numField(fi.ft));
+      setInches(numField(fi.inches));
       setHeightUnit(prefs.heightUnit ?? "cm");
     }
     if (prefs.activity) setActivity(prefs.activity);
-    setHydrated(true);
+    setPrefsReady(true);
   }, [memberId]);
 
-  const weightKg = weightUnit === "kg" ? weight : lbToKg(weight);
-  const height =
-    heightUnit === "cm" ? heightCm : ftInToCm(ft, inches);
+  const ageN = parseNum(age);
+  const weightN = parseNum(weight);
+  const heightCmN = parseNum(heightCm);
+  const ftN = parseNum(ft);
+  const inN = parseNum(inches);
 
-  const result = useMemo(
-    () => calcTdee(sex, weightKg, height, age, activity),
-    [sex, weightKg, height, age, activity],
-  );
+  const weightKg =
+    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
+  const height =
+    heightUnit === "cm"
+      ? heightCmN
+      : ftN == null || inN == null
+        ? null
+        : ftInToCm(ftN, inN);
+
+  const inputsValid =
+    ageN != null && weightKg != null && height != null && height > 0;
+
+  const result = useMemo(() => {
+    if (!inputsValid || weightKg == null || height == null || ageN == null) {
+      return null;
+    }
+    return calcTdee(sex, weightKg, height, ageN, activity);
+  }, [inputsValid, sex, weightKg, height, ageN, activity]);
 
   const persist = (extra?: Parameters<typeof saveCalcPrefs>[1]) => {
+    if (weightKg == null || height == null || ageN == null || !result) return;
     saveCalcPrefs(memberId, {
       sex,
-      age,
+      age: ageN,
       weightKg,
       heightCm: height,
       activity,
@@ -138,7 +172,7 @@ function TdeeInner({
               min={15}
               max={100}
               value={age}
-              onChange={(e) => setAge(Number(e.target.value) || 0)}
+              onChange={(e) => setNumField(e.target.value, setAge)}
             />
           </FieldLabel>
 
@@ -149,17 +183,19 @@ function TdeeInner({
                 min={30}
                 max={400}
                 value={weight}
-                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+                onChange={(e) => setNumField(e.target.value, setWeight)}
               />
               <SegmentedControl
                 value={weightUnit}
                 onChange={(u) => {
                   if (u === weightUnit) return;
-                  setWeight(
-                    u === "lb"
-                      ? Math.round(kgToLb(weight))
-                      : Math.round(lbToKg(weight)),
-                  );
+                  if (weightN != null) {
+                    setWeight(
+                      u === "lb"
+                        ? roundNumField(kgToLb(weightN))
+                        : roundNumField(lbToKg(weightN)),
+                    );
+                  }
                   setWeightUnit(u);
                 }}
                 options={[
@@ -175,12 +211,17 @@ function TdeeInner({
               <SegmentedControl
                 value={heightUnit}
                 onChange={(u) => {
-                  if (u === "ft" && heightUnit === "cm") {
-                    const fi = cmToFtIn(heightCm);
-                    setFt(fi.ft);
-                    setInches(fi.inches);
-                  } else if (u === "cm" && heightUnit === "ft") {
-                    setHeightCm(ftInToCm(ft, inches));
+                  if (u === "ft" && heightUnit === "cm" && heightCmN != null) {
+                    const fi = cmToFtIn(heightCmN);
+                    setFt(numField(fi.ft));
+                    setInches(numField(fi.inches));
+                  } else if (
+                    u === "cm" &&
+                    heightUnit === "ft" &&
+                    ftN != null &&
+                    inN != null
+                  ) {
+                    setHeightCm(numField(ftInToCm(ftN, inN)));
                   }
                   setHeightUnit(u);
                 }}
@@ -195,7 +236,7 @@ function TdeeInner({
                   min={120}
                   max={230}
                   value={heightCm}
-                  onChange={(e) => setHeightCm(Number(e.target.value) || 0)}
+                  onChange={(e) => setNumField(e.target.value, setHeightCm)}
                 />
               ) : (
                 <div className="flex gap-2">
@@ -204,7 +245,7 @@ function TdeeInner({
                     min={4}
                     max={8}
                     value={ft}
-                    onChange={(e) => setFt(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setFt)}
                     aria-label="Feet"
                   />
                   <CalcInput
@@ -212,7 +253,7 @@ function TdeeInner({
                     min={0}
                     max={11}
                     value={inches}
-                    onChange={(e) => setInches(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setInches)}
                     aria-label="Inches"
                   />
                 </div>
@@ -253,13 +294,15 @@ function TdeeInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
             className="w-full sm:w-auto"
+            disabled={!prefsReady || !inputsValid}
             onClick={() => {
-              requestAck();
-              if (hydrated || memberId) persist();
+              if (!inputsValid || !result) return;
+              runCalculate();
+              persist();
             }}
           >
             Calculate TDEE
@@ -269,12 +312,12 @@ function TdeeInner({
       results={
         <>
           <ResultHero
-            show={acknowledged}
+            show={revealed && result != null}
             label="Estimated TDEE"
-            value={result.tdee}
+            value={result?.tdee ?? ""}
             unit="kcal/day"
           />
-          {acknowledged ? (
+          {revealed && result ? (
             <div className="mt-4 space-y-3">
               <p className="text-sm text-muted-foreground">
                 BMR (resting) ≈ {result.bmr} kcal/day
@@ -320,9 +363,11 @@ function TdeeInner({
           <Link
             href="/tools/macro-calculator"
             className="fk-link font-semibold"
-            onClick={() =>
-              persist({ tdee: result.tdee, calorieTarget: result.tdee })
-            }
+            onClick={() => {
+              if (result) {
+                persist({ tdee: result.tdee, calorieTarget: result.tdee });
+              }
+            }}
           >
             Macro calculator
           </Link>

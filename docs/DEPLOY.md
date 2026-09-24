@@ -146,6 +146,8 @@ These pages are educational-site policy templates, not a licensed legal opinion.
 
 After custom domains: update `CORS_ORIGINS`, `NEXT_PUBLIC_SITE_URL`, `VITE_PUBLIC_SITE_URL`, and redeploy frontends.
 
+Google Analytics 4 + Search Console: see [`docs/GOOGLE_SEO_SETUP.md`](./GOOGLE_SEO_SETUP.md).
+
 ---
 
 ## Manual Render (if Blueprint is unavailable)

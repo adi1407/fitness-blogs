@@ -170,7 +170,8 @@ export default function TermsPage() {
       <LegalH2 id="third-party">9. Third-party services and links</LegalH2>
       <p>
         The Site relies on providers such as Google (sign-in), hosting
-        (currently Vercel and Render), and analytics (OpenPanel). Outbound
+        (currently Vercel and Render), and analytics (OpenPanel / Google
+        Analytics). Outbound
         links (research, social share windows) are not under our control. Their
         terms and privacy policies apply.
       </p>

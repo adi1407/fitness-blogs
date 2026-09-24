@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { isOpenPanelEnabled, trackPageView } from "@/lib/analytics/openpanel";
 import { useCookieConsent } from "@/features/cookies/CookieConsentContext";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
-/** Client page-view tracker for App Router — only after analytics consent. */
+/** Client analytics for App Router — only after analytics consent. */
 export function OpenPanelProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -18,5 +19,10 @@ export function OpenPanelProvider({ children }: { children: React.ReactNode }) {
     trackPageView(qs ? `${pathname}?${qs}` : pathname);
   }, [pathname, searchParams, analyticsOn]);
 
-  return <>{children}</>;
+  return (
+    <>
+      <GoogleAnalytics />
+      {children}
+    </>
+  );
 }

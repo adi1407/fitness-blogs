@@ -11,8 +11,15 @@ import {
   ResultHero,
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
+import {
+  numField,
+  parseNum,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
 import { calcCalorieTarget } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 
 export function CalorieCalculatorForm() {
   return (
@@ -41,20 +48,34 @@ function CalorieInner({
   requestAck: () => void;
   requestSignIn: () => void;
 }) {
-  const [tdee, setTdee] = useState(2200);
+  const [tdee, setTdee] = useState<NumField>(numField(2200));
   const [goal, setGoal] = useState<"loss" | "maintain" | "gain">("loss");
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
-    if (prefs.tdee) setTdee(prefs.tdee);
-    else if (prefs.calorieTarget) setTdee(prefs.calorieTarget);
+    if (prefs.tdee) setTdee(numField(prefs.tdee));
+    else if (prefs.calorieTarget) setTdee(numField(prefs.calorieTarget));
+    setPrefsReady(true);
   }, [memberId]);
 
-  const result = useMemo(
-    () => calcCalorieTarget(tdee, goal),
-    [tdee, goal],
-  );
+  const tdeeN = parseNum(tdee);
+  const inputsValid = tdeeN != null && tdeeN > 0;
+
+  const result = useMemo(() => {
+    if (!inputsValid || tdeeN == null) return null;
+    return calcCalorieTarget(tdeeN, goal);
+  }, [inputsValid, tdeeN, goal]);
 
   return (
     <CalcWorkspace
@@ -72,7 +93,7 @@ function CalorieInner({
               min={1000}
               max={6000}
               value={tdee}
-              onChange={(e) => setTdee(Number(e.target.value) || 0)}
+              onChange={(e) => setNumField(e.target.value, setTdee)}
             />
             <p className="mt-1.5 text-xs text-muted-foreground">
               Prefills from your last TDEE when signed in.{" "}
@@ -98,13 +119,15 @@ function CalorieInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
+            disabled={!prefsReady || !inputsValid || !result}
             onClick={() => {
-              requestAck();
+              if (!inputsValid || tdeeN == null || !result) return;
+              runCalculate();
               saveCalcPrefs(memberId, {
-                tdee,
+                tdee: tdeeN,
                 calorieTarget: result.target,
               });
             }}
@@ -116,12 +139,12 @@ function CalorieInner({
       results={
         <>
           <ResultHero
-            show={acknowledged}
+            show={revealed && result != null}
             label="Daily calorie target"
-            value={result.target}
+            value={result?.target ?? ""}
             unit="kcal"
           />
-          {acknowledged && goal === "loss" ? (
+          {revealed && result && goal === "loss" ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Rough weekly deficit ≈ {result.weeklyDeficit} kcal (not a fat-loss
               guarantee).
@@ -137,12 +160,14 @@ function CalorieInner({
           <Link
             href="/tools/macro-calculator"
             className="fk-link font-semibold"
-            onClick={() =>
-              saveCalcPrefs(memberId, {
-                tdee,
-                calorieTarget: result.target,
-              })
-            }
+            onClick={() => {
+              if (tdeeN != null && result) {
+                saveCalcPrefs(memberId, {
+                  tdee: tdeeN,
+                  calorieTarget: result.target,
+                });
+              }
+            }}
           >
             Split into macros
           </Link>

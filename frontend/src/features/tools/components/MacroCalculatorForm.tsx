@@ -12,8 +12,16 @@ import {
   ResultHero,
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
+import {
+  numField,
+  parseNum,
+  roundNumField,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
 import { calcMacros, kgToLb, lbToKg } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 import { cn } from "@/lib/utils";
 
 const PROTEIN_OPTIONS = [
@@ -50,32 +58,50 @@ function MacroInner({
   requestAck: () => void;
   requestSignIn: () => void;
 }) {
-  const [calories, setCalories] = useState(2000);
-  const [weight, setWeight] = useState(70);
+  const [calories, setCalories] = useState<NumField>(numField(2000));
+  const [weight, setWeight] = useState<NumField>(numField(70));
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
   const [proteinPerKg, setProteinPerKg] = useState(1.8);
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
-    if (prefs.calorieTarget) setCalories(prefs.calorieTarget);
-    else if (prefs.tdee) setCalories(prefs.tdee);
+    if (prefs.calorieTarget) setCalories(numField(prefs.calorieTarget));
+    else if (prefs.tdee) setCalories(numField(prefs.tdee));
     if (prefs.weightKg) {
       setWeight(
         prefs.weightUnit === "lb"
-          ? Math.round(kgToLb(prefs.weightKg))
-          : Math.round(prefs.weightKg),
+          ? roundNumField(kgToLb(prefs.weightKg))
+          : roundNumField(prefs.weightKg),
       );
       setWeightUnit(prefs.weightUnit ?? "kg");
     }
     if (prefs.proteinPerKg) setProteinPerKg(prefs.proteinPerKg);
+    setPrefsReady(true);
   }, [memberId]);
 
-  const weightKg = weightUnit === "kg" ? weight : lbToKg(weight);
-  const result = useMemo(
-    () => calcMacros(calories, weightKg, proteinPerKg),
-    [calories, weightKg, proteinPerKg],
-  );
+  const caloriesN = parseNum(calories);
+  const weightN = parseNum(weight);
+  const weightKg =
+    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
+
+  const inputsValid =
+    caloriesN != null && caloriesN > 0 && weightKg != null && weightKg > 0;
+
+  const result = useMemo(() => {
+    if (!inputsValid || caloriesN == null || weightKg == null) return null;
+    return calcMacros(caloriesN, weightKg, proteinPerKg);
+  }, [inputsValid, caloriesN, weightKg, proteinPerKg]);
 
   return (
     <CalcWorkspace
@@ -93,7 +119,7 @@ function MacroInner({
               min={1000}
               max={6000}
               value={calories}
-              onChange={(e) => setCalories(Number(e.target.value) || 0)}
+              onChange={(e) => setNumField(e.target.value, setCalories)}
             />
             <p className="mt-1.5 text-xs text-muted-foreground">
               Prefills from your last calorie or TDEE target when signed in.
@@ -104,17 +130,19 @@ function MacroInner({
               <CalcInput
                 type="number"
                 value={weight}
-                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+                onChange={(e) => setNumField(e.target.value, setWeight)}
               />
               <SegmentedControl
                 value={weightUnit}
                 onChange={(u) => {
                   if (u === weightUnit) return;
-                  setWeight(
-                    u === "lb"
-                      ? Math.round(kgToLb(weight))
-                      : Math.round(lbToKg(weight)),
-                  );
+                  if (weightN != null) {
+                    setWeight(
+                      u === "lb"
+                        ? roundNumField(kgToLb(weightN))
+                        : roundNumField(lbToKg(weightN)),
+                    );
+                  }
                   setWeightUnit(u);
                 }}
                 options={[
@@ -157,13 +185,15 @@ function MacroInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
+            disabled={!prefsReady || !inputsValid}
             onClick={() => {
-              requestAck();
+              if (!inputsValid || caloriesN == null || weightKg == null) return;
+              runCalculate();
               saveCalcPrefs(memberId, {
-                calorieTarget: calories,
+                calorieTarget: caloriesN,
                 weightKg,
                 proteinPerKg,
                 weightUnit,
@@ -175,7 +205,7 @@ function MacroInner({
         ) : null
       }
       results={
-        acknowledged ? (
+        revealed && result ? (
           <>
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-xl bg-brand-50 p-4">

@@ -12,6 +12,13 @@ import {
   SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
 import {
+  numField,
+  parseNum,
+  roundNumField,
+  setNumField,
+  type NumField,
+} from "@/features/tools/lib/calcFields";
+import {
   cmToFtIn,
   ftInToCm,
   kgToLb,
@@ -20,6 +27,7 @@ import {
   type Sex,
 } from "@/features/tools/lib/calcMath";
 import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
+import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
 
 export function BmrCalculatorForm() {
   return (
@@ -49,42 +57,83 @@ function BmrInner({
   requestSignIn: () => void;
 }) {
   const [sex, setSex] = useState<Sex>("male");
-  const [age, setAge] = useState(30);
-  const [weight, setWeight] = useState(70);
+  const [age, setAge] = useState<NumField>(numField(30));
+  const [weight, setWeight] = useState<NumField>(numField(70));
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
   const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
-  const [heightCm, setHeightCm] = useState(170);
-  const [ft, setFt] = useState(5);
-  const [inches, setInches] = useState(7);
+  const [heightCm, setHeightCm] = useState<NumField>(numField(170));
+  const [ft, setFt] = useState<NumField>(numField(5));
+  const [inches, setInches] = useState<NumField>(numField(7));
+  const [prefsReady, setPrefsReady] = useState(!memberId);
+  const { revealed, runCalculate } = useCalcReveal(
+    acknowledged,
+    requestAck,
+    memberId,
+  );
 
   useEffect(() => {
-    if (!memberId) return;
+    if (!memberId) {
+      setPrefsReady(true);
+      return;
+    }
+    setPrefsReady(false);
     const prefs = loadCalcPrefs(memberId);
     if (prefs.sex) setSex(prefs.sex);
-    if (prefs.age) setAge(prefs.age);
+    if (prefs.age) setAge(numField(prefs.age));
     if (prefs.weightKg) {
       setWeight(
         prefs.weightUnit === "lb"
-          ? Math.round(kgToLb(prefs.weightKg))
-          : Math.round(prefs.weightKg),
+          ? roundNumField(kgToLb(prefs.weightKg))
+          : roundNumField(prefs.weightKg),
       );
       setWeightUnit(prefs.weightUnit ?? "kg");
     }
     if (prefs.heightCm) {
-      setHeightCm(prefs.heightCm);
+      setHeightCm(numField(prefs.heightCm));
       const fi = cmToFtIn(prefs.heightCm);
-      setFt(fi.ft);
-      setInches(fi.inches);
+      setFt(numField(fi.ft));
+      setInches(numField(fi.inches));
       setHeightUnit(prefs.heightUnit ?? "cm");
     }
+    setPrefsReady(true);
   }, [memberId]);
 
-  const weightKg = weightUnit === "kg" ? weight : lbToKg(weight);
-  const height = heightUnit === "cm" ? heightCm : ftInToCm(ft, inches);
-  const bmr = useMemo(
-    () => Math.round(mifflinBmr(sex, weightKg, height, age)),
-    [sex, weightKg, height, age],
-  );
+  const ageN = parseNum(age);
+  const weightN = parseNum(weight);
+  const heightCmN = parseNum(heightCm);
+  const ftN = parseNum(ft);
+  const inN = parseNum(inches);
+
+  const weightKg =
+    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
+  const height =
+    heightUnit === "cm"
+      ? heightCmN
+      : ftN == null || inN == null
+        ? null
+        : ftInToCm(ftN, inN);
+
+  const inputsValid =
+    ageN != null && weightKg != null && height != null && height > 0;
+
+  const bmr = useMemo(() => {
+    if (!inputsValid || weightKg == null || height == null || ageN == null) {
+      return null;
+    }
+    return Math.round(mifflinBmr(sex, weightKg, height, ageN));
+  }, [inputsValid, sex, weightKg, height, ageN]);
+
+  const persist = () => {
+    if (weightKg == null || height == null || ageN == null) return;
+    saveCalcPrefs(memberId, {
+      sex,
+      age: ageN,
+      weightKg,
+      heightCm: height,
+      weightUnit,
+      heightUnit,
+    });
+  };
 
   return (
     <CalcWorkspace
@@ -112,7 +161,7 @@ function BmrInner({
               min={15}
               max={100}
               value={age}
-              onChange={(e) => setAge(Number(e.target.value) || 0)}
+              onChange={(e) => setNumField(e.target.value, setAge)}
             />
           </FieldLabel>
           <FieldLabel label="Weight">
@@ -120,17 +169,19 @@ function BmrInner({
               <CalcInput
                 type="number"
                 value={weight}
-                onChange={(e) => setWeight(Number(e.target.value) || 0)}
+                onChange={(e) => setNumField(e.target.value, setWeight)}
               />
               <SegmentedControl
                 value={weightUnit}
                 onChange={(u) => {
                   if (u === weightUnit) return;
-                  setWeight(
-                    u === "lb"
-                      ? Math.round(kgToLb(weight))
-                      : Math.round(lbToKg(weight)),
-                  );
+                  if (weightN != null) {
+                    setWeight(
+                      u === "lb"
+                        ? roundNumField(kgToLb(weightN))
+                        : roundNumField(lbToKg(weightN)),
+                    );
+                  }
                   setWeightUnit(u);
                 }}
                 options={[
@@ -145,12 +196,17 @@ function BmrInner({
               <SegmentedControl
                 value={heightUnit}
                 onChange={(u) => {
-                  if (u === "ft" && heightUnit === "cm") {
-                    const fi = cmToFtIn(heightCm);
-                    setFt(fi.ft);
-                    setInches(fi.inches);
-                  } else if (u === "cm" && heightUnit === "ft") {
-                    setHeightCm(ftInToCm(ft, inches));
+                  if (u === "ft" && heightUnit === "cm" && heightCmN != null) {
+                    const fi = cmToFtIn(heightCmN);
+                    setFt(numField(fi.ft));
+                    setInches(numField(fi.inches));
+                  } else if (
+                    u === "cm" &&
+                    heightUnit === "ft" &&
+                    ftN != null &&
+                    inN != null
+                  ) {
+                    setHeightCm(numField(ftInToCm(ftN, inN)));
                   }
                   setHeightUnit(u);
                 }}
@@ -163,19 +219,19 @@ function BmrInner({
                 <CalcInput
                   type="number"
                   value={heightCm}
-                  onChange={(e) => setHeightCm(Number(e.target.value) || 0)}
+                  onChange={(e) => setNumField(e.target.value, setHeightCm)}
                 />
               ) : (
                 <div className="flex gap-2">
                   <CalcInput
                     type="number"
                     value={ft}
-                    onChange={(e) => setFt(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setFt)}
                   />
                   <CalcInput
                     type="number"
                     value={inches}
-                    onChange={(e) => setInches(Number(e.target.value) || 0)}
+                    onChange={(e) => setNumField(e.target.value, setInches)}
                   />
                 </div>
               )}
@@ -184,19 +240,14 @@ function BmrInner({
         </>
       }
       calculateSlot={
-        !acknowledged ? (
+        isSignedIn ? (
           <Button
             type="button"
+            disabled={!prefsReady || !inputsValid}
             onClick={() => {
-              requestAck();
-              saveCalcPrefs(memberId, {
-                sex,
-                age,
-                weightKg,
-                heightCm: height,
-                weightUnit,
-                heightUnit,
-              });
+              if (!inputsValid) return;
+              runCalculate();
+              persist();
             }}
           >
             Calculate BMR
@@ -206,12 +257,12 @@ function BmrInner({
       results={
         <>
           <ResultHero
-            show={acknowledged}
+            show={revealed && bmr != null}
             label="Estimated BMR"
-            value={bmr}
+            value={bmr ?? ""}
             unit="kcal/day"
           />
-          {acknowledged ? (
+          {revealed && bmr != null ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Calories before activity. Add training and daily movement in the
               TDEE calculator for a maintenance estimate.
@@ -223,16 +274,7 @@ function BmrInner({
         <Link
           href="/tools/tdee-calculator"
           className="fk-link text-sm font-semibold"
-          onClick={() =>
-            saveCalcPrefs(memberId, {
-              sex,
-              age,
-              weightKg,
-              heightCm: height,
-              weightUnit,
-              heightUnit,
-            })
-          }
+          onClick={persist}
         >
           Add activity → TDEE calculator
         </Link>

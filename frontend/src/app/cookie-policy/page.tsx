@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "How fitlives uses essential cookies, optional analytics (OpenPanel), and how you can change your choices. We do not use advertising cookies.",
+    "How fitlives uses essential cookies, optional analytics (OpenPanel and Google Analytics), and how you can change your choices. We do not use advertising cookies.",
   alternates: { canonical: "/cookie-policy" },
 };
 
@@ -58,7 +58,7 @@ export default function CookiePolicyPage() {
         <li>
           <strong>Analytics / performance</strong> — which pages are read,
           where people drop off, which tools are used. This can be first-party
-          or a vendor (for us, OpenPanel).
+          or a vendor (for us, OpenPanel and Google Analytics).
         </li>
         <li>
           <strong>Functional extras</strong> — embedded video, maps, chat
@@ -107,9 +107,9 @@ export default function CookiePolicyPage() {
           you acknowledged the educational disclaimer on a tool.
         </li>
         <li>
-          Optional OpenPanel analytics — only after you choose{" "}
-          <strong>Accept cookies</strong> or enable Analytics in Customize.
-          <strong> Reject optional cookies</strong> keeps this off.
+          Optional analytics (OpenPanel and Google Analytics) — only after you
+          choose <strong>Accept cookies</strong> or enable Analytics in
+          Customize. <strong>Reject optional cookies</strong> keeps this off.
         </li>
       </LegalUl>
 
@@ -125,12 +125,13 @@ export default function CookiePolicyPage() {
         </li>
       </LegalUl>
 
-      <LegalH2 id="analytics">5. Analytics (OpenPanel) — optional</LegalH2>
+      <LegalH2 id="analytics">5. Analytics (OpenPanel + Google Analytics) — optional</LegalH2>
       <p>
         If you allow analytics, we send page views and product events (for
-        example share, upvote, calculator use) to OpenPanel so we can improve
-        guides. This is for operating the Site, not for selling your identity
-        to advertisers. Until you opt in, those events are not sent.
+        example share, upvote, calculator use) to OpenPanel and Google Analytics
+        4 so we can improve guides and understand search traffic. This is for
+        operating the Site, not for selling your identity to advertisers. Until
+        you opt in, those scripts and events are not loaded.
       </p>
       <p>
         See{" "}
@@ -141,6 +142,15 @@ export default function CookiePolicyPage() {
           target="_blank"
         >
           OpenPanel
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://policies.google.com/technologies/partner-sites"
+          className="fk-link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Google’s partner sites policy
         </a>{" "}
         for vendor documentation.
       </p>
