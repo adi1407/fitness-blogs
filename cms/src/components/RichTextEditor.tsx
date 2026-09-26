@@ -41,6 +41,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState("");
+    const [, setSelectionTick] = useState(0);
 
     const editor = useEditor({
       extensions: [
@@ -61,6 +62,9 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(
       editable: !disabled,
       onUpdate: ({ editor: ed }) => {
         onChange(ed.getHTML());
+      },
+      onSelectionUpdate: () => {
+        setSelectionTick((n) => n + 1);
       },
     });
 
@@ -166,6 +170,11 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(
             onClick={() => fileInputRef.current?.click()}
             label={uploading ? "Uploading…" : "Add image"}
           />
+          <ToolbarBtn
+            disabled={disabled || !editor?.isActive("image")}
+            onClick={() => editor?.chain().focus().deleteSelection().run()}
+            label="Remove image"
+          />
           <input
             ref={fileInputRef}
             type="file"
@@ -181,7 +190,9 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(
           <strong>In-article images only:</strong> upload JPEG/PNG/WebP/GIF up
           to <strong>5&nbsp;MB</strong> (best 1600–1920px wide). This inserts at
           the cursor — it does <strong>not</strong> set the main thumbnail /
-          cover. Use the Media section above for the article thumbnail.
+          cover. Use the <strong>Media</strong> section above for the article
+          thumbnail. Click an image, then <strong>Remove image</strong> to
+          delete it.
         </p>
         {uploadError ? (
           <p className="border-b border-red-100 bg-red-50 px-3 py-2 text-xs text-red-700">

@@ -61,6 +61,19 @@ export function ImageUrlUploadField({
         >
           {uploading ? "Uploading…" : "Upload from files"}
         </button>
+        {value ? (
+          <button
+            type="button"
+            disabled={disabled || uploading}
+            onClick={() => {
+              setError("");
+              onChange("");
+            }}
+            className="shrink-0 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+          >
+            Remove
+          </button>
+        ) : null}
         <input
           ref={inputRef}
           type="file"
@@ -77,12 +90,23 @@ export function ImageUrlUploadField({
       ) : null}
       {error ? <p className="mt-1 text-xs font-normal text-red-600">{error}</p> : null}
       {value ? (
-        <div className="mt-2 max-h-40 w-full max-w-md overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+        <div className="relative mt-2 max-h-40 w-full max-w-md overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
           <img
             src={value}
             alt=""
             className="mx-auto max-h-40 w-full object-contain object-center"
           />
+          <button
+            type="button"
+            disabled={disabled || uploading}
+            onClick={() => {
+              setError("");
+              onChange("");
+            }}
+            className="absolute right-2 top-2 rounded-md border border-slate-200 bg-white/95 px-2 py-1 text-xs font-semibold text-red-700 shadow-sm hover:bg-red-50 disabled:opacity-50"
+          >
+            Remove
+          </button>
         </div>
       ) : null}
     </div>

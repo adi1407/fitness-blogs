@@ -7,9 +7,35 @@ import {
   fetchRecipes,
   MUSCLE_GROUPS,
 } from "@/lib/api/knowledge";
+import { getPublicSiteUrl } from "@/lib/siteUrl";
+
+/** Cache sitemap so Google/Search Console hit a fast response, not a cold API fan-out. */
+export const revalidate = 3600;
+
+function safeDate(value?: string | null): Date {
+  if (!value) return new Date();
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? new Date() : d;
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("sitemap fetch timeout")), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = getPublicSiteUrl();
 
   const paths = [
     "",
@@ -47,7 +73,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogCategoryPaths = BLOG_TAXONOMY.map((c) => `/blog/${c.slug}`);
   const exerciseGroupPaths = MUSCLE_GROUPS.map((g) => `/exercises/${g}`);
 
-  const staticEntries = [...paths, ...exerciseGroupPaths].map((path, index) => ({
+  const staticEntries: MetadataRoute.Sitemap = [
+    ...paths,
+    ...exerciseGroupPaths,
+  ].map((path, index) => ({
     url: `${siteUrl}${path}`,
     lastModified: new Date(),
     changeFrequency: (path === "" || path === "/blog"
@@ -56,12 +85,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1 : path === "/blog" ? 0.95 : index < 6 ? 0.9 : 0.7,
   }));
 
-  const blogCategoryEntries = blogCategoryPaths.map((path) => ({
-    url: `${siteUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.85,
-  }));
+  const blogCategoryEntries: MetadataRoute.Sitemap = blogCategoryPaths.map(
+    (path) => ({
+      url: `${siteUrl}${path}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    }),
+  );
 
   let articleEntries: MetadataRoute.Sitemap = [];
   let subcategoryEntries: MetadataRoute.Sitemap = [];
@@ -70,7 +101,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let knowledgeEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const articles = await fetchPublishedArticles({ limit: 500 });
+    const articles = await withTimeout(
+      fetchPublishedArticles({ limit: 500 }),
+      8_000,
+    );
     const subcatsWithContent = new Set<string>();
 
     articleEntries = articles
@@ -89,11 +123,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }
         return {
           url: `${siteUrl}${path}`,
-          lastModified: a.updatedAt
-            ? new Date(a.updatedAt)
-            : a.publishedAt
-              ? new Date(a.publishedAt)
-              : new Date(),
+          lastModified: safeDate(a.updatedAt ?? a.publishedAt),
           changeFrequency: "weekly" as const,
           priority: 0.8,
         };
@@ -107,16 +137,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }));
   } catch {
-    /* API unavailable */
+    /* API unavailable — keep static URLs */
   }
 
   try {
-    const exercises = await fetchExercises();
+    const exercises = await withTimeout(fetchExercises(), 8_000);
     exerciseEntries = exercises
       .filter((e) => e.robotsIndex !== false && e.path)
       .map((e) => ({
         url: `${siteUrl}${e.path}`,
-        lastModified: e.updatedAt ? new Date(e.updatedAt) : new Date(),
+        lastModified: safeDate(e.updatedAt),
         changeFrequency: "weekly" as const,
         priority: 0.75,
       }));
@@ -125,12 +155,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const recipes = await fetchRecipes();
+    const recipes = await withTimeout(fetchRecipes(), 8_000);
     recipeEntries = recipes
       .filter((r) => r.robotsIndex !== false && r.path)
       .map((r) => ({
         url: `${siteUrl}${r.path}`,
-        lastModified: r.updatedAt ? new Date(r.updatedAt) : new Date(),
+        lastModified: safeDate(r.updatedAt),
         changeFrequency: "weekly" as const,
         priority: 0.7,
       }));
@@ -140,12 +170,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     for (const section of ["programs", "reviews"] as const) {
-      const { pages } = await fetchKnowledgeSection(section);
+      const { pages } = await withTimeout(
+        fetchKnowledgeSection(section),
+        8_000,
+      );
       for (const p of pages) {
         if (p.robotsIndex === false || !p.path) continue;
         knowledgeEntries.push({
           url: `${siteUrl}${p.path}`,
-          lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+          lastModified: safeDate(p.updatedAt),
           changeFrequency: "weekly",
           priority: 0.7,
         });

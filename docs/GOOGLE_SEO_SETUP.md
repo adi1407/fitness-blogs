@@ -57,6 +57,10 @@ In Search Console → **Sitemaps** → submit:
 https://fitlives.in/sitemap.xml
 ```
 
+Confirm in a browser first — you should see XML with many `<url>` entries (not an error page).  
+If status is **Couldn't fetch**, wait a few minutes after DNS/deploy settles, open the URL yourself, then use **Resubmit**. Google often fails while the domain is still parking or mid-propagation.
+
+`robots.txt` already advertises the same sitemap URL.
 ### Optional DNS verification (Domain property)
 
 GoDaddy DNS → **TXT** `@` → value Google shows (e.g. `google-site-verification=…`).  

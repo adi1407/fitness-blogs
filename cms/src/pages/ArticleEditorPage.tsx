@@ -997,11 +997,75 @@ export default function ArticleEditorPage() {
           </label>
         </section>
 
+        <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+          <div>
+            <h2 className="text-lg font-semibold">Media</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Upload the main thumbnail separately from in-article figures.
+              Images are shown uncropped on the site.
+            </p>
+          </div>
+          <ImageUrlUploadField
+            label="1. Main thumbnail / cover"
+            value={form.featuredImage}
+            onChange={(url) => {
+              const prev = form.featuredImage;
+              patch("featuredImage", url);
+              if (!url) {
+                if (form.ogImage.trim() === prev.trim()) patch("ogImage", "");
+                return;
+              }
+              if (!form.ogImage.trim()) patch("ogImage", url);
+            }}
+            disabled={!canEditContent}
+            hint="Used for article hero, blog cards, home lists, and related. Best: 1920×1080 (16:9), JPEG/WebP under 5 MB."
+          />
+          <ImageUrlUploadField
+            label="2. Social / OG image (optional)"
+            value={form.ogImage}
+            onChange={(url) => patch("ogImage", url)}
+            disabled={!canEditContent}
+            hint="Optional override for link previews. Defaults to the main thumbnail when left empty."
+          />
+          <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-xs text-slate-600">
+            <p className="font-semibold text-slate-800">
+              3. In-article images
+            </p>
+            <p className="mt-1 font-normal">
+              For figures inside the article, use{" "}
+              <strong>Add image</strong> in the body editor below. Select an
+              image in the body and click <strong>Remove image</strong> to
+              delete it. Do not use the main thumbnail field for mid-article
+              photos.
+            </p>
+          </div>
+          <label className="block text-sm font-medium">
+            Cover alt text
+            <input
+              value={form.featuredImageAlt}
+              onChange={(e) => patch("featuredImageAlt", e.target.value)}
+              disabled={!canEditContent}
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Cover caption
+            <input
+              value={form.featuredImageCaption}
+              onChange={(e) => patch("featuredImageCaption", e.target.value)}
+              disabled={!canEditContent}
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
+            />
+          </label>
+        </section>
+
         <section className="rounded-xl border border-slate-200 bg-white p-5">
           <h2 className="text-lg font-semibold">Body</h2>
           <p className="mt-1 text-sm text-slate-500">
             Place the cursor where the image should appear, then click{" "}
             <strong>Add image</strong> and choose a file from your computer.
+            Click an image in the body, then <strong>Remove image</strong> to
+            delete it.
           </p>
           <div className="mt-3">
             <RichTextEditor
@@ -1061,65 +1125,7 @@ export default function ArticleEditorPage() {
               Used for the stale-content queue. Set when you refresh a live URL.
             </span>
           </label>
-        <div className="sm:col-span-2 space-y-4 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900">
-              Article images
-            </h3>
-            <p className="mt-1 text-xs font-normal text-slate-500">
-              Use a separate upload for each role. The main thumbnail is shown
-              on the article page, cards, and home — uncropped. In-article
-              figures belong in the body editor, not here.
-            </p>
-          </div>
-          <ImageUrlUploadField
-            label="1. Main thumbnail / cover"
-            value={form.featuredImage}
-            onChange={(url) => {
-              patch("featuredImage", url);
-              if (!form.ogImage.trim()) patch("ogImage", url);
-            }}
-            disabled={!canEditContent}
-            hint="Used for article hero, blog cards, home lists, and related. Best: 1920×1080 (16:9), JPEG/WebP under 5 MB. Shown uncropped on the site."
-          />
-          <ImageUrlUploadField
-            label="2. Social / OG image (optional)"
-            value={form.ogImage}
-            onChange={(url) => patch("ogImage", url)}
-            disabled={!canEditContent}
-            hint="Optional override for link previews. Defaults to the main thumbnail when left empty. Same 1920×1080 guidance if you upload a different crop."
-          />
-          <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-3 text-xs text-slate-600">
-            <p className="font-semibold text-slate-800">
-              3. In-article images
-            </p>
-            <p className="mt-1 font-normal">
-              For figures inside the article, use{" "}
-              <strong>Add image</strong> in the body editor below (toolbar). Do
-              not reuse the main thumbnail field for mid-article photos —
-              those uploads insert at the cursor in the HTML body.
-            </p>
-          </div>
-          <label className="block text-sm font-medium">
-            Cover alt text
-            <input
-              value={form.featuredImageAlt}
-              onChange={(e) => patch("featuredImageAlt", e.target.value)}
-              disabled={!canEditContent}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
-            />
-          </label>
-          <label className="block text-sm font-medium">
-            Cover caption
-            <input
-              value={form.featuredImageCaption}
-              onChange={(e) => patch("featuredImageCaption", e.target.value)}
-              disabled={!canEditContent}
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
-            />
-          </label>
-        </div>
-      </section>
+        </section>
 
       <RelatedArticlesPanel
         linked={linkedArticles}
