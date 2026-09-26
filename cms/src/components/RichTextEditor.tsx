@@ -178,10 +178,10 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, Props>(
           />
         </div>
         <p className="border-b border-slate-100 bg-amber-50 px-3 py-2 text-xs text-amber-950">
-          <strong>Image size:</strong> upload JPEG/PNG/WebP/GIF up to{" "}
-          <strong>5&nbsp;MB</strong>. Best look on desktop monitors:{" "}
-          <strong>1600–1920px wide</strong> (16:9 or 3:2 landscape). The image
-          inserts at your cursor and scales full-width on the site.
+          <strong>In-article images only:</strong> upload JPEG/PNG/WebP/GIF up
+          to <strong>5&nbsp;MB</strong> (best 1600–1920px wide). This inserts at
+          the cursor — it does <strong>not</strong> set the main thumbnail /
+          cover. Use the Media section above for the article thumbnail.
         </p>
         {uploadError ? (
           <p className="border-b border-red-100 bg-red-50 px-3 py-2 text-xs text-red-700">

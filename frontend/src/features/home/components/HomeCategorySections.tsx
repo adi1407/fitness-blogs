@@ -48,12 +48,14 @@ export function HomeCategorySections({ articles }: HomeCategorySectionsProps) {
                     href={href}
                     className="group overflow-hidden rounded-xl border border-border bg-white transition hover:border-primary"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={articleImage(article)}
-                      alt=""
-                      className="aspect-[16/10] w-full object-cover transition group-hover:scale-[1.02]"
-                    />
+                    <div className="aspect-[16/10] w-full overflow-hidden bg-muted">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={articleImage(article)}
+                        alt=""
+                        className="size-full object-contain object-center transition group-hover:scale-[1.02]"
+                      />
+                    </div>
                     <div className="p-4">
                       {article.subcategoryLabel ? (
                         <p className="text-xs font-medium text-muted-foreground">

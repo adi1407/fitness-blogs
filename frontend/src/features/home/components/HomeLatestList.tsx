@@ -38,12 +38,14 @@ export function HomeLatestList({ articles }: HomeLatestListProps) {
                 <span className="hidden w-8 shrink-0 pt-1 text-sm font-semibold text-muted-foreground sm:block">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={articleImage(article)}
-                  alt=""
-                  className="h-20 w-28 shrink-0 rounded-lg object-cover sm:h-24 sm:w-36"
-                />
+                <span className="block h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-24 sm:w-36">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={articleImage(article)}
+                    alt=""
+                    className="size-full object-contain object-center"
+                  />
+                </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                     {article.categoryLabel ? (

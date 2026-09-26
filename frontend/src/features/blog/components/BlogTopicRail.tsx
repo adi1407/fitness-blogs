@@ -47,12 +47,12 @@ export function BlogTopicRail({ category, articles }: Props) {
               className="w-[min(72vw,16.5rem)] shrink-0 sm:w-auto"
             >
               <Link href={href} className="group block h-full">
-                <div className="overflow-hidden rounded-lg border border-border bg-muted">
+                <div className="aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={articleImage(article)}
                     alt=""
-                    className="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    className="size-full object-contain object-center transition duration-300 group-hover:scale-[1.03]"
                   />
                 </div>
                 <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-accent">

@@ -46,7 +46,13 @@ export function SerpSocialPreview({
       <div className="mt-4 max-w-sm overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="h-36 w-full object-cover" />
+          <div className="flex h-36 w-full items-center justify-center bg-slate-100">
+            <img
+              src={image}
+              alt=""
+              className="max-h-36 w-full object-contain object-center"
+            />
+          </div>
         ) : (
           <div className="flex h-36 items-center justify-center bg-slate-100 text-xs text-slate-400">
             No OG / featured image

@@ -77,11 +77,13 @@ export function ImageUrlUploadField({
       ) : null}
       {error ? <p className="mt-1 text-xs font-normal text-red-600">{error}</p> : null}
       {value ? (
-        <img
-          src={value}
-          alt=""
-          className="mt-2 max-h-40 w-full max-w-md rounded-lg border border-slate-200 object-cover"
-        />
+        <div className="mt-2 max-h-40 w-full max-w-md overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+          <img
+            src={value}
+            alt=""
+            className="mx-auto max-h-40 w-full object-contain object-center"
+          />
+        </div>
       ) : null}
     </div>
   );

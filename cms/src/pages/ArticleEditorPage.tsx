@@ -1061,45 +1061,64 @@ export default function ArticleEditorPage() {
               Used for the stale-content queue. Set when you refresh a live URL.
             </span>
           </label>
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 space-y-4 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">
+              Article images
+            </h3>
+            <p className="mt-1 text-xs font-normal text-slate-500">
+              Use a separate upload for each role. The main thumbnail is shown
+              on the article page, cards, and home — uncropped. In-article
+              figures belong in the body editor, not here.
+            </p>
+          </div>
           <ImageUrlUploadField
-            label="Featured / cover image"
+            label="1. Main thumbnail / cover"
             value={form.featuredImage}
             onChange={(url) => {
               patch("featuredImage", url);
               if (!form.ogImage.trim()) patch("ogImage", url);
             }}
             disabled={!canEditContent}
-            hint="Best: 1920×1080 (16:9), JPEG/WebP under 5 MB — article hero + social share."
+            hint="Used for article hero, blog cards, home lists, and related. Best: 1920×1080 (16:9), JPEG/WebP under 5 MB. Shown uncropped on the site."
           />
-        </div>
-        <div className="sm:col-span-2">
           <ImageUrlUploadField
-            label="OG image (optional override)"
+            label="2. Social / OG image (optional)"
             value={form.ogImage}
             onChange={(url) => patch("ogImage", url)}
             disabled={!canEditContent}
-            hint="Defaults to the featured image. Same 1920×1080 guidance if you override."
+            hint="Optional override for link previews. Defaults to the main thumbnail when left empty. Same 1920×1080 guidance if you upload a different crop."
           />
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-3 text-xs text-slate-600">
+            <p className="font-semibold text-slate-800">
+              3. In-article images
+            </p>
+            <p className="mt-1 font-normal">
+              For figures inside the article, use{" "}
+              <strong>Add image</strong> in the body editor below (toolbar). Do
+              not reuse the main thumbnail field for mid-article photos —
+              those uploads insert at the cursor in the HTML body.
+            </p>
+          </div>
+          <label className="block text-sm font-medium">
+            Cover alt text
+            <input
+              value={form.featuredImageAlt}
+              onChange={(e) => patch("featuredImageAlt", e.target.value)}
+              disabled={!canEditContent}
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Cover caption
+            <input
+              value={form.featuredImageCaption}
+              onChange={(e) => patch("featuredImageCaption", e.target.value)}
+              disabled={!canEditContent}
+              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
+            />
+          </label>
         </div>
-        <label className="block text-sm font-medium">
-          Cover alt text
-          <input
-            value={form.featuredImageAlt}
-            onChange={(e) => patch("featuredImageAlt", e.target.value)}
-            disabled={!canEditContent}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
-          />
-        </label>
-        <label className="block text-sm font-medium">
-          Cover caption
-          <input
-            value={form.featuredImageCaption}
-            onChange={(e) => patch("featuredImageCaption", e.target.value)}
-            disabled={!canEditContent}
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 disabled:opacity-60"
-          />
-        </label>
       </section>
 
       <RelatedArticlesPanel

@@ -406,7 +406,8 @@
     margin: 0;
     border: none;
     border-radius: 0;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
   }
 
   .article-body figure figcaption,
