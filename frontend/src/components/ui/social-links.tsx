@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics/openpanel";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
+import { toPublicShareUrl } from "@/lib/siteUrl";
 
 export type SharePlatform =
   | "x"
@@ -154,9 +155,10 @@ export function SocialLinks({
   requireAuth = false,
 }: SocialLinksProps) {
   const { member, loading: authLoading } = useMemberAuth();
+  const shareUrl = React.useMemo(() => toPublicShareUrl(url), [url]);
   const links = React.useMemo(
-    () => buildShareLinks(url, title, platforms),
-    [url, title, platforms],
+    () => buildShareLinks(shareUrl, title, platforms),
+    [shareUrl, title, platforms],
   );
   const [hoveredPlatform, setHoveredPlatform] =
     React.useState<SharePlatform | null>(null);
@@ -165,7 +167,7 @@ export function SocialLinks({
   const [gateOpen, setGateOpen] = React.useState(false);
 
   function trackShare(channel: string) {
-    trackEvent("share_click", { channel, url });
+    trackEvent("share_click", { channel, url: shareUrl });
   }
 
   function ensureAuth(e?: React.MouseEvent) {
@@ -185,7 +187,7 @@ export function SocialLinks({
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       trackShare("copy");
       setTimeout(() => setCopied(false), 2000);

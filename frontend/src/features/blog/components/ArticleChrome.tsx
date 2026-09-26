@@ -4,6 +4,7 @@ import { useMemo, useState, type MouseEvent } from "react";
 import { trackEvent } from "@/lib/analytics/openpanel";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
+import { toPublicShareUrl } from "@/lib/siteUrl";
 
 type TocItem = { id: string; text: string; level: 2 | 3 };
 
@@ -59,12 +60,13 @@ export function ArticleShare({
   const { member, loading: authLoading } = useMemberAuth();
   const [copied, setCopied] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
+  const shareUrl = useMemo(() => toPublicShareUrl(url), [url]);
   const encoded = useMemo(
     () => ({
-      u: encodeURIComponent(url),
+      u: encodeURIComponent(shareUrl),
       t: encodeURIComponent(title),
     }),
-    [url, title],
+    [shareUrl, title],
   );
 
   function requireAuth(e?: MouseEvent) {
@@ -81,13 +83,13 @@ export function ArticleShare({
   }
 
   function trackShare(channel: string) {
-    trackEvent("share_click", { channel, url });
+    trackEvent("share_click", { channel, url: shareUrl });
   }
 
   async function copy() {
     if (!requireAuth()) return;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       trackShare("copy");
       setTimeout(() => setCopied(false), 2000);

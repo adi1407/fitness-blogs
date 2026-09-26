@@ -16,9 +16,11 @@ import {
   calculatorCtaForCategory,
   type PublicBlogArticle,
 } from "@/lib/api/blog";
+import { articleHref } from "@/features/home/utils/articleMedia";
+import { getPublicSiteUrl } from "@/lib/siteUrl";
 import { KeepAtmosphere, KeepRelatedStack } from "@/features/keep";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = getPublicSiteUrl();
 
 type Props = {
   article: PublicBlogArticle;
@@ -70,11 +72,11 @@ export function BlogArticleView({
 
   const { html: bodyHtml, toc } = enhanceArticleHtml(article.body || "");
   const canonicalPath =
-    article.path ??
+    articleHref(article) ??
     (catSlug && subSlug && article.slug
       ? `/blog/${catSlug}/${subSlug}/${article.slug}`
       : `/preview`);
-  const absoluteUrl = `${siteUrl}${canonicalPath}`;
+  const absoluteUrl = `${siteUrl}${canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`}`;
   const calc = calculatorCtaForCategory(article.categorySlug);
 
   const railRelated = related.slice(0, 5);
