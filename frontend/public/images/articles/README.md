@@ -24,5 +24,6 @@ Wired to the 20 intent articles (`b1`…`b20` → shot-list order). Paths are se
 | protein-timing-hero.png | b18 | protein-before-or-after-workout |
 | build-muscle-timeline-hero.png | b19 | how-long-does-it-take-to-build-muscle |
 | beginner-gym-diet-hero.png | b20 | beginner-gym-diet-plan |
+| walking-weight-loss-hero.png | — | does-walking-help-you-lose-weight |
 
 Drop replacements as **1920 × 1080** PNG/JPEG (under ~1 MB preferred) using the filenames above.

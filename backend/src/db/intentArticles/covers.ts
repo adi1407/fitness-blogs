@@ -37,6 +37,8 @@ export const INTENT_ARTICLE_COVERS: Record<string, string> = {
     "/images/articles/build-muscle-timeline-hero.png",
   "beginner-gym-diet-plan":
     "/images/articles/beginner-gym-diet-hero.png",
+  "does-walking-help-you-lose-weight":
+    "/images/articles/walking-weight-loss-hero.png",
 };
 
 export function coverForSlug(slug: string): string {
