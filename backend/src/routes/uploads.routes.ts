@@ -1,13 +1,10 @@
-import fs from "node:fs";
 import path from "node:path";
 import { Router } from "express";
 import multer from "multer";
 import { authenticate, authorize } from "../middleware/auth";
 import { env } from "../config/env";
+import { pool } from "../db/pool";
 import { STAFF_ROLES } from "../utils/roles";
-
-export const uploadsRoot = path.resolve(process.cwd(), "uploads");
-export const articleUploadsDir = path.join(uploadsRoot, "articles");
 
 const ALLOWED_MIME = new Set([
   "image/jpeg",
@@ -38,26 +35,14 @@ export const IMAGE_SIZE_GUIDANCE = {
   },
 };
 
-fs.mkdirSync(articleUploadsDir, { recursive: true });
+const FILENAME_PATTERN = /^[a-z0-9-]+\.(jpg|png|webp|gif)$/;
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, articleUploadsDir);
-  },
-  filename: (_req, file, cb) => {
-    const ext = extFromMime(file.mimetype) || path.extname(file.originalname).toLowerCase() || ".jpg";
-    const safeExt = [".jpg", ".jpeg", ".png", ".webp", ".gif"].includes(ext)
-      ? ext === ".jpeg"
-        ? ".jpg"
-        : ext
-      : ".jpg";
-    const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    cb(null, `${stamp}${safeExt}`);
-  },
-});
-
+/**
+ * Stored in Postgres rather than on local disk: the host filesystem is wiped
+ * on every deploy/restart, which silently broke previously uploaded images.
+ */
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_IMAGE_BYTES, files: 1 },
   fileFilter: (_req, file, cb) => {
     if (!ALLOWED_MIME.has(file.mimetype)) {
@@ -73,10 +58,8 @@ const upload = multer({
   },
 });
 
-function extFromMime(mime: string): string | null {
+function extFromMime(mime: string): string {
   switch (mime) {
-    case "image/jpeg":
-      return ".jpg";
     case "image/png":
       return ".png";
     case "image/webp":
@@ -84,14 +67,34 @@ function extFromMime(mime: string): string | null {
     case "image/gif":
       return ".gif";
     default:
-      return null;
+      return ".jpg";
   }
 }
 
-function publicUrlFor(req: { protocol: string; get: (h: string) => string | undefined }, filename: string): string {
-  const base =
-    env.publicAssetBaseUrl.replace(/\/$/, "") ||
-    `${req.protocol}://${req.get("host")}`;
+/** Detect the real image type from magic bytes; the client-sent MIME is untrusted. */
+function sniffImageMime(buf: Buffer): string | null {
+  if (buf.length < 12) return null;
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "image/jpeg";
+  if (buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+    return "image/png";
+  }
+  if (buf.subarray(0, 4).toString("ascii") === "GIF8") return "image/gif";
+  if (
+    buf.subarray(0, 4).toString("ascii") === "RIFF" &&
+    buf.subarray(8, 12).toString("ascii") === "WEBP"
+  ) {
+    return "image/webp";
+  }
+  return null;
+}
+
+function publicUrlFor(
+  req: { protocol: string; get: (h: string) => string | undefined },
+  filename: string,
+): string {
+  const configured = env.publicAssetBaseUrl.replace(/\/$/, "");
+  const protocol = env.nodeEnv === "production" ? "https" : req.protocol;
+  const base = configured || `${protocol}://${req.get("host")}`;
   return `${base}/uploads/articles/${filename}`;
 }
 
@@ -134,19 +137,69 @@ uploadsRouter.post(
       next();
     });
   },
-  (req, res) => {
-    if (!req.file) {
-      res.status(400).json({ message: "No image file received" });
+  async (req, res, next) => {
+    try {
+      if (!req.file) {
+        res.status(400).json({ message: "No image file received" });
+        return;
+      }
+
+      const mime = sniffImageMime(req.file.buffer);
+      if (!mime) {
+        res.status(400).json({
+          message: "File is not a valid JPEG, PNG, WebP, or GIF image",
+        });
+        return;
+      }
+
+      const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      const filename = `${stamp}${extFromMime(mime)}`;
+
+      await pool.query(
+        `INSERT INTO uploaded_images (filename, mime, size_bytes, data, uploaded_by)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [filename, mime, req.file.size, req.file.buffer, req.user?.id ?? null],
+      );
+
+      res.status(201).json({
+        url: publicUrlFor(req, filename),
+        filename,
+        mime,
+        size: req.file.size,
+        guidance: IMAGE_SIZE_GUIDANCE,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+/** Public image delivery, mounted at `/uploads/articles`. Filenames are unique, so cache forever. */
+export const uploadedImagesRouter = Router();
+
+uploadedImagesRouter.get("/:filename", async (req, res, next) => {
+  try {
+    const filename = path.basename(req.params.filename).toLowerCase();
+    if (!FILENAME_PATTERN.test(filename)) {
+      res.status(404).end();
       return;
     }
 
-    const url = publicUrlFor(req, req.file.filename);
-    res.status(201).json({
-      url,
-      filename: req.file.filename,
-      mime: req.file.mimetype,
-      size: req.file.size,
-      guidance: IMAGE_SIZE_GUIDANCE,
-    });
-  },
-);
+    const result = await pool.query<{ mime: string; data: Buffer }>(
+      `SELECT mime, data FROM uploaded_images WHERE filename = $1 LIMIT 1`,
+      [filename],
+    );
+    const row = result.rows[0];
+    if (!row) {
+      res.status(404).end();
+      return;
+    }
+
+    res.setHeader("Content-Type", row.mime);
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    res.setHeader("Content-Length", String(row.data.length));
+    res.end(row.data);
+  } catch (err) {
+    next(err);
+  }
+});

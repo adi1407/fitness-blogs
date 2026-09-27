@@ -287,6 +287,15 @@ CREATE TABLE IF NOT EXISTS knowledge_pages (
 
 CREATE INDEX IF NOT EXISTS idx_knowledge_pages_section
   ON knowledge_pages(section, status, sort_order);
+
+CREATE TABLE IF NOT EXISTS uploaded_images (
+  filename TEXT PRIMARY KEY,
+  mime TEXT NOT NULL,
+  size_bytes INT NOT NULL,
+  data BYTEA NOT NULL,
+  uploaded_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 `;
 
 const SEED_USERS = [
