@@ -253,8 +253,8 @@ export function BlogArticleView({
 
         <BlogBreadcrumbs items={crumbItems} />
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-          <div className="fk-panel">
+        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <div className="fk-panel min-w-0">
             {article.featuredImage ? (
               <figure className="border-b border-border bg-muted">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -285,7 +285,7 @@ export function BlogArticleView({
                   ))}
                 </ul>
 
-                <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                <h1 className="mt-3 text-2xl font-semibold tracking-tight break-words text-foreground sm:text-3xl lg:text-4xl">
                   {article.title || "Untitled"}
                 </h1>
                 {article.excerpt ? (
@@ -454,7 +454,7 @@ export function BlogArticleView({
             </div>
           </div>
 
-          <aside className="hidden space-y-6 lg:sticky lg:top-24 lg:block">
+          <aside className="hidden min-w-0 space-y-6 lg:sticky lg:top-24 lg:block">
             <ArticleToc items={toc} />
             <KeepRelatedStack
               articles={railRelated}

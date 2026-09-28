@@ -296,7 +296,16 @@
     Prefer this class over long Tailwind arbitrary selectors in pages.
   */
   .article-body {
-    @apply space-y-4 overflow-x-auto text-base leading-relaxed text-foreground;
+    @apply space-y-4 text-base leading-relaxed text-foreground;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .article-body video,
+  .article-body iframe,
+  .article-body embed {
+    max-width: 100%;
+    height: auto;
   }
 
   .article-body a {
@@ -349,7 +358,8 @@
   }
 
   .article-body pre {
-    @apply overflow-x-auto rounded-xl border border-border bg-muted p-4 text-sm;
+    @apply max-w-full overflow-x-auto rounded-xl border border-border bg-muted p-4 text-sm;
+    overflow-wrap: normal;
   }
 
   .article-body pre code {
@@ -375,6 +385,17 @@
 
   .article-body table {
     @apply my-4 w-full border-collapse text-sm;
+    overflow-wrap: normal;
+  }
+
+  /* Phones: only the table scrolls sideways, never the page. */
+  @media (max-width: 639px) {
+    .article-body table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 
   .article-body th {

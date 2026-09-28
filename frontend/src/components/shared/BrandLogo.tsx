@@ -13,6 +13,8 @@ type BrandLogoProps = {
    */
   variant?: "full" | "mark" | "lockup";
   size?: "sm" | "md" | "lg";
+  /** `dark` for dark backgrounds — the logo asset is a black mark. */
+  tone?: "light" | "dark";
 };
 
 const FULL_SIZE = {
@@ -29,7 +31,7 @@ const MARK_SIZE = {
 
 const TEXT_SIZE = {
   sm: "text-sm",
-  md: "text-sm sm:text-base",
+  md: "text-base",
   lg: "text-lg",
 } as const;
 
@@ -38,7 +40,24 @@ export function BrandLogo({
   className,
   variant = "full",
   size = "md",
+  tone = "light",
 }: BrandLogoProps) {
+  const dark = tone === "dark";
+  const tileClass = cn(
+    "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1",
+    MARK_SIZE[size],
+  );
+  const mark = (
+    <span className={tileClass}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={BRAND_LOGO_SRC}
+        alt=""
+        className="h-full w-full object-contain"
+      />
+    </span>
+  );
+
   let inner: ReactNode;
 
   if (variant === "full") {
@@ -49,45 +68,21 @@ export function BrandLogo({
         alt={BRAND_NAME}
         className={cn(
           "rounded-md object-contain object-left",
+          dark && "bg-white p-1",
           FULL_SIZE[size],
         )}
       />
     );
   } else if (variant === "mark") {
-    inner = (
-      <span
-        className={cn(
-          "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#0A0A0A]",
-          MARK_SIZE[size],
-        )}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={BRAND_LOGO_SRC}
-          alt=""
-          className="h-full w-full object-contain"
-        />
-      </span>
-    );
+    inner = mark;
   } else {
     inner = (
       <>
+        {mark}
         <span
           className={cn(
-            "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#0A0A0A]",
-            MARK_SIZE[size],
-          )}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={BRAND_LOGO_SRC}
-            alt=""
-            className="h-full w-full object-contain"
-          />
-        </span>
-        <span
-          className={cn(
-            "font-semibold tracking-tight text-foreground lowercase",
+            "font-semibold tracking-tight lowercase",
+            dark ? "text-white" : "text-foreground",
             TEXT_SIZE[size],
           )}
         >
