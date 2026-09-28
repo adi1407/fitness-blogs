@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
@@ -25,8 +25,7 @@ import {
   lbToKg,
   type ProteinGoalId,
 } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
 import { cn } from "@/lib/utils";
 
 export function ProteinCalculatorForm() {
@@ -59,41 +58,21 @@ function ProteinInner({
   const [weight, setWeight] = useState<NumField>(numField(70));
   const [unit, setUnit] = useState<"kg" | "lb">("kg");
   const [goal, setGoal] = useState<ProteinGoalId>("muscle");
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
-
-  useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
-    }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.weightKg) {
-      setWeight(
-        prefs.weightUnit === "lb"
-          ? roundNumField(kgToLb(prefs.weightKg))
-          : roundNumField(prefs.weightKg),
-      );
-      setUnit(prefs.weightUnit ?? "kg");
-    }
-    if (prefs.proteinGoal) setGoal(prefs.proteinGoal);
-    setPrefsReady(true);
-  }, [memberId]);
 
   const weightN = parseNum(weight);
   const weightKg =
     weightN == null ? null : unit === "kg" ? weightN : lbToKg(weightN);
-  const inputsValid = weightKg != null && weightKg > 0;
 
-  const result = useMemo(() => {
-    if (!inputsValid || weightKg == null) return null;
+  const computed = useMemo(() => {
+    if (weightKg == null || weightKg <= 0) return null;
     return calcProtein(weightKg, goal);
-  }, [inputsValid, weightKg, goal]);
+  }, [weightKg, goal]);
+
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    [memberId, weight, unit, goal].join("|"),
+  );
 
   return (
     <CalcWorkspace
@@ -168,16 +147,9 @@ function ProteinInner({
         isSignedIn ? (
           <Button
             type="button"
-            disabled={!prefsReady || !inputsValid || !result}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid || weightKg == null || !result) return;
-              runCalculate();
-              saveCalcPrefs(memberId, {
-                weightKg,
-                weightUnit: unit,
-                proteinGoal: goal,
-                proteinPerKg: result.factor,
-              });
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate protein
@@ -187,12 +159,13 @@ function ProteinInner({
       results={
         <>
           <ResultHero
-            show={revealed && result != null}
+            key={runId}
+            show={result != null}
             label="Estimated daily protein"
             value={result?.grams ?? ""}
             unit="g/day"
           />
-          {revealed && result ? (
+          {result ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Practical range ~{result.low}–{result.high} g based on ~
               {result.kg.toFixed(1)} kg. Educational estimate only.

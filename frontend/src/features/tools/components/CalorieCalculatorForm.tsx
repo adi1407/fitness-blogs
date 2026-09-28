@@ -14,12 +14,19 @@ import {
 import {
   numField,
   parseNum,
+  roundNumField,
   setNumField,
   type NumField,
 } from "@/features/tools/lib/calcFields";
 import { calcCalorieTarget } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import {
+  handoffHref,
+  handoffNumber,
+  takeHandoff,
+} from "@/features/tools/lib/calcHandoff";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
+
+type Goal = "loss" | "maintain" | "gain";
 
 export function CalorieCalculatorForm() {
   return (
@@ -49,33 +56,31 @@ function CalorieInner({
   requestSignIn: () => void;
 }) {
   const [tdee, setTdee] = useState<NumField>(numField(2200));
-  const [goal, setGoal] = useState<"loss" | "maintain" | "gain">("loss");
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
+  const [goal, setGoal] = useState<Goal>("loss");
 
+  /* eslint-disable react-hooks/set-state-in-effect -- the URL is only readable after hydration */
   useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
+    const h = takeHandoff(["tdee", "goal"] as const);
+    const t = handoffNumber(h.tdee, 1000, 6000);
+    if (t != null) setTdee(roundNumField(t));
+    if (h.goal === "loss" || h.goal === "maintain" || h.goal === "gain") {
+      setGoal(h.goal);
     }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.tdee) setTdee(numField(prefs.tdee));
-    else if (prefs.calorieTarget) setTdee(numField(prefs.calorieTarget));
-    setPrefsReady(true);
-  }, [memberId]);
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const tdeeN = parseNum(tdee);
-  const inputsValid = tdeeN != null && tdeeN > 0;
 
-  const result = useMemo(() => {
-    if (!inputsValid || tdeeN == null) return null;
-    return calcCalorieTarget(tdeeN, goal);
-  }, [inputsValid, tdeeN, goal]);
+  const computed = useMemo(() => {
+    if (tdeeN == null || tdeeN <= 0) return null;
+    return { ...calcCalorieTarget(tdeeN, goal), goal };
+  }, [tdeeN, goal]);
+
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    [memberId, tdee, goal].join("|"),
+  );
 
   return (
     <CalcWorkspace
@@ -96,7 +101,7 @@ function CalorieInner({
               onChange={(e) => setNumField(e.target.value, setTdee)}
             />
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Prefills from your last TDEE when signed in.{" "}
+              Don&apos;t know it?{" "}
               <Link href="/tools/tdee-calculator" className="fk-link">
                 Estimate TDEE
               </Link>
@@ -122,14 +127,9 @@ function CalorieInner({
         isSignedIn ? (
           <Button
             type="button"
-            disabled={!prefsReady || !inputsValid || !result}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid || tdeeN == null || !result) return;
-              runCalculate();
-              saveCalcPrefs(memberId, {
-                tdee: tdeeN,
-                calorieTarget: result.target,
-              });
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate calories
@@ -139,12 +139,13 @@ function CalorieInner({
       results={
         <>
           <ResultHero
-            show={revealed && result != null}
+            key={runId}
+            show={result != null}
             label="Daily calorie target"
             value={result?.target ?? ""}
             unit="kcal"
           />
-          {revealed && result && goal === "loss" ? (
+          {result && result.goal === "loss" ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Rough weekly deficit ≈ {result.weeklyDeficit} kcal (not a fat-loss
               guarantee).
@@ -158,16 +159,14 @@ function CalorieInner({
             Estimate TDEE first
           </Link>
           <Link
-            href="/tools/macro-calculator"
+            href={
+              result
+                ? handoffHref("/tools/macro-calculator", {
+                    calories: result.target,
+                  })
+                : "/tools/macro-calculator"
+            }
             className="fk-link font-semibold"
-            onClick={() => {
-              if (tdeeN != null && result) {
-                saveCalcPrefs(memberId, {
-                  tdee: tdeeN,
-                  calorieTarget: result.target,
-                });
-              }
-            }}
           >
             Split into macros
           </Link>

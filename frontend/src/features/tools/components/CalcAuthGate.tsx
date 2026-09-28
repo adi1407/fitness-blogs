@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
 import { EducationalCalcGate } from "@/features/tools/components/EducationalCalcGate";
+import { clearLegacyCalcPrefs } from "@/features/tools/lib/calcHandoff";
 
 type CalcAuthGateProps = {
   toolName: string;
@@ -36,6 +37,10 @@ export function CalcAuthGate({
   const isSignedIn = Boolean(member);
 
   const requestSignIn = useCallback(() => setSignInOpen(true), []);
+
+  useEffect(() => {
+    clearLegacyCalcPrefs();
+  }, []);
 
   return (
     <EducationalCalcGate toolName={toolName} tool={tool}>

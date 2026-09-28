@@ -51,7 +51,7 @@ export function CalcWorkspace({
           </div>
           {signedInAs ? (
             <p className="rounded-full border border-border bg-white px-3 py-1 text-xs font-medium text-muted-foreground">
-              Signed in as {signedInAs} · Prefs saved
+              Signed in as {signedInAs}
             </p>
           ) : (
             <p className="rounded-full border border-border bg-white/80 px-3 py-1 text-xs font-medium text-muted-foreground">
@@ -185,6 +185,8 @@ export function CalcInput({
 }: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
+      autoComplete="off"
+      inputMode="decimal"
       {...props}
       className={cn(
         "w-full rounded-xl border border-border bg-white px-3 py-2.5 outline-none transition focus:border-primary focus:ring-2 focus:ring-accent/30",

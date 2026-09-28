@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
@@ -25,8 +25,7 @@ import {
   kgToLb,
   lbToKg,
 } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
 
 export function BmiCalculatorForm() {
   return (
@@ -61,37 +60,6 @@ function BmiInner({
   const [heightCm, setHeightCm] = useState<NumField>(numField(170));
   const [ft, setFt] = useState<NumField>(numField(5));
   const [inches, setInches] = useState<NumField>(numField(7));
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
-
-  useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
-    }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.weightKg) {
-      setWeight(
-        prefs.weightUnit === "lb"
-          ? roundNumField(kgToLb(prefs.weightKg))
-          : roundNumField(prefs.weightKg),
-      );
-      setWeightUnit(prefs.weightUnit ?? "kg");
-    }
-    if (prefs.heightCm) {
-      setHeightCm(numField(prefs.heightCm));
-      const fi = cmToFtIn(prefs.heightCm);
-      setFt(numField(fi.ft));
-      setInches(numField(fi.inches));
-      setHeightUnit(prefs.heightUnit ?? "cm");
-    }
-    setPrefsReady(true);
-  }, [memberId]);
 
   const weightN = parseNum(weight);
   const heightCmN = parseNum(heightCm);
@@ -107,12 +75,18 @@ function BmiInner({
         ? null
         : ftInToCm(ftN, inN);
 
-  const inputsValid = weightKg != null && height != null && height > 0;
-
-  const result = useMemo(() => {
-    if (!inputsValid || weightKg == null || height == null) return null;
+  const computed = useMemo(() => {
+    if (weightKg == null || weightKg <= 0 || height == null || height <= 0) {
+      return null;
+    }
     return calcBmi(weightKg, height);
-  }, [inputsValid, weightKg, height]);
+  }, [weightKg, height]);
+
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    [memberId, weight, weightUnit, heightUnit, heightCm, ft, inches].join("|"),
+  );
 
   return (
     <CalcWorkspace
@@ -203,16 +177,9 @@ function BmiInner({
         isSignedIn ? (
           <Button
             type="button"
-            disabled={!prefsReady || !inputsValid}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid || weightKg == null || height == null) return;
-              runCalculate();
-              saveCalcPrefs(memberId, {
-                weightKg,
-                heightCm: height,
-                weightUnit,
-                heightUnit,
-              });
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate BMI
@@ -222,11 +189,12 @@ function BmiInner({
       results={
         <>
           <ResultHero
-            show={revealed && result != null}
+            key={runId}
+            show={result != null}
             label="BMI"
             value={result?.bmi ?? ""}
           />
-          {revealed && result ? (
+          {result ? (
             <div className="mt-4 space-y-3">
               <span className="inline-flex rounded-full border border-border bg-white px-3 py-1 text-sm font-medium text-foreground">
                 {result.categoryLabel}

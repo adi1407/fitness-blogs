@@ -29,8 +29,12 @@ import {
   type ActivityId,
   type Sex,
 } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import {
+  handoffHref,
+  handoffNumber,
+  takeHandoff,
+} from "@/features/tools/lib/calcHandoff";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
 import { cn } from "@/lib/utils";
 
 export function TdeeCalculatorForm() {
@@ -69,40 +73,19 @@ function TdeeInner({
   const [ft, setFt] = useState<NumField>(numField(5));
   const [inches, setInches] = useState<NumField>(numField(7));
   const [activity, setActivity] = useState<ActivityId>("moderate");
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
 
+  /* eslint-disable react-hooks/set-state-in-effect -- the URL is only readable after hydration */
   useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
-    }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.sex) setSex(prefs.sex);
-    if (prefs.age) setAge(numField(prefs.age));
-    if (prefs.weightKg) {
-      setWeight(
-        prefs.weightUnit === "lb"
-          ? roundNumField(kgToLb(prefs.weightKg))
-          : roundNumField(prefs.weightKg),
-      );
-      setWeightUnit(prefs.weightUnit ?? "kg");
-    }
-    if (prefs.heightCm) {
-      setHeightCm(numField(prefs.heightCm));
-      const fi = cmToFtIn(prefs.heightCm);
-      setFt(numField(fi.ft));
-      setInches(numField(fi.inches));
-      setHeightUnit(prefs.heightUnit ?? "cm");
-    }
-    if (prefs.activity) setActivity(prefs.activity);
-    setPrefsReady(true);
-  }, [memberId]);
+    const h = takeHandoff(["sex", "age", "kg", "cm"] as const);
+    if (h.sex === "male" || h.sex === "female") setSex(h.sex);
+    const a = handoffNumber(h.age, 15, 100);
+    if (a != null) setAge(numField(a));
+    const kg = handoffNumber(h.kg, 30, 400);
+    if (kg != null) setWeight(roundNumField(kg));
+    const cm = handoffNumber(h.cm, 120, 230);
+    if (cm != null) setHeightCm(roundNumField(cm));
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const ageN = parseNum(age);
   const weightN = parseNum(weight);
@@ -120,29 +103,37 @@ function TdeeInner({
         : ftInToCm(ftN, inN);
 
   const inputsValid =
-    ageN != null && weightKg != null && height != null && height > 0;
+    ageN != null &&
+    ageN > 0 &&
+    weightKg != null &&
+    weightKg > 0 &&
+    height != null &&
+    height > 0;
 
-  const result = useMemo(() => {
+  const computed = useMemo(() => {
     if (!inputsValid || weightKg == null || height == null || ageN == null) {
       return null;
     }
     return calcTdee(sex, weightKg, height, ageN, activity);
   }, [inputsValid, sex, weightKg, height, ageN, activity]);
 
-  const persist = (extra?: Parameters<typeof saveCalcPrefs>[1]) => {
-    if (weightKg == null || height == null || ageN == null || !result) return;
-    saveCalcPrefs(memberId, {
-      sex,
-      age: ageN,
-      weightKg,
-      heightCm: height,
-      activity,
-      tdee: result.tdee,
-      weightUnit,
-      heightUnit,
-      ...extra,
-    });
-  };
+  const inputsKey = [
+    memberId,
+    sex,
+    age,
+    weight,
+    weightUnit,
+    heightUnit,
+    heightCm,
+    ft,
+    inches,
+    activity,
+  ].join("|");
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    inputsKey,
+  );
 
   return (
     <CalcWorkspace
@@ -298,11 +289,9 @@ function TdeeInner({
           <Button
             type="button"
             className="w-full sm:w-auto"
-            disabled={!prefsReady || !inputsValid}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid || !result) return;
-              runCalculate();
-              persist();
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate TDEE
@@ -312,12 +301,13 @@ function TdeeInner({
       results={
         <>
           <ResultHero
-            show={revealed && result != null}
+            key={runId}
+            show={result != null}
             label="Estimated TDEE"
             value={result?.tdee ?? ""}
             unit="kcal/day"
           />
-          {revealed && result ? (
+          {result ? (
             <div className="mt-4 space-y-3">
               <p className="text-sm text-muted-foreground">
                 BMR (resting) ≈ {result.bmr} kcal/day
@@ -326,29 +316,26 @@ function TdeeInner({
                 <ResultChip
                   label="Fat loss start"
                   value={`~${result.cut} kcal`}
-                  href="/tools/calorie-calculator"
-                  onClick={() =>
-                    persist({ tdee: result.tdee, calorieTarget: result.cut })
-                  }
+                  href={handoffHref("/tools/calorie-calculator", {
+                    tdee: result.tdee,
+                    goal: "loss",
+                  })}
                 />
                 <ResultChip
                   label="Maintain"
                   value={`~${result.maintain} kcal`}
-                  href="/tools/macro-calculator"
-                  onClick={() =>
-                    persist({
-                      tdee: result.tdee,
-                      calorieTarget: result.maintain,
-                    })
-                  }
+                  href={handoffHref("/tools/macro-calculator", {
+                    calories: result.maintain,
+                    kg: weightKg != null ? Math.round(weightKg) : null,
+                  })}
                 />
                 <ResultChip
                   label="Surplus start"
                   value={`~${result.bulk} kcal`}
-                  href="/tools/calorie-calculator"
-                  onClick={() =>
-                    persist({ tdee: result.tdee, calorieTarget: result.bulk })
-                  }
+                  href={handoffHref("/tools/calorie-calculator", {
+                    tdee: result.tdee,
+                    goal: "gain",
+                  })}
                 />
               </div>
             </div>
@@ -361,13 +348,15 @@ function TdeeInner({
             Weight loss guide
           </Link>
           <Link
-            href="/tools/macro-calculator"
+            href={
+              result
+                ? handoffHref("/tools/macro-calculator", {
+                    calories: result.tdee,
+                    kg: weightKg != null ? Math.round(weightKg) : null,
+                  })
+                : "/tools/macro-calculator"
+            }
             className="fk-link font-semibold"
-            onClick={() => {
-              if (result) {
-                persist({ tdee: result.tdee, calorieTarget: result.tdee });
-              }
-            }}
           >
             Macro calculator
           </Link>

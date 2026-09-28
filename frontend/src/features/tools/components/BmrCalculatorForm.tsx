@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
@@ -26,8 +26,8 @@ import {
   mifflinBmr,
   type Sex,
 } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import { handoffHref } from "@/features/tools/lib/calcHandoff";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
 
 export function BmrCalculatorForm() {
   return (
@@ -64,39 +64,6 @@ function BmrInner({
   const [heightCm, setHeightCm] = useState<NumField>(numField(170));
   const [ft, setFt] = useState<NumField>(numField(5));
   const [inches, setInches] = useState<NumField>(numField(7));
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
-
-  useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
-    }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.sex) setSex(prefs.sex);
-    if (prefs.age) setAge(numField(prefs.age));
-    if (prefs.weightKg) {
-      setWeight(
-        prefs.weightUnit === "lb"
-          ? roundNumField(kgToLb(prefs.weightKg))
-          : roundNumField(prefs.weightKg),
-      );
-      setWeightUnit(prefs.weightUnit ?? "kg");
-    }
-    if (prefs.heightCm) {
-      setHeightCm(numField(prefs.heightCm));
-      const fi = cmToFtIn(prefs.heightCm);
-      setFt(numField(fi.ft));
-      setInches(numField(fi.inches));
-      setHeightUnit(prefs.heightUnit ?? "cm");
-    }
-    setPrefsReady(true);
-  }, [memberId]);
 
   const ageN = parseNum(age);
   const weightN = parseNum(weight);
@@ -113,27 +80,31 @@ function BmrInner({
         ? null
         : ftInToCm(ftN, inN);
 
-  const inputsValid =
-    ageN != null && weightKg != null && height != null && height > 0;
-
-  const bmr = useMemo(() => {
-    if (!inputsValid || weightKg == null || height == null || ageN == null) {
+  const computed = useMemo(() => {
+    if (
+      ageN == null ||
+      ageN <= 0 ||
+      weightKg == null ||
+      weightKg <= 0 ||
+      height == null ||
+      height <= 0
+    ) {
       return null;
     }
-    return Math.round(mifflinBmr(sex, weightKg, height, ageN));
-  }, [inputsValid, sex, weightKg, height, ageN]);
-
-  const persist = () => {
-    if (weightKg == null || height == null || ageN == null) return;
-    saveCalcPrefs(memberId, {
+    return {
+      bmr: Math.round(mifflinBmr(sex, weightKg, height, ageN)),
       sex,
       age: ageN,
-      weightKg,
-      heightCm: height,
-      weightUnit,
-      heightUnit,
-    });
-  };
+      kg: Math.round(weightKg),
+      cm: Math.round(height),
+    };
+  }, [sex, weightKg, height, ageN]);
+
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    [memberId, sex, age, weight, weightUnit, heightUnit, heightCm, ft, inches].join("|"),
+  );
 
   return (
     <CalcWorkspace
@@ -243,11 +214,9 @@ function BmrInner({
         isSignedIn ? (
           <Button
             type="button"
-            disabled={!prefsReady || !inputsValid}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid) return;
-              runCalculate();
-              persist();
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate BMR
@@ -257,12 +226,13 @@ function BmrInner({
       results={
         <>
           <ResultHero
-            show={revealed && bmr != null}
+            key={runId}
+            show={result != null}
             label="Estimated BMR"
-            value={bmr ?? ""}
+            value={result?.bmr ?? ""}
             unit="kcal/day"
           />
-          {revealed && bmr != null ? (
+          {result ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Calories before activity. Add training and daily movement in the
               TDEE calculator for a maintenance estimate.
@@ -272,9 +242,17 @@ function BmrInner({
       }
       footer={
         <Link
-          href="/tools/tdee-calculator"
+          href={
+            result
+              ? handoffHref("/tools/tdee-calculator", {
+                  sex: result.sex,
+                  age: result.age,
+                  kg: result.kg,
+                  cm: result.cm,
+                })
+              : "/tools/tdee-calculator"
+          }
           className="fk-link text-sm font-semibold"
-          onClick={persist}
         >
           Add activity → TDEE calculator
         </Link>

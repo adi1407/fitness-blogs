@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
 import {
@@ -20,8 +21,8 @@ import {
   type NumField,
 } from "@/features/tools/lib/calcFields";
 import { calcMacros, kgToLb, lbToKg } from "@/features/tools/lib/calcMath";
-import { loadCalcPrefs, saveCalcPrefs } from "@/features/tools/lib/calcPrefs";
-import { useCalcReveal } from "@/features/tools/hooks/useCalcReveal";
+import { handoffNumber, takeHandoff } from "@/features/tools/lib/calcHandoff";
+import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
 import { cn } from "@/lib/utils";
 
 const PROTEIN_OPTIONS = [
@@ -58,50 +59,39 @@ function MacroInner({
   requestAck: () => void;
   requestSignIn: () => void;
 }) {
+  const reduce = useReducedMotion();
   const [calories, setCalories] = useState<NumField>(numField(2000));
   const [weight, setWeight] = useState<NumField>(numField(70));
   const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
-  const [proteinPerKg, setProteinPerKg] = useState(1.8);
-  const [prefsReady, setPrefsReady] = useState(!memberId);
-  const { revealed, runCalculate } = useCalcReveal(
-    acknowledged,
-    requestAck,
-    memberId,
-  );
+  const [proteinPerKg, setProteinPerKg] = useState<number>(1.8);
 
+  /* eslint-disable react-hooks/set-state-in-effect -- the URL is only readable after hydration */
   useEffect(() => {
-    if (!memberId) {
-      setPrefsReady(true);
-      return;
-    }
-    setPrefsReady(false);
-    const prefs = loadCalcPrefs(memberId);
-    if (prefs.calorieTarget) setCalories(numField(prefs.calorieTarget));
-    else if (prefs.tdee) setCalories(numField(prefs.tdee));
-    if (prefs.weightKg) {
-      setWeight(
-        prefs.weightUnit === "lb"
-          ? roundNumField(kgToLb(prefs.weightKg))
-          : roundNumField(prefs.weightKg),
-      );
-      setWeightUnit(prefs.weightUnit ?? "kg");
-    }
-    if (prefs.proteinPerKg) setProteinPerKg(prefs.proteinPerKg);
-    setPrefsReady(true);
-  }, [memberId]);
+    const h = takeHandoff(["calories", "kg"] as const);
+    const c = handoffNumber(h.calories, 1000, 6000);
+    if (c != null) setCalories(roundNumField(c));
+    const kg = handoffNumber(h.kg, 30, 400);
+    if (kg != null) setWeight(roundNumField(kg));
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const caloriesN = parseNum(calories);
   const weightN = parseNum(weight);
   const weightKg =
     weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
 
-  const inputsValid =
-    caloriesN != null && caloriesN > 0 && weightKg != null && weightKg > 0;
-
-  const result = useMemo(() => {
-    if (!inputsValid || caloriesN == null || weightKg == null) return null;
+  const computed = useMemo(() => {
+    if (caloriesN == null || caloriesN <= 0 || weightKg == null || weightKg <= 0) {
+      return null;
+    }
     return calcMacros(caloriesN, weightKg, proteinPerKg);
-  }, [inputsValid, caloriesN, weightKg, proteinPerKg]);
+  }, [caloriesN, weightKg, proteinPerKg]);
+
+  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
+    acknowledged,
+    requestAck,
+    [memberId, calories, weight, weightUnit, proteinPerKg].join("|"),
+  );
 
   return (
     <CalcWorkspace
@@ -122,7 +112,11 @@ function MacroInner({
               onChange={(e) => setNumField(e.target.value, setCalories)}
             />
             <p className="mt-1.5 text-xs text-muted-foreground">
-              Prefills from your last calorie or TDEE target when signed in.
+              Use your target from the{" "}
+              <Link href="/tools/calorie-calculator" className="fk-link">
+                calorie calculator
+              </Link>
+              .
             </p>
           </FieldLabel>
           <FieldLabel label="Body weight">
@@ -188,16 +182,9 @@ function MacroInner({
         isSignedIn ? (
           <Button
             type="button"
-            disabled={!prefsReady || !inputsValid}
+            disabled={!computed}
             onClick={() => {
-              if (!inputsValid || caloriesN == null || weightKg == null) return;
-              runCalculate();
-              saveCalcPrefs(memberId, {
-                calorieTarget: caloriesN,
-                weightKg,
-                proteinPerKg,
-                weightUnit,
-              });
+              if (computed) runCalculate(computed);
             }}
           >
             Calculate macros
@@ -205,43 +192,38 @@ function MacroInner({
         ) : null
       }
       results={
-        revealed && result ? (
-          <>
+        result ? (
+          <motion.div
+            key={runId}
+            initial={reduce ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+          >
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl bg-brand-50 p-4">
-                <p className="text-xs text-muted-foreground">Protein</p>
-                <p className="mt-1 text-2xl font-semibold">
-                  {result.protein}
-                  <span className="ml-1 text-sm font-medium text-muted-foreground">
-                    g
-                  </span>
-                </p>
-              </div>
-              <div className="rounded-xl bg-brand-50 p-4">
-                <p className="text-xs text-muted-foreground">Carbs</p>
-                <p className="mt-1 text-2xl font-semibold">
-                  {result.carbs}
-                  <span className="ml-1 text-sm font-medium text-muted-foreground">
-                    g
-                  </span>
-                </p>
-              </div>
-              <div className="rounded-xl bg-brand-50 p-4">
-                <p className="text-xs text-muted-foreground">Fat</p>
-                <p className="mt-1 text-2xl font-semibold">
-                  {result.fat}
-                  <span className="ml-1 text-sm font-medium text-muted-foreground">
-                    g
-                  </span>
-                </p>
-              </div>
+              {(
+                [
+                  ["Protein", result.protein],
+                  ["Carbs", result.carbs],
+                  ["Fat", result.fat],
+                ] as const
+              ).map(([label, grams]) => (
+                <div key={label} className="rounded-xl bg-brand-50 p-4">
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <p className="mt-1 text-2xl font-semibold">
+                    {grams}
+                    <span className="ml-1 text-sm font-medium text-muted-foreground">
+                      g
+                    </span>
+                  </p>
+                </div>
+              ))}
             </div>
             <MacroBar
               proteinPct={result.pct.protein}
               carbsPct={result.pct.carbs}
               fatPct={result.pct.fat}
             />
-          </>
+          </motion.div>
         ) : (
           <ResultHero show={false} label="" value="" />
         )
