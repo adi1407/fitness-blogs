@@ -45,6 +45,11 @@ const envSchema = z.object({
   GOOGLE_REDIRECT_URI: z
     .string()
     .default("http://localhost:4000/api/v1/public/auth/google/callback"),
+  /** Cloudinary image storage. Either the three parts or `cloudinary://KEY:SECRET@CLOUD`. */
+  CLOUDINARY_CLOUD_NAME: z.string().default(""),
+  CLOUDINARY_API_KEY: z.string().default(""),
+  CLOUDINARY_API_SECRET: z.string().default(""),
+  CLOUDINARY_URL: z.string().default(""),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -52,6 +57,26 @@ const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {
   console.error("[backend] invalid environment", parsed.error.flatten().fieldErrors);
   throw new Error("Invalid environment configuration");
+}
+
+function resolveCloudinary(data: z.infer<typeof envSchema>) {
+  let cloudName = data.CLOUDINARY_CLOUD_NAME.trim();
+  let apiKey = data.CLOUDINARY_API_KEY.trim();
+  let apiSecret = data.CLOUDINARY_API_SECRET.trim();
+  const url = data.CLOUDINARY_URL.trim();
+  if (url) {
+    try {
+      const u = new URL(url);
+      if (u.protocol === "cloudinary:") {
+        cloudName ||= u.hostname;
+        apiKey ||= decodeURIComponent(u.username);
+        apiSecret ||= decodeURIComponent(u.password);
+      }
+    } catch {
+      console.warn("[backend] CLOUDINARY_URL is not a valid cloudinary:// URL");
+    }
+  }
+  return { cloudName, apiKey, apiSecret };
 }
 
 const defaultRedirect =
@@ -75,4 +100,5 @@ export const env = {
     parsed.data.GOOGLE_REDIRECT_URI,
     defaultRedirect,
   ),
+  cloudinary: resolveCloudinary(parsed.data),
 };

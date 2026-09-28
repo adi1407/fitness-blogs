@@ -5,6 +5,7 @@ import { authenticate, authorize } from "../middleware/auth";
 import { env } from "../config/env";
 import { pool } from "../db/pool";
 import { STAFF_ROLES } from "../utils/roles";
+import { isCloudinaryConfigured, uploadImageBuffer } from "../services/cloudinary";
 
 const ALLOWED_MIME = new Set([
   "image/jpeg",
@@ -38,8 +39,8 @@ export const IMAGE_SIZE_GUIDANCE = {
 const FILENAME_PATTERN = /^[a-z0-9-]+\.(jpg|png|webp|gif)$/;
 
 /**
- * Stored in Postgres rather than on local disk: the host filesystem is wiped
- * on every deploy/restart, which silently broke previously uploaded images.
+ * Buffered in memory, then stored in Cloudinary (or Postgres when Cloudinary
+ * is not configured). Never local disk: the host filesystem is wiped on deploy.
  */
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -155,14 +156,28 @@ uploadsRouter.post(
       const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
       const filename = `${stamp}${extFromMime(mime)}`;
 
-      await pool.query(
-        `INSERT INTO uploaded_images (filename, mime, size_bytes, data, uploaded_by)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [filename, mime, req.file.size, req.file.buffer, req.user?.id ?? null],
-      );
+      let url: string;
+      if (isCloudinaryConfigured()) {
+        try {
+          url = await uploadImageBuffer(req.file.buffer, filename);
+        } catch (err) {
+          console.error("[uploads] Cloudinary upload failed", err);
+          res.status(502).json({
+            message: "Image storage is unavailable right now. Please try again.",
+          });
+          return;
+        }
+      } else {
+        await pool.query(
+          `INSERT INTO uploaded_images (filename, mime, size_bytes, data, uploaded_by)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [filename, mime, req.file.size, req.file.buffer, req.user?.id ?? null],
+        );
+        url = publicUrlFor(req, filename);
+      }
 
       res.status(201).json({
-        url: publicUrlFor(req, filename),
+        url,
         filename,
         mime,
         size: req.file.size,

@@ -137,7 +137,10 @@ async function insertIfMissing(
   return "inserted";
 }
 
-/** Always attach the planned hero/OG cover for the 20 intent slugs. */
+/**
+ * Fill the planned hero/OG cover for the intent slugs only where none is set,
+ * so CMS-chosen or Cloudinary-migrated images are never overwritten on boot.
+ */
 async function syncIntentCovers(): Promise<number> {
   let updated = 0;
   for (const def of ARTICLES) {
@@ -145,19 +148,24 @@ async function syncIntentCovers(): Promise<number> {
     if (!cover) continue;
     const result = await pool.query(
       `UPDATE articles
-       SET featured_image = $1,
-           og_image = $1,
+       SET featured_image = CASE
+             WHEN COALESCE(featured_image, '') = '' THEN $1
+             ELSE featured_image
+           END,
+           og_image = CASE
+             WHEN COALESCE(og_image, '') = '' THEN COALESCE(NULLIF(featured_image, ''), $1)
+             ELSE og_image
+           END,
            featured_image_alt = CASE
-             WHEN featured_image_alt IS NULL OR featured_image_alt = '' THEN $2
+             WHEN COALESCE(featured_image_alt, '') = '' THEN $2
              ELSE featured_image_alt
            END,
            updated_at = NOW()
        WHERE slug = $3
          AND (
-           featured_image IS DISTINCT FROM $1
-           OR og_image IS DISTINCT FROM $1
-           OR featured_image_alt IS NULL
-           OR featured_image_alt = ''
+           COALESCE(featured_image, '') = ''
+           OR COALESCE(og_image, '') = ''
+           OR COALESCE(featured_image_alt, '') = ''
          )`,
       [cover, def.featuredImageAlt, def.slug],
     );

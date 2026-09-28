@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { pool } from "../db/pool";
+import { isCloudinaryConfigured } from "../services/cloudinary";
 
 export const healthRouter = Router();
 
@@ -17,6 +18,7 @@ healthRouter.get("/", async (_req, res) => {
     ok: database === "up",
     service: "fitness-backend",
     database,
+    imageStorage: isCloudinaryConfigured() ? "cloudinary" : "postgres",
     timestamp: new Date().toISOString(),
   });
 });
