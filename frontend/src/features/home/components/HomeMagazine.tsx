@@ -1,7 +1,7 @@
 "use client";
 
 import type { PublicBlogArticle } from "@/lib/api/blog";
-import { HomePillarsHero } from "@/features/home/components/HomePillarsHero";
+import { HomeMarqueeHero } from "@/features/home/components/HomeMarqueeHero";
 import { HomeKnowledgeKeepBand } from "@/features/home/components/HomeKnowledgeKeepBand";
 import { HomeScrollMorphBand } from "@/features/home/components/HomeScrollMorphBand";
 import { HomeMasonryScrollBand } from "@/features/home/components/HomeMasonryScrollBand";
@@ -13,13 +13,13 @@ type HomeMagazineProps = {
 };
 
 /**
- * Home: pillars hero → keep masonry → scroll-morph → masonry fly-in →
+ * Home: marquee hero → keep masonry → scroll-morph → masonry fly-in →
  * FAQ → fold/ghost CTA.
  */
 export function HomeMagazine({ articles }: HomeMagazineProps) {
   return (
     <>
-      <HomePillarsHero />
+      <HomeMarqueeHero />
       <HomeKnowledgeKeepBand articles={articles} />
       <HomeScrollMorphBand />
       <HomeMasonryScrollBand />
