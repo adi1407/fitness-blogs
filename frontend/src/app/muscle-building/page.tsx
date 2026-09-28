@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MuscleBuildingVisuals } from "@/features/muscle-building/components/MuscleBuildingVisuals";
 
@@ -167,13 +167,13 @@ export default function MuscleBuildingPage() {
         </ul>
       </section>
 
-      <FaqScrollerBlock
-        className="mt-12"
+      <FaqAccordion
+        className="mt-16"
         items={faq.map((item) => ({
           question: item.q,
           answer: item.a,
         }))}
-        title="FAQs"
+        title="Muscle building FAQs"
       />
 
       <p className="mt-12 text-xs text-muted-foreground">

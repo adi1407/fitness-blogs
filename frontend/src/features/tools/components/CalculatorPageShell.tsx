@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -104,8 +104,9 @@ export function CalculatorPageShell({
       </section>
 
       {faq.length > 0 ? (
-        <FaqScrollerBlock
-          className="mt-12 -mx-4 overflow-hidden sm:-mx-6"
+        <FaqAccordion
+          className="mt-12"
+          variant="stacked"
           items={faq.map((item) => ({
             question: item.q,
             answer: item.a,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { WeightLossSplitSection } from "@/features/weight-loss/components/WeightLossSplitSection";
 
@@ -156,14 +156,14 @@ export default function WeightLossPage() {
           </ul>
         </section>
 
-        <FaqScrollerBlock
-        className="mt-12"
-        items={faq.map((item) => ({
-          question: item.q,
-          answer: item.a,
-        }))}
-        title="FAQs"
-      />
+        <FaqAccordion
+          className="mt-16"
+          items={faq.map((item) => ({
+            question: item.q,
+            answer: item.a,
+          }))}
+          title="Weight loss FAQs"
+        />
 
         <p className="mt-12 text-xs text-muted-foreground">
           Educational information only. See our{" "}

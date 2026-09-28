@@ -12,6 +12,7 @@ import { ArticleReadingProgress } from "@/features/blog/components/ArticleReadin
 import { ArticleRelatedGrid } from "@/features/blog/components/ArticleRelatedGrid";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
 import { enhanceArticleHtml } from "@/features/blog/utils/articleHtml";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import {
   calculatorCtaForCategory,
   type PublicBlogArticle,
@@ -383,29 +384,12 @@ export function BlogArticleView({
                 </div>
               ) : null}
 
-              {article.faq.length > 0 ? (
-                <section className="mt-10 border-t border-border pt-8">
-                  <h2 className="text-xl font-semibold tracking-tight">
-                    Frequently asked questions
-                  </h2>
-                  <div className="mt-5 space-y-3">
-                    {article.faq.map((item, i) => (
-                      <details
-                        key={`${item.question}-${i}`}
-                        className="fk-faq-item group"
-                        open={i === 0}
-                      >
-                        <summary className="cursor-pointer list-none font-medium text-foreground marker:content-none">
-                          {item.question}
-                        </summary>
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                          {item.answer}
-                        </p>
-                      </details>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
+              <FaqAccordion
+                className="mt-10 border-t border-border pt-8"
+                variant="stacked"
+                items={article.faq}
+                subtitle=""
+              />
 
               {article.sources.length > 0 ? (
                 <section className="mt-10 border-t border-border pt-8">

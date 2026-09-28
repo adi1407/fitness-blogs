@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
 
@@ -213,15 +213,15 @@ export default function ProteinHubPage() {
           </div>
         </section>
 
-        <div className="mt-12 pl-0 sm:pl-0">
-          <FaqScrollerBlock
-            items={faq.map((item) => ({
-              question: item.q,
-              answer: item.a,
-            }))}
-            title="FAQs"
-          />
-        </div>
+        <FaqAccordion
+          className="mt-12 pl-4 sm:pl-8"
+          variant="stacked"
+          items={faq.map((item) => ({
+            question: item.q,
+            answer: item.a,
+          }))}
+          title="Protein FAQs"
+        />
 
         <p className="mt-12 pl-4 text-xs text-muted-foreground sm:pl-8">
           Educational information only. See our{" "}

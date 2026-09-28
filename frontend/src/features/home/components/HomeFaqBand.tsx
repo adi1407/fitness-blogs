@@ -1,6 +1,4 @@
-"use client";
-
-import { FaqScrollerBlock } from "@/features/shared/components/FaqScrollerBlock";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 
 const HOME_FAQS = [
   {
@@ -35,18 +33,16 @@ const HOME_FAQS = [
   },
 ];
 
-/** Habit FAQ scroller — visible on the home feed. */
 export function HomeFaqBand() {
   return (
-    <section className="border-b border-border bg-brand-50/50 py-14">
+    <div className="border-b border-border bg-[#FAFAFA] py-14 sm:py-20">
       <div className="fk-page">
-        <FaqScrollerBlock
-          className="mt-0 w-full overflow-x-clip"
+        <FaqAccordion
           items={HOME_FAQS}
           title="Common questions"
           subtitle="Quick answers that route into guides, tools, and foods — educational only."
         />
       </div>
-    </section>
+    </div>
   );
 }
