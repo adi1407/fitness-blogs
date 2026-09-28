@@ -130,6 +130,48 @@ async function rewrite(text: string, resolve: Resolver): Promise<string> {
 }
 
 /**
+ * Covers pointing at a static hero that does not exist: restore the latest
+ * Cloudinary cover from revision history, otherwise clear it so no broken image renders.
+ */
+async function repairBrokenCovers(
+  client: PoolClient,
+  missing: Set<string>,
+): Promise<number> {
+  const brokenPaths = [...missing]
+    .filter((k) => k.startsWith("images:"))
+    .map((k) => `/images/articles/${k.slice("images:".length)}`);
+  if (!brokenPaths.length) return 0;
+
+  const broken = await client.query<{ id: string; featured_image: string; og_image: string }>(
+    `SELECT id, featured_image, og_image FROM articles
+     WHERE featured_image = ANY($1::text[]) OR og_image = ANY($1::text[])`,
+    [brokenPaths],
+  );
+
+  let repaired = 0;
+  for (const row of broken.rows) {
+    const rev = await client.query<{ img: string }>(
+      `SELECT snapshot->>'featuredImage' AS img FROM article_revisions
+       WHERE article_id = $1 AND snapshot->>'featuredImage' LIKE 'https://res.cloudinary.com/%'
+       ORDER BY revision_number DESC LIMIT 1`,
+      [row.id],
+    );
+    const restored = rev.rows[0]?.img ?? "";
+    const isBroken = (v: string) => brokenPaths.includes(v);
+    await client.query(
+      `UPDATE articles SET featured_image = $1, og_image = $2 WHERE id = $3`,
+      [
+        isBroken(row.featured_image) ? restored : row.featured_image,
+        isBroken(row.og_image) ? restored : row.og_image,
+        row.id,
+      ],
+    );
+    repaired += 1;
+  }
+  return repaired;
+}
+
+/**
  * Copy every legacy image to Cloudinary and point stored content at it.
  * Idempotent and safe to run on every boot; unresolvable images are left as-is.
  */
@@ -177,8 +219,10 @@ export async function migrateImagesToCloudinary(): Promise<void> {
         }
       }
 
+      const repaired = await repairBrokenCovers(client, missing);
+
       console.log(
-        `[cloudinary-migrate] done: ${updatedRows} field(s) updated` +
+        `[cloudinary-migrate] done: ${updatedRows} field(s) updated, ${repaired} broken cover(s) repaired` +
           (missing.size ? `, ${missing.size} image(s) not found: ${[...missing].join(", ")}` : ""),
       );
     } finally {
