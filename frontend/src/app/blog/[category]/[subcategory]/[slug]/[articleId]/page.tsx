@@ -28,6 +28,11 @@ function canonicalPath(
   return `/blog/${category}/${subcategory}/${slug}/${articleNumber}`;
 }
 
+/** The root layout's title template appends the brand; CMS meta titles often already end with it. */
+function pageTitle(raw: string): string {
+  return raw.replace(/\s*[|–—-]\s*fitlives\s*$/i, "");
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -41,10 +46,10 @@ export async function generateMetadata({
     article.articleNumber != null &&
     String(article.articleNumber) !== articleId
   ) {
-    return { title: article.metaTitle || article.title };
+    return { title: pageTitle(article.metaTitle || article.title) };
   }
 
-  const title = article.metaTitle || article.title;
+  const title = pageTitle(article.metaTitle || article.title);
   const description =
     article.metaDescription ||
     article.excerpt ||
