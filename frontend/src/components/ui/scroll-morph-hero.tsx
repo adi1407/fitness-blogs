@@ -1,128 +1,126 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import {
   animate,
   motion,
+  useInView,
   useMotionValue,
+  useReducedMotion,
+  useScroll,
   useSpring,
   useTransform,
   type MotionValue,
 } from "motion/react";
 
 import { SCROLL_MORPH_IMAGES } from "@/lib/hubImages";
-
-const TOTAL_IMAGES = 20;
-const SCROLL_RANGE = 1200;
-
-const IMAGES = SCROLL_MORPH_IMAGES;
+import { cn } from "@/lib/utils";
 
 const lerp = (start: number, end: number, t: number) =>
   start * (1 - t) + end * t;
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+const clamp = (n: number, lo: number, hi: number) =>
+  Math.min(hi, Math.max(lo, n));
+const DEG = Math.PI / 180;
 
 type Pose = { x: number; y: number; rotation: number; scale: number };
 
 type ClusterLayout = {
+  count: number;
   cardW: number;
   cardH: number;
+  titleMaxW: number;
   line: Pose[];
   circle: Pose[];
-  arc: {
-    radius: number;
-    centerY: number;
-    startAngle: number;
-    step: number;
-    scale: number;
-    maxRotation: number;
-  };
+  arc: Pose[];
 };
 
+/**
+ * All three poses are computed to stay inside the frame: the circle leaves room
+ * for the centre title, and the fan's ends and apex never cross the frame edge
+ * or the heading above it.
+ */
 function layoutFor(width: number, height: number): ClusterLayout {
   const w = Math.max(width, 1);
   const h = Math.max(height, 1);
   const isPhone = w < 520;
-  const isTablet = w >= 520 && w < 900;
+  const isTablet = !isPhone && w < 900;
 
-  const cardW = isPhone ? 38 : isTablet ? 52 : 60;
-  const cardH = isPhone ? 54 : isTablet ? 74 : 85;
+  const count = isPhone ? 12 : isTablet ? 16 : 20;
+  const cardW = isPhone ? 40 : isTablet ? 54 : 64;
+  const cardH = Math.round(cardW * 1.4);
+  const span = Math.max(cardW, cardH);
 
-  const lineSpacing = Math.min(
-    isPhone ? 34 : isTablet ? 50 : 66,
-    (w * 0.9) / TOTAL_IMAGES,
-  );
-  const lineScale = isPhone ? 0.82 : isTablet ? 0.92 : 1;
-  const line: Pose[] = Array.from({ length: TOTAL_IMAGES }, (_, i) => ({
-    x: i * lineSpacing - ((TOTAL_IMAGES - 1) * lineSpacing) / 2,
+  const lineSpacing = Math.min(cardW + 8, (w * 0.92 - cardW) / (count - 1));
+  const line = Array.from({ length: count }, (_, i) => ({
+    x: i * lineSpacing - ((count - 1) * lineSpacing) / 2,
     y: 0,
     rotation: 0,
-    scale: lineScale,
+    scale: 1,
   }));
 
-  const cardSpan = Math.max(cardW, cardH);
-  const maxR = Math.min(w, h) / 2 - cardSpan / 2 - (isPhone ? 10 : 18);
-  const circleRadius = Math.max(
-    isPhone ? 84 : 108,
-    Math.min(maxR, isPhone ? 124 : isTablet ? 188 : 250),
+  const circleR = clamp(
+    Math.min(w, h) / 2 - span * 0.6 - 12,
+    isPhone ? 96 : 120,
+    isPhone ? 150 : isTablet ? 210 : 250,
   );
-  const circleScale = isPhone ? 0.88 : isTablet ? 0.95 : 1;
-  const circle: Pose[] = Array.from({ length: TOTAL_IMAGES }, (_, i) => {
-    const angle = (i / TOTAL_IMAGES) * 360;
-    const rad = (angle * Math.PI) / 180;
+  const circleScale = Math.min(1, (2 * Math.PI * circleR) / count / (cardW * 1.05));
+  // Card 0 starts at the bottom and the ring runs clockwise over the top, the
+  // same left-to-right order as the fan, so cards unfold without crossing.
+  const circle = Array.from({ length: count }, (_, i) => {
+    const angle = -270 + ((i + 0.5) / count) * 360;
     return {
-      x: Math.cos(rad) * circleRadius,
-      y: Math.sin(rad) * circleRadius,
+      x: Math.cos(angle * DEG) * circleR,
+      y: Math.sin(angle * DEG) * circleR,
       rotation: angle + 90,
       scale: circleScale,
     };
   });
+  const titleMaxW = Math.max(140, 2 * (circleR - span * 0.55) * 0.9);
 
-  const spreadAngle = isPhone ? 72 : isTablet ? 96 : 112;
-  const chord = Math.min(w * (isPhone ? 0.7 : 0.8), w - cardW - 16);
-  const spreadRad = (spreadAngle * Math.PI) / 180;
-  let radius = chord / (2 * Math.sin(spreadRad / 2));
-  const apexY = isPhone ? -h * 0.08 : isTablet ? -h * 0.12 : -h * 0.16;
-  let centerY = apexY + radius;
+  const theta = isPhone ? 180 : isTablet ? 150 : 130;
+  const half = (theta / 2) * DEG;
+  const topY = -h * 0.04;
+  const bottomY = h / 2 - cardH * 0.75 - 16;
+  const rByWidth = (w / 2 - cardW * 0.9 - 8) / Math.sin(half);
+  const rByHeight = (bottomY - topY) / (1 - Math.cos(half));
+  const r = Math.max(60, Math.min(rByWidth, rByHeight));
+  const arcHeight = r * (1 - Math.cos(half));
+  const apexY = topY + Math.max(0, (bottomY - topY - arcHeight) / 2);
+  const centerY = apexY + r;
+  const spacing = (r * theta * DEG) / (count - 1);
+  const arcScale = clamp(spacing / (cardW * 1.12), 0.55, isPhone ? 1 : 1.15);
+  const arc = Array.from({ length: count }, (_, i) => {
+    const angle = -90 - theta / 2 + (i * theta) / (count - 1);
+    return {
+      x: Math.cos(angle * DEG) * r,
+      y: Math.sin(angle * DEG) * r + centerY,
+      rotation: angle + 90,
+      scale: arcScale,
+    };
+  });
 
-  const endAngle = ((-90 + spreadAngle / 2) * Math.PI) / 180;
-  const endY = Math.sin(endAngle) * radius + centerY;
-  const maxY = h / 2 - cardH * 0.55;
-  if (endY > maxY) {
-    const overflow = endY - maxY;
-    centerY -= overflow;
-    radius = Math.max(radius - overflow * 0.15, chord * 0.55);
-  }
-
-  return {
-    cardW,
-    cardH,
-    line,
-    circle,
-    arc: {
-      radius,
-      centerY,
-      startAngle: -90 - spreadAngle / 2,
-      step: spreadAngle / (TOTAL_IMAGES - 1),
-      scale: isPhone ? 1.05 : isTablet ? 1.18 : 1.32,
-      maxRotation: spreadAngle * 0.5,
-    },
-  };
+  return { count, cardW, cardH, titleMaxW, line, circle, arc };
 }
 
-function arcPose(
-  index: number,
-  spin01: number,
-  parallax: number,
-  arc: ClusterLayout["arc"],
-): Pose {
-  const angle =
-    arc.startAngle + index * arc.step - clamp01(spin01) * arc.maxRotation;
-  const rad = (angle * Math.PI) / 180;
+function poseAt(L: ClusterLayout, i: number, intro: number, morph: number): Pose {
+  const a = clamp01(intro);
+  const b = clamp01(morph);
+  const line = L.line[i];
+  const circle = L.circle[i];
+  const arc = L.arc[i];
   return {
-    x: Math.cos(rad) * arc.radius + parallax,
-    y: Math.sin(rad) * arc.radius + arc.centerY,
-    rotation: angle + 90,
-    scale: arc.scale,
+    x: lerp(line.x, lerp(circle.x, arc.x, b), a),
+    y: lerp(line.y, lerp(circle.y, arc.y, b), a),
+    rotation: lerp(line.rotation, lerp(circle.rotation, arc.rotation, b), a),
+    scale: lerp(line.scale, lerp(circle.scale, arc.scale, b), a),
   };
 }
 
@@ -130,50 +128,36 @@ function MorphCard({
   src,
   index,
   layout,
+  layoutRef,
+  layoutVersion,
   intro,
   morph,
-  spin,
   parallax,
 }: {
   src: string;
   index: number;
   layout: ClusterLayout;
+  layoutRef: RefObject<ClusterLayout>;
+  layoutVersion: MotionValue<number>;
   intro: MotionValue<number>;
   morph: MotionValue<number>;
-  spin: MotionValue<number>;
   parallax: MotionValue<number>;
 }) {
-  const layoutRef = useRef(layout);
-  layoutRef.current = layout;
-
-  const x = useTransform([intro, morph, spin, parallax], (vals) => {
-    const [i, m, s, p] = vals as number[];
-    const L = layoutRef.current;
-    const arc = arcPose(index, s, p, L.arc);
-    const mid = lerp(L.circle[index].x, arc.x, clamp01(m));
-    return lerp(L.line[index].x, mid, clamp01(i));
-  });
-  const y = useTransform([intro, morph, spin, parallax], (vals) => {
-    const [i, m, s, p] = vals as number[];
-    const L = layoutRef.current;
-    const arc = arcPose(index, s, p, L.arc);
-    const mid = lerp(L.circle[index].y, arc.y, clamp01(m));
-    return lerp(L.line[index].y, mid, clamp01(i));
-  });
-  const rotate = useTransform([intro, morph, spin, parallax], (vals) => {
-    const [i, m, s, p] = vals as number[];
-    const L = layoutRef.current;
-    const arc = arcPose(index, s, p, L.arc);
-    const mid = lerp(L.circle[index].rotation, arc.rotation, clamp01(m));
-    return lerp(L.line[index].rotation, mid, clamp01(i));
-  });
-  const scale = useTransform([intro, morph, spin], (vals) => {
-    const [i, m, s] = vals as number[];
-    const L = layoutRef.current;
-    const arc = arcPose(index, s, 0, L.arc);
-    const mid = lerp(L.circle[index].scale, arc.scale, clamp01(m));
-    return lerp(L.line[index].scale, mid, clamp01(i));
-  });
+  // layoutVersion is an input only so the transforms recompute on resize.
+  const inputs = useMemo(
+    () => [layoutVersion, intro, morph, parallax],
+    [layoutVersion, intro, morph, parallax],
+  );
+  // The shared ref updates after commit, so a card added by a resize may be
+  // rendered before it holds a pose for this index.
+  const pose = (v: number[]) => {
+    const L = index < layoutRef.current.count ? layoutRef.current : layout;
+    return poseAt(L, index, v[1], v[2]);
+  };
+  const x = useTransform(inputs, (v: number[]) => pose(v).x + v[3] * clamp01(v[2]));
+  const y = useTransform(inputs, (v: number[]) => pose(v).y);
+  const rotate = useTransform(inputs, (v: number[]) => pose(v).rotation);
+  const scale = useTransform(inputs, (v: number[]) => pose(v).scale);
 
   return (
     <motion.div
@@ -197,6 +181,8 @@ function MorphCard({
           src={src}
           alt=""
           draggable={false}
+          loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover"
         />
       </div>
@@ -204,97 +190,79 @@ function MorphCard({
   );
 }
 
-export default function ScrollMorphHero() {
+/**
+ * Scroll-linked image cluster: a pinned frame whose cards go line → circle →
+ * open fan as the page scrolls past. Uses normal page scroll (no nested
+ * scroller), so wheel, trackpad, touch and keyboard all behave the same.
+ */
+export default function ScrollMorphHero({ className }: { className?: string }) {
+  const reduceMotion = useReducedMotion() ?? false;
+  const trackRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState({ width: 720, height: 480 });
+  const [size, setSize] = useState({ width: 720, height: 520 });
   const [canHover, setCanHover] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
+
+  const layout = useMemo(() => layoutFor(size.width, size.height), [size]);
+  const layoutRef = useRef(layout);
+  const layoutVersion = useMotionValue(0);
 
   const intro = useMotionValue(0);
-  const scrollY = useMotionValue(0);
   const mouseX = useMotionValue(0);
-
-  const morphRaw = useTransform(scrollY, [0, SCROLL_RANGE * 0.4], [0, 1]);
-  const spinRaw = useTransform(
-    scrollY,
-    [SCROLL_RANGE * 0.4, SCROLL_RANGE],
-    [0, 1],
-  );
-  const morph = useSpring(morphRaw, { stiffness: 72, damping: 22, mass: 0.8 });
-  const spin = useSpring(spinRaw, { stiffness: 64, damping: 22, mass: 0.8 });
   const parallax = useSpring(mouseX, { stiffness: 40, damping: 22 });
 
-  const titleOpacity = useTransform(morph, [0, 0.45], [1, 0]);
-  const exploreOpacity = useTransform(morph, [0.55, 1], [0, 1]);
-  const exploreY = useTransform(morph, [0.55, 1], [16, 0]);
-  const progressWidth = useTransform(scrollY, (v) => {
-    const p = clamp01(v / SCROLL_RANGE);
-    return `${p * 100}%`;
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ["start start", "end end"],
   });
+  const morphRaw = useTransform(scrollYProgress, [0.1, 0.65], [0, 1]);
+  const morphSpring = useSpring(morphRaw, { stiffness: 140, damping: 28, mass: 0.6 });
+  const settled = useMotionValue(1);
+  const morph = reduceMotion ? settled : morphSpring;
 
-  useEffect(() => {
-    const hoverMq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const motionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => {
-      setCanHover(hoverMq.matches);
-      setReduceMotion(motionMq.matches);
-    };
-    sync();
-    hoverMq.addEventListener("change", sync);
-    motionMq.addEventListener("change", sync);
-    return () => {
-      hoverMq.removeEventListener("change", sync);
-      motionMq.removeEventListener("change", sync);
-    };
-  }, []);
+  const titleOpacity = useTransform([intro, morph], (v) => {
+    const [i, m] = v as number[];
+    return clamp01((i - 0.6) / 0.4) * (1 - clamp01(m / 0.35));
+  });
+  const exploreOpacity = useTransform(morph, [0.6, 1], [0, 1]);
+  const exploreY = useTransform(morph, [0.6, 1], [16, 0]);
+  const progressScale = useTransform(scrollYProgress, (v) => clamp01(v));
+
+  const inView = useInView(frameRef, { once: true, amount: 0.35 });
 
   useLayoutEffect(() => {
-    const el = frameRef.current;
-    if (!el) return;
-
-    const apply = () => {
-      const width = Math.round(el.clientWidth);
-      const height = Math.round(el.clientHeight);
-      if (width < 8 || height < 8) return;
-      setContainerSize((prev) =>
-        prev.width === width && prev.height === height
-          ? prev
-          : { width, height },
-      );
-    };
-
-    apply();
-    const observer = new ResizeObserver(apply);
-    observer.observe(el);
-    window.addEventListener("resize", apply);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", apply);
-    };
-  }, []);
+    layoutRef.current = layout;
+    layoutVersion.set(layoutVersion.get() + 1);
+  }, [layout, layoutVersion]);
 
   useEffect(() => {
     if (reduceMotion) {
       intro.set(1);
       return;
     }
-    intro.set(0);
+    if (!inView) return;
     const controls = animate(intro, 1, {
       duration: 1.05,
-      delay: 0.2,
+      delay: 0.15,
       ease: [0.22, 1, 0.36, 1],
     });
     return () => controls.stop();
-  }, [intro, reduceMotion]);
+  }, [inView, intro, reduceMotion]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const sync = () => setCanHover(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     const el = frameRef.current;
-    if (!el || !canHover) return;
+    if (!el || !canHover || reduceMotion) return;
     const onMove = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();
       const nx = (e.clientX - rect.left) / Math.max(rect.width, 1);
-      mouseX.set((nx * 2 - 1) * 36);
+      mouseX.set((nx * 2 - 1) * 24);
     };
     const onLeave = () => mouseX.set(0);
     el.addEventListener("mousemove", onMove);
@@ -303,135 +271,88 @@ export default function ScrollMorphHero() {
       el.removeEventListener("mousemove", onMove);
       el.removeEventListener("mouseleave", onLeave);
     };
-  }, [canHover, mouseX]);
+  }, [canHover, mouseX, reduceMotion]);
 
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el || reduceMotion) return;
-
-    let lastY = 0;
-    const onStart = (e: TouchEvent) => {
-      lastY = e.touches[0]?.clientY ?? 0;
+  useLayoutEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+    const apply = () => {
+      const width = Math.round(el.clientWidth);
+      const height = Math.round(el.clientHeight);
+      if (width < 8 || height < 8) return;
+      setSize((prev) =>
+        prev.width === width && prev.height === height ? prev : { width, height },
+      );
     };
-    const onMove = (e: TouchEvent) => {
-      const y = e.touches[0]?.clientY ?? lastY;
-      const dy = lastY - y;
-      lastY = y;
-      if (dy === 0) return;
-
-      const maxScroll = Math.max(0, el.scrollHeight - el.clientHeight);
-      const atStart = el.scrollTop <= 0;
-      const atEnd = el.scrollTop >= maxScroll - 1;
-      const canConsume = (dy > 0 && !atEnd) || (dy < 0 && !atStart);
-      if (!canConsume) return;
-
-      e.preventDefault();
-      el.scrollTop = Math.min(Math.max(el.scrollTop + dy, 0), maxScroll);
-      scrollY.set(el.scrollTop);
-    };
-
-    el.addEventListener("touchstart", onStart, { passive: true });
-    el.addEventListener("touchmove", onMove, { passive: false });
-    return () => {
-      el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("touchmove", onMove);
-    };
-  }, [reduceMotion, scrollY, containerSize.height]);
-
-  const layout = useMemo(
-    () => layoutFor(containerSize.width, containerSize.height),
-    [containerSize.height, containerSize.width],
-  );
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div
-      ref={frameRef}
-      className="relative h-full w-full overflow-hidden bg-[#FAFAFA] select-none"
+      ref={trackRef}
+      className={cn("relative", className)}
+      style={{ height: reduceMotion ? undefined : "calc(100dvh + 100vh)" }}
     >
-      <div
-        ref={scrollerRef}
-        className="absolute inset-0 z-20 overflow-y-scroll overscroll-y-auto touch-pan-y scrollbar-none outline-none focus-visible:ring-2 focus-visible:ring-[#FF9800] focus-visible:ring-inset"
-        style={{ WebkitOverflowScrolling: "touch" }}
-        tabIndex={0}
-        role="region"
-        aria-label="Scroll inside this frame to open the image cluster"
-        onScroll={(e) => {
-          const el = e.currentTarget;
-          scrollY.set(el.scrollTop);
-          const atStart = el.scrollTop <= 0;
-          const atEnd =
-            el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
-          el.style.overscrollBehaviorY =
-            atStart || atEnd ? "auto" : "contain";
-        }}
-        onKeyDown={(e) => {
-          const el = e.currentTarget;
-          if (e.key === "ArrowDown" || e.key === "PageDown") {
-            e.preventDefault();
-            el.scrollBy({ top: e.key === "PageDown" ? 200 : 72 });
-          } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-            e.preventDefault();
-            el.scrollBy({ top: e.key === "PageUp" ? -200 : -72 });
-          }
-        }}
-      >
+      <div className="sticky top-[calc(var(--site-header-height,64px)+1rem)]">
         <div
-          style={{
-            height: reduceMotion
-              ? "100%"
-              : containerSize.height > 0
-                ? containerSize.height + SCROLL_RANGE
-                : `calc(100% + ${SCROLL_RANGE}px)`,
-          }}
-        />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 z-10">
-        <motion.div
-          style={{ opacity: titleOpacity }}
-          className="absolute top-[42%] left-1/2 z-0 w-[min(52%,11.5rem)] -translate-x-1/2 -translate-y-1/2 px-2 text-center sm:w-[min(62%,20rem)] md:w-[min(90%,36rem)]"
+          ref={frameRef}
+          className="relative h-[min(640px,calc(100dvh-var(--site-header-height,64px)-2rem))] min-h-[380px] w-full overflow-hidden rounded-2xl border border-border bg-[#FAFAFA] select-none"
+          role="img"
+          aria-label="Fitness and nutrition photos arranged in a circle that opens into a fan as you scroll"
         >
-          <h2 className="text-[1.05rem] leading-snug font-medium tracking-tight text-foreground sm:text-2xl md:text-4xl">
-            Fitness knowledge, built to explore.
-          </h2>
-          <p className="mt-3 text-[10px] font-bold tracking-[0.18em] text-muted-foreground uppercase sm:text-xs sm:tracking-[0.2em]">
-            Scroll to explore
-          </p>
-        </motion.div>
+          <motion.div
+            style={{ opacity: titleOpacity, maxWidth: layout.titleMaxW }}
+            className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-full -translate-x-1/2 -translate-y-1/2 px-2 text-center"
+          >
+            <p className="text-[1.05rem] leading-snug font-medium tracking-tight text-foreground sm:text-2xl lg:text-3xl">
+              Fitness knowledge, built to explore.
+            </p>
+            <p className="mt-3 text-[10px] font-bold tracking-[0.18em] text-muted-foreground uppercase sm:text-xs">
+              Keep scrolling
+            </p>
+          </motion.div>
 
-        <motion.div
-          style={{ opacity: exploreOpacity, y: exploreY }}
-          className="absolute top-[9%] left-1/2 z-10 w-[min(92%,36rem)] -translate-x-1/2 px-3 text-center sm:top-[10%]"
-        >
-          <h2 className="mb-2 text-2xl font-semibold tracking-tight text-foreground sm:mb-4 sm:text-3xl md:text-5xl">
-            Explore fitlives
-          </h2>
-          <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm md:text-base">
-            Nutrition, training, tools, and Indian foods — scroll through the
-            clusters that power our learning hub.
-          </p>
-        </motion.div>
+          <motion.div
+            style={{ opacity: exploreOpacity, y: exploreY }}
+            className="pointer-events-none absolute top-[7%] left-1/2 z-10 w-[min(92%,36rem)] -translate-x-1/2 px-3 text-center"
+          >
+            <p className="mb-2 text-2xl font-semibold tracking-tight text-foreground sm:mb-3 sm:text-3xl md:text-4xl">
+              Explore fitlives
+            </p>
+            <p className="mx-auto max-w-lg text-xs leading-relaxed text-muted-foreground sm:text-sm md:text-base">
+              Nutrition, training, tools, and Indian foods — the clusters that
+              power our learning hub.
+            </p>
+          </motion.div>
 
-        {IMAGES.slice(0, TOTAL_IMAGES).map((src, i) => (
+          <div className="pointer-events-none absolute inset-0">
+            {SCROLL_MORPH_IMAGES.slice(0, layout.count).map((src, i) => (
               <MorphCard
                 key={src}
                 src={src}
                 index={i}
                 layout={layout}
+                layoutRef={layoutRef}
+                layoutVersion={layoutVersion}
                 intro={intro}
                 morph={morph}
-                spin={spin}
                 parallax={parallax}
               />
             ))}
-      </div>
+          </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-10 bg-linear-to-t from-[#FAFAFA] to-transparent sm:h-12" />
-      <div className="pointer-events-none absolute inset-x-4 bottom-3 z-30 h-0.5 overflow-hidden rounded-full bg-black/10 sm:inset-x-6">
-        <motion.div
-          className="h-full bg-[#0A0A0A]"
-          style={{ width: progressWidth }}
-        />
+          {!reduceMotion ? (
+            <div className="pointer-events-none absolute inset-x-4 bottom-3 z-30 h-0.5 overflow-hidden rounded-full bg-black/10 sm:inset-x-6">
+              <motion.div
+                className="h-full origin-left bg-[#0A0A0A]"
+                style={{ scaleX: progressScale }}
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import ScrollMorphHero from "@/components/ui/scroll-morph-hero";
 
-/** Scroll-to-resolve image morph — hover the frame and scroll to fan images out. */
+/** Scroll-linked image morph — the frame pins while the page scrolls past. */
 export function HomeScrollMorphBand() {
   return (
     <section className="border-b border-border bg-white py-12 sm:py-16">
@@ -13,13 +13,11 @@ export function HomeScrollMorphBand() {
           Watch the cluster resolve
         </h2>
         <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-          Images start in a line, then resolve into a circle. Scroll inside the
-          frame to open the arc — same interaction as the training hub.
+          Keep scrolling — the images gather into a circle, then open into an
+          arc across our nutrition, training, and food guides.
         </p>
-        <div className="relative mx-auto mt-8 h-[min(70dvh,460px)] min-h-[360px] w-full overflow-hidden rounded-2xl border border-border bg-muted/30 sm:h-[500px] md:h-[560px] lg:h-[620px]">
-          <ScrollMorphHero />
-        </div>
-        <p className="mt-4 text-sm text-muted-foreground">
+        <ScrollMorphHero className="mt-8" />
+        <p className="mt-6 text-sm text-muted-foreground">
           Prefer the full training context?{" "}
           <Link
             href="/training"

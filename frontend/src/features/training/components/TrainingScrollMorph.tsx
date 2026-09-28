@@ -11,12 +11,10 @@ export function TrainingScrollMorph() {
         Visual training arc
       </h2>
       <p className="mt-2 max-w-xl text-muted-foreground">
-        Scroll inside the frame to morph the image cluster from a circle into an
-        open arc.
+        Keep scrolling — the image cluster gathers into a circle, then opens
+        into an arc.
       </p>
-      <div className="relative mx-auto mt-6 h-[min(72dvh,500px)] min-h-[380px] w-full overflow-hidden rounded-2xl border border-border bg-muted/40 sm:h-[540px] md:h-[600px] lg:h-[660px]">
-        <ScrollMorphHero />
-      </div>
+      <ScrollMorphHero className="mt-6" />
       <p className="mt-4 text-sm text-muted-foreground">
         Continue in the{" "}
         <Link href="/exercises" className="font-semibold text-primary hover:underline">
