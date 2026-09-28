@@ -20,6 +20,7 @@ import {
   type MotionValue,
 } from "motion/react";
 
+import { BRAND_SLOGAN } from "@/lib/brand";
 import { SCROLL_MORPH_IMAGES } from "@/lib/hubImages";
 import { cn } from "@/lib/utils";
 
@@ -308,7 +309,7 @@ export default function ScrollMorphHero({ className }: { className?: string }) {
             className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-full -translate-x-1/2 -translate-y-1/2 px-2 text-center"
           >
             <p className="text-[1.05rem] leading-snug font-medium tracking-tight text-foreground sm:text-2xl lg:text-3xl">
-              Fitness knowledge, built to explore.
+              {BRAND_SLOGAN}
             </p>
             <p className="mt-3 text-[10px] font-bold tracking-[0.18em] text-muted-foreground uppercase sm:text-xs">
               Keep scrolling

@@ -4,6 +4,7 @@ import {
   TeamShowcase,
   type TeamMember,
 } from "@/components/ui/team-showcase";
+import { BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
 import { HUB } from "@/lib/hubImages";
 
 /** Three locked pillars — replaces “latest articles” carousel in the home hero. */
@@ -36,7 +37,8 @@ export function HomePillarsHero() {
   return (
     <TeamShowcase
       className="border-b border-border bg-white"
-      title="fitlives"
+      title={BRAND_NAME}
+      tagline={BRAND_SLOGAN}
       description="Searchable guides for muscle building, weight loss, and nutrition — built for real questions, not thin blog posts."
       buttonText="Browse all guides"
       buttonHref="/blog"

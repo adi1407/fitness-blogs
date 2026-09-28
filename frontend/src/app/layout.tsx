@@ -8,7 +8,7 @@ import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
 import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
 import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { BRAND_LOGO_SRC, BRAND_NAME } from "@/lib/brand";
+import { BRAND_LOGO_SRC, BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${BRAND_NAME} — Fitness Knowledge Platform`,
+    title: `${BRAND_NAME} — ${BRAND_SLOGAN}`,
     description:
       "Evidence-informed fitness, nutrition, and training — with tools that teach.",
   },

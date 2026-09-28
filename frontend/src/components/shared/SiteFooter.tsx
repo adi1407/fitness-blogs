@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/shared/CookieBanner";
 import { BrandLogo } from "@/components/shared/BrandLogo";
-import { BRAND_NAME, BRAND_TAGLINE } from "@/lib/brand";
+import { BRAND_NAME, BRAND_SLOGAN, BRAND_TAGLINE } from "@/lib/brand";
 
 const explore = [
   { href: "/", label: "Home" },
@@ -45,7 +45,10 @@ export function SiteFooter() {
       <div className="fk-page grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
         <div>
           <BrandLogo size="md" variant="full" />
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-base font-semibold tracking-tight text-balance text-foreground">
+            {BRAND_SLOGAN}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             {BRAND_TAGLINE}
           </p>
         </div>

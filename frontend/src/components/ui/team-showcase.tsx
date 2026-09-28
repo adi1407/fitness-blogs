@@ -18,6 +18,7 @@ export interface TeamMember {
 export interface TeamShowcaseProps
   extends React.HTMLAttributes<HTMLElement> {
   title?: string;
+  tagline?: string;
   description?: string;
   buttonText?: string;
   buttonHref?: string;
@@ -52,6 +53,7 @@ const TeamShowcase = React.forwardRef<HTMLElement, TeamShowcaseProps>(
       description = "Why wasting time on so many different platforms for searching, interviewing and find out that it’s not a good fit? We do all of these for you. No more back and forth. Get matched today.",
       buttonText = "FIND YOUR DEVELOPER",
       buttonHref,
+      tagline,
       members,
       className,
       ...props
@@ -72,6 +74,11 @@ const TeamShowcase = React.forwardRef<HTMLElement, TeamShowcaseProps>(
             <h1 className="mb-4 text-4xl font-bold tracking-tighter md:text-5xl">
               {title}
             </h1>
+            {tagline ? (
+              <p className="mb-4 text-xl font-semibold tracking-tight text-balance text-foreground md:text-2xl">
+                {tagline}
+              </p>
+            ) : null}
             <p className="mb-8 text-muted-foreground">{description}</p>
             {buttonHref ? (
               <Button
