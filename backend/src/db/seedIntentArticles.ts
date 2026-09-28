@@ -5,6 +5,7 @@ import { batch2 } from "./intentArticles/batch2";
 import { batch3 } from "./intentArticles/batch3";
 import { batch4 } from "./intentArticles/batch4";
 import { batch5 } from "./intentArticles/batch5";
+import { batch6 } from "./intentArticles/batch6";
 import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
 
@@ -14,6 +15,7 @@ const ARTICLES: IntentArticleDef[] = [
   ...batch3,
   ...batch4,
   ...batch5,
+  ...batch6,
 ];
 
 const AUTHOR_EMAIL = "aditya@fitknowledge.local";
@@ -203,7 +205,7 @@ async function linkRelatedArticles(): Promise<void> {
   }
 }
 
-/** Insert-if-missing seed of 20 high-intent articles by Aditya Choudhary. */
+/** Insert-if-missing seed of the high-intent articles by Aditya Choudhary. */
 export async function seedIntentArticles(): Promise<void> {
   const authorId = await resolveAuthorId();
   let inserted = 0;

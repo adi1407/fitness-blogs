@@ -38,6 +38,8 @@ export const INTENT_ARTICLE_COVERS: Record<string, string> = {
   "beginner-gym-diet-plan":
     "/images/articles/beginner-gym-diet-hero.png",
   // walking-weight-loss-hero.png was never added — the cover is set in the CMS instead.
+  "what-is-progressive-overload":
+    "/images/articles/progressive-overload-hero.png",
 };
 
 export function coverForSlug(slug: string): string {
