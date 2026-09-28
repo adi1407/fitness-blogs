@@ -201,18 +201,18 @@ export function BlogArticleView({
         }
       : null;
 
+  const seenChips = new Set<string>();
   const tagChips = [
-    ...new Map(
-      [
-        catLabel,
-        subLabel,
-        ...article.topics.slice(0, 2),
-        ...article.tags.slice(0, 3),
-      ]
-        .filter(Boolean)
-        .map((label) => [label.trim().toLowerCase(), label] as const),
-    ).values(),
-  ];
+    catLabel,
+    subLabel,
+    ...article.topics.slice(0, 2),
+    ...article.tags.slice(0, 3),
+  ].filter((label) => {
+    const key = label?.trim().toLowerCase();
+    if (!key || seenChips.has(key)) return false;
+    seenChips.add(key);
+    return true;
+  });
 
   const crumbItems = [
     { label: "Home", href: "/" },
