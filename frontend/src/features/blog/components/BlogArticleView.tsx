@@ -202,11 +202,17 @@ export function BlogArticleView({
       : null;
 
   const tagChips = [
-    catLabel,
-    subLabel,
-    ...article.topics.slice(0, 2),
-    ...article.tags.slice(0, 3),
-  ].filter(Boolean);
+    ...new Map(
+      [
+        catLabel,
+        subLabel,
+        ...article.topics.slice(0, 2),
+        ...article.tags.slice(0, 3),
+      ]
+        .filter(Boolean)
+        .map((label) => [label.trim().toLowerCase(), label] as const),
+    ).values(),
+  ];
 
   const crumbItems = [
     { label: "Home", href: "/" },
