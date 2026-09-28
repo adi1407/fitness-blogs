@@ -1,5 +1,6 @@
 import type { PoolClient } from "pg";
 import { env } from "../config/env";
+import { INTENT_ARTICLE_COVERS } from "../db/intentArticles/covers";
 import { pool } from "../db/pool";
 import {
   isCloudinaryConfigured,
@@ -137,9 +138,13 @@ async function repairBrokenCovers(
   client: PoolClient,
   missing: Set<string>,
 ): Promise<number> {
+  // Seeded covers ship with the frontend, so on a combined push the API can boot
+  // before Vercel serves them. Leave those for the next boot instead of clearing.
+  const plannedCovers = new Set(Object.values(INTENT_ARTICLE_COVERS));
   const brokenPaths = [...missing]
     .filter((k) => k.startsWith("images:"))
-    .map((k) => `/images/articles/${k.slice("images:".length)}`);
+    .map((k) => `/images/articles/${k.slice("images:".length)}`)
+    .filter((path) => !plannedCovers.has(path));
   if (!brokenPaths.length) return 0;
 
   const broken = await client.query<{ id: string; featured_image: string; og_image: string }>(
