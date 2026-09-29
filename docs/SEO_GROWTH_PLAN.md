@@ -1,6 +1,6 @@
 # fitlives SEO & Growth Plan — Calculators, Clusters, Food Data
 
-> Owner: SEO / growth. Status: **plan — not yet implemented.**
+> Owner: SEO / growth. Status: **reference plan only — not scheduled for implementation.** Use it as a roadmap to improve SEO; nothing here is committed work.
 > Companion docs: `SEO_PLAYBOOK.md` (rules), `INFORMATION_ARCHITECTURE.md` (URLs), `CONTENT_MODEL.md`, `BUILD_ROADMAP.md`.
 > Principle: **fewer, genuinely excellent pages** that are linked into a connected topic ecosystem — not volume.
 
@@ -26,12 +26,11 @@
 
 ---
 
-## 1. Decisions needed before build (owner sign-off)
+## 1. Decisions (owner)
 
-1. **Remove the sign-in gate for results (strongly recommended).**
-   Everyone gets the full result instantly. Sign-in becomes an *optional upgrade*: "Save your results & pre-fill next time". This keeps accounts valuable without blocking Google traffic. (Current behaviour — calculators only work when signed in — was built to your earlier brief; this plan recommends changing it.)
-2. **Brand casing in titles.** Brand rules say lowercase **fitlives**. Use `| fitlives` in titles (not "FitLives") unless you decide to rebrand.
-3. **Calculators hub URL.** Rename `/tools` → **`/calculators`** (301). It stays a lean directory page linking to each dedicated calculator — not a page with everything on it.
+1. **Sign-in gate for results — OPEN.** Recommendation: everyone gets the full result instantly; sign-in becomes an *optional upgrade* ("Save your results & pre-fill next time"). Alternative middle ground: show the core number (e.g. daily calories) to everyone and keep the detailed breakdown / saved history behind sign-in. Current behaviour (results only when signed in) limits Google traffic and backlinks.
+2. **Brand casing in titles — DECIDED:** lowercase `| fitlives`.
+3. **Calculators hub URL — DECIDED:** keep **`/tools`** as the directory page. It stays a lean hub linking to each dedicated calculator — not a page with everything on it.
 4. **Qualified reviewer.** Recruit at least one registered dietitian / nutritionist for "Reviewed by". Until then, never display "Reviewed by".
 5. **Navigation vs locked taxonomy.** Blog taxonomy stays 3 categories. The new menu (section 9) groups existing categories/subcategories and pillars — it does **not** add new blog categories.
 
@@ -49,7 +48,7 @@
 | `/macro-calculator` | `/tools/macro-calculator` | 1 |
 | `/bmi-calculator` | `/tools/bmi-calculator` | 1 |
 | `/bmr-calculator` | `/tools/bmr-calculator` | 1 |
-| `/calculators` | `/tools` | 1 (hub) |
+| `/tools` (hub, unchanged URL) | — | 1 (hub) |
 | `/calorie-deficit-calculator` | — | 4 |
 | `/ideal-weight-calculator` | — | 4 |
 | `/body-fat-calculator` | — | 4 |
@@ -74,8 +73,8 @@ Later candidates (only with demand proven in Search Console): carbohydrate, fat 
 
 ### Migration checklist (calculator move)
 
-- [ ] Move route folders `app/tools/*-calculator` → `app/*-calculator`; `app/tools` → `app/calculators`
-- [ ] Permanent redirects in `next.config.ts` (`/tools/:slug` → `/:slug`, `/tools` → `/calculators`)
+- [ ] Move route folders `app/tools/*-calculator` → `app/*-calculator`; `app/tools/page.tsx` stays as the hub
+- [ ] Permanent redirects in `next.config.ts` (`/tools/:slug-calculator` → `/:slug-calculator`; `/tools` itself is not redirected)
 - [ ] Update canonicals, sitemap `STATIC_PATHS`, footer, header, `calcHandoff` links, article/tool CTAs (grep every `/tools/`)
 - [ ] Update seeded article bodies that link `/tools/...` (redirects cover them, but update source for clean links)
 - [ ] GSC: submit new sitemap, inspect the six new URLs, monitor "Page with redirect" for old ones
@@ -173,7 +172,7 @@ One strong page per cluster. **Do not** create near-duplicate pages per phrase.
 - Cluster: bmr calculator · basal metabolic rate · calories at rest · Mifflin St Jeor · Harris Benedict
 - H2s: What Is BMR? · BMR Formulas Compared · BMR vs RMR vs TDEE · Can You Raise BMR? · FAQ
 
-### 4.7 `/calculators` (hub)
+### 4.7 `/tools` (hub)
 - Title: `Free Fitness & Nutrition Calculators | fitlives`
 - Short intro, grouped cards (Nutrition · Body · Training), "Which calculator should I use?" guide. No calculator embedded.
 
@@ -386,7 +385,7 @@ Cadence: **2–3 excellent pages per week**, not 20 thin ones.
 | Phase | Weeks | Deliverables | Done when |
 |---|---|---|---|
 | **0 — Foundations** | 1 | Section 1 decisions signed off; GSC property + sitemap verified; analytics events defined; baseline export of GSC/GA4 | Baseline dashboard exists |
-| **1 — Flagship calculators** | 1–4 | URL migration + redirects; ungated results; rebuild **Calorie** (full result spec), then TDEE, Protein, Macro, BMI (Asian cut-offs), BMR; each with full content template, 5–8 FAQs, schema; `/calculators` hub | All 6 live, Rich Results valid, CWV green on mobile, old URLs 301 |
+| **1 — Flagship calculators** | 1–4 | URL migration + redirects; resolve sign-in gate decision; rebuild **Calorie** (full result spec), then TDEE, Protein, Macro, BMI (Asian cut-offs), BMR; each with full content template, 5–8 FAQs, schema; `/tools` hub refresh | All 6 live, Rich Results valid, CWV green on mobile, old URLs 301 |
 | **2 — Clusters** | 3–8 | `/nutrition/calories` pillar; 8 new calorie-cluster pages; 4 new protein pages; internal-link pass on all 22 existing articles (calculator CTAs + sibling links) | Every cluster page has ≥3 sibling links + calculator CTA |
 | **3 — Platform & trust** | 6–10 | New navigation + search upgrade; `/authors/{slug}` profiles; reviewer display; food DB v1 (50 foods, batches of 10) | Search covers foods/tools; 50 food pages QA'd |
 | **4 — Expansion (data-led)** | 10–16 | Calorie deficit, ideal weight, body fat, water intake, 1RM, walking/steps calories calculators; programmatic variants (men/women/weight-loss/muscle-gain) **only if GSC shows demand**; linkable assets + outreach | Each new page meets the calculator/content spec |
