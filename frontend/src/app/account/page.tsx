@@ -6,7 +6,7 @@ import { MEMBER_COOKIE } from "@/lib/auth/memberCookie";
 
 export const metadata: Metadata = {
   title: "Your account",
-  description: "Saved guides, upvotes, and fitlives member settings.",
+  description: "Saved calculator results, guides, upvotes, and fitlives member settings.",
   robots: { index: false, follow: false },
 };
 

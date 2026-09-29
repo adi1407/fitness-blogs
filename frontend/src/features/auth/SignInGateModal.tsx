@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 export function SignInGateModal({
   open,
   actionLabel,
-  description = "Use Google to save guides, upvote what helps, and unlock educational calculators from your fitlives account.",
+  description = "Use Google to save guides, upvote what helps, and keep your calculator results in your fitlives account.",
   onClose,
 }: {
   open: boolean;

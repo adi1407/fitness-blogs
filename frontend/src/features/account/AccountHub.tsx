@@ -11,6 +11,7 @@ import {
   LEGAL_RELATED,
 } from "@/lib/legal";
 import type { MemberLibraryArticle } from "@/features/account/types";
+import { MyNumbersSection } from "@/features/account/MyNumbersSection";
 
 function formatDate(iso?: string) {
   if (!iso) return null;
@@ -151,6 +152,8 @@ export function AccountHub() {
           Sign out
         </button>
       </section>
+
+      <MyNumbersSection />
 
       <LibrarySection
         title="Saved"

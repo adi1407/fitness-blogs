@@ -1,28 +1,29 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { BmrCalculatorForm } from "@/features/tools/components/BmrCalculatorForm";
+import { bmrContent, bmrMeta } from "@/features/tools/content/bmr";
 
 export const metadata: Metadata = {
-  title: "BMR Calculator — Basal Metabolic Rate Estimate",
-  description:
-    "Estimate basal metabolic rate with Mifflin–St Jeor, then continue to TDEE for daily calorie planning.",
+  title: bmrMeta.title,
+  description: bmrMeta.description,
   alternates: { canonical: "/tools/bmr-calculator" },
+  openGraph: {
+    title: `${bmrMeta.title} | fitlives`,
+    description: bmrMeta.description,
+    url: "/tools/bmr-calculator",
+    type: "website",
+  },
 };
 
 export default function Page() {
   return (
     <CalculatorPageShell
       slug="bmr-calculator"
-      title="BMR calculator"
-      description="Estimate calories burned at complete rest using the Mifflin–St Jeor equation."
+      title={bmrMeta.h1}
+      intro={bmrMeta.intro}
+      description={bmrMeta.description}
       form={<BmrCalculatorForm />}
-      howItWorks={
-        <p>
-          BMR is not your daily calorie target. Multiply by an activity factor
-          (TDEE) for maintenance estimates used in fat-loss or muscle-gain
-          planning.
-        </p>
-      }
+      content={bmrContent}
     />
   );
 }

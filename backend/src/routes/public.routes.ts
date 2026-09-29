@@ -21,6 +21,10 @@ import {
   publicUpvotesRouter,
 } from "./publicEngagement.routes";
 import {
+  publicCalcProfileRouter,
+  publicCalcResultsRouter,
+} from "./publicMemberCalc.routes";
+import {
   mapArticle,
   resolveRelatedArticles,
 } from "./articles.routes";
@@ -30,6 +34,8 @@ export const publicRouter = Router();
 publicRouter.use("/auth", publicAuthRouter);
 publicRouter.use("/me/bookmarks", publicBookmarksRouter);
 publicRouter.use("/me/upvotes", publicUpvotesRouter);
+publicRouter.use("/me/calc-profile", publicCalcProfileRouter);
+publicRouter.use("/me/calc-results", publicCalcResultsRouter);
 publicRouter.use("/articles/:articleId/engagement", publicEngagementRouter);
 
 const ARTICLE_SELECT = `

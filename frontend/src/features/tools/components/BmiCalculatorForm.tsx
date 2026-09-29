@@ -1,219 +1,167 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
-import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
 import {
-  CalcInput,
   CalcWorkspace,
-  FieldLabel,
   ResultHero,
-  SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
+import { BodyStatsFields } from "@/features/tools/components/BodyStatsFields";
+import { CalcSaveBar } from "@/features/tools/components/CalcSaveBar";
 import {
-  numField,
-  parseNum,
-  roundNumField,
-  setNumField,
-  type NumField,
-} from "@/features/tools/lib/calcFields";
-import {
+  BMI_CATEGORY_LABEL,
   calcBmi,
-  cmToFtIn,
-  ftInToCm,
-  kgToLb,
-  lbToKg,
+  type BmiCategoryId,
 } from "@/features/tools/lib/calcMath";
+import { takeHandoff } from "@/features/tools/lib/calcHandoff";
+import { useBodyStats } from "@/features/tools/hooks/useBodyStats";
+import { useCalcMember } from "@/features/tools/hooks/useCalcMember";
 import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
+import type { CalcSavePayload } from "@/features/tools/types";
+import { cn } from "@/lib/utils";
 
-export function BmiCalculatorForm() {
+const TOOL = "bmi-calculator" as const;
+
+function CategoryRow({
+  scale,
+  category,
+  bands,
+}: {
+  scale: string;
+  category: BmiCategoryId;
+  bands: string;
+}) {
   return (
-    <CalcAuthGate
-      toolName="BMI calculator"
-      tool="bmi-calculator"
-      actionLabel="unlock your BMI screening"
-    >
-      {(gate) => <BmiInner {...gate} />}
-    </CalcAuthGate>
+    <div className="flex items-start justify-between gap-3 rounded-xl border border-border bg-white px-4 py-3">
+      <div>
+        <p className="text-xs font-medium text-muted-foreground">{scale}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{bands}</p>
+      </div>
+      <span
+        className={cn(
+          "shrink-0 rounded-full px-3 py-1 text-xs font-semibold",
+          category === "normal"
+            ? "bg-brand-50 text-foreground"
+            : "bg-[#FFF3E0] text-foreground",
+        )}
+      >
+        {BMI_CATEGORY_LABEL[category]}
+      </span>
+    </div>
   );
 }
 
-function BmiInner({
-  memberId,
-  memberName,
-  isSignedIn,
-  acknowledged,
-  requestAck,
-  requestSignIn,
-}: {
-  memberId: string | null;
-  memberName: string | null;
-  isSignedIn: boolean;
-  acknowledged: boolean;
-  requestAck: () => void;
-  requestSignIn: () => void;
-}) {
-  const [weight, setWeight] = useState<NumField>(numField(70));
-  const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
-  const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
-  const [heightCm, setHeightCm] = useState<NumField>(numField(170));
-  const [ft, setFt] = useState<NumField>(numField(5));
-  const [inches, setInches] = useState<NumField>(numField(7));
+export function BmiCalculatorForm() {
+  const calc = useCalcMember(TOOL);
+  const stats = useBodyStats({ profile: calc.profile });
 
-  const weightN = parseNum(weight);
-  const heightCmN = parseNum(heightCm);
-  const ftN = parseNum(ft);
-  const inN = parseNum(inches);
+  /* eslint-disable react-hooks/exhaustive-deps -- the URL is only readable after hydration; runs once */
+  useEffect(() => {
+    stats.applyHandoff(takeHandoff(["kg", "cm"] as const));
+  }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
-  const weightKg =
-    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
-  const height =
-    heightUnit === "cm"
-      ? heightCmN
-      : ftN == null || inN == null
-        ? null
-        : ftInToCm(ftN, inN);
-
+  const { kg, cm } = stats;
   const computed = useMemo(() => {
-    if (weightKg == null || weightKg <= 0 || height == null || height <= 0) {
-      return null;
-    }
-    return calcBmi(weightKg, height);
-  }, [weightKg, height]);
+    if (kg == null || cm == null) return null;
+    return calcBmi(kg, cm);
+  }, [kg, cm]);
 
-  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
-    acknowledged,
-    requestAck,
-    [memberId, weight, weightUnit, heightUnit, heightCm, ft, inches].join("|"),
-  );
+  const { shown: result, runId, runCalculate } = useCalcResult<
+    NonNullable<typeof computed>
+  >(TOOL, stats.key);
+
+  const payload: CalcSavePayload | null =
+    result && kg != null && cm != null
+      ? {
+          tool: TOOL,
+          inputs: { kg: Math.round(kg * 10) / 10, cm: Math.round(cm) },
+          result: {
+            label: "BMI",
+            value: result.bmi,
+            unit: "",
+            category: BMI_CATEGORY_LABEL[result.categoryId],
+            asianCategory: BMI_CATEGORY_LABEL[result.asianCategoryId],
+          },
+          profile: {
+            kg: Math.round(kg * 10) / 10,
+            cm: Math.round(cm),
+            weightUnit: stats.weightUnit,
+            heightUnit: stats.heightUnit,
+          },
+        }
+      : null;
+
+  const differs = result != null && result.categoryId !== result.asianCategoryId;
 
   return (
     <CalcWorkspace
       title="Screening metric"
-      purpose="BMI is a population screening index — not a diagnosis or body-fat measure."
-      signedInAs={isSignedIn ? memberName : null}
-      locked={!isSignedIn}
-      lockTitle="Sign in to calculate BMI"
-      onUnlockClick={requestSignIn}
+      purpose="BMI is a quick screening number — not a diagnosis or a body-fat measurement."
+      signedInAs={calc.memberName}
       inputs={
-        <>
-          <FieldLabel label="Weight">
-            <div className="flex gap-2">
-              <CalcInput
-                type="number"
-                value={weight}
-                onChange={(e) => setNumField(e.target.value, setWeight)}
-              />
-              <SegmentedControl
-                value={weightUnit}
-                onChange={(u) => {
-                  if (u === weightUnit) return;
-                  if (weightN != null) {
-                    setWeight(
-                      u === "lb"
-                        ? roundNumField(kgToLb(weightN))
-                        : roundNumField(lbToKg(weightN)),
-                    );
-                  }
-                  setWeightUnit(u);
-                }}
-                options={[
-                  { id: "kg", label: "kg" },
-                  { id: "lb", label: "lb" },
-                ]}
-              />
-            </div>
-          </FieldLabel>
-          <FieldLabel label="Height">
-            <div className="space-y-2">
-              <SegmentedControl
-                value={heightUnit}
-                onChange={(u) => {
-                  if (u === "ft" && heightUnit === "cm" && heightCmN != null) {
-                    const fi = cmToFtIn(heightCmN);
-                    setFt(numField(fi.ft));
-                    setInches(numField(fi.inches));
-                  } else if (
-                    u === "cm" &&
-                    heightUnit === "ft" &&
-                    ftN != null &&
-                    inN != null
-                  ) {
-                    setHeightCm(numField(ftInToCm(ftN, inN)));
-                  }
-                  setHeightUnit(u);
-                }}
-                options={[
-                  { id: "cm", label: "cm" },
-                  { id: "ft", label: "ft / in" },
-                ]}
-              />
-              {heightUnit === "cm" ? (
-                <CalcInput
-                  type="number"
-                  value={heightCm}
-                  onChange={(e) => setNumField(e.target.value, setHeightCm)}
-                />
-              ) : (
-                <div className="flex gap-2">
-                  <CalcInput
-                    type="number"
-                    value={ft}
-                    onChange={(e) => setNumField(e.target.value, setFt)}
-                  />
-                  <CalcInput
-                    type="number"
-                    value={inches}
-                    onChange={(e) => setNumField(e.target.value, setInches)}
-                  />
-                </div>
-              )}
-            </div>
-          </FieldLabel>
-        </>
+        <BodyStatsFields stats={stats} showSex={false} showAge={false} />
       }
       calculateSlot={
-        isSignedIn ? (
-          <Button
-            type="button"
-            disabled={!computed}
-            onClick={() => {
-              if (computed) runCalculate(computed);
-            }}
-          >
-            Calculate BMI
-          </Button>
-        ) : null
+        <Button
+          type="button"
+          disabled={!computed}
+          onClick={() => {
+            if (computed) runCalculate(computed);
+          }}
+        >
+          Calculate BMI
+        </Button>
       }
       results={
         <>
           <ResultHero
             key={runId}
             show={result != null}
-            label="BMI"
+            label="Your BMI"
             value={result?.bmi ?? ""}
+            unit="kg/m²"
           />
           {result ? (
-            <div className="mt-4 space-y-3">
-              <span className="inline-flex rounded-full border border-border bg-white px-3 py-1 text-sm font-medium text-foreground">
-                {result.categoryLabel}
-              </span>
+            <div className="mt-4 space-y-2">
+              <CategoryRow
+                scale="International (WHO)"
+                bands="Healthy 18.5–24.9 · Overweight 25–29.9 · Obesity 30+"
+                category={result.categoryId}
+              />
+              <CategoryRow
+                scale="Indian & Asian cut-offs"
+                bands="Healthy 18.5–22.9 · Overweight 23–24.9 · Obesity 25+"
+                category={result.asianCategoryId}
+              />
+              {differs ? (
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  The two scales disagree for you. South Asians tend to carry
+                  more body fat and face higher metabolic risk at a lower BMI,
+                  which is why Indian guidelines use lower cut-offs.
+                </p>
+              ) : null}
               <p className="rounded-xl border border-accent/30 bg-[#FFF8E1] px-4 py-3 text-xs leading-relaxed text-foreground/80">
-                Screening only — BMI does not measure body fat, muscle, or
-                health directly. Consult a professional for personal advice.
+                Screening only — BMI can&apos;t tell muscle from fat. Pair it
+                with your waist measurement: aim to keep your waist under half
+                your height.
               </p>
             </div>
           ) : null}
         </>
       }
+      afterResults={<CalcSaveBar key={runId} calc={calc} payload={payload} />}
       footer={
         <div className="flex flex-wrap gap-3 text-sm">
-          <Link href="/weight-loss" className="fk-link font-semibold">
-            Weight loss guide
+          <Link href="/tools/calorie-calculator" className="fk-link font-semibold">
+            Calorie calculator
           </Link>
           <Link href="/tools/tdee-calculator" className="fk-link font-semibold">
             TDEE calculator
+          </Link>
+          <Link href="/weight-loss" className="fk-link font-semibold">
+            Weight loss guide
           </Link>
         </div>
       }

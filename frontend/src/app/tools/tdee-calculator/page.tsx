@@ -1,37 +1,29 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { TdeeCalculatorForm } from "@/features/tools/components/TdeeCalculatorForm";
+import { tdeeContent, tdeeMeta } from "@/features/tools/content/tdee";
 
 export const metadata: Metadata = {
-  title: "TDEE Calculator — Daily Calorie Needs Estimate",
-  description:
-    "Free TDEE calculator using Mifflin–St Jeor. Estimate maintenance calories for fat loss or muscle gain, then continue to macros and guides.",
+  title: tdeeMeta.title,
+  description: tdeeMeta.description,
   alternates: { canonical: "/tools/tdee-calculator" },
+  openGraph: {
+    title: `${tdeeMeta.title} | fitlives`,
+    description: tdeeMeta.description,
+    url: "/tools/tdee-calculator",
+    type: "website",
+  },
 };
 
 export default function Page() {
   return (
     <CalculatorPageShell
       slug="tdee-calculator"
-      title="TDEE calculator"
-      description="Estimate total daily energy expenditure from BMR and activity, then set a starting calorie target."
+      title={tdeeMeta.h1}
+      intro={tdeeMeta.intro}
+      description={tdeeMeta.description}
       form={<TdeeCalculatorForm />}
-      howItWorks={
-        <>
-          <p>
-            We calculate BMR with the Mifflin–St Jeor equation, then multiply by
-            an activity factor. Real needs vary with NEAT, job demands, and
-            measurement error — treat this as a starting point and adjust from
-            weekly trends.
-          </p>
-        </>
-      }
-      faq={[
-        {
-          q: "Is TDEE the same as calories to eat for fat loss?",
-          a: "No. TDEE is an estimate of maintenance. Fat loss usually requires a moderate deficit below TDEE.",
-        },
-      ]}
+      content={tdeeContent}
     />
   );
 }

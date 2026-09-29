@@ -1,28 +1,29 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { CalorieCalculatorForm } from "@/features/tools/components/CalorieCalculatorForm";
+import { calorieContent, calorieMeta } from "@/features/tools/content/calorie";
 
 export const metadata: Metadata = {
-  title: "Calorie Calculator — Daily Targets by Goal",
-  description:
-    "Turn maintenance calories into fat-loss, maintenance, or surplus targets. Educational calorie calculator with next steps into macros and guides.",
+  title: calorieMeta.title,
+  description: calorieMeta.description,
   alternates: { canonical: "/tools/calorie-calculator" },
+  openGraph: {
+    title: `${calorieMeta.title} | fitlives`,
+    description: calorieMeta.description,
+    url: "/tools/calorie-calculator",
+    type: "website",
+  },
 };
 
 export default function Page() {
   return (
     <CalculatorPageShell
       slug="calorie-calculator"
-      title="Calorie calculator"
-      description="Convert your TDEE into a practical daily calorie target for fat loss, maintenance, or surplus."
+      title={calorieMeta.h1}
+      intro={calorieMeta.intro}
+      description={calorieMeta.description}
       form={<CalorieCalculatorForm />}
-      howItWorks={
-        <p>
-          Enter maintenance calories (from the TDEE tool or another estimate),
-          then choose a goal. Defaults use ~20% deficit for fat loss and ~10%
-          surplus for muscle gain — moderate starting points, not prescriptions.
-        </p>
-      }
+      content={calorieContent}
     />
   );
 }

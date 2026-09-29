@@ -1,227 +1,83 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/animate-ui/components/buttons/button";
-import { CalcAuthGate } from "@/features/tools/components/CalcAuthGate";
 import {
-  CalcInput,
   CalcWorkspace,
-  FieldLabel,
   ResultHero,
-  SegmentedControl,
 } from "@/features/tools/components/CalcWorkspace";
-import {
-  numField,
-  parseNum,
-  roundNumField,
-  setNumField,
-  type NumField,
-} from "@/features/tools/lib/calcFields";
-import {
-  cmToFtIn,
-  ftInToCm,
-  kgToLb,
-  lbToKg,
-  mifflinBmr,
-  type Sex,
-} from "@/features/tools/lib/calcMath";
-import { handoffHref } from "@/features/tools/lib/calcHandoff";
+import { BodyStatsFields } from "@/features/tools/components/BodyStatsFields";
+import { CalcSaveBar } from "@/features/tools/components/CalcSaveBar";
+import { mifflinBmr } from "@/features/tools/lib/calcMath";
+import { handoffHref, takeHandoff } from "@/features/tools/lib/calcHandoff";
+import { useBodyStats } from "@/features/tools/hooks/useBodyStats";
+import { useCalcMember } from "@/features/tools/hooks/useCalcMember";
 import { useCalcResult } from "@/features/tools/hooks/useCalcResult";
+import type { CalcSavePayload } from "@/features/tools/types";
+
+const TOOL = "bmr-calculator" as const;
 
 export function BmrCalculatorForm() {
-  return (
-    <CalcAuthGate
-      toolName="BMR calculator"
-      tool="bmr-calculator"
-      actionLabel="unlock your BMR estimate"
-    >
-      {(gate) => <BmrInner {...gate} />}
-    </CalcAuthGate>
-  );
-}
+  const calc = useCalcMember(TOOL);
+  const stats = useBodyStats({ profile: calc.profile });
 
-function BmrInner({
-  memberId,
-  memberName,
-  isSignedIn,
-  acknowledged,
-  requestAck,
-  requestSignIn,
-}: {
-  memberId: string | null;
-  memberName: string | null;
-  isSignedIn: boolean;
-  acknowledged: boolean;
-  requestAck: () => void;
-  requestSignIn: () => void;
-}) {
-  const [sex, setSex] = useState<Sex>("male");
-  const [age, setAge] = useState<NumField>(numField(30));
-  const [weight, setWeight] = useState<NumField>(numField(70));
-  const [weightUnit, setWeightUnit] = useState<"kg" | "lb">("kg");
-  const [heightUnit, setHeightUnit] = useState<"cm" | "ft">("cm");
-  const [heightCm, setHeightCm] = useState<NumField>(numField(170));
-  const [ft, setFt] = useState<NumField>(numField(5));
-  const [inches, setInches] = useState<NumField>(numField(7));
+  /* eslint-disable react-hooks/exhaustive-deps -- the URL is only readable after hydration; runs once */
+  useEffect(() => {
+    stats.applyHandoff(takeHandoff(["sex", "age", "kg", "cm"] as const));
+  }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
-  const ageN = parseNum(age);
-  const weightN = parseNum(weight);
-  const heightCmN = parseNum(heightCm);
-  const ftN = parseNum(ft);
-  const inN = parseNum(inches);
-
-  const weightKg =
-    weightN == null ? null : weightUnit === "kg" ? weightN : lbToKg(weightN);
-  const height =
-    heightUnit === "cm"
-      ? heightCmN
-      : ftN == null || inN == null
-        ? null
-        : ftInToCm(ftN, inN);
-
+  const { ageN, kg, cm, sex } = stats;
   const computed = useMemo(() => {
-    if (
-      ageN == null ||
-      ageN <= 0 ||
-      weightKg == null ||
-      weightKg <= 0 ||
-      height == null ||
-      height <= 0
-    ) {
-      return null;
-    }
+    if (ageN == null || kg == null || cm == null) return null;
     return {
-      bmr: Math.round(mifflinBmr(sex, weightKg, height, ageN)),
+      bmr: Math.round(mifflinBmr(sex, kg, cm, ageN)),
       sex,
       age: ageN,
-      kg: Math.round(weightKg),
-      cm: Math.round(height),
+      kg: Math.round(kg),
+      cm: Math.round(cm),
     };
-  }, [sex, weightKg, height, ageN]);
+  }, [sex, kg, cm, ageN]);
 
-  const { shown: result, runId, runCalculate } = useCalcResult<NonNullable<typeof computed>>(
-    acknowledged,
-    requestAck,
-    [memberId, sex, age, weight, weightUnit, heightUnit, heightCm, ft, inches].join("|"),
-  );
+  const { shown: result, runId, runCalculate } = useCalcResult<
+    NonNullable<typeof computed>
+  >(TOOL, stats.key);
+
+  const payload: CalcSavePayload | null = result
+    ? {
+        tool: TOOL,
+        inputs: { sex: result.sex, age: result.age, kg: result.kg, cm: result.cm },
+        result: { label: "BMR", value: result.bmr, unit: "kcal/day" },
+        profile: stats.toProfile(),
+      }
+    : null;
+
+  const tdeeHref = result
+    ? handoffHref("/tools/tdee-calculator", {
+        sex: result.sex,
+        age: result.age,
+        kg: result.kg,
+        cm: result.cm,
+      })
+    : "/tools/tdee-calculator";
 
   return (
     <CalcWorkspace
       title="Resting burn"
-      purpose="Estimate calories before activity using Mifflin–St Jeor — educational only."
-      signedInAs={isSignedIn ? memberName : null}
-      locked={!isSignedIn}
-      lockTitle="Sign in to calculate BMR"
-      onUnlockClick={requestSignIn}
-      inputs={
-        <>
-          <FieldLabel label="Sex">
-            <SegmentedControl
-              value={sex}
-              onChange={setSex}
-              options={[
-                { id: "male", label: "Male" },
-                { id: "female", label: "Female" },
-              ]}
-            />
-          </FieldLabel>
-          <FieldLabel label="Age">
-            <CalcInput
-              type="number"
-              min={15}
-              max={100}
-              value={age}
-              onChange={(e) => setNumField(e.target.value, setAge)}
-            />
-          </FieldLabel>
-          <FieldLabel label="Weight">
-            <div className="flex gap-2">
-              <CalcInput
-                type="number"
-                value={weight}
-                onChange={(e) => setNumField(e.target.value, setWeight)}
-              />
-              <SegmentedControl
-                value={weightUnit}
-                onChange={(u) => {
-                  if (u === weightUnit) return;
-                  if (weightN != null) {
-                    setWeight(
-                      u === "lb"
-                        ? roundNumField(kgToLb(weightN))
-                        : roundNumField(lbToKg(weightN)),
-                    );
-                  }
-                  setWeightUnit(u);
-                }}
-                options={[
-                  { id: "kg", label: "kg" },
-                  { id: "lb", label: "lb" },
-                ]}
-              />
-            </div>
-          </FieldLabel>
-          <FieldLabel label="Height">
-            <div className="space-y-2">
-              <SegmentedControl
-                value={heightUnit}
-                onChange={(u) => {
-                  if (u === "ft" && heightUnit === "cm" && heightCmN != null) {
-                    const fi = cmToFtIn(heightCmN);
-                    setFt(numField(fi.ft));
-                    setInches(numField(fi.inches));
-                  } else if (
-                    u === "cm" &&
-                    heightUnit === "ft" &&
-                    ftN != null &&
-                    inN != null
-                  ) {
-                    setHeightCm(numField(ftInToCm(ftN, inN)));
-                  }
-                  setHeightUnit(u);
-                }}
-                options={[
-                  { id: "cm", label: "cm" },
-                  { id: "ft", label: "ft / in" },
-                ]}
-              />
-              {heightUnit === "cm" ? (
-                <CalcInput
-                  type="number"
-                  value={heightCm}
-                  onChange={(e) => setNumField(e.target.value, setHeightCm)}
-                />
-              ) : (
-                <div className="flex gap-2">
-                  <CalcInput
-                    type="number"
-                    value={ft}
-                    onChange={(e) => setNumField(e.target.value, setFt)}
-                  />
-                  <CalcInput
-                    type="number"
-                    value={inches}
-                    onChange={(e) => setNumField(e.target.value, setInches)}
-                  />
-                </div>
-              )}
-            </div>
-          </FieldLabel>
-        </>
-      }
+      purpose="Estimate the calories your body uses at complete rest (Mifflin–St Jeor)."
+      signedInAs={calc.memberName}
+      inputs={<BodyStatsFields stats={stats} />}
       calculateSlot={
-        isSignedIn ? (
-          <Button
-            type="button"
-            disabled={!computed}
-            onClick={() => {
-              if (computed) runCalculate(computed);
-            }}
-          >
-            Calculate BMR
-          </Button>
-        ) : null
+        <Button
+          type="button"
+          disabled={!computed}
+          onClick={() => {
+            if (computed) runCalculate(computed);
+          }}
+        >
+          Calculate BMR
+        </Button>
       }
       results={
         <>
@@ -229,33 +85,34 @@ function BmrInner({
             key={runId}
             show={result != null}
             label="Estimated BMR"
-            value={result?.bmr ?? ""}
+            value={result?.bmr.toLocaleString("en-IN") ?? ""}
             unit="kcal/day"
           />
           {result ? (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Calories before activity. Add training and daily movement in the
-              TDEE calculator for a maintenance estimate.
-            </p>
+            <div className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <p>
+                This is roughly what you would burn lying still all day. It is
+                not an eating target — daily movement and training come on top.
+              </p>
+              <p>
+                <Link href={tdeeHref} className="fk-link font-semibold">
+                  Add your activity level to get maintenance calories (TDEE)
+                </Link>
+              </p>
+            </div>
           ) : null}
         </>
       }
+      afterResults={<CalcSaveBar key={runId} calc={calc} payload={payload} />}
       footer={
-        <Link
-          href={
-            result
-              ? handoffHref("/tools/tdee-calculator", {
-                  sex: result.sex,
-                  age: result.age,
-                  kg: result.kg,
-                  cm: result.cm,
-                })
-              : "/tools/tdee-calculator"
-          }
-          className="fk-link text-sm font-semibold"
-        >
-          Add activity → TDEE calculator
-        </Link>
+        <div className="flex flex-wrap gap-3 text-sm">
+          <Link href={tdeeHref} className="fk-link font-semibold">
+            TDEE calculator
+          </Link>
+          <Link href="/tools/calorie-calculator" className="fk-link font-semibold">
+            Calorie calculator
+          </Link>
+        </div>
       }
     />
   );

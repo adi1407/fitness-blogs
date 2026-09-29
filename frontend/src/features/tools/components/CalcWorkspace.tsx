@@ -1,6 +1,6 @@
 "use client";
 
-import type { InputHTMLAttributes, ReactNode } from "react";
+import { useId, type InputHTMLAttributes, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
@@ -8,28 +8,23 @@ type CalcWorkspaceProps = {
   title: string;
   purpose: string;
   signedInAs?: string | null;
-  locked: boolean;
-  lockTitle?: string;
-  lockDescription?: string;
-  onUnlockClick?: () => void;
   inputs: ReactNode;
   results: ReactNode;
+  /** Rendered under the results, outside the live region (e.g. save row). */
+  afterResults?: ReactNode;
   footer?: ReactNode;
   calculateSlot?: ReactNode;
   className?: string;
 };
 
-/** Two-column calculator chrome: inputs | results, with guest lock overlay. */
+/** Two-column calculator chrome: inputs | results. Free to use, no sign-in. */
 export function CalcWorkspace({
   title,
   purpose,
   signedInAs,
-  locked,
-  lockTitle = "Sign in to calculate",
-  lockDescription = "Create a free fitlives account with Google to enter your numbers and see educational estimates.",
-  onUnlockClick,
   inputs,
   results,
+  afterResults,
   footer,
   calculateSlot,
   className,
@@ -55,62 +50,40 @@ export function CalcWorkspace({
             </p>
           ) : (
             <p className="rounded-full border border-border bg-white/80 px-3 py-1 text-xs font-medium text-muted-foreground">
-              Sign in required to unlock
+              Free · no sign-in needed
             </p>
           )}
         </div>
       </div>
 
-      <div className="relative grid gap-0 lg:grid-cols-2">
-        <div
-          className={cn(
-            "space-y-5 border-b border-border p-5 sm:p-6 lg:border-r lg:border-b-0",
-            locked && "pointer-events-none select-none blur-[2px] opacity-60",
-          )}
-          aria-hidden={locked}
+      <div className="grid gap-0 lg:grid-cols-2">
+        <form
+          className="space-y-5 border-b border-border p-5 sm:p-6 lg:border-r lg:border-b-0"
+          onSubmit={(e) => e.preventDefault()}
+          noValidate
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Your inputs
           </p>
           {inputs}
           {calculateSlot ? <div className="pt-1">{calculateSlot}</div> : null}
-        </div>
+        </form>
 
-        <div
-          className={cn(
-            "relative min-h-[220px] bg-white p-5 sm:p-6",
-            locked && "pointer-events-none select-none blur-[2px] opacity-50",
-          )}
-          aria-hidden={locked}
-        >
+        <div className="min-h-[220px] bg-white p-5 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Results
           </p>
-          <div className="mt-4">{results}</div>
-        </div>
-
-        {locked ? (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/55 p-4 backdrop-blur-[1px]">
-            <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-6 text-center shadow-lg">
-              <h3 className="text-lg font-semibold tracking-tight">
-                {lockTitle}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {lockDescription}
-              </p>
-              <button
-                type="button"
-                onClick={onUnlockClick}
-                className="fk-btn-accent mt-5 w-full rounded-xl px-4 py-3 text-sm"
-              >
-                Sign in or create an account
-              </button>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Google only · Educational estimates, not medical advice
-              </p>
-            </div>
+          <div className="mt-4" aria-live="polite">
+            {results}
           </div>
-        ) : null}
+          {afterResults}
+          <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+            This calculator gives an estimate and isn&apos;t a substitute for
+            individualised medical or dietary advice. If you have a medical
+            condition, are pregnant, or take medication, talk to a qualified
+            professional first.
+          </p>
+        </div>
       </div>
 
       {footer ? (
@@ -145,6 +118,7 @@ export function SegmentedControl<T extends string>({
             key={opt.id}
             type="button"
             disabled={disabled}
+            aria-pressed={active}
             onClick={() => onChange(opt.id)}
             className={cn(
               "flex-1 rounded-lg px-3 py-2 text-sm font-medium transition",
@@ -171,11 +145,18 @@ export function FieldLabel({
   children: ReactNode;
   className?: string;
 }) {
+  const id = useId();
   return (
-    <label className={cn("block text-sm", className)}>
-      <span className="font-medium text-foreground">{label}</span>
+    <div
+      role="group"
+      aria-labelledby={id}
+      className={cn("block text-sm", className)}
+    >
+      <span id={id} className="font-medium text-foreground">
+        {label}
+      </span>
       <div className="mt-2">{children}</div>
-    </label>
+    </div>
   );
 }
 

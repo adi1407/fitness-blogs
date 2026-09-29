@@ -205,6 +205,24 @@ CREATE TABLE IF NOT EXISTS member_article_bookmarks (
 CREATE INDEX IF NOT EXISTS idx_member_bookmarks_member
   ON member_article_bookmarks(member_id, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS member_calc_profiles (
+  member_id UUID PRIMARY KEY REFERENCES members(id) ON DELETE CASCADE,
+  profile JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS member_calc_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  tool TEXT NOT NULL,
+  inputs JSONB NOT NULL DEFAULT '{}'::jsonb,
+  result JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_calc_results_member
+  ON member_calc_results(member_id, created_at DESC);
+
 CREATE TABLE IF NOT EXISTS exercises (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   muscle_group TEXT NOT NULL
