@@ -2,47 +2,47 @@
 
 import { useEffect, useState } from "react";
 import { HaloReel, type HaloReelItem } from "@/components/ui/halo-reel";
-import { HUB } from "@/lib/hubImages";
+import { HUB, hubThumb } from "@/lib/hubImages";
 
 const ITEMS: HaloReelItem[] = [
   {
-    src: HUB.bicepCurlWide,
+    src: hubThumb(HUB.bicepCurlWide),
     alt: "Chest and upper-body training",
     title: "Chest",
     subtitle: "Presses & flyes",
   },
   {
-    src: HUB.dumbbellRow,
+    src: hubThumb(HUB.dumbbellRow),
     alt: "Back training",
     title: "Back",
     subtitle: "Rows & pulls",
   },
   {
-    src: HUB.deadlift,
+    src: hubThumb(HUB.deadlift),
     alt: "Shoulder and full-body training",
     title: "Shoulders",
     subtitle: "Presses & raises",
   },
   {
-    src: HUB.bicepFocus,
+    src: hubThumb(HUB.bicepFocus),
     alt: "Arm training",
     title: "Arms",
     subtitle: "Biceps & triceps",
   },
   {
-    src: HUB.barbellSquat,
+    src: hubThumb(HUB.barbellSquat),
     alt: "Leg training",
     title: "Legs",
     subtitle: "Squats & hinges",
   },
   {
-    src: HUB.mobilityStretch,
+    src: hubThumb(HUB.mobilityStretch),
     alt: "Core and mobility",
     title: "Core",
     subtitle: "Stability work",
   },
   {
-    src: HUB.outdoorRun,
+    src: hubThumb(HUB.outdoorRun),
     alt: "Cardio training",
     title: "Cardio",
     subtitle: "Conditioning",
