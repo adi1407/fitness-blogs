@@ -11,20 +11,20 @@ import {
   type IntentArticleDef,
 } from "./helpers";
 
+/** Un-numbered on purpose: the boot link pass rewrites them to live numbered URLs. */
 const LINK = {
   calories:
-    "/blog/weight-loss/calorie-deficit/how-many-calories-should-i-eat-to-lose-weight/793576630",
+    "/blog/weight-loss/calorie-deficit/how-many-calories-should-i-eat-to-lose-weight",
   deficit:
-    "/blog/weight-loss/calorie-deficit/how-to-calculate-your-calorie-deficit/635175506",
+    "/blog/weight-loss/calorie-deficit/how-to-calculate-your-calorie-deficit",
   walking:
-    "/blog/weight-loss/walking-daily-activity/does-walking-help-you-lose-weight/727382084",
-  bellyFat: "/blog/weight-loss/fat-loss-basics/how-to-lose-belly-fat/355528441",
+    "/blog/weight-loss/walking-daily-activity/does-walking-help-you-lose-weight",
+  bellyFat: "/blog/weight-loss/fat-loss-basics/how-to-lose-belly-fat",
   indianFoods:
-    "/blog/weight-loss/weight-loss-nutrition/best-indian-foods-for-weight-loss/676191478",
-  proteinPerDay:
-    "/blog/nutrition/protein/how-much-protein-do-you-need-per-day/210790133",
+    "/blog/weight-loss/weight-loss-nutrition/best-indian-foods-for-weight-loss",
+  proteinPerDay: "/blog/nutrition/protein/how-much-protein-do-you-need-per-day",
   progressiveOverload:
-    "/blog/muscle-building/training-programs/what-is-progressive-overload/399232323",
+    "/blog/muscle-building/training-programs/what-is-progressive-overload",
 };
 
 export const batch7: IntentArticleDef[] = [

@@ -14,7 +14,7 @@ import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
 import { enhanceArticleHtml } from "@/features/blog/utils/articleHtml";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import {
-  calculatorCtaForCategory,
+  calculatorCtaFor,
   type PublicBlogArticle,
 } from "@/lib/api/blog";
 import { articleHref } from "@/features/home/utils/articleMedia";
@@ -78,7 +78,7 @@ export function BlogArticleView({
       ? `/blog/${catSlug}/${subSlug}/${article.slug}`
       : `/preview`);
   const absoluteUrl = `${siteUrl}${canonicalPath.startsWith("/") ? canonicalPath : `/${canonicalPath}`}`;
-  const calc = calculatorCtaForCategory(article.categorySlug);
+  const calc = calculatorCtaFor(catSlug, subSlug);
 
   const railRelated = related.slice(0, 5);
   const belowRelated = related.slice(5, 10);

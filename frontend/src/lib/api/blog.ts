@@ -183,35 +183,55 @@ export async function fetchPublishedArticleByNumber(
   }
 }
 
-export function calculatorCtaForCategory(categorySlug: string | null): {
-  href: string;
-  label: string;
-  blurb: string;
-} | null {
-  switch (categorySlug) {
-    case "nutrition":
-      return {
-        href: "/tools/protein-calculator",
-        label: "Protein calculator",
-        blurb: "Estimate daily protein targets for your goal.",
-      };
-    case "weight-loss":
-      return {
-        href: "/tools/tdee-calculator",
-        label: "TDEE calculator",
-        blurb: "Estimate maintenance calories to plan a sustainable deficit.",
-      };
-    case "muscle-building":
-      return {
-        href: "/tools/macro-calculator",
-        label: "Macro calculator",
-        blurb: "Build a simple macro split around your training.",
-      };
-    default:
-      return {
-        href: "/tools",
-        label: "Fitness calculators",
-        blurb: "Free educational tools for calories, macros, and more.",
-      };
-  }
+type CalculatorCta = { href: string; label: string; blurb: string };
+
+const CALC_CTA = {
+  calorie: {
+    href: "/tools/calorie-calculator",
+    label: "Calorie calculator",
+    blurb: "Get a daily calorie target for losing, maintaining, or gaining weight.",
+  },
+  protein: {
+    href: "/tools/protein-calculator",
+    label: "Protein calculator",
+    blurb: "Estimate your daily protein target for your weight and goal.",
+  },
+  macro: {
+    href: "/tools/macro-calculator",
+    label: "Macro calculator",
+    blurb: "Split your calories into protein, carbs, and fat.",
+  },
+  all: {
+    href: "/tools",
+    label: "Fitness calculators",
+    blurb: "Free educational tools for calories, macros, and more.",
+  },
+} satisfies Record<string, CalculatorCta>;
+
+const CALC_BY_SUBCATEGORY: Record<string, CalculatorCta> = {
+  protein: CALC_CTA.protein,
+  "sports-nutrition": CALC_CTA.protein,
+  "muscle-building-nutrition": CALC_CTA.protein,
+  "muscle-growth-hypertrophy": CALC_CTA.protein,
+  "training-programs": CALC_CTA.protein,
+  "beginner-muscle-building": CALC_CTA.macro,
+  hydration: CALC_CTA.calorie,
+};
+
+const CALC_BY_CATEGORY: Record<string, CalculatorCta> = {
+  "weight-loss": CALC_CTA.calorie,
+  "muscle-building": CALC_CTA.protein,
+  nutrition: CALC_CTA.macro,
+};
+
+/** Most relevant calculator for an article: subcategory first, then category. */
+export function calculatorCtaFor(
+  categorySlug: string | null,
+  subcategorySlug?: string | null,
+): CalculatorCta {
+  return (
+    (subcategorySlug && CALC_BY_SUBCATEGORY[subcategorySlug]) ||
+    (categorySlug && CALC_BY_CATEGORY[categorySlug]) ||
+    CALC_CTA.all
+  );
 }

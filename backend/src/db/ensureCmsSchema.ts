@@ -3,6 +3,8 @@ import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { seedKnowledgeContent } from "./seedKnowledgeContent";
 import { seedIntentArticles } from "./seedIntentArticles";
+import { applyContentMigrations } from "./contentMigrations";
+import { normalizeAllArticleLinks } from "../services/internalLinks";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -525,4 +527,6 @@ export async function ensureCmsSchema(): Promise<void> {
   await removeSeededArticles();
   await seedKnowledgeContent();
   await seedIntentArticles();
+  await applyContentMigrations();
+  await normalizeAllArticleLinks();
 }

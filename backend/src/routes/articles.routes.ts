@@ -19,6 +19,7 @@ import {
   failingGates,
 } from "../services/publishGates";
 import { upsertRedirect } from "../services/urlRedirects";
+import { normalizeArticleLinks } from "../services/internalLinks";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
 import { env } from "../config/env";
@@ -623,7 +624,7 @@ articlesRouter.post("/", async (req, res) => {
 
   const title = data.title ?? "";
   const slug = await uniqueSlug(data.slug || slugFromTitle(title) || "");
-  const body = data.body ?? "";
+  const body = await normalizeArticleLinks(data.body ?? "");
   const articleNumber = await allocateArticleNumber();
   const tags = (data.tags ?? []).map((t) => t.trim()).filter(Boolean);
   const topics = (data.topics ?? []).map((t) => t.trim()).filter(Boolean);
@@ -725,7 +726,8 @@ articlesRouter.put("/:id", async (req, res) => {
       ? normalizeSlugInput(data.slug ?? "")
       : row.slug || slugFromTitle(title);
   const slug = await uniqueSlug(slugBase || slugFromTitle(title), row.id);
-  const body = data.body ?? row.body;
+  const body =
+    data.body !== undefined ? await normalizeArticleLinks(data.body) : row.body;
   const tags =
     data.tags !== undefined
       ? data.tags.map((t) => t.trim()).filter(Boolean)
