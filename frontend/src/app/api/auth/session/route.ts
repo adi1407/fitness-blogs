@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  hasCookieConsent,
   looksLikeJwt,
   memberCookieOptions,
   MEMBER_COOKIE,
@@ -14,9 +15,13 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token") ?? "";
   const next = safeNextPath(req.nextUrl.searchParams.get("next"));
 
-  if (!looksLikeJwt(token)) {
+  if (!looksLikeJwt(token) || !hasCookieConsent(req)) {
     const login = new URL("/login", req.url);
-    login.searchParams.set("error", "unexpected_error");
+    login.searchParams.set(
+      "error",
+      looksLikeJwt(token) ? "cookies_required" : "unexpected_error",
+    );
+    login.searchParams.set("next", next);
     return NextResponse.redirect(login);
   }
 

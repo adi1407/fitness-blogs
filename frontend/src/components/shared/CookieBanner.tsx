@@ -41,13 +41,13 @@ export function CookieBanner() {
               Cookies on fitlives
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              We count page visits anonymously without cookies.{" "}
               <strong className="font-medium text-foreground">Accept</strong>{" "}
-              allows optional analytics (OpenPanel and Google Analytics) so we
-              can improve guides.{" "}
+              also allows Google Analytics cookies and sign-in (upvotes,
+              bookmarks, saved results).{" "}
               <strong className="font-medium text-foreground">Reject</strong>{" "}
-              turns analytics off. Essential cookies still run either way
-              (sign-in session and remembering this choice). We do not use
-              advertising cookies.{" "}
+              keeps only cookieless measurement, and sign-in stays off. We do
+              not use advertising cookies.{" "}
               <Link href="/cookie-policy" className="fk-link text-sm">
                 Cookie Policy
               </Link>
@@ -63,12 +63,12 @@ export function CookieBanner() {
                 />
                 <span>
                   <span className="block text-sm font-semibold text-foreground">
-                    Analytics
+                    Analytics cookies &amp; sign-in
                   </span>
                   <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                    Page views and events via OpenPanel and Google Analytics.
-                    Rejecting optional cookies leaves this off. Sign-in still
-                    works.
+                    Google Analytics cookies and the sign-in session cookie.
+                    Leaving this off keeps cookieless page counts only and
+                    signs you out.
                   </span>
                 </span>
               </label>

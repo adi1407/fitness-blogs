@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { MEMBER_COOKIE } from "@/lib/auth/memberCookie";
+import { hasCookieConsent, MEMBER_COOKIE } from "@/lib/auth/memberCookie";
 
 const API_BASE = (
   process.env.API_URL ||
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
 
   if (pathname === "/account") {
     const token = request.cookies.get(MEMBER_COOKIE)?.value;
-    if (!token) {
+    if (!token || !hasCookieConsent(request)) {
       const login = new URL("/login", request.url);
       login.searchParams.set("next", "/account");
       return NextResponse.redirect(login);

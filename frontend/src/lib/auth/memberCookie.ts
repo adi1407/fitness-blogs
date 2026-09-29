@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { COOKIE_CONSENT_KEY, cookiesAcceptedFromRaw } from "@/lib/cookies/consent";
 
 export const MEMBER_COOKIE = "fk_member";
 /** Align with backend JWT default (7d). */
@@ -33,6 +34,11 @@ export function bearerFromRequest(req: NextRequest): string | null {
   const token = req.cookies.get(MEMBER_COOKIE)?.value;
   if (token) return `Bearer ${token}`;
   return null;
+}
+
+/** Sign-in sets a session cookie, so it is only offered after “Accept cookies”. */
+export function hasCookieConsent(req: NextRequest): boolean {
+  return cookiesAcceptedFromRaw(req.cookies.get(COOKIE_CONSENT_KEY)?.value);
 }
 
 export function safeNextPath(raw: string | null): string {

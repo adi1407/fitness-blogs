@@ -1,11 +1,10 @@
 /**
  * Lightweight OpenPanel track client (env-gated).
  * No-op when NEXT_PUBLIC_OPENPANEL_CLIENT_ID is unset.
- * Analytics events are also no-op until the visitor opts in via cookie consent.
+ * Cookieless (plain cross-origin POST, no credentials), so it runs for every
+ * visitor regardless of the cookie choice.
  * @see docs/ANALYTICS_OPENPANEL.md
  */
-
-import { hasAnalyticsConsent } from "@/lib/cookies/consent";
 
 type TrackProps = Record<string, string | number | boolean | null | undefined>;
 
@@ -26,7 +25,6 @@ export function openPanelDashboardUrl(): string | null {
 /** Fire-and-forget event. Safe to call from client components. */
 export function trackEvent(name: string, properties?: TrackProps): void {
   if (!CLIENT_ID || typeof window === "undefined") return;
-  if (!hasAnalyticsConsent()) return;
 
   const payload = {
     type: "track",
@@ -46,6 +44,7 @@ export function trackEvent(name: string, properties?: TrackProps): void {
       "openpanel-client-id": CLIENT_ID,
     },
     body: JSON.stringify(payload),
+    credentials: "omit",
     keepalive: true,
   }).catch(() => {
     /* ignore analytics failures */

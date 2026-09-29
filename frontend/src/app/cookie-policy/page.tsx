@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "How fitlives uses essential cookies, optional analytics (OpenPanel and Google Analytics), and how you can change your choices. We do not use advertising cookies.",
+    "How fitlives uses cookieless analytics, optional Google Analytics cookies, the sign-in session cookie, and how you can change your choices. We do not use advertising cookies.",
   alternates: { canonical: "/cookie-policy" },
 };
 
@@ -28,7 +28,7 @@ export default function CookiePolicyPage() {
   return (
     <LegalDocument
       title="Cookie Policy"
-      intro="This page explains cookies and similar storage on fitlives. Use Accept or Reject on the banner (or Cookie settings in the footer). Reject turns off analytics only — sign-in still uses an essential HttpOnly session cookie."
+      intro="This page explains cookies and similar storage on fitlives. Use Accept or Reject on the banner (or Cookie settings in the footer). Cookieless page counts run for everyone. Accept also allows Google Analytics cookies and sign-in; Reject keeps sign-in off."
       toc={toc}
       related={[LEGAL_RELATED.privacy, LEGAL_RELATED.terms, LEGAL_RELATED.contact]}
     >
@@ -99,25 +99,26 @@ export default function CookiePolicyPage() {
         <li>
           <strong>fk_member</strong> — HttpOnly first-party session cookie set
           after Google sign-in on this site’s domain. JavaScript cannot read
-          it. Required for upvote, bookmark, and staying signed in. Rejecting
-          optional cookies does <strong>not</strong> delete this cookie.
+          it. Required for upvote, bookmark, saved calculator results, and
+          staying signed in. It is only set after you choose{" "}
+          <strong>Accept cookies</strong>; rejecting cookies later signs you
+          out and removes it.
         </li>
         <li>
-          Calculator educational-gate flag in local storage — remembers that
-          you acknowledged the educational disclaimer on a tool.
+          <strong>_ga, _ga_*</strong> — Google Analytics cookies, only set
+          after <strong>Accept cookies</strong>. Rejecting deletes them.
         </li>
         <li>
-          Optional analytics (OpenPanel and Google Analytics) — only after you
-          choose <strong>Accept cookies</strong> or enable Analytics in
-          Customize. <strong>Reject optional cookies</strong> keeps this off.
+          Cookieless measurement (OpenPanel and Google Analytics Consent Mode)
+          — runs for everyone without setting cookies. See section 5.
         </li>
       </LegalUl>
 
       <LegalH2 id="essential">4. Essential / functional</LegalH2>
       <LegalUl>
         <li>
-          Member session and cookie-consent choice cannot be switched off if
-          you want those features (sign-in, not seeing the banner every visit).
+          The cookie-consent choice is always stored so we do not ask on every
+          visit. The member session requires Accept cookies.
         </li>
         <li>
           Hosting (Vercel / Render) may set strictly necessary cookies for
@@ -125,14 +126,25 @@ export default function CookiePolicyPage() {
         </li>
       </LegalUl>
 
-      <LegalH2 id="analytics">5. Analytics (OpenPanel + Google Analytics) — optional</LegalH2>
+      <LegalH2 id="analytics">5. Analytics (OpenPanel + Google Analytics)</LegalH2>
       <p>
-        If you allow analytics, we send page views and product events (for
-        example share, upvote, calculator use) to OpenPanel and Google Analytics
-        4 so we can improve guides and understand search traffic. This is for
-        operating the Site, not for selling your identity to advertisers. Until
-        you opt in, those scripts and events are not loaded.
+        We send page views and product events (for example share, upvote,
+        calculator use) to OpenPanel and Google Analytics 4 so we can improve
+        guides and understand search traffic. This is for operating the Site,
+        not for selling your identity to advertisers.
       </p>
+      <LegalUl>
+        <li>
+          <strong>Without consent</strong> — OpenPanel runs without cookies,
+          and Google Analytics runs in Consent Mode: it sends cookieless,
+          IP-anonymised pings that cannot recognise you across visits. No
+          analytics cookies are written.
+        </li>
+        <li>
+          <strong>After Accept cookies</strong> — Google Analytics may also set
+          its _ga cookies so repeat visits can be counted more accurately.
+        </li>
+      </LegalUl>
       <p>
         See{" "}
         <a
@@ -171,7 +183,8 @@ export default function CookiePolicyPage() {
         <li>
           Use <strong>Cookie settings</strong> in the site footer:{" "}
           <strong>Accept cookies</strong>,{" "}
-          <strong>Reject optional cookies</strong>, or Customize.
+          <strong>Reject optional cookies</strong>, or Customize. Rejecting
+          signs you out and deletes Google Analytics cookies.
         </li>
         <li>
           Browser settings can block or delete cookies and site data. Blocking

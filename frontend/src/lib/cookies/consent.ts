@@ -3,9 +3,13 @@ export const COOKIE_CONSENT_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 export type CookieConsent = {
   v: 1;
-  /** Always true — required for sign-in and security. */
+  /** Always true — remembering this choice. */
   necessary: true;
-  /** OpenPanel page views and events. Off until the visitor opts in. */
+  /**
+   * “Accept cookies”: Google Analytics cookies plus the sign-in session.
+   * When false, analytics still runs cookieless (Consent Mode pings,
+   * OpenPanel) and sign-in is unavailable.
+   */
   analytics: boolean;
   decidedAt: string;
 };
@@ -57,8 +61,16 @@ export function writeStoredConsent(consent: CookieConsent) {
   document.cookie = `${COOKIE_CONSENT_KEY}=${encoded}; Path=/; Max-Age=${COOKIE_CONSENT_MAX_AGE}; SameSite=Lax`;
 }
 
-export function hasAnalyticsConsent(): boolean {
-  return readStoredConsent()?.analytics === true;
+/** Server-safe check of the raw `fk_cookie_consent` cookie value. */
+export function cookiesAcceptedFromRaw(raw: string | null | undefined): boolean {
+  if (!raw) return false;
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    /* already decoded */
+  }
+  return parseConsent(decoded)?.analytics === true;
 }
 
 function readCookie(name: string): string | null {

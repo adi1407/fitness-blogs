@@ -167,8 +167,10 @@ export default function PrivacyPage() {
         </Link>{" "}
         for essential vs analytics use. A consent banner lets you accept all,
         keep essential only, or customize. You can reopen{" "}
-        <strong>Cookie settings</strong> from the footer at any time. Analytics
-        (OpenPanel / Google Analytics) does not run until you opt in.
+        <strong>Cookie settings</strong> from the footer at any time. Basic
+        analytics (OpenPanel and Google Analytics Consent Mode) runs without
+        cookies for everyone; analytics cookies and sign-in require Accept
+        cookies.
       </p>
 
       <LegalH2 id="retention">8. Retention</LegalH2>

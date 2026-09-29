@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { hasCookieConsent } from "@/lib/auth/memberCookie";
 
 function apiBase() {
   const fromEnv = (
@@ -26,8 +27,13 @@ export async function GET(req: NextRequest) {
 
   const loginError = (reason: string) =>
     NextResponse.redirect(
-      new URL(`/login?error=${encodeURIComponent(reason)}`, req.url),
+      new URL(
+        `/login?error=${encodeURIComponent(reason)}&next=${encodeURIComponent(next)}`,
+        req.url,
+      ),
     );
+
+  if (!hasCookieConsent(req)) return loginError("cookies_required");
 
   try {
     const upstream = await fetch(

@@ -15,6 +15,7 @@ import {
   writeStoredConsent,
   type CookieConsent,
 } from "@/lib/cookies/consent";
+import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 
 type CookieConsentContextValue = {
   consent: CookieConsent | null;
@@ -50,11 +51,17 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
     setBannerOpen(!stored);
   }, []);
 
-  const persist = useCallback((next: CookieConsent) => {
-    writeStoredConsent(next);
-    setConsent(next);
-    setBannerOpen(false);
-  }, []);
+  const { member, logout } = useMemberAuth();
+
+  const persist = useCallback(
+    (next: CookieConsent) => {
+      writeStoredConsent(next);
+      setConsent(next);
+      setBannerOpen(false);
+      if (!next.analytics && member) logout();
+    },
+    [member, logout],
+  );
 
   const value = useMemo<CookieConsentContextValue>(
     () => ({

@@ -4,6 +4,7 @@ import { Roboto_Slab } from "next/font/google";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import { OpenPanelProvider } from "@/components/analytics/OpenPanelProvider";
+import { GoogleConsentInit } from "@/components/analytics/GoogleAnalytics";
 import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
 import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
 import { CookieBanner } from "@/components/shared/CookieBanner";
@@ -116,6 +117,9 @@ export default function RootLayout({
       lang="en"
       className={`${robotoSlab.variable} h-full antialiased font-sans`}
     >
+      <head>
+        <GoogleConsentInit />
+      </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <JsonLd data={websiteJsonLd} />
         <JsonLd data={orgJsonLd} />

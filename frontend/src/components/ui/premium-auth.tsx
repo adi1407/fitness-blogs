@@ -5,7 +5,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
-import { AlertTriangle, Loader2, Shield } from "lucide-react";
+import { useCookieConsent } from "@/features/cookies/CookieConsentContext";
+import { AlertTriangle, Cookie, Loader2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type AuthMode = "login" | "signup";
@@ -60,6 +61,8 @@ export function AuthForm({
   const search = useSearchParams();
   const router = useRouter();
   const { member, loading: authLoading } = useMemberAuth();
+  const { consent, acceptAll } = useCookieConsent();
+  const cookiesAccepted = consent?.analytics === true;
   const [authMode, setAuthMode] = useState<AuthMode>(initialMode);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -82,11 +85,13 @@ export function AuthForm({
       email_not_verified: "Verify your Google email, then try again.",
       account_disabled: "This account is disabled.",
       unexpected_error: "Something went wrong. Please try again.",
+      cookies_required: "Signing in needs cookies. Accept cookies below to continue.",
     };
     setError(messages[err] ?? "Sign-in failed. Please try again.");
   }, [search]);
 
   async function startGoogle() {
+    if (!cookiesAccepted) acceptAll();
     setIsLoading(true);
     setError("");
     const next = safeNextPath(nextPath ?? search.get("next"));
@@ -168,6 +173,20 @@ export function AuthForm({
         </button>
       </div>
 
+      {!cookiesAccepted ? (
+        <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-[#FF9800]/40 bg-[#FF9800]/10 p-3">
+          <Cookie className="mt-0.5 size-4 shrink-0 text-foreground" aria-hidden />
+          <p className="text-sm leading-relaxed text-foreground">
+            Signing in keeps you logged in with a cookie, so it needs your
+            cookie consent. Continuing accepts cookies, including Google
+            Analytics.{" "}
+            <Link href="/cookie-policy" className="fk-link">
+              Cookie Policy
+            </Link>
+          </p>
+        </div>
+      ) : null}
+
       <button
         type="button"
         disabled={isLoading}
@@ -185,9 +204,11 @@ export function AuthForm({
         )}
         {isLoading
           ? "Redirecting to Google…"
-          : authMode === "login"
-            ? "Continue with Google"
-            : "Sign up with Google"}
+          : !cookiesAccepted
+            ? "Accept cookies & continue with Google"
+            : authMode === "login"
+              ? "Continue with Google"
+              : "Sign up with Google"}
       </button>
 
       <p className="mt-6 text-center text-xs leading-relaxed text-muted-foreground">
