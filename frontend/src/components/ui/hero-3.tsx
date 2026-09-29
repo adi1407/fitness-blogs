@@ -52,11 +52,10 @@ export function AnimatedMarqueeHero({
       <div className="fk-page flex flex-1 flex-col items-center justify-center py-[clamp(1.25rem,4svh,3.5rem)] text-center">
         <p
           className={cn(
-            "mb-[clamp(0.75rem,2.5svh,1.25rem)] inline-flex items-center gap-2 rounded-full border border-border bg-white/70 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm sm:text-sm",
+            "mb-[clamp(0.75rem,2.5svh,1.25rem)] inline-flex items-center rounded-full border border-border bg-white/70 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm sm:text-sm",
             fadeUp,
           )}
         >
-          <span className="size-1.5 rounded-full bg-[#FF9800]" aria-hidden />
           {tagline}
         </p>
 
