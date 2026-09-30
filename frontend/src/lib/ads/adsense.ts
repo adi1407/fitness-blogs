@@ -3,12 +3,12 @@ const PRODUCTION_ADSENSE_CLIENT = "ca-pub-1696625365436242";
 
 /**
  * Google AdSense publisher ID (`ca-pub-` + 16 digits). NEXT_PUBLIC_ADSENSE_CLIENT
- * overrides it; otherwise only Vercel production builds load ads. Invalid
- * values disable ads.
+ * overrides it; otherwise only production builds load ads (never `next dev`).
+ * Invalid values disable ads.
  */
 const raw =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() ||
-  (process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? PRODUCTION_ADSENSE_CLIENT : "");
+  (process.env.NODE_ENV === "production" ? PRODUCTION_ADSENSE_CLIENT : "");
 
 export const ADSENSE_CLIENT = /^ca-pub-\d{16}$/.test(raw) ? raw : "";
 
