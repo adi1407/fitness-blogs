@@ -170,7 +170,9 @@ export default function PrivacyPage() {
         <strong>Cookie settings</strong> from the footer at any time. Basic
         analytics (OpenPanel and Google Analytics Consent Mode) runs without
         cookies for everyone; analytics cookies and sign-in require Accept
-        cookies.
+        cookies. We show ads through Google AdSense; Google may use cookies
+        to personalise them unless you reject optional cookies (in the EEA,
+        UK and Switzerland, only after you accept).
       </p>
 
       <LegalH2 id="retention">8. Retention</LegalH2>

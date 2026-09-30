@@ -46,8 +46,9 @@ export function CookieBanner() {
               also allows Google Analytics cookies and sign-in (upvotes,
               bookmarks, saved results).{" "}
               <strong className="font-medium text-foreground">Reject</strong>{" "}
-              keeps only cookieless measurement, and sign-in stays off. We do
-              not use advertising cookies.{" "}
+              keeps only cookieless measurement, turns off personalised ads,
+              and keeps sign-in off. Google AdSense shows ads to keep the site
+              free.{" "}
               <Link href="/cookie-policy" className="fk-link text-sm">
                 Cookie Policy
               </Link>

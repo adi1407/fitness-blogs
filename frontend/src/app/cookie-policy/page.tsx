@@ -10,7 +10,7 @@ import { LEGAL_RELATED } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "How fitlives uses cookieless analytics, optional Google Analytics cookies, the sign-in session cookie, and how you can change your choices. We do not use advertising cookies.",
+    "How fitlives uses cookieless analytics, optional Google Analytics cookies, Google AdSense advertising cookies, the sign-in session cookie, and how you can change your choices.",
   alternates: { canonical: "/cookie-policy" },
 };
 
@@ -66,8 +66,8 @@ export default function CookiePolicyPage() {
         </li>
         <li>
           <strong>Advertising and retargeting</strong> — identify a browser
-          across sites to show ads or build a marketing profile. We do{" "}
-          <strong>not</strong> use these.
+          across sites to show ads or build a marketing profile. We show ads
+          through Google AdSense; see section 6.
         </li>
         <li>
           <strong>Affiliate / conversion tracking</strong> — attribute a
@@ -111,6 +111,11 @@ export default function CookiePolicyPage() {
         <li>
           Cookieless measurement (OpenPanel and Google Analytics Consent Mode)
           — runs for everyone without setting cookies. See section 5.
+        </li>
+        <li>
+          Google AdSense advertising cookies — set by Google (for example on
+          google.com and doubleclick.net) to show and measure ads. See
+          section 6.
         </li>
       </LegalUl>
 
@@ -167,15 +172,53 @@ export default function CookiePolicyPage() {
         for vendor documentation.
       </p>
 
-      <LegalH2 id="ads">6. Advertising cookies</LegalH2>
+      <LegalH2 id="ads">6. Advertising (Google AdSense)</LegalH2>
       <p>
-        We do <strong>not</strong> run third-party advertising pixels,
-        remarketing tags, or affiliate tracking cookies. If that changes, we
-        will update this policy, the{" "}
+        We show ads through Google AdSense to keep guides and calculators
+        free. Google and its partners use cookies to serve ads based on your
+        visits to this and other sites, limit how often you see an ad, and
+        measure performance.
+      </p>
+      <LegalUl>
+        <li>
+          <strong>Before you choose</strong> — ads may be personalised. In
+          the EEA, UK and Switzerland, ads stay non-personalised until you
+          choose <strong>Accept cookies</strong>.
+        </li>
+        <li>
+          <strong>Reject optional cookies</strong> — ads are still shown but
+          are non-personalised (based on the page, not your history), and
+          Google limits its use of advertising cookies.
+        </li>
+        <li>
+          You can also opt out of personalised advertising across the web at{" "}
+          <a
+            href="https://adssettings.google.com"
+            className="fk-link"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Google Ads Settings
+          </a>
+          . See{" "}
+          <a
+            href="https://policies.google.com/technologies/ads"
+            className="fk-link"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            how Google uses cookies in advertising
+          </a>
+          .
+        </li>
+      </LegalUl>
+      <p>
+        We do not run remarketing tags or affiliate tracking cookies. If that
+        changes, we will update this policy and the{" "}
         <Link href="/affiliate-disclosure" className="fk-link">
           Affiliate Disclosure
         </Link>
-        , and the consent banner.
+        .
       </p>
 
       <LegalH2 id="control">7. How to control</LegalH2>
@@ -184,7 +227,8 @@ export default function CookiePolicyPage() {
           Use <strong>Cookie settings</strong> in the site footer:{" "}
           <strong>Accept cookies</strong>,{" "}
           <strong>Reject optional cookies</strong>, or Customize. Rejecting
-          signs you out and deletes Google Analytics cookies.
+          signs you out, deletes Google Analytics cookies and switches ads to
+          non-personalised.
         </li>
         <li>
           Browser settings can block or delete cookies and site data. Blocking

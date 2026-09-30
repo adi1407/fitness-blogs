@@ -10,6 +10,7 @@ import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
 import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
+import { ADSENSE_CLIENT } from "@/lib/ads/adsense";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -76,6 +77,9 @@ export const metadata: Metadata = {
       ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {}),
   },
+  ...(ADSENSE_CLIENT
+    ? { other: { "google-adsense-account": ADSENSE_CLIENT } }
+    : {}),
 };
 
 export const viewport: Viewport = {

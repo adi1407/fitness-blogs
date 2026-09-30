@@ -5,8 +5,14 @@ import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useCookieConsent } from "@/features/cookies/CookieConsentContext";
 import { COOKIE_CONSENT_KEY } from "@/lib/cookies/consent";
+import {
+  ADSENSE_CLIENT,
+  isAdSenseConfigured,
+  OPT_IN_AD_REGIONS,
+} from "@/lib/ads/adsense";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "";
+const ADS_ON = isAdSenseConfigured();
 
 declare global {
   interface Window {
@@ -36,7 +42,9 @@ function deleteGaCookies() {
 /**
  * GA4 with Consent Mode v2 (advanced): the tag loads for every visitor with
  * storage denied, so non-consenting visits send cookieless pings that GA can
- * model. “Accept cookies” grants `analytics_storage`; ad signals stay denied.
+ * model. “Accept cookies” grants `analytics_storage`. With AdSense on, ad
+ * signals are granted until the visitor rejects (denied by default in
+ * opt-in regions until Accept).
  * Set NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXX in Vercel Production.
  */
 export function GoogleAnalytics() {
@@ -47,12 +55,16 @@ export function GoogleAnalytics() {
   const lastGranted = useRef<boolean | null>(null);
 
   useEffect(() => {
-    if (!GA_ID || typeof window.gtag !== "function" || !decided) return;
+    if (typeof window.gtag !== "function" || !decided) return;
     if (lastGranted.current === granted) return;
     const wasGranted = lastGranted.current;
     lastGranted.current = granted;
+    const ads = ADS_ON && granted ? "granted" : "denied";
     window.gtag("consent", "update", {
       analytics_storage: granted ? "granted" : "denied",
+      ad_storage: ads,
+      ad_user_data: ads,
+      ad_personalization: ads,
     });
     if (wasGranted && !granted) deleteGaCookies();
   }, [granted, decided]);
@@ -80,26 +92,48 @@ export function GoogleAnalytics() {
  * Render in the root `<head>`: defines `gtag` and the consent defaults before
  * hydration so no hit can be sent ahead of them. Reads the saved choice so
  * returning visitors who accepted are granted from the first page view.
+ * AdSense is injected from here because React hoists async `<script>` tags
+ * above inline ones, which could run it before the consent defaults.
  */
 export function GoogleConsentInit() {
-  if (!GA_ID) return null;
+  if (!GA_ID && !ADS_ON) return null;
   const js = `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 window.gtag = gtag;
-var granted = false;
+var decided = false, accepted = false;
 try {
   var m = document.cookie.match(/(?:^|; )${COOKIE_CONSENT_KEY}=([^;]*)/);
-  granted = !!m && JSON.parse(decodeURIComponent(m[1])).analytics === true;
+  var c = m ? JSON.parse(decodeURIComponent(m[1])) : null;
+  decided = !!c && typeof c.analytics === 'boolean';
+  accepted = decided && c.analytics === true;
 } catch (e) {}
+var ads = ${ADS_ON} && (decided ? accepted : true) ? 'granted' : 'denied';
 gtag('consent', 'default', {
-  analytics_storage: granted ? 'granted' : 'denied',
-  ad_storage: 'denied',
-  ad_user_data: 'denied',
-  ad_personalization: 'denied'
+  analytics_storage: accepted ? 'granted' : 'denied',
+  ad_storage: ads,
+  ad_user_data: ads,
+  ad_personalization: ads
 });
+if (!decided) {
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    region: ${JSON.stringify(OPT_IN_AD_REGIONS)}
+  });
+}
 gtag('js', new Date());
-gtag('config', '${GA_ID}', { anonymize_ip: true, send_page_view: false });`;
+${GA_ID ? `gtag('config', '${GA_ID}', { anonymize_ip: true, send_page_view: false });` : ""}
+${
+  ADS_ON
+    ? `var s = document.createElement('script');
+s.async = true;
+s.crossOrigin = 'anonymous';
+s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}';
+document.head.appendChild(s);`
+    : ""
+}`;
   return <script id="ga4-consent" dangerouslySetInnerHTML={{ __html: js }} />;
 }
 
