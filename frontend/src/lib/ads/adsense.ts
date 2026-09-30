@@ -1,8 +1,14 @@
+/** Public by design — it is published in every site's ads.txt. */
+const PRODUCTION_ADSENSE_CLIENT = "ca-pub-1696625365436242";
+
 /**
- * Google AdSense publisher ID (`ca-pub-` + 16 digits), set as
- * NEXT_PUBLIC_ADSENSE_CLIENT in Vercel. Invalid or missing values disable ads.
+ * Google AdSense publisher ID (`ca-pub-` + 16 digits). NEXT_PUBLIC_ADSENSE_CLIENT
+ * overrides it; otherwise only Vercel production builds load ads. Invalid
+ * values disable ads.
  */
-const raw = process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() ?? "";
+const raw =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() ||
+  (process.env.NEXT_PUBLIC_VERCEL_ENV === "production" ? PRODUCTION_ADSENSE_CLIENT : "");
 
 export const ADSENSE_CLIENT = /^ca-pub-\d{16}$/.test(raw) ? raw : "";
 
