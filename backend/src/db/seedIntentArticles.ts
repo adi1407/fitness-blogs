@@ -7,6 +7,7 @@ import { batch4 } from "./intentArticles/batch4";
 import { batch5 } from "./intentArticles/batch5";
 import { batch6 } from "./intentArticles/batch6";
 import { batch7 } from "./intentArticles/batch7";
+import { batch8 } from "./intentArticles/batch8";
 import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
 
@@ -18,6 +19,7 @@ const ARTICLES: IntentArticleDef[] = [
   ...batch5,
   ...batch6,
   ...batch7,
+  ...batch8,
 ];
 
 const AUTHOR_EMAIL = "aditya@fitknowledge.local";
