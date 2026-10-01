@@ -8,6 +8,7 @@ import { batch5 } from "./intentArticles/batch5";
 import { batch6 } from "./intentArticles/batch6";
 import { batch7 } from "./intentArticles/batch7";
 import { batch8 } from "./intentArticles/batch8";
+import { batch9 } from "./intentArticles/batch9";
 import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
 
@@ -20,6 +21,7 @@ const ARTICLES: IntentArticleDef[] = [
   ...batch6,
   ...batch7,
   ...batch8,
+  ...batch9,
 ];
 
 const AUTHOR_EMAIL = "aditya@fitknowledge.local";
@@ -38,10 +40,11 @@ async function allocateArticleNumber(): Promise<number> {
 
 /** Anchor: stagger ~2 articles/day going backward from "today" conceptually. */
 function publishedAtFor(dayOffset: number): Date {
-  const d = new Date();
+  const now = new Date();
+  const d = new Date(now);
   d.setUTCHours(10, 0, 0, 0);
   d.setUTCDate(d.getUTCDate() - (9 - dayOffset));
-  return d;
+  return d > now ? now : d;
 }
 
 async function resolveAuthorId(): Promise<string> {

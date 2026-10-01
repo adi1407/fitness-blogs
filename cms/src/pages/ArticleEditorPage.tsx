@@ -6,6 +6,10 @@ import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
 import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
 import { PublishGatesPanel } from "@/features/articles/components/PublishGatesPanel";
+import {
+  PublishDatePanel,
+  localInputToIso,
+} from "@/features/articles/components/PublishDatePanel";
 import { SerpSocialPreview } from "@/features/articles/components/SerpSocialPreview";
 import { BLOG_TAXONOMY, BLOG_TOPICS } from "@/constants/blogTaxonomy";
 import { canPublish } from "@/constants/roles";
@@ -120,6 +124,8 @@ export default function ArticleEditorPage() {
   const [articleNumber, setArticleNumber] = useState<number | null>(null);
   const [publicPath, setPublicPath] = useState<string | null>(null);
   const [views, setViews] = useState(0);
+  const [publishedAt, setPublishedAt] = useState<string | null>(null);
+  const [pendingPublishDate, setPendingPublishDate] = useState("");
   const [loaded, setLoaded] = useState(isNew);
   const [dirty, setDirty] = useState(false);
   const [linkedArticles, setLinkedArticles] = useState<LinkedArticle[]>([]);
@@ -141,6 +147,7 @@ export default function ArticleEditorPage() {
   linkedRef.current = linkedArticles;
 
   const publisher = user ? canPublish(user.role) : false;
+  const isAdmin = user?.role === "admin";
   const isWriter = user?.role === "writer";
   const canEditContent =
     publisher || (isWriter && WRITER_EDITABLE.has(status));
@@ -207,6 +214,7 @@ export default function ArticleEditorPage() {
         setArticleNumber(a.articleNumber);
         setPublicPath(a.path);
         setViews(a.views);
+        setPublishedAt(a.publishedAt);
         setForm({
           title: a.title,
           slug: a.slug || "",
@@ -354,6 +362,7 @@ export default function ArticleEditorPage() {
     setArticleNumber(a.articleNumber);
     setPublicPath(a.path);
     setViews(a.views);
+    setPublishedAt(a.publishedAt);
     setEditorNote(a.editorNote || a.rejectReason || "");
   }
 
@@ -504,15 +513,22 @@ export default function ArticleEditorPage() {
         return;
       }
       const needsReason = path === "reject" || path === "request-changes";
+      const customPublishedAt =
+        path === "publish" && isAdmin
+          ? localInputToIso(pendingPublishDate)
+          : null;
       const data = await apiFetch<{ article: Article }>(
         `/articles/${currentId}/${path}`,
         {
           method: "PATCH",
           body: needsReason
             ? JSON.stringify({ reason: noteDraft })
-            : undefined,
+            : customPublishedAt
+              ? JSON.stringify({ publishedAt: customPublishedAt })
+              : undefined,
         },
       );
+      if (path === "publish") setPendingPublishDate("");
       applyArticle(data.article);
       setNoteDraft(data.article.editorNote || data.article.rejectReason || "");
       setDirty(false);
@@ -784,6 +800,20 @@ export default function ArticleEditorPage() {
             featuredImage={form.featuredImage}
           />
         </div>
+      ) : null}
+
+      {articleId && isAdmin ? (
+        <PublishDatePanel
+          articleId={articleId}
+          status={status}
+          publishedAt={publishedAt}
+          pendingDate={pendingPublishDate}
+          onPendingDateChange={setPendingPublishDate}
+          onUpdated={(a) => {
+            applyArticle(a);
+            setMessage("Publish date updated");
+          }}
+        />
       ) : null}
 
       {articleId ? (

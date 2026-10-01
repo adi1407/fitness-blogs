@@ -31,6 +31,26 @@ import {
 
 export const articlesRouter = Router();
 
+/** Allows a few minutes of clock skew; there is no scheduler, so no future dates. */
+const MAX_FUTURE_PUBLISH_MS = 5 * 60 * 1000;
+const MIN_PUBLISH_DATE = Date.UTC(2020, 0, 1);
+
+function parsePublishedAt(value: unknown): { date: Date } | { error: string } {
+  if (typeof value !== "string" || !value.trim()) {
+    return { error: "publishedAt must be an ISO date string" };
+  }
+  const date = new Date(value);
+  const t = date.getTime();
+  if (Number.isNaN(t)) return { error: "Invalid publish date" };
+  if (t > Date.now() + MAX_FUTURE_PUBLISH_MS) {
+    return { error: "Publish date can’t be in the future" };
+  }
+  if (t < MIN_PUBLISH_DATE) {
+    return { error: "Publish date must be after 1 Jan 2020" };
+  }
+  return { date };
+}
+
 const MAX_RELATED = 5;
 
 const faqItemSchema = z.object({
@@ -928,6 +948,21 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
     return;
   }
 
+  const custom = req.body?.publishedAt;
+  let publishedAt: Date | null = null;
+  if (custom != null && custom !== "") {
+    if (req.user!.role !== "admin") {
+      res.status(403).json({ message: "Only admins can set a publish date" });
+      return;
+    }
+    const parsed = parsePublishedAt(custom);
+    if ("error" in parsed) {
+      res.status(400).json({ message: parsed.error });
+      return;
+    }
+    publishedAt = parsed.date;
+  }
+
   await maybeRecordRevision({
     articleId: String(row.id),
     row,
@@ -936,14 +971,15 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
     reason: "publish",
   });
 
+  // Republishing stamps a fresh date, so an unpublish → publish shows as new.
   await pool.query(
     `UPDATE articles SET
-      status = 'published', published_at = COALESCE(published_at, NOW()),
+      status = 'published', published_at = COALESCE($3::timestamptz, NOW()),
       published_by = $1, reviewer_id = $1, reject_reason = '',
       last_reviewed_at = COALESCE(last_reviewed_at, NOW()),
       updated_at = NOW()
      WHERE id = $2`,
-    [req.user!.id, row.id],
+    [req.user!.id, row.id, publishedAt],
   );
   await syncBriefOnArticle(String(row.id), "done");
   const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
@@ -965,6 +1001,54 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
     });
   }
   res.json({ article, gates });
+});
+
+articlesRouter.patch("/:id/published-at", async (req, res) => {
+  if (req.user!.role !== "admin") {
+    res.status(403).json({ message: "Only admins can change the publish date" });
+    return;
+  }
+  const parsed = parsePublishedAt(req.body?.publishedAt);
+  if ("error" in parsed) {
+    res.status(400).json({ message: parsed.error });
+    return;
+  }
+  const existing = await pool.query(
+    `SELECT id, title, status, published_at FROM articles WHERE id = $1`,
+    [req.params.id],
+  );
+  const row = existing.rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Article not found" });
+    return;
+  }
+  if (row.status !== "published") {
+    res.status(400).json({
+      message: "Only published articles have a publish date to change",
+    });
+    return;
+  }
+
+  await pool.query(
+    `UPDATE articles SET
+      published_at = $1,
+      updated_at = GREATEST(updated_at, $1)
+     WHERE id = $2`,
+    [parsed.date, row.id],
+  );
+  const full = await pool.query(`${ARTICLE_SELECT} WHERE a.id = $1`, [row.id]);
+  const article = mapArticle(full.rows[0]);
+  await recordAudit(req, {
+    action: "article.publish_date_changed",
+    entityType: "article",
+    entityId: String(article.id),
+    summary: `Changed publish date of “${article.title}”`,
+    meta: {
+      from: row.published_at ? new Date(row.published_at).toISOString() : null,
+      to: parsed.date.toISOString(),
+    },
+  });
+  res.json({ article });
 });
 
 articlesRouter.patch("/:id/unpublish", async (req, res) => {
