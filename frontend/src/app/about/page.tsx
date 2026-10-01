@@ -7,6 +7,7 @@ import TailwindImageAccordion, {
   type AccordionItem,
 } from "@/components/ui/tailwind-image-accordion";
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { HUB } from "@/lib/hubImages";
 
 export const metadata: Metadata = {
@@ -187,6 +188,13 @@ export default function AboutPage() {
             Contact
           </Link>
         </div>
+        <SocialFollow
+          variant="strip"
+          placement="about"
+          className="mt-10"
+          title="Follow our work"
+          description="New guides, myth-busting reels and Indian nutrition tips — every week on Instagram and Facebook."
+        />
       </section>
     </main>
   );

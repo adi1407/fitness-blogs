@@ -11,6 +11,7 @@ import { CookieBanner } from "@/components/shared/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
 import { ADSENSE_CLIENT } from "@/lib/ads/adsense";
+import { SOCIAL_SAME_AS } from "@/lib/social";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -109,6 +110,7 @@ const orgJsonLd = {
   name: BRAND_NAME,
   url: siteUrl,
   logo: `${siteUrl}/brand/logofitness.png`,
+  sameAs: SOCIAL_SAME_AS,
 };
 
 export default function RootLayout({

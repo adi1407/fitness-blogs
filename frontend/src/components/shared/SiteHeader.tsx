@@ -27,6 +27,7 @@ import { colorSchema } from "@/styles/color-schema";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { BrandLogo } from "@/components/shared/BrandLogo";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { BRAND_NAME } from "@/lib/brand";
 
 const PRIMARY_NAV = [
@@ -560,6 +561,10 @@ export function SiteHeader() {
                     </div>
 
                     <div className="shrink-0 border-t border-border bg-muted/50 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <p className="fk-meta text-foreground">Follow {BRAND_NAME}</p>
+                        <SocialFollow variant="icons" placement="mobile_menu" />
+                      </div>
                       {!authLoading && member ? (
                         <div className="mb-3 flex items-center gap-2">
                           <Link

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { SocialLinks } from "@/components/ui/social-links";
 import {
   ArticleShare,
@@ -426,16 +427,19 @@ export function BlogArticleView({
                 </section>
               ) : null}
 
-              <aside className="fk-callout mt-10">
-                <p className="fk-meta text-foreground">Stay in the loop</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  New guides and calculators as we publish — educational only,
-                  never spam.
-                </p>
-                <Link href="/contact" className="fk-btn-ghost mt-3">
-                  Get in touch
+              <SocialFollow
+                variant="card"
+                placement="article_end"
+                className="mt-10"
+                description="Liked this guide? Get short, evidence-based fitness and nutrition tips for India every week. Reels on Instagram, guides on Facebook."
+              />
+              <p className="mt-3 text-sm text-muted-foreground">
+                Questions about this article?{" "}
+                <Link href="/contact" className="fk-link-muted underline underline-offset-2">
+                  Contact the editorial team
                 </Link>
-              </aside>
+                .
+              </p>
 
               <p className="fk-disclaimer mt-8">
                 Educational information only — not medical advice. Consult a

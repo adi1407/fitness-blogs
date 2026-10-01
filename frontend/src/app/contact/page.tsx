@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { ContactEmailDialog } from "@/features/contact/components/ContactEmailDialog";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble";
 import {
   LEGAL_CONTACT_EMAIL,
@@ -64,6 +65,13 @@ export default function ContactPage() {
           </p>
           <ContactEmailDialog />
         </div>
+        <SocialFollow
+          variant="card"
+          placement="contact"
+          className="mt-6"
+          title="Follow us"
+          description="Quick questions and feedback are also welcome by DM. For corrections or privacy requests, please use email so we can track them properly."
+        />
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
           <Link href={LEGAL_RELATED.editorial.href} className="fk-link">
             {LEGAL_RELATED.editorial.label}

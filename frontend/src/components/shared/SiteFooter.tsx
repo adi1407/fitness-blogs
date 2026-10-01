@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/shared/CookieBanner";
 import { BrandLogo } from "@/components/shared/BrandLogo";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { BRAND_NAME, BRAND_SLOGAN, BRAND_TAGLINE } from "@/lib/brand";
 
 const explore = [
@@ -51,6 +52,8 @@ export function SiteFooter() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             {BRAND_TAGLINE}
           </p>
+          <p className="fk-meta mt-6 text-foreground">Follow us</p>
+          <SocialFollow variant="icons" placement="footer" className="mt-3" />
         </div>
         <div>
           <p className="fk-meta text-foreground">Explore</p>

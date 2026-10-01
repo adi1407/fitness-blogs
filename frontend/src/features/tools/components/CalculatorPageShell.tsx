@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SocialFollow } from "@/components/shared/SocialFollow";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import type { LinkItem } from "@/features/tools/content/links";
@@ -306,6 +307,13 @@ export function CalculatorPageShell({
               </div>
             </section>
           ) : null}
+
+          <SocialFollow
+            variant="strip"
+            placement="calculator"
+            title="Get weekly tips that build on your numbers"
+            description="Simple meal ideas, protein swaps and training cues — on Instagram and Facebook."
+          />
 
           <p className="rounded-xl border border-accent/30 bg-[#FFF8E1] px-4 py-3 text-xs leading-relaxed text-foreground/80">
             This calculator provides an estimate and isn&apos;t a substitute for
