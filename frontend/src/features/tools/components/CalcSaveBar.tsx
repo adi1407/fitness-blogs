@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Check, Loader2, X } from "lucide-react";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
+import { CalcShareButton } from "@/features/tools/components/CalcShareButton";
 import {
   clearPendingSave,
   stashPendingSave,
@@ -123,6 +124,7 @@ export function CalcSaveBar({
           </p>
         ) : null}
       </div>
+      <CalcShareButton payload={payload} />
 
       <SignInGateModal
         open={signInOpen}

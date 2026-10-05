@@ -13,7 +13,7 @@ const PILLAR_CARDS = [
   {
     title: "Calories & macros",
     src: HUB.powerBowl,
-    href: "/tools/macro-calculator",
+    href: "/macro-calculator",
   },
   {
     title: "Indian foods",

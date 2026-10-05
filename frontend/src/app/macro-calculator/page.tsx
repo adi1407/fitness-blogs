@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { MacroCalculatorForm } from "@/features/tools/components/MacroCalculatorForm";
 import { macroContent, macroMeta } from "@/features/tools/content/macro";
+import { calculatorMetadata } from "@/features/tools/content/meta";
 
-export const metadata: Metadata = {
-  title: macroMeta.title,
-  description: macroMeta.description,
-  alternates: { canonical: "/tools/macro-calculator" },
-  openGraph: {
-    title: `${macroMeta.title} | fitlives`,
-    description: macroMeta.description,
-    url: "/tools/macro-calculator",
-    type: "website",
-  },
-};
+export const metadata = calculatorMetadata("macro-calculator", macroMeta);
 
 export default function Page() {
   return (

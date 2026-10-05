@@ -74,7 +74,7 @@ export const batch1: IntentArticleDef[] = [
         "If you carry a lot of body fat, some coaches prefer using an estimated lean mass for the multiplier so the target is not inflated. If that feels confusing, start with total body weight at the lower end of the range and adjust with progress photos and strength — not scale panic.",
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "Protein calculator",
         "Get a personalized gram estimate with our",
       ),
@@ -166,7 +166,7 @@ export const batch1: IntentArticleDef[] = [
         "Maintenance is roughly the calories you need to hold weight steady. Online TDEE calculators use age, sex, height, weight, and activity. Treat the output as a starting point, not gospel.",
       ),
       toolCta(
-        "/tools/tdee-calculator",
+        "/tdee-calculator",
         "TDEE calculator",
         "Estimate maintenance with our",
       ),
@@ -201,7 +201,7 @@ export const batch1: IntentArticleDef[] = [
         "Keep protein and lifting in the plan.",
       ]),
       p(
-        `See also: <a href="/blog/weight-loss/calorie-deficit/how-to-calculate-your-calorie-deficit">how to calculate a deficit</a> and <a href="/tools/calorie-calculator">calorie calculator</a>. ${DISCLAIMER}`,
+        `See also: <a href="/blog/weight-loss/calorie-deficit/how-to-calculate-your-calorie-deficit">how to calculate a deficit</a> and <a href="/calorie-calculator">calorie calculator</a>. ${DISCLAIMER}`,
       ),
     ].join("\n"),
   },
@@ -255,7 +255,7 @@ export const batch1: IntentArticleDef[] = [
         "Start from a calculator, then adjust after two weeks of weigh-ins.",
       ]),
       toolCta(
-        "/tools/tdee-calculator",
+        "/tdee-calculator",
         "TDEE calculator",
         "Run a first estimate with the",
       ),
@@ -291,7 +291,7 @@ export const batch1: IntentArticleDef[] = [
         "Recalculate as you lose weight — maintenance falls.",
       ]),
       p(
-        `Next: <a href="/blog/weight-loss/calorie-deficit/how-many-calories-should-i-eat-to-lose-weight">calories to lose weight</a> · <a href="/tools/calorie-calculator">calorie calculator</a>. ${DISCLAIMER}`,
+        `Next: <a href="/blog/weight-loss/calorie-deficit/how-many-calories-should-i-eat-to-lose-weight">calories to lose weight</a> · <a href="/calorie-calculator">calorie calculator</a>. ${DISCLAIMER}`,
       ),
     ].join("\n"),
   },
@@ -338,7 +338,7 @@ export const batch1: IntentArticleDef[] = [
         "Sports nutrition literature commonly supports roughly 1.6–2.2 g/kg/day for people gaining muscle. Going higher is usually unnecessary unless preference or extreme leanness demands it.",
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Sketch your daily grams with the",
       ),

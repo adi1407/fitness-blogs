@@ -6,8 +6,9 @@ import { SocialFollow } from "@/components/shared/SocialFollow";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import type { LinkItem } from "@/features/tools/content/links";
+import { getPublicSiteUrl } from "@/lib/siteUrl";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = getPublicSiteUrl();
 
 export type CalculatorSection = {
   id: string;
@@ -53,57 +54,7 @@ function formatUpdated(iso: string) {
       });
 }
 
-/** Simple responsive data table for calculator content. */
-export function CalcTable({
-  caption,
-  head,
-  rows,
-}: {
-  caption?: string;
-  head: string[];
-  rows: (string | number)[][];
-}) {
-  return (
-    <div className="-mx-1 overflow-x-auto px-1">
-      <table
-        className={`w-full border-collapse overflow-hidden rounded-xl border border-border text-left text-[13px] sm:text-sm ${head.length > 3 ? "min-w-[32rem]" : ""}`}
-      >
-        {caption ? (
-          <caption className="mb-2 text-left text-xs text-muted-foreground">
-            {caption}
-          </caption>
-        ) : null}
-        <thead className="bg-muted/60">
-          <tr>
-            {head.map((h) => (
-              <th key={h} scope="col" className="px-2.5 py-2.5 align-bottom font-semibold text-foreground sm:px-3">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border bg-white">
-          {rows.map((row, i) => (
-            <tr key={i}>
-              {row.map((cell, j) => (
-                <td
-                  key={j}
-                  className={
-                    j === 0
-                      ? "px-2.5 py-2.5 align-top font-medium text-foreground sm:px-3"
-                      : "px-2.5 py-2.5 align-top tabular-nums text-foreground/80 sm:px-3"
-                  }
-                >
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+export { CalcTable } from "@/features/tools/components/CalcTable";
 
 function LinkCards({ items }: { items: LinkItem[] }) {
   return (
@@ -143,7 +94,7 @@ export function CalculatorPageShell({
   form,
   content,
 }: Props) {
-  const path = `/tools/${slug}`;
+  const path = `/${slug}`;
   const url = `${siteUrl}${path}`;
   const appLd = {
     "@context": "https://schema.org",
@@ -163,7 +114,7 @@ export function CalculatorPageShell({
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-      { "@type": "ListItem", position: 2, name: "Tools", item: `${siteUrl}/tools` },
+      { "@type": "ListItem", position: 2, name: "Calculators", item: `${siteUrl}/tools` },
       { "@type": "ListItem", position: 3, name: title, item: url },
     ],
   };
@@ -204,7 +155,7 @@ export function CalculatorPageShell({
           <li aria-hidden="true">/</li>
           <li>
             <Link href="/tools" className="fk-link-muted">
-              Tools
+              Calculators
             </Link>
           </li>
           <li aria-hidden="true">/</li>

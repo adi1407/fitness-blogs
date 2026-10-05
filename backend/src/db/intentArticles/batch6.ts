@@ -224,7 +224,7 @@ export const batch6: IntentArticleDef[] = [
         `Training is the signal; food is what your body builds with. Most people building muscle do well around 1.6–2.2 g of protein per kg of body weight daily, spread across meals. For a 70 kg person that’s roughly 110–150 g — think eggs or besan chilla at breakfast, dal with paneer or chicken at lunch, curd or a whey shake after training, and a solid protein portion at dinner. See <a href="/blog/muscle-building/muscle-building-nutrition/how-much-protein-to-build-muscle">how much protein you need to build muscle</a> and the <a href="/blog/muscle-building/beginner-muscle-building/beginner-gym-diet-plan">beginner gym diet plan</a> for full meal ideas.`,
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Get a daily protein target for your body weight and goal.",
       ),

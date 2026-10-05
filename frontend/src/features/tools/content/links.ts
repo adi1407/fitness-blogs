@@ -63,32 +63,57 @@ export type LinkItem = { title: string; href: string; description?: string };
 export const CALCULATORS: Record<string, LinkItem> = {
   calorie: {
     title: "Calorie calculator",
-    href: "/tools/calorie-calculator",
+    href: "/calorie-calculator",
     description: "Daily calories for loss, maintenance or gain",
   },
   tdee: {
     title: "TDEE calculator",
-    href: "/tools/tdee-calculator",
+    href: "/tdee-calculator",
     description: "How many calories you burn in a day",
   },
   bmr: {
     title: "BMR calculator",
-    href: "/tools/bmr-calculator",
+    href: "/bmr-calculator",
     description: "Calories burned at complete rest",
   },
   macro: {
     title: "Macro calculator",
-    href: "/tools/macro-calculator",
+    href: "/macro-calculator",
     description: "Protein, carbs and fat in grams",
   },
   protein: {
     title: "Protein calculator",
-    href: "/tools/protein-calculator",
+    href: "/protein-calculator",
     description: "Daily protein for your goal",
   },
   bmi: {
     title: "BMI calculator",
-    href: "/tools/bmi-calculator",
+    href: "/bmi-calculator",
     description: "BMI with Indian and international cut-offs",
+  },
+  deficit: {
+    title: "Calorie deficit calculator",
+    href: "/calorie-deficit-calculator",
+    description: "Daily calories and a safe timeline to a goal weight",
+  },
+  bodyFat: {
+    title: "Body fat calculator",
+    href: "/body-fat-calculator",
+    description: "Body fat % from a tape measure (U.S. Navy method)",
+  },
+  oneRepMax: {
+    title: "One rep max calculator",
+    href: "/one-rep-max-calculator",
+    description: "Estimated 1RM and training loads by rep range",
+  },
+  water: {
+    title: "Water intake calculator",
+    href: "/water-intake-calculator",
+    description: "Daily water for your weight, training and climate",
+  },
+  steps: {
+    title: "Steps to calories calculator",
+    href: "/steps-to-calories-calculator",
+    description: "Distance and calories burned from your step count",
   },
 };

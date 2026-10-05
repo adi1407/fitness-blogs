@@ -284,11 +284,11 @@ export function CalorieCalculatorForm() {
           <Link
             href={
               plan
-                ? handoffHref("/tools/macro-calculator", {
+                ? handoffHref("/macro-calculator", {
                     calories: plan.target,
                     kg: kgRounded,
                   })
-                : "/tools/macro-calculator"
+                : "/macro-calculator"
             }
             className="fk-link font-semibold"
           >
@@ -297,8 +297,8 @@ export function CalorieCalculatorForm() {
           <Link
             href={
               plan
-                ? handoffHref("/tools/protein-calculator", { kg: kgRounded })
-                : "/tools/protein-calculator"
+                ? handoffHref("/protein-calculator", { kg: kgRounded })
+                : "/protein-calculator"
             }
             className="fk-link font-semibold"
           >

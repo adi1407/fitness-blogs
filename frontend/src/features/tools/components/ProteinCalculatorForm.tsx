@@ -174,7 +174,7 @@ export function ProteinCalculatorForm() {
           <Link href="/foods/indian" className="fk-link font-semibold">
             Indian high-protein foods
           </Link>
-          <Link href="/tools/macro-calculator" className="fk-link font-semibold">
+          <Link href="/macro-calculator" className="fk-link font-semibold">
             Macro calculator
           </Link>
         </div>

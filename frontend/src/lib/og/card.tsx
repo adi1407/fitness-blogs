@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { BRAND_NAME } from "@/lib/brand";
+import type { OgUrlInput } from "@/lib/og/url";
 
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 
@@ -30,12 +31,7 @@ function loadFont(): Promise<ArrayBuffer | null> {
   });
 }
 
-export type OgCardInput = {
-  title: string;
-  eyebrow?: string;
-  /** Big number for result share cards, e.g. "2,150". */
-  stat?: string;
-  statLabel?: string;
+export type OgCardInput = OgUrlInput & {
   /** Absolute origin used to fetch the logo. */
   origin: string;
 };
@@ -96,8 +92,15 @@ export async function renderOgCard({
           </span>
           {stat ? (
             <div style={{ display: "flex", alignItems: "baseline", gap: 18, marginTop: 8 }}>
-              <span style={{ fontSize: 120, fontWeight: 700, color: INK, lineHeight: 1 }}>
-                {clamp(stat, 14)}
+              <span
+                style={{
+                  fontSize: stat.length > 12 ? 72 : stat.length > 8 ? 96 : 120,
+                  fontWeight: 700,
+                  color: INK,
+                  lineHeight: 1,
+                }}
+              >
+                {clamp(stat, 22)}
               </span>
               {statLabel ? (
                 <span style={{ fontSize: 34, color: MUTED }}>{clamp(statLabel, 30)}</span>
@@ -119,12 +122,4 @@ export async function renderOgCard({
   );
 }
 
-/** Relative URL for the dynamic share card; resolved against `metadataBase`. */
-export function ogImageUrl(input: Omit<OgCardInput, "origin">): string {
-  const p = new URLSearchParams();
-  p.set("title", input.title);
-  if (input.eyebrow) p.set("eyebrow", input.eyebrow);
-  if (input.stat) p.set("stat", input.stat);
-  if (input.statLabel) p.set("label", input.statLabel);
-  return `/og?${p.toString()}`;
-}
+export { ogImageUrl } from "@/lib/og/url";

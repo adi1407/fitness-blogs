@@ -75,7 +75,7 @@ export const batch5: IntentArticleDef[] = [
         "Track trend weight weekly, not one dramatic morning.",
       ]),
       toolCta(
-        "/tools/tdee-calculator",
+        "/tdee-calculator",
         "TDEE calculator",
         "Estimate maintenance calories before you guess a deficit.",
       ),
@@ -109,7 +109,7 @@ export const batch5: IntentArticleDef[] = [
         `Build the deficit properly: <a href="/blog/weight-loss/calorie-deficit/how-to-calculate-your-calorie-deficit">how to calculate your calorie deficit</a>. For weekly targets, see <a href="/blog/weight-loss/calorie-deficit/how-many-calories-should-i-eat-to-lose-weight">how many calories to eat to lose weight</a>. ${DISCLAIMER}`,
       ),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "Turn maintenance into a fat-loss calorie target.",
       ),

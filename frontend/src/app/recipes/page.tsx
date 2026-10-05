@@ -39,7 +39,7 @@ export default async function RecipesPage() {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Link
-          href="/tools/macro-calculator"
+          href="/macro-calculator"
           className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
         >
           Macro calculator

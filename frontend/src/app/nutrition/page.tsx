@@ -23,12 +23,12 @@ const topics = [
     text: "How much you need, muscle growth, fat loss, timing, and food sources.",
   },
   {
-    href: "/tools/calorie-calculator",
+    href: "/calorie-calculator",
     title: "Calories",
     text: "Estimate needs and connect calorie targets to real meal planning.",
   },
   {
-    href: "/tools/macro-calculator",
+    href: "/macro-calculator",
     title: "Macros",
     text: "Turn calories into protein, carbs, and fat for your goal.",
   },
@@ -79,7 +79,7 @@ export default function NutritionPage() {
             Protein guide
           </TrackedHubLink>
           <TrackedHubLink
-            href="/tools/protein-calculator"
+            href="/protein-calculator"
             label="Protein calculator"
             className="fk-btn-ghost rounded-full"
           >

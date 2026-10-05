@@ -57,7 +57,7 @@ export const batch3: IntentArticleDef[] = [
         "Fat loss requires using more energy than you take in over time. Where fat comes off first is partly genetic. You can influence the total; you cannot command your stomach to empty first with a gadget.",
       ),
       toolCta(
-        "/tools/tdee-calculator",
+        "/tdee-calculator",
         "TDEE calculator",
         "Set up your intake using the",
       ),
@@ -141,7 +141,7 @@ export const batch3: IntentArticleDef[] = [
         "As you get lighter, recalculate — maintenance drops.",
       ]),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "Plan intake with the",
       ),

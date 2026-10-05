@@ -254,7 +254,7 @@ export const batch9: IntentArticleDef[] = [
         `Over the next two months he lost 3.4 kg and two belt notches. Not because fasting burned fat, but because the window ended his late-night snacking and the protein-rich first meal stopped the 11 am hunger. If your weight stalls on any plan, read <a href="${LINK.notLosing}">why you’re not losing weight</a>.`,
       ),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "Intermittent fasting still works through calories. Find your daily target with the",
       ),
@@ -488,7 +488,7 @@ export const batch9: IntentArticleDef[] = [
         `She takes one scoop a day in her morning smoothie and added hung curd and tofu to her meals. Her protein went from about 45 g to about 85 g a day, her lifts climbed steadily, and — after a brief scare with a few pimples that settled — her skin stayed clear. If you’re also considering creatine, read <a href="${LINK.creatine}">is creatine safe</a>.`,
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Find out how much protein you need before buying any powder, with the",
       ),
@@ -717,7 +717,7 @@ export const batch9: IntentArticleDef[] = [
         `Four months later, her father’s LDL cholesterol had come down at his follow-up — along with the daily walk his doctor also insisted on — and Priya had lost 4.5 kg. Her mother still says ghee is medicine. Everyone now agrees that the dose matters. For more everyday swaps, read the <a href="${LINK.indianFoodsWl}">best Indian foods for weight loss</a> and <a href="${LINK.bellyFat}">how to lose belly fat</a>.`,
       ),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "See how much room your day has for fats like ghee with the",
       ),

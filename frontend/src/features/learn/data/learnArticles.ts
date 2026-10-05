@@ -82,7 +82,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.chickenBowl,
     alt: "Health metrics",
     content: "Estimate daily protein grams with our free calculator.",
-    linkHref: "/tools/protein-calculator",
+    linkHref: "/protein-calculator",
     linkText: "Protein calculator",
   },
   {
@@ -102,7 +102,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.mealPrep,
     alt: "Active lifestyle",
     content: "Estimate maintenance calories (TDEE) before setting a cut.",
-    linkHref: "/tools/tdee-calculator",
+    linkHref: "/tdee-calculator",
     linkText: "TDEE calculator",
   },
   {
@@ -132,7 +132,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.checkup,
     alt: "Healthy grocery ingredients",
     content: "Turn TDEE into a practical daily calorie target.",
-    linkHref: "/tools/calorie-calculator",
+    linkHref: "/calorie-calculator",
     linkText: "Calorie calculator",
   },
   {
@@ -182,7 +182,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.bicepCurlWide,
     alt: "Nutritious food spread",
     content: "A modest surplus supports growth; huge bulks mostly add fat.",
-    linkHref: "/tools/calorie-calculator",
+    linkHref: "/calorie-calculator",
     linkText: "Calorie targets",
   },
   {
@@ -262,7 +262,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.healthConsult,
     alt: "Calculator concept",
     content: "TDEE calculator for maintenance, cut, and surplus ranges.",
-    linkHref: "/tools/tdee-calculator",
+    linkHref: "/tdee-calculator",
     linkText: "Open TDEE",
   },
   {
@@ -272,7 +272,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.checkup,
     alt: "Macro-friendly meal",
     content: "Split calories into protein, carbs, and fat grams.",
-    linkHref: "/tools/macro-calculator",
+    linkHref: "/macro-calculator",
     linkText: "Macro calculator",
   },
   {
@@ -282,7 +282,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.powerBowl,
     alt: "Fitness tracking",
     content: "BMI is a screening metric — not a full health assessment.",
-    linkHref: "/tools/bmi-calculator",
+    linkHref: "/bmi-calculator",
     linkText: "BMI calculator",
   },
   {
@@ -292,7 +292,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     src: HUB.chickenBowl,
     alt: "Rest and recovery",
     content: "Estimate basal metabolic rate before activity multipliers.",
-    linkHref: "/tools/bmr-calculator",
+    linkHref: "/bmr-calculator",
     linkText: "BMR calculator",
   },
   {

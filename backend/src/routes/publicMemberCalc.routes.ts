@@ -9,6 +9,11 @@ export const CALC_TOOLS = [
   "macro-calculator",
   "protein-calculator",
   "bmi-calculator",
+  "calorie-deficit-calculator",
+  "body-fat-calculator",
+  "one-rep-max-calculator",
+  "water-intake-calculator",
+  "steps-to-calories-calculator",
 ] as const;
 
 type CalcTool = (typeof CALC_TOOLS)[number];

@@ -118,7 +118,7 @@ export function TdeeCalculatorForm() {
                 <ResultChip
                   label="Fat loss start (−20%)"
                   value={`~${result.cut.toLocaleString("en-IN")} kcal`}
-                  href={handoffHref("/tools/calorie-calculator", {
+                  href={handoffHref("/calorie-calculator", {
                     ...statsParams,
                     goal: "loss",
                   })}
@@ -126,7 +126,7 @@ export function TdeeCalculatorForm() {
                 <ResultChip
                   label="Maintain"
                   value={`~${result.maintain.toLocaleString("en-IN")} kcal`}
-                  href={handoffHref("/tools/macro-calculator", {
+                  href={handoffHref("/macro-calculator", {
                     calories: result.maintain,
                     kg: statsParams.kg,
                   })}
@@ -134,7 +134,7 @@ export function TdeeCalculatorForm() {
                 <ResultChip
                   label="Lean gain (+10%)"
                   value={`~${result.bulk.toLocaleString("en-IN")} kcal`}
-                  href={handoffHref("/tools/calorie-calculator", {
+                  href={handoffHref("/calorie-calculator", {
                     ...statsParams,
                     goal: "gain",
                   })}
@@ -154,8 +154,8 @@ export function TdeeCalculatorForm() {
           <Link
             href={
               result
-                ? handoffHref("/tools/calorie-calculator", statsParams)
-                : "/tools/calorie-calculator"
+                ? handoffHref("/calorie-calculator", statsParams)
+                : "/calorie-calculator"
             }
             className="fk-link font-semibold"
           >
@@ -164,11 +164,11 @@ export function TdeeCalculatorForm() {
           <Link
             href={
               result
-                ? handoffHref("/tools/macro-calculator", {
+                ? handoffHref("/macro-calculator", {
                     calories: result.tdee,
                     kg: statsParams.kg,
                   })
-                : "/tools/macro-calculator"
+                : "/macro-calculator"
             }
             className="fk-link font-semibold"
           >

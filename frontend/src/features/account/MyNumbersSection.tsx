@@ -137,7 +137,7 @@ export function MyNumbersSection() {
           {results.length === 0 ? (
             <p className="rounded-2xl border border-dashed border-border bg-muted/30 px-4 py-6 text-sm text-muted-foreground">
               No saved results yet.{" "}
-              <Link href="/tools/calorie-calculator" className="fk-link">
+              <Link href="/calorie-calculator" className="fk-link">
                 Try the calorie calculator
               </Link>
             </p>
@@ -147,7 +147,7 @@ export function MyNumbersSection() {
                 <li key={r.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs text-muted-foreground">
-                      <Link href={`/tools/${r.tool}`} className="fk-link-muted font-medium">
+                      <Link href={`/${r.tool}`} className="fk-link-muted font-medium">
                         {CALC_TOOLS[r.tool] ?? r.tool}
                       </Link>{" "}
                       · {formatDate(r.createdAt)}

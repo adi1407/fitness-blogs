@@ -135,7 +135,7 @@ export default async function ExerciseDetailPage({ params }: Props) {
 
       <div className="mt-10 flex flex-wrap gap-3">
         <Link
-          href="/tools/protein-calculator"
+          href="/protein-calculator"
           className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
         >
           Protein calculator

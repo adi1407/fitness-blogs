@@ -38,7 +38,7 @@ function a(slug: string, text: string): string {
 }
 
 function calc(tool: string, text: string): string {
-  return `<a href="/tools/${tool}">${text}</a>`;
+  return `<a href="/${tool}">${text}</a>`;
 }
 
 const READ_NEXT_MARKER = "<strong>Where to go next:</strong>";
@@ -134,8 +134,23 @@ async function insertReadNextLinks(): Promise<void> {
   console.log(`[db] read-next links added to ${updated} articles`);
 }
 
+/** Calculators moved from `/tools/{x}-calculator` to `/{x}-calculator` (old URLs 308 on the site). */
+async function rootCalculatorLinks(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE articles
+        SET body = regexp_replace(body, '/tools/([a-z]+-calculator)', '/\\1', 'g'),
+            quick_answer = regexp_replace(quick_answer, '/tools/([a-z]+-calculator)', '/\\1', 'g'),
+            faq = regexp_replace(faq::text, '/tools/([a-z]+-calculator)', '/\\1', 'g')::jsonb
+      WHERE body ~ '/tools/[a-z]+-calculator'
+         OR quick_answer ~ '/tools/[a-z]+-calculator'
+         OR faq::text ~ '/tools/[a-z]+-calculator'`,
+  );
+  console.log(`[db] calculator links moved to root URLs in ${res.rowCount ?? 0} articles`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: insertReadNextLinks },
+  { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

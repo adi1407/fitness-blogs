@@ -100,7 +100,7 @@ export default function MuscleBuildingPage() {
             Exercise library →
           </TrackedHubLink>
           <TrackedHubLink
-            href="/tools/protein-calculator"
+            href="/protein-calculator"
             label="Protein calculator"
             className="fk-btn-ghost rounded-full"
           >

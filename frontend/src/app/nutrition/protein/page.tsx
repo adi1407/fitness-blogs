@@ -105,7 +105,7 @@ export default function ProteinHubPage() {
           meals from high-protein foods.
         </p>
         <TrackedHubLink
-          href="/tools/protein-calculator"
+          href="/protein-calculator"
           label="Calculate protein requirement"
           className="fk-btn-accent mt-4 rounded-full"
         >
@@ -153,7 +153,7 @@ export default function ProteinHubPage() {
                     Consistent daily intake across meals
                   </td>
                   <td className="px-4 py-3">
-                    <Link href="/tools/protein-calculator" className="text-primary">
+                    <Link href="/protein-calculator" className="text-primary">
                       Calculator
                     </Link>
                   </td>
@@ -193,13 +193,13 @@ export default function ProteinHubPage() {
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
-              href="/tools/protein-calculator"
+              href="/protein-calculator"
               className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white"
             >
               Protein calculator
             </Link>
             <Link
-              href="/tools/tdee-calculator"
+              href="/tdee-calculator"
               className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
             >
               TDEE calculator

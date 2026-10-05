@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         destination: "https://fitlives.in/:path*",
         permanent: true,
       },
+      {
+        source: "/tools/:calc([a-z0-9-]+-calculator)",
+        destination: "/:calc",
+        permanent: true,
+      },
     ];
   },
 };

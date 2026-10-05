@@ -37,7 +37,7 @@ const faq = [
 
 const pillars = [
   {
-    href: "/tools/tdee-calculator",
+    href: "/tdee-calculator",
     title: "Energy balance",
     text: "Estimate maintenance, then set a moderate deficit.",
   },
@@ -118,14 +118,14 @@ export default function WeightLossPage() {
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <TrackedHubLink
-              href="/tools/tdee-calculator"
+              href="/tdee-calculator"
               label="TDEE calculator"
               className="fk-btn-accent rounded-full"
             >
               TDEE calculator →
             </TrackedHubLink>
             <TrackedHubLink
-              href="/tools/calorie-calculator"
+              href="/calorie-calculator"
               label="Calorie calculator"
               className="fk-btn-ghost rounded-full border-orange-200"
             >

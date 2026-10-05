@@ -16,11 +16,13 @@ const explore = [
 
 const tools = [
   { href: "/tools", label: "All Calculators" },
-  { href: "/tools/tdee-calculator", label: "TDEE Calculator" },
-  { href: "/tools/protein-calculator", label: "Protein Calculator" },
-  { href: "/tools/calorie-calculator", label: "Calorie Calculator" },
-  { href: "/tools/macro-calculator", label: "Macro Calculator" },
-  { href: "/tools/bmi-calculator", label: "BMI Calculator" },
+  { href: "/tdee-calculator", label: "TDEE Calculator" },
+  { href: "/protein-calculator", label: "Protein Calculator" },
+  { href: "/calorie-calculator", label: "Calorie Calculator" },
+  { href: "/macro-calculator", label: "Macro Calculator" },
+  { href: "/bmi-calculator", label: "BMI Calculator" },
+  { href: "/calorie-deficit-calculator", label: "Calorie Deficit Calculator" },
+  { href: "/body-fat-calculator", label: "Body Fat Calculator" },
 ];
 
 const trust = [

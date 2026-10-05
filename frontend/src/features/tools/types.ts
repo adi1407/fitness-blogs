@@ -7,6 +7,11 @@ export const CALC_TOOLS = {
   "macro-calculator": "Macro calculator",
   "protein-calculator": "Protein calculator",
   "bmi-calculator": "BMI calculator",
+  "calorie-deficit-calculator": "Calorie deficit calculator",
+  "body-fat-calculator": "Body fat calculator",
+  "one-rep-max-calculator": "One rep max calculator",
+  "water-intake-calculator": "Water intake calculator",
+  "steps-to-calories-calculator": "Steps to calories calculator",
 } as const;
 
 export type CalcTool = keyof typeof CALC_TOOLS;

@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { ProteinCalculatorForm } from "@/features/tools/components/ProteinCalculatorForm";
 import { proteinContent, proteinMeta } from "@/features/tools/content/protein";
+import { calculatorMetadata } from "@/features/tools/content/meta";
 
-export const metadata: Metadata = {
-  title: proteinMeta.title,
-  description: proteinMeta.description,
-  alternates: { canonical: "/tools/protein-calculator" },
-  openGraph: {
-    title: `${proteinMeta.title} | fitlives`,
-    description: proteinMeta.description,
-    url: "/tools/protein-calculator",
-    type: "website",
-  },
-};
+export const metadata = calculatorMetadata("protein-calculator", proteinMeta);
 
 export default function Page() {
   return (

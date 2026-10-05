@@ -118,7 +118,7 @@ export function MacroCalculatorForm() {
             ) : (
               <p className="mt-1.5 text-xs text-muted-foreground">
                 Don&apos;t know it? Get your target from the{" "}
-                <Link href="/tools/calorie-calculator" className="fk-link">
+                <Link href="/calorie-calculator" className="fk-link">
                   calorie calculator
                 </Link>
                 .
@@ -222,7 +222,7 @@ export function MacroCalculatorForm() {
       afterResults={<CalcSaveBar key={runId} calc={calc} payload={payload} />}
       footer={
         <div className="flex flex-wrap gap-3 text-sm">
-          <Link href="/tools/protein-calculator" className="fk-link font-semibold">
+          <Link href="/protein-calculator" className="fk-link font-semibold">
             Protein calculator
           </Link>
           <Link href="/foods/indian" className="fk-link font-semibold">

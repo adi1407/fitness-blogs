@@ -31,7 +31,7 @@ const collections = [
     text: "How food choices support daily protein targets.",
   },
   {
-    href: "/tools/macro-calculator",
+    href: "/macro-calculator",
     title: "Macro calculator",
     text: "Set targets, then map them onto foods.",
   },

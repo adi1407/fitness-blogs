@@ -187,17 +187,17 @@ type CalculatorCta = { href: string; label: string; blurb: string };
 
 const CALC_CTA = {
   calorie: {
-    href: "/tools/calorie-calculator",
+    href: "/calorie-calculator",
     label: "Calorie calculator",
     blurb: "Get a daily calorie target for losing, maintaining, or gaining weight.",
   },
   protein: {
-    href: "/tools/protein-calculator",
+    href: "/protein-calculator",
     label: "Protein calculator",
     blurb: "Estimate your daily protein target for your weight and goal.",
   },
   macro: {
-    href: "/tools/macro-calculator",
+    href: "/macro-calculator",
     label: "Macro calculator",
     blurb: "Split your calories into protein, carbs, and fat.",
   },

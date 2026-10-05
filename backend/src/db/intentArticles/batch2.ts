@@ -284,7 +284,7 @@ export const batch2: IntentArticleDef[] = [
         "Jeera, ajwain, chili, garam masala, lemon, coriander, mint chutney (watch oil/peanuts). Flavor is adherence technology.",
       ),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "Match food choices to a target with the",
       ),
@@ -352,7 +352,7 @@ export const batch2: IntentArticleDef[] = [
         "Dinner: paneer/fish/chicken + vegetables",
       ]),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Set the daily target with our",
       ),

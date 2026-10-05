@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { CalorieCalculatorForm } from "@/features/tools/components/CalorieCalculatorForm";
 import { calorieContent, calorieMeta } from "@/features/tools/content/calorie";
+import { calculatorMetadata } from "@/features/tools/content/meta";
 
-export const metadata: Metadata = {
-  title: calorieMeta.title,
-  description: calorieMeta.description,
-  alternates: { canonical: "/tools/calorie-calculator" },
-  openGraph: {
-    title: `${calorieMeta.title} | fitlives`,
-    description: calorieMeta.description,
-    url: "/tools/calorie-calculator",
-    type: "website",
-  },
-};
+export const metadata = calculatorMetadata("calorie-calculator", calorieMeta);
 
 export default function Page() {
   return (

@@ -304,7 +304,7 @@ export const batch8: IntentArticleDef[] = [
         `Three weeks in, the scale was 1.2 kg higher and his mother was convinced it was fat. By week eight his bench press had moved from 60 kg to 67.5 kg. Creatine didn’t do that alone: he also finally started tracking his lifts and eating enough protein — mostly dal, paneer, curd, and eggs (see our <a href="${LINK.indianProtein}">best high-protein Indian foods</a>). But the extra rep or two on every hard set added up. And his hairline is exactly where it was.`,
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Creatine works best alongside enough protein. Find your daily target with the",
       ),

@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
 import { CalculatorPageShell } from "@/features/tools/components/CalculatorPageShell";
 import { BmiCalculatorForm } from "@/features/tools/components/BmiCalculatorForm";
 import { bmiContent, bmiMeta } from "@/features/tools/content/bmi";
+import { calculatorMetadata } from "@/features/tools/content/meta";
 
-export const metadata: Metadata = {
-  title: bmiMeta.title,
-  description: bmiMeta.description,
-  alternates: { canonical: "/tools/bmi-calculator" },
-  openGraph: {
-    title: `${bmiMeta.title} | fitlives`,
-    description: bmiMeta.description,
-    url: "/tools/bmi-calculator",
-    type: "website",
-  },
-};
+export const metadata = calculatorMetadata("bmi-calculator", bmiMeta);
 
 export default function Page() {
   return (

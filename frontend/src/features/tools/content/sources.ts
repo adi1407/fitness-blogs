@@ -63,4 +63,49 @@ export const SOURCES = {
     label: "World Health Organization. Obesity and overweight — fact sheet.",
     href: "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight",
   },
+  navyHistory: {
+    label: "Peterson DD. History of the U.S. Navy Body Composition program. Mil Med, 2015.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/25562863/",
+  },
+  navyCircumference: {
+    label:
+      "Shake CL, et al. Predicting percent body fat from circumference measurements. Mil Med, 1993.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/8437737/",
+  },
+  asianBodyFat: {
+    label:
+      "Deurenberg-Yap M, et al. The paradox of low body mass index and high body fat percentage among Chinese, Malays and Indians in Singapore. Int J Obes, 2000.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/10951540/",
+  },
+  waistToHeight: {
+    label:
+      "Ashwell M, et al. Waist-to-height ratio is a better screening tool than waist circumference and BMI for adult cardiometabolic risk factors: systematic review and meta-analysis. Obes Rev, 2012.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/22106927/",
+  },
+  reynolds1rm: {
+    label:
+      "Reynolds JM, et al. Prediction of one repetition maximum strength from multiple repetition maximum testing and anthropometry. J Strength Cond Res, 2006.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/16937972/",
+  },
+  efsaWater: {
+    label: "EFSA Panel on Dietetic Products, Nutrition and Allergies. Scientific Opinion on Dietary Reference Values for water. EFSA Journal, 2010.",
+    href: "https://doi.org/10.2903/j.efsa.2010.1459",
+  },
+  acsmFluid: {
+    label: "American College of Sports Medicine position stand. Exercise and fluid replacement. Med Sci Sports Exerc, 2007.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/17277604/",
+  },
+  popkinWater: {
+    label: "Popkin BM, et al. Water, hydration, and health. Nutr Rev, 2010.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/20646222/",
+  },
+  compendium: {
+    label:
+      "Ainsworth BE, et al. 2011 Compendium of Physical Activities: a second update of codes and MET values. Med Sci Sports Exerc, 2011.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/21681120/",
+  },
+  tudorLocke: {
+    label: "Tudor-Locke C, et al. How many steps/day are enough? For adults. Int J Behav Nutr Phys Act, 2011.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/21798015/",
+  },
 } as const;

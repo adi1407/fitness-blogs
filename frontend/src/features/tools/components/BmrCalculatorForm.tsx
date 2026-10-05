@@ -54,13 +54,13 @@ export function BmrCalculatorForm() {
     : null;
 
   const tdeeHref = result
-    ? handoffHref("/tools/tdee-calculator", {
+    ? handoffHref("/tdee-calculator", {
         sex: result.sex,
         age: result.age,
         kg: result.kg,
         cm: result.cm,
       })
-    : "/tools/tdee-calculator";
+    : "/tdee-calculator";
 
   return (
     <CalcWorkspace
@@ -109,7 +109,7 @@ export function BmrCalculatorForm() {
           <Link href={tdeeHref} className="fk-link font-semibold">
             TDEE calculator
           </Link>
-          <Link href="/tools/calorie-calculator" className="fk-link font-semibold">
+          <Link href="/calorie-calculator" className="fk-link font-semibold">
             Calorie calculator
           </Link>
         </div>

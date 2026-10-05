@@ -186,7 +186,7 @@ export const batch4: IntentArticleDef[] = [
         "If sessions are very long/intense, peri-workout carbs can matter for performance too.",
       ]),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Confirm daily needs with the",
       ),
@@ -304,12 +304,12 @@ export const batch4: IntentArticleDef[] = [
         "Set protein around 1.6–2.0 g/kg to start.",
       ]),
       toolCta(
-        "/tools/tdee-calculator",
+        "/tdee-calculator",
         "TDEE calculator",
         "Start calories with the",
       ),
       toolCta(
-        "/tools/protein-calculator",
+        "/protein-calculator",
         "protein calculator",
         "Set protein with the",
       ),

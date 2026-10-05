@@ -217,7 +217,7 @@ export const batch7: IntentArticleDef[] = [
 
       h3("4. You lost weight — so your calorie target moved"),
       p(
-        `A lighter body burns fewer calories, both at rest and when it moves. Very roughly, every 5 kg lost trims your daily needs by 60–100 kcal. The 1,500 kcal that was a solid deficit at 75 kg may be only a small one at 68 kg. Your metabolism can also slow a little more than weight loss alone would predict. None of this means weight loss has “stopped working” — just that the numbers need updating. Recalculate every 4–5 kg using the <a href="/tools/calorie-calculator">calorie calculator</a>.`,
+        `A lighter body burns fewer calories, both at rest and when it moves. Very roughly, every 5 kg lost trims your daily needs by 60–100 kcal. The 1,500 kcal that was a solid deficit at 75 kg may be only a small one at 68 kg. Your metabolism can also slow a little more than weight loss alone would predict. None of this means weight loss has “stopped working” — just that the numbers need updating. Recalculate every 4–5 kg using the <a href="/calorie-calculator">calorie calculator</a>.`,
       ),
 
       h3("5. You’re moving less without noticing"),
@@ -249,7 +249,7 @@ export const batch7: IntentArticleDef[] = [
       ol([
         "<strong>Measure properly.</strong> Weigh 3–7 mornings a week and use the weekly average. Measure your waist on day 1 and day 14.",
         "<strong>Track everything for 14 days</strong> — including oil, ghee, chai, bites while cooking, and weekends. Use a kitchen scale for oil and grains for at least the first week. Most people find their “missing” 300–500 kcal here.",
-        `<strong>Recalculate your target</strong> for your current weight using the <a href="/tools/calorie-calculator">calorie calculator</a>. Compare it with what your tracking shows you really eat.`,
+        `<strong>Recalculate your target</strong> for your current weight using the <a href="/calorie-calculator">calorie calculator</a>. Compare it with what your tracking shows you really eat.`,
         `<strong>Fix protein.</strong> Aim for a palm-sized protein portion at every meal — dal with paneer or curd, eggs, chicken, fish, soya, or chana. Protein keeps you fuller and protects muscle; see <a href="${LINK.proteinPerDay}">how much protein you need per day</a>.`,
         "<strong>Hold a daily step floor.</strong> Pick a number you can hit even on busy days (for example 7,000) and keep it steady.",
         "<strong>Strength train 2–3 times a week.</strong> It protects muscle while you diet, which keeps your shape improving even when the scale is slow.",
@@ -288,7 +288,7 @@ export const batch7: IntentArticleDef[] = [
         `Over the next six weeks her weekly average dropped by about 0.4 kg a week and her waist by 3 cm. Nothing dramatic — and that’s exactly why it lasted. For more ideas on filling, everyday meals, see the <a href="${LINK.indianFoods}">best Indian foods for weight loss</a>, and if your main goal is your midsection, read <a href="${LINK.bellyFat}">how to lose belly fat</a>.`,
       ),
       toolCta(
-        "/tools/calorie-calculator",
+        "/calorie-calculator",
         "calorie calculator",
         "Recalculate your daily target for your current weight and activity.",
       ),

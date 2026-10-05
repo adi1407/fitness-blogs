@@ -132,7 +132,7 @@ export default async function RecipeDetailPage({ params }: Props) {
           Protein guide
         </Link>
         <Link
-          href="/tools/calorie-calculator"
+          href="/calorie-calculator"
           className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
         >
           Calorie calculator

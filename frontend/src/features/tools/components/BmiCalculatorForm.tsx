@@ -154,10 +154,10 @@ export function BmiCalculatorForm() {
       afterResults={<CalcSaveBar key={runId} calc={calc} payload={payload} />}
       footer={
         <div className="flex flex-wrap gap-3 text-sm">
-          <Link href="/tools/calorie-calculator" className="fk-link font-semibold">
+          <Link href="/calorie-calculator" className="fk-link font-semibold">
             Calorie calculator
           </Link>
-          <Link href="/tools/tdee-calculator" className="fk-link font-semibold">
+          <Link href="/tdee-calculator" className="fk-link font-semibold">
             TDEE calculator
           </Link>
           <Link href="/weight-loss" className="fk-link font-semibold">

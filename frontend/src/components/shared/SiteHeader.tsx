@@ -72,10 +72,10 @@ const MOBILE_TRUST = [
 ] as const;
 
 const TOOL_SHORTCUTS = [
-  { label: "Protein", href: "/tools/protein-calculator" },
-  { label: "TDEE", href: "/tools/tdee-calculator" },
-  { label: "Macros", href: "/tools/macro-calculator" },
-  { label: "Calories", href: "/tools/calorie-calculator" },
+  { label: "Protein", href: "/protein-calculator" },
+  { label: "TDEE", href: "/tdee-calculator" },
+  { label: "Macros", href: "/macro-calculator" },
+  { label: "Calories", href: "/calorie-calculator" },
 ] as const;
 
 const subscribeNoop = () => () => {};
