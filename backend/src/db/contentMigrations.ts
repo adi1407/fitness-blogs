@@ -148,9 +148,52 @@ async function rootCalculatorLinks(): Promise<void> {
   console.log(`[db] calculator links moved to root URLs in ${res.rowCount ?? 0} articles`);
 }
 
+function food(slug: string, text: string): string {
+  return `<a href="/foods/${slug}">${text}</a>`;
+}
+
+const FOOD_DATA_MARKER = "<strong>Food data:</strong>";
+const FOOD_CHART = food("indian", "Indian food calories &amp; protein chart");
+
+const FOOD_DATA: Record<string, string> = {
+  "best-high-protein-indian-foods": `Compare exact values per serving for ${food("paneer", "paneer")}, ${food("chicken-breast", "chicken breast")}, ${food("boiled-egg", "eggs")}, ${food("soybean", "soybean")}, ${food("kala-chana", "kala chana")} and ${food("moong-dal", "moong dal")}, or filter the full ${FOOD_CHART} by high protein.`,
+  "how-much-protein-do-you-need-per-day": `See how much protein your usual foods give per katori, roti or piece in our ${FOOD_CHART}.`,
+  "100g-paneer-calories-and-protein": `Use the serving calculator on our ${food("paneer", "paneer nutrition page")} to get calories and protein for any amount, from 1 cube to 200 g.`,
+  "100g-chicken-breast-calories-and-protein": `Work out calories and protein for your exact portion on our ${food("chicken-breast", "chicken breast nutrition page")}, or compare it with ${food("chicken-thigh", "chicken thigh")}.`,
+  "2-eggs-calories-and-protein": `Get values for any number of eggs on our ${food("boiled-egg", "boiled egg nutrition page")}, and see how ${food("egg-white", "egg whites")} compare.`,
+  "rice-vs-roti-for-weight-loss": `Check calories per katori and per roti for ${food("rice", "rice")}, ${food("brown-rice", "brown rice")} and ${food("roti", "roti")}.`,
+  "is-rice-good-for-weight-loss": `See calories per katori for ${food("rice", "white rice")} and ${food("brown-rice", "brown rice")}, or compare both with ${food("roti", "roti")}.`,
+  "is-paneer-good-for-weight-loss": `Calculate calories and protein for your portion on our ${food("paneer", "paneer nutrition page")}.`,
+  "best-indian-foods-for-weight-loss": `Look up calories per serving for dals, grains, fruit and vegetables in our ${FOOD_CHART} — filter by low calorie to find high-volume foods.`,
+  "beginner-gym-diet-plan": `Swap foods in and out of this plan using the macros in our ${FOOD_CHART}.`,
+};
+
+/** Links articles that discuss specific foods to the matching /foods pages. */
+async function insertFoodDataLinks(): Promise<void> {
+  const slugs = Object.keys(FOOD_DATA);
+  const res = await pool.query<{ id: string; slug: string; body: string }>(
+    `SELECT id, slug, body FROM articles WHERE slug = ANY($1::text[])`,
+    [slugs],
+  );
+  let updated = 0;
+  for (const row of res.rows) {
+    if (!row.body || row.body.includes(FOOD_DATA_MARKER)) continue;
+    const block = `<p>${FOOD_DATA_MARKER} ${FOOD_DATA[row.slug]}</p>`;
+    const anchor = row.body.indexOf("<h2>Key takeaways</h2>");
+    const body =
+      anchor >= 0
+        ? `${row.body.slice(0, anchor)}${block}\n${row.body.slice(anchor)}`
+        : `${row.body}\n${block}`;
+    await pool.query(`UPDATE articles SET body = $1 WHERE id = $2`, [body, row.id]);
+    updated++;
+  }
+  console.log(`[db] food data links added to ${updated} articles`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: insertReadNextLinks },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
+  { id: "2026-10-06-food-data-links", run: insertFoodDataLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

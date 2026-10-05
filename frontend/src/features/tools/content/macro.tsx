@@ -3,7 +3,7 @@ import {
   CalcTable,
   type CalculatorContent,
 } from "@/features/tools/components/CalculatorPageShell";
-import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
+import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const macroMeta = {
@@ -125,6 +125,8 @@ export const macroContent: CalculatorContent = {
             </Link>{" "}
             and the{" "}
             <Link href={ARTICLES.beginnerGymDiet.href}>beginner gym diet plan</Link>.
+            To swap foods in and out, check their macros in the{" "}
+            <Link href={FOODS.index.href}>Indian food calories &amp; protein chart</Link>.
           </p>
         </>
       ),

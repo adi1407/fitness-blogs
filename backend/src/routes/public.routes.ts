@@ -15,6 +15,7 @@ import {
   mapRecipe,
 } from "../utils/knowledgeMappers";
 import { publicAuthRouter } from "./publicAuth.routes";
+import { publicFoodsRouter } from "./publicFoods.routes";
 import {
   publicBookmarksRouter,
   publicEngagementRouter,
@@ -37,6 +38,7 @@ publicRouter.use("/me/upvotes", publicUpvotesRouter);
 publicRouter.use("/me/calc-profile", publicCalcProfileRouter);
 publicRouter.use("/me/calc-results", publicCalcResultsRouter);
 publicRouter.use("/articles/:articleId/engagement", publicEngagementRouter);
+publicRouter.use("/foods", publicFoodsRouter);
 
 const ARTICLE_SELECT = `
   SELECT a.*,
@@ -119,7 +121,8 @@ publicRouter.get("/articles", async (req, res) => {
     typeof req.query.category === "string" ? req.query.category : null;
   const subcategory =
     typeof req.query.subcategory === "string" ? req.query.subcategory : null;
-  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 48));
+  const summary = req.query.fields === "summary";
+  const limit = Math.min(summary ? 500 : 100, Math.max(1, Number(req.query.limit) || 48));
 
   const params: unknown[] = [];
   const clauses = [`a.status = 'published'`, `a.slug IS NOT NULL`];
@@ -142,7 +145,14 @@ publicRouter.get("/articles", async (req, res) => {
     params,
   );
 
-  res.json({ articles: result.rows.map(mapPublic) });
+  const articles = result.rows.map(mapPublic);
+  if (summary) {
+    res.json({
+      articles: articles.map(({ body: _body, faq: _faq, sources: _sources, ...rest }) => rest),
+    });
+    return;
+  }
+  res.json({ articles });
 });
 
 publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {

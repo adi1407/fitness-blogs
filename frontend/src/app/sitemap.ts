@@ -122,12 +122,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
   MUSCLE_GROUPS.forEach((g) => add(`/exercises/${g}`, 0.7, "weekly"));
 
-  const [articles, exercises, recipes, programs, reviews] = await Promise.all([
-    fetchApi<{ articles?: ArticleItem[] }>("/public/articles?limit=500"),
+  const [articles, exercises, recipes, programs, reviews, foods] = await Promise.all([
+    fetchApi<{ articles?: ArticleItem[] }>("/public/articles?limit=500&fields=summary"),
     fetchApi<{ exercises?: PathItem[] }>("/public/exercises"),
     fetchApi<{ recipes?: PathItem[] }>("/public/recipes"),
     fetchApi<{ pages?: PathItem[] }>("/public/knowledge/programs"),
     fetchApi<{ pages?: PathItem[] }>("/public/knowledge/reviews"),
+    fetchApi<{ foods?: { slug: string; updatedAt?: string | null }[] }>("/public/foods"),
   ]);
 
   const subcategories = new Set<string>();
@@ -151,6 +152,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   addItems(recipes?.recipes, 0.7);
   addItems(programs?.pages, 0.7);
   addItems(reviews?.pages, 0.7);
+  for (const f of foods?.foods ?? []) {
+    add(`/foods/${f.slug}`, 0.75, "weekly", safeDate(f.updatedAt));
+  }
 
   return entries;
 }

@@ -3,6 +3,7 @@ import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { seedKnowledgeContent } from "./seedKnowledgeContent";
 import { seedIntentArticles } from "./seedIntentArticles";
+import { seedFoods } from "./seedFoods";
 import { applyContentMigrations } from "./contentMigrations";
 import { normalizeAllArticleLinks } from "../services/internalLinks";
 
@@ -308,6 +309,39 @@ CREATE TABLE IF NOT EXISTS knowledge_pages (
 CREATE INDEX IF NOT EXISTS idx_knowledge_pages_section
   ON knowledge_pages(section, status, sort_order);
 
+CREATE TABLE IF NOT EXISTS foods (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  hindi_name TEXT NOT NULL DEFAULT '',
+  category TEXT NOT NULL,
+  diet TEXT NOT NULL CHECK (diet IN ('veg','egg','non-veg')),
+  is_veg BOOLEAN NOT NULL DEFAULT TRUE,
+  basis_label TEXT NOT NULL DEFAULT '',
+  kcal NUMERIC(6,1) NOT NULL,
+  protein_g NUMERIC(6,2) NOT NULL,
+  carbs_g NUMERIC(6,2) NOT NULL,
+  fat_g NUMERIC(6,2) NOT NULL,
+  fiber_g NUMERIC(6,2) NOT NULL DEFAULT 0,
+  calcium_mg NUMERIC(7,1),
+  iron_mg NUMERIC(6,2),
+  servings JSONB NOT NULL DEFAULT '[]'::jsonb,
+  source TEXT NOT NULL,
+  source_ref TEXT NOT NULL DEFAULT '',
+  source_name TEXT NOT NULL DEFAULT '',
+  source_note TEXT NOT NULL DEFAULT '',
+  intro TEXT NOT NULL DEFAULT '',
+  tips JSONB NOT NULL DEFAULT '[]'::jsonb,
+  related_slugs TEXT[] NOT NULL DEFAULT '{}',
+  compare_slug TEXT,
+  published BOOLEAN NOT NULL DEFAULT FALSE,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_foods_published ON foods(published, category, sort_order);
+
 CREATE TABLE IF NOT EXISTS uploaded_images (
   filename TEXT PRIMARY KEY,
   mime TEXT NOT NULL,
@@ -527,6 +561,7 @@ export async function ensureCmsSchema(): Promise<void> {
   await removeSeededArticles();
   await seedKnowledgeContent();
   await seedIntentArticles();
+  await seedFoods();
   await applyContentMigrations();
   await normalizeAllArticleLinks();
 }

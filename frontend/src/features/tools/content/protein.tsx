@@ -3,7 +3,7 @@ import {
   CalcTable,
   type CalculatorContent,
 } from "@/features/tools/components/CalculatorPageShell";
-import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
+import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const proteinMeta = {
@@ -123,6 +123,15 @@ export const proteinContent: CalculatorContent = {
               best high-protein Indian foods
             </Link>
             .
+          </p>
+          <p>
+            For exact numbers per serving, see{" "}
+            <Link href={FOODS.paneer.href}>paneer</Link>,{" "}
+            <Link href={FOODS.chickenBreast.href}>chicken breast</Link>,{" "}
+            <Link href={FOODS.boiledEgg.href}>boiled eggs</Link> and{" "}
+            <Link href={FOODS.moongDal.href}>moong dal</Link>, or filter the{" "}
+            <Link href={FOODS.index.href}>Indian food protein chart</Link> by
+            high protein.
           </p>
         </>
       ),

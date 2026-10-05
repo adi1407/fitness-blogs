@@ -3,7 +3,7 @@ import {
   CalcTable,
   type CalculatorContent,
 } from "@/features/tools/components/CalculatorPageShell";
-import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
+import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const calorieDeficitMeta = {
@@ -111,7 +111,9 @@ export const calorieDeficitContent: CalculatorContent = {
               best Indian foods for weight loss
             </Link>{" "}
             and <Link href={ARTICLES.riceVsRoti.href}>rice vs roti</Link> for
-            more.
+            more, or look up exact{" "}
+            <Link href={FOODS.roti.href}>roti</Link> and{" "}
+            <Link href={FOODS.rice.href}>rice</Link> calories per serving.
           </p>
         </>
       ),

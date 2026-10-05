@@ -3,7 +3,7 @@ import {
   CalcTable,
   type CalculatorContent,
 } from "@/features/tools/components/CalculatorPageShell";
-import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
+import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const calorieMeta = {
@@ -219,7 +219,9 @@ export const calorieContent: CalculatorContent = {
             <li>
               Eat close to your target for 2–3 weeks. Weigh the food you eat
               most often for the first week — rice, oil, roti and nuts are
-              where estimates usually go wrong.
+              where estimates usually go wrong. Our{" "}
+              <Link href={FOODS.index.href}>Indian food calorie chart</Link>{" "}
+              gives values per katori, roti and 100 g.
             </li>
             <li>
               Weigh yourself 3–4 mornings a week, after the toilet and before

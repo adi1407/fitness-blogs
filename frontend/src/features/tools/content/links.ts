@@ -60,6 +60,17 @@ export const ARTICLES = {
 
 export type LinkItem = { title: string; href: string; description?: string };
 
+/** Food database pages (seeded from IFCT 2017 in backend/src/db/foods). */
+export const FOODS = {
+  index: { title: "Indian food calories & protein chart", href: "/foods/indian" },
+  paneer: { title: "Paneer calories & protein", href: "/foods/paneer" },
+  chickenBreast: { title: "Chicken breast calories & protein", href: "/foods/chicken-breast" },
+  boiledEgg: { title: "Boiled egg calories & protein", href: "/foods/boiled-egg" },
+  moongDal: { title: "Moong dal calories & protein", href: "/foods/moong-dal" },
+  roti: { title: "Roti calories", href: "/foods/roti" },
+  rice: { title: "Rice calories", href: "/foods/rice" },
+} as const;
+
 export const CALCULATORS: Record<string, LinkItem> = {
   calorie: {
     title: "Calorie calculator",
