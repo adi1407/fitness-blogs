@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CoverImage } from "@/components/shared/CoverImage";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import {
   articleHref,
@@ -44,8 +45,8 @@ export function KeepArticleCard({
       }
     >
       <div className="relative aspect-video w-full bg-muted">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <CoverImage
+          sizes="(min-width: 1024px) 33vw, 100vw"
           src={articleImage(article)}
           alt=""
           className="size-full object-contain object-center transition duration-500 group-hover:scale-[1.02]"

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { BlogArticleView } from "@/features/blog/components/BlogArticleView";
 import { fetchPublishedArticleBySlug } from "@/lib/api/blog";
+import { ogImageUrl } from "@/lib/og/card";
 import {
   findCategory,
   findSubcategory,
@@ -56,6 +57,14 @@ export async function generateMetadata({
     article.quickAnswer ||
     "Educational fitness article from fitlives.";
 
+  const shareImage =
+    article.ogImage ||
+    article.featuredImage ||
+    ogImageUrl({
+      title: article.title,
+      eyebrow: article.subcategoryLabel || article.categoryLabel || undefined,
+    });
+
   return {
     title,
     description,
@@ -71,9 +80,15 @@ export async function generateMetadata({
       description,
       url: article.path ?? undefined,
       type: "article",
-      images: article.ogImage || article.featuredImage
-        ? [article.ogImage || article.featuredImage!]
-        : undefined,
+      images: [shareImage],
+      publishedTime: article.publishedAt ?? undefined,
+      modifiedTime: article.updatedAt ?? undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [shareImage],
     },
   };
 }
@@ -110,7 +125,7 @@ export default async function BlogArticleByIdPage({ params }: PageProps) {
     (article.categorySlug !== categorySlug ||
       article.subcategorySlug !== subcategorySlug)
   ) {
-    redirect(
+    permanentRedirect(
       canonicalPath(
         article.categorySlug,
         article.subcategorySlug,

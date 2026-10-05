@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { fetchPublishedArticleBySlug } from "@/lib/api/blog";
 import {
   findCategory,
@@ -16,7 +16,7 @@ type PageProps = {
   }>;
 };
 
-/** Legacy URL without article id — 301 to canonical …/slug/{articleNumber}. */
+/** Legacy URL without article id — 308 to canonical …/slug/{articleNumber}. */
 export default async function BlogArticleSlugRedirectPage({
   params,
 }: PageProps) {
@@ -40,5 +40,5 @@ export default async function BlogArticleSlugRedirectPage({
 
   const cat = article.categorySlug ?? categorySlug;
   const sub = article.subcategorySlug ?? subcategorySlug;
-  redirect(`/blog/${cat}/${sub}/${article.slug}/${article.articleNumber}`);
+  permanentRedirect(`/blog/${cat}/${sub}/${article.slug}/${article.articleNumber}`);
 }

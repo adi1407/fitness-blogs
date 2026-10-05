@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { fetchPublishedArticleByNumber } from "@/lib/api/blog";
 
 const CATEGORIES = new Set([
@@ -43,16 +43,16 @@ export default async function BlogCategoryPage({ params }: Props) {
     ) {
       notFound();
     }
-    redirect(
+    permanentRedirect(
       `/blog/${article.categorySlug}/${article.subcategorySlug}/${article.slug}/${article.articleNumber}`,
     );
   }
 
   if (!CATEGORIES.has(category)) notFound();
 
-  if (category === "muscle-building") redirect("/muscle-building");
-  if (category === "weight-loss") redirect("/weight-loss");
-  if (category === "nutrition") redirect("/nutrition");
+  if (category === "muscle-building") permanentRedirect("/muscle-building");
+  if (category === "weight-loss") permanentRedirect("/weight-loss");
+  if (category === "nutrition") permanentRedirect("/nutrition");
 
   return (
     <main className="fk-page flex-1 py-16">

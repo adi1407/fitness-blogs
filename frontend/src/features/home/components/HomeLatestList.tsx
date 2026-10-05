@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CoverImage } from "@/components/shared/CoverImage";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import { articleHref, articleImage } from "@/features/home/utils/articleMedia";
 
@@ -39,8 +40,8 @@ export function HomeLatestList({ articles }: HomeLatestListProps) {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="block h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-24 sm:w-36">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <CoverImage
+                    sizes="144px"
                     src={articleImage(article)}
                     alt=""
                     className="size-full object-contain object-center"

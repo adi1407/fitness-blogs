@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CoverImage } from "@/components/shared/CoverImage";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import {
   articleHref,
@@ -18,10 +19,10 @@ export function ArticleCard({ article }: ArticleCardProps) {
     <article className="group border-b border-border py-5 last:border-b-0">
       <Link href={href} className="flex gap-4 sm:gap-5">
         <span className="block h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-24 sm:w-36">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <CoverImage
             src={articleImage(article)}
             alt=""
+            sizes="144px"
             className="size-full object-contain object-center"
           />
         </span>

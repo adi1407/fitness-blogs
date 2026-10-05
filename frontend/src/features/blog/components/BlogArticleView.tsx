@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { CoverImage } from "@/components/shared/CoverImage";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { SocialLinks } from "@/components/ui/social-links";
 import {
@@ -123,7 +124,7 @@ export function BlogArticleView({
               "@type": "ListItem",
               position: 3,
               name: catLabel,
-              item: `${siteUrl}/blog/${catSlug}`,
+              item: `${siteUrl}/${catSlug}`,
             },
           ]
         : []),
@@ -219,7 +220,7 @@ export function BlogArticleView({
     { label: "Home", href: "/" },
     { label: "Blog", href: "/blog" },
     ...(catSlug
-      ? [{ label: catLabel, href: `/blog/${catSlug}` }]
+      ? [{ label: catLabel, href: `/${catSlug}` }]
       : [{ label: catLabel }]),
     ...(catSlug && subSlug
       ? [{ label: subLabel, href: `/blog/${catSlug}/${subSlug}` }]
@@ -265,15 +266,16 @@ export function BlogArticleView({
           <div className="fk-panel min-w-0">
             {article.featuredImage ? (
               <figure className="border-b border-border bg-muted">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <CoverImage
                   src={article.featuredImage}
                   alt={
                     article.featuredImageAlt ||
                     article.title ||
                     "Article cover image"
                   }
-                  className="mx-auto max-h-[min(70vh,640px)] w-full object-contain"
+                  sizes="(min-width: 1280px) 860px, (min-width: 1024px) 66vw, 100vw"
+                  priority
+                  className="mx-auto h-auto max-h-[min(70vh,640px)] w-full object-contain"
                 />
                 {article.featuredImageCaption ? (
                   <figcaption className="px-4 py-2 text-center text-xs text-muted-foreground">
@@ -490,7 +492,7 @@ export function BlogArticleView({
                 </Link>
               </li>
               <li>
-                <Link href={`/blog/${catSlug}`} className="fk-link">
+                <Link href={`/${catSlug}`} className="fk-link">
                   All {catLabel} articles
                 </Link>
               </li>

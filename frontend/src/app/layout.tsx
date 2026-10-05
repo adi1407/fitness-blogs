@@ -46,6 +46,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "/",
+    types: { "application/rss+xml": [{ url: "/feed.xml", title: `${BRAND_NAME} guides` }] },
   },
   openGraph: {
     type: "website",
@@ -76,6 +77,9 @@ export const metadata: Metadata = {
   verification: {
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
       : {}),
   },
   ...(ADSENSE_CLIENT
@@ -134,8 +138,9 @@ export default function RootLayout({
             <SiteHeader />
             <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
               <Suspense fallback={null}>
-                <OpenPanelProvider>{children}</OpenPanelProvider>
+                <OpenPanelProvider />
               </Suspense>
+              {children}
             </div>
             <SiteFooter />
             <CookieBanner />

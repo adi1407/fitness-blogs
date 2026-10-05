@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CoverImage } from "@/components/shared/CoverImage";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { articleHref, articleImage } from "@/features/home/utils/articleMedia";
@@ -31,7 +32,7 @@ export function HomeCategorySections({ articles }: HomeCategorySectionsProps) {
                 </p>
               </div>
               <Link
-                href={`/blog/${cat.slug}`}
+                href={`/${cat.slug}`}
                 className="shrink-0 text-sm font-semibold text-primary hover:underline"
               >
                 View all →
@@ -49,8 +50,8 @@ export function HomeCategorySections({ articles }: HomeCategorySectionsProps) {
                     className="group overflow-hidden rounded-xl border border-border bg-white transition hover:border-primary"
                   >
                     <div className="aspect-[16/10] w-full overflow-hidden bg-muted">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <CoverImage
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                         src={articleImage(article)}
                         alt=""
                         className="size-full object-contain object-center transition group-hover:scale-[1.02]"

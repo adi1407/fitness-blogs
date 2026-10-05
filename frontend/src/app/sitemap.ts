@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { MUSCLE_GROUPS } from "@/lib/api/knowledge";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
@@ -116,7 +115,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       path === "" ? 1 : path === "/blog" ? 0.95 : index < 6 ? 0.9 : 0.7;
     add(path, priority, daily ? "daily" : "weekly");
   });
-  BLOG_TAXONOMY.forEach((c) => add(`/blog/${c.slug}`, 0.85, "weekly"));
   MUSCLE_GROUPS.forEach((g) => add(`/exercises/${g}`, 0.7, "weekly"));
 
   const [articles, exercises, recipes, programs, reviews] = await Promise.all([

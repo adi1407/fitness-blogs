@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CoverImage } from "@/components/shared/CoverImage";
 import type { PublicBlogArticle } from "@/lib/api/blog";
 import {
   articleHref,
@@ -28,8 +29,9 @@ export function BlogFeaturedLead({ article }: Props) {
         className="group mt-4 grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-10"
       >
         <div className="aspect-video overflow-hidden rounded-xl border border-border bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <CoverImage
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            priority
             src={image}
             alt={alt}
             className="size-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"

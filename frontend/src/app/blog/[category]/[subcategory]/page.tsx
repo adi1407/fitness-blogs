@@ -80,7 +80,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 3,
         name: category.label,
-        item: `${siteUrl}/blog/${category.slug}`,
+        item: `${siteUrl}/${category.slug}`,
       },
       {
         "@type": "ListItem",
@@ -98,7 +98,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
         items={[
           { label: "Home", href: "/" },
           { label: "Blog", href: "/blog" },
-          { label: category.label, href: `/blog/${category.slug}` },
+          { label: category.label, href: `/${category.slug}` },
           { label: subcategory.label },
         ]}
       />
@@ -122,7 +122,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
             No published articles in this subcategory yet. Explore related
             topics under{" "}
             <Link
-              href={`/blog/${category.slug}`}
+              href={`/${category.slug}`}
               className="fk-link"
             >
               {category.label}

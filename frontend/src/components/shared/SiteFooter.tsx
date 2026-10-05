@@ -7,9 +7,9 @@ import { BRAND_NAME, BRAND_SLOGAN, BRAND_TAGLINE } from "@/lib/brand";
 const explore = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Latest" },
-  { href: "/blog/muscle-building", label: "Muscle Building" },
-  { href: "/blog/weight-loss", label: "Weight Loss" },
-  { href: "/blog/nutrition", label: "Nutrition" },
+  { href: "/muscle-building", label: "Muscle Building" },
+  { href: "/weight-loss", label: "Weight Loss" },
+  { href: "/nutrition", label: "Nutrition" },
   { href: "/exercises", label: "Exercises" },
   { href: "/foods/indian", label: "Indian Foods" },
 ];

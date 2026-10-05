@@ -20,6 +20,7 @@ import {
 } from "../services/publishGates";
 import { upsertRedirect } from "../services/urlRedirects";
 import { normalizeArticleLinks } from "../services/internalLinks";
+import { pingIndexNow } from "../services/indexNow";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
 import { env } from "../config/env";
@@ -837,6 +838,9 @@ articlesRouter.put("/:id", async (req, res) => {
       articleId: String(row.id),
     });
   }
+  if (row.status === "published") {
+    pingIndexNow([newPath, oldPath !== newPath ? oldPath : null]);
+  }
   res.json({ article });
 });
 
@@ -1000,6 +1004,7 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
       articleId: String(article.id),
     });
   }
+  pingIndexNow([article.path, "/blog"]);
   res.json({ article, gates });
 });
 
@@ -1048,6 +1053,7 @@ articlesRouter.patch("/:id/published-at", async (req, res) => {
       to: parsed.date.toISOString(),
     },
   });
+  pingIndexNow([article.path]);
   res.json({ article });
 });
 
@@ -1084,6 +1090,7 @@ articlesRouter.patch("/:id/unpublish", async (req, res) => {
     entityId: String(article.id),
     summary: `Unpublished “${article.title}”`,
   });
+  pingIndexNow([article.path, "/blog"]);
   res.json({ article });
 });
 

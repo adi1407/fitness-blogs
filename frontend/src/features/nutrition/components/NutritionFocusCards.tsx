@@ -34,7 +34,7 @@ export function NutritionFocusCards() {
             Focus a card — then open the hub, calculator, or food database.
           </p>
         </div>
-        <Link href="/blog/nutrition" className="fk-link text-sm font-semibold">
+        <Link href="/nutrition" className="fk-link text-sm font-semibold">
           Nutrition articles →
         </Link>
       </div>

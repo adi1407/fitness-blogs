@@ -40,7 +40,7 @@ const CATEGORY_STRIP = [
   { label: "Latest", href: "/blog" },
   ...BLOG_TAXONOMY.map((c) => ({
     label: c.label,
-    href: `/blog/${c.slug}`,
+    href: `/${c.slug}`,
   })),
 ] as const;
 
@@ -408,7 +408,7 @@ export function SiteHeader() {
                         <ul className="space-y-1">
                           {BLOG_TAXONOMY.map((cat) => {
                             const open = openPillar === cat.slug;
-                            const hubHref = `/blog/${cat.slug}`;
+                            const hubHref = `/${cat.slug}`;
                             const active = isCategoryActive(pathname, hubHref);
                             return (
                               <li
