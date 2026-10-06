@@ -117,7 +117,49 @@ export const TOOLS: ToolMeta[] = [
   },
 ];
 
-export const TOOL_GROUPS: ToolGroup[] = ["Energy", "Nutrition", "Body", "Training"];
+export type ToolSection = { id: string; heading: string; blurb: string; tools: ToolId[] };
+
+/** Same grouping as fitlives.in/tools. */
+export const TOOL_SECTIONS: ToolSection[] = [
+  {
+    id: "nutrition",
+    heading: "Calories & nutrition",
+    blurb: "Work out how much to eat — and what to eat it as.",
+    tools: ["calorie", "deficit", "tdee", "bmr", "macro", "protein", "water"],
+  },
+  {
+    id: "body",
+    heading: "Body composition",
+    blurb: "Screening numbers to track alongside the mirror and the tape.",
+    tools: ["bmi", "body-fat"],
+  },
+  {
+    id: "training",
+    heading: "Training & activity",
+    blurb: "Plan your lifting loads and see what your daily steps are worth.",
+    tools: ["one-rep-max", "steps"],
+  },
+];
+
+/** "Which calculator do I need?" — start from the question. */
+export const TOOL_GUIDE: { goal: string; tool: ToolId }[] = [
+  { goal: "I want to lose weight by a certain date", tool: "deficit" },
+  { goal: "How many calories should I eat?", tool: "calorie" },
+  { goal: "How many calories do I burn in a day?", tool: "tdee" },
+  { goal: "How much protein do I need?", tool: "protein" },
+  { goal: "I want grams of protein, carbs and fat", tool: "macro" },
+  { goal: "Am I a healthy weight for my height?", tool: "bmi" },
+  { goal: "How much of my weight is fat?", tool: "body-fat" },
+  { goal: "What weight should I lift for 8 reps?", tool: "one-rep-max" },
+  { goal: "How many calories did my walk burn?", tool: "steps" },
+  { goal: "How much water should I drink?", tool: "water" },
+];
+
+export function toolById(id: ToolId): ToolMeta {
+  const tool = TOOLS.find((t) => t.id === id);
+  if (!tool) throw new Error(`Unknown tool: ${id}`);
+  return tool;
+}
 
 export function isToolId(v: unknown): v is ToolId {
   return TOOLS.some((t) => t.id === v);
