@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import { fetchArticlesByCategory } from "@/api/articles";
-import { ArticleCard } from "@/components/ArticleCard";
-import { SkeletonList } from "@/components/Skeleton";
+import { articleImage, fetchArticlesByCategory } from "@/api/articles";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { Screen } from "@/components/Screen";
+import { Skeleton } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
+import { StoryLead, StoryRow } from "@/components/Story";
 import { Text } from "@/components/Text";
-import { colors, layout, space } from "@/theme";
+import { PILLAR_BY_SLUG, isPillarSlug } from "@/lib/pillars";
+import { colors, fonts, radius, space } from "@/theme";
 
 export default function SubcategoryScreen() {
   const { category, subcategory } = useLocalSearchParams<{ category: string; subcategory: string }>();
@@ -19,51 +22,58 @@ export default function SubcategoryScreen() {
 
   const items = (query.data ?? []).filter((a) => a.subcategorySlug === subcategory);
   const label = items[0]?.subcategoryLabel ?? String(subcategory ?? "").replace(/-/g, " ");
-  const categoryLabel = items[0]?.categoryLabel ?? "";
+  const categoryLabel =
+    items[0]?.categoryLabel ?? (isPillarSlug(category) ? PILLAR_BY_SLUG[category].title : String(category ?? ""));
+  const lead = items.find((a) => articleImage(a)) ?? items[0];
+  const rest = items.filter((a) => a !== lead);
 
   return (
-    <View style={styles.root}>
-      <Stack.Screen options={{ title: label }} />
+    <Screen refreshing={query.isRefetching} onRefresh={() => query.refetch()}>
+      <Stack.Screen options={{ title: "" }} />
+      <View style={styles.intro}>
+        <Breadcrumbs
+          items={[{ label: "Learn", href: "/learn" }, { label: categoryLabel, href: `/hub/${category}` }, { label }]}
+        />
+        <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          {label}
+        </Text>
+        {!query.isPending ? (
+          <Text variant="small">
+            {items.length} {items.length === 1 ? "guide" : "guides"} in {categoryLabel}
+          </Text>
+        ) : null}
+      </View>
+
       {query.isPending ? (
-        <SkeletonList count={3} />
+        <View style={styles.loading}>
+          <Skeleton height={200} rounded={radius.md} />
+          <Skeleton height={24} width="80%" />
+        </View>
       ) : query.isError ? (
         <ErrorState error={query.error} onRetry={() => query.refetch()} />
+      ) : !lead ? (
+        <EmptyState title="Nothing here yet" hint="Check back soon." />
       ) : (
-        <FlatList
-          data={items}
-          keyExtractor={(a) => String(a.id)}
-          renderItem={({ item }) => <ArticleCard article={item} />}
-          ItemSeparatorComponent={() => <View style={{ height: space.lg }} />}
-          contentContainerStyle={styles.content}
-          refreshControl={
-            <RefreshControl refreshing={query.isRefetching} onRefresh={() => query.refetch()} tintColor={colors.accent} />
-          }
-          ListHeaderComponent={
-            <View style={styles.header}>
-              {categoryLabel ? (
-                <Text variant="label" style={styles.eyebrow}>
-                  {categoryLabel}
-                </Text>
-              ) : null}
-              <Text variant="display" style={styles.title}>
-                {label}
-              </Text>
-              <Text variant="small">
-                {items.length} {items.length === 1 ? "article" : "articles"}
-              </Text>
-            </View>
-          }
-          ListEmptyComponent={<EmptyState title="Nothing here yet" hint="Check back soon." />}
-        />
+        <View>
+          <StoryLead article={lead} label="Start here" context="subcategory" />
+          {rest.map((a) => (
+            <StoryRow key={a.id} article={a} context="subcategory" />
+          ))}
+        </View>
       )}
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space.lg, paddingBottom: layout.bottomClearance },
-  header: { gap: space.xs, marginBottom: space.xl },
-  eyebrow: { color: colors.accent },
-  title: { textTransform: "capitalize" },
+  intro: { gap: space.sm, paddingTop: space.sm },
+  title: {
+    fontFamily: fonts.semibold,
+    fontSize: 34,
+    lineHeight: 39,
+    letterSpacing: -1.1,
+    color: colors.ink,
+    textTransform: "capitalize",
+  },
+  loading: { gap: space.md },
 });

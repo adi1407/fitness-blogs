@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ClarityBand } from "@/components/ClarityBand";
 import { Screen } from "@/components/Screen";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -43,13 +44,7 @@ export default function CalculatorsScreen() {
   return (
     <Screen ref={scrollRef}>
       <Animated.View entering={FadeInDown.duration(420)} style={styles.intro}>
-        <View style={styles.crumbs}>
-          <Text style={styles.crumb} onPress={() => router.push("/")} accessibilityRole="link" suppressHighlighting>
-            Home
-          </Text>
-          <Text style={styles.crumb}>/</Text>
-          <Text style={[styles.crumb, styles.crumbCurrent]}>Calculators</Text>
-        </View>
+        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Calculators" }]} />
         <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
           Free fitness calculators
         </Text>
@@ -160,9 +155,6 @@ export default function CalculatorsScreen() {
 
 const styles = StyleSheet.create({
   intro: { gap: space.md, paddingTop: space.sm },
-  crumbs: { flexDirection: "row", gap: space.sm },
-  crumb: { fontFamily: fonts.regular, fontSize: 13, color: colors.muted },
-  crumbCurrent: { color: colors.ink },
   title: { fontFamily: fonts.semibold, fontSize: 34, lineHeight: 39, letterSpacing: -1.1, color: colors.ink },
   lede: { color: colors.muted, fontSize: 16, lineHeight: 25 },
   stats: {

@@ -1,134 +1,225 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import { FlatList, RefreshControl, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
+import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
-import { fetchArticles } from "@/api/articles";
-import { fetchTaxonomy } from "@/api/library";
-import { ArticleCard } from "@/components/ArticleCard";
-import { Chip } from "@/components/Chip";
+import { fetchArticles, articleImage, type ArticleSummary } from "@/api/articles";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { HorizontalRail } from "@/components/HorizontalRail";
 import { ImageTile } from "@/components/ImageTile";
-import { SearchInput } from "@/components/SearchInput";
-import { SectionHeader } from "@/components/SectionHeader";
-import { SkeletonList } from "@/components/Skeleton";
+import { PillButton } from "@/components/PillButton";
+import { Screen } from "@/components/Screen";
+import { Skeleton } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
+import { StoryLead, StoryRailCard, StoryRow } from "@/components/Story";
+import { Text } from "@/components/Text";
+import { UnderlineTabs } from "@/components/UnderlineTabs";
+import { SITE_URL } from "@/config";
 import { thumb } from "@/lib/images";
 import { KNOWLEDGE_SECTIONS } from "@/lib/knowledge";
-import { PILLARS } from "@/lib/pillars";
-import { colors, layout, space } from "@/theme";
+import { openLink } from "@/lib/links";
+import { PILLARS, PILLAR_BY_SLUG, isPillarSlug, type PillarSlug } from "@/lib/pillars";
+import { colors, fonts, radius, space } from "@/theme";
 
-const ALL = "all";
+type TabId = "latest" | PillarSlug;
+
+const TABS: { id: TabId; label: string }[] = [{ id: "latest", label: "Latest" }, ...PILLARS.map((p) => ({ id: p.slug, label: p.title }))];
+const RAIL_SIZE = 4;
+
+function pickLead(list: ArticleSummary[]) {
+  return list.find((a) => articleImage(a)) ?? list[0] ?? null;
+}
+
+function SectionTitle({ title, subtitle, onSeeAll }: { title: string; subtitle?: string; onSeeAll?: () => void }) {
+  return (
+    <View style={styles.sectionHead}>
+      <View style={styles.flex}>
+        <Text variant="title" accessibilityRole="header">
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text variant="small" style={styles.sectionSub}>
+            {subtitle}
+          </Text>
+        ) : null}
+      </View>
+      {onSeeAll ? (
+        <Pressable onPress={onSeeAll} hitSlop={10} accessibilityRole="link" accessibilityLabel={`See all ${title}`} style={styles.seeAll}>
+          <Text style={styles.seeAllText}>See all</Text>
+          <Ionicons name="arrow-forward" size={13} color={colors.ink} />
+        </Pressable>
+      ) : null}
+    </View>
+  );
+}
 
 export default function LearnScreen() {
   const { width } = useWindowDimensions();
+  const [tab, setTab] = useState<TabId>("latest");
   const query = useQuery({ queryKey: ["articles"], queryFn: ({ signal }) => fetchArticles(signal) });
-  const taxonomy = useQuery({ queryKey: ["taxonomy"], queryFn: ({ signal }) => fetchTaxonomy(signal), staleTime: 60 * 60 * 1000 });
-  const [category, setCategory] = useState(ALL);
-  const [search, setSearch] = useState("");
 
-  const categories = useMemo(() => {
-    if (taxonomy.data?.categories.length) return taxonomy.data.categories.map((c) => [c.slug, c.label] as const);
-    const seen = new Map<string, string>();
-    for (const a of query.data ?? []) if (a.categorySlug && a.categoryLabel) seen.set(a.categorySlug, a.categoryLabel);
-    return [...seen.entries()];
-  }, [taxonomy.data, query.data]);
+  const view = useMemo(() => {
+    const all = query.data ?? [];
+    if (tab !== "latest") {
+      const list = all.filter((a) => a.categorySlug === tab);
+      const lead = pickLead(list);
+      return { lead, rails: [], rest: list.filter((a) => a !== lead) };
+    }
+    const lead = pickLead(all);
+    const used = new Set<ArticleSummary>(lead ? [lead] : []);
+    const rails = PILLARS.map((p) => {
+      const items = all.filter((a) => a.categorySlug === p.slug && !used.has(a)).slice(0, RAIL_SIZE);
+      items.forEach((a) => used.add(a));
+      return { pillar: p, items };
+    }).filter((r) => r.items.length);
+    return { lead, rails, rest: all.filter((a) => !used.has(a)) };
+  }, [query.data, tab]);
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return (query.data ?? []).filter(
-      (a) =>
-        (category === ALL || a.categorySlug === category) &&
-        (!q ||
-          a.title.toLowerCase().includes(q) ||
-          (a.excerpt ?? "").toLowerCase().includes(q) ||
-          (a.subcategoryLabel ?? "").toLowerCase().includes(q)),
-    );
-  }, [query.data, category, search]);
-
-  if (query.isPending) return <SkeletonList count={3} />;
-  if (query.isError) return <ErrorState error={query.error} onRetry={() => query.refetch()} />;
+  const pillar = isPillarSlug(tab) ? PILLAR_BY_SLUG[tab] : null;
+  const railWidth = Math.min(width * 0.68, 264);
 
   return (
-    <FlatList
-      style={styles.root}
-      contentContainerStyle={styles.content}
-      data={filtered}
-      keyExtractor={(a) => String(a.id)}
-      renderItem={({ item }) => <ArticleCard article={item} />}
-      ItemSeparatorComponent={() => <View style={{ height: space.lg }} />}
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      initialNumToRender={5}
-      windowSize={7}
-      refreshControl={
-        <RefreshControl
-          refreshing={query.isRefetching}
-          onRefresh={() => {
-            query.refetch();
-            taxonomy.refetch();
-          }}
-          tintColor={colors.accent}
-          colors={[colors.accent]}
-        />
-      }
-      ListHeaderComponent={
-        <View style={styles.header}>
-          <SectionHeader eyebrow="Pillar guides" title="Start with a goal" />
-          <HorizontalRail
-            data={PILLARS}
-            itemWidth={Math.min(width * 0.72, 300)}
-            keyExtractor={(p) => p.slug}
-            renderItem={(p) => (
-              <ImageTile
-                image={p.image}
-                eyebrow="Guide"
-                title={p.title}
-                subtitle={p.tagline}
-                height={170}
-                onPress={() => router.push(`/hub/${p.slug}`)}
-              />
-            )}
-          />
-          <SectionHeader eyebrow="Go deeper" title="Programs & buyer's guides" />
-          <View style={styles.guides}>
-            {(Object.keys(KNOWLEDGE_SECTIONS) as (keyof typeof KNOWLEDGE_SECTIONS)[]).map((s) => (
-              <ImageTile
-                key={s}
-                image={thumb(KNOWLEDGE_SECTIONS[s].image)}
-                eyebrow={KNOWLEDGE_SECTIONS[s].eyebrow}
-                title={KNOWLEDGE_SECTIONS[s].label}
-                height={140}
-                style={styles.guide}
-                onPress={() => router.push(`/guides/${s}`)}
-              />
-            ))}
-          </View>
-          <SectionHeader eyebrow="Library" title="All articles" />
-          <SearchInput value={search} onChangeText={setSearch} placeholder="Search articles" />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-            <Chip label="All" active={category === ALL} onPress={() => setCategory(ALL)} />
-            {categories.map(([slug, label]) => (
-              <Chip key={slug} label={label} active={category === slug} onPress={() => setCategory(slug)} />
-            ))}
-          </ScrollView>
+    <Screen refreshing={query.isRefetching} onRefresh={() => query.refetch()}>
+      <View style={styles.intro}>
+        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Learn" }]} />
+        <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          {pillar ? pillar.title : "Latest"}
+        </Text>
+        <Text variant="body" style={styles.lede}>
+          {pillar
+            ? pillar.intro
+            : "Evidence-informed guides across muscle building, weight loss and nutrition — written to answer real questions and link into tools and databases."}
+        </Text>
+        <Text variant="small" style={styles.note}>
+          Educational content only. Consult a qualified professional for personal medical or diet advice.{" "}
+          <Text style={styles.noteLink} onPress={() => openLink(`${SITE_URL}/medical-disclaimer`)} accessibilityRole="link">
+            Medical disclaimer
+          </Text>
+        </Text>
+      </View>
+
+      <UnderlineTabs tabs={TABS} value={tab} onChange={setTab} />
+
+      {query.isPending ? (
+        <View style={styles.loading}>
+          <Skeleton height={200} rounded={radius.md} />
+          <Skeleton height={28} width="85%" />
+          <Skeleton height={18} width="60%" />
         </View>
-      }
-      ListEmptyComponent={
-        <EmptyState
-          title={query.data.length ? "No matching articles" : "No articles yet"}
-          hint={query.data.length ? "Try a different search or category." : undefined}
-        />
-      }
-    />
+      ) : query.isError ? (
+        <ErrorState error={query.error} onRetry={() => query.refetch()} />
+      ) : !view.lead ? (
+        <EmptyState title="No guides here yet" hint="Our writers are working on this topic." />
+      ) : (
+        <Animated.View key={tab} entering={FadeIn.duration(260)} style={styles.feed}>
+          <StoryLead
+            article={view.lead}
+            label={pillar ? `Featured in ${pillar.title}` : "Featured"}
+            context={pillar ? "category" : "all"}
+          />
+
+          {view.rails.map(({ pillar: p, items }) => (
+            <View key={p.slug} style={styles.rail}>
+              <SectionTitle title={p.title} subtitle={p.tagline} onSeeAll={() => router.push(`/hub/${p.slug}`)} />
+              <HorizontalRail
+                data={items}
+                itemWidth={railWidth}
+                gap={space.lg}
+                keyExtractor={(a) => a.id}
+                renderItem={(a) => <StoryRailCard article={a} />}
+              />
+            </View>
+          ))}
+
+          {pillar ? (
+            <View style={styles.hubCard}>
+              <Text variant="heading">Explore the {pillar.title} hub</Text>
+              <Text variant="small">Topics, calculators and a quick-start path for {pillar.title.toLowerCase()}.</Text>
+              <PillButton label={`Open ${pillar.title}`} icon="arrow-forward" onPress={() => router.push(`/hub/${pillar.slug}`)} style={styles.hubButton} />
+            </View>
+          ) : (
+            <View style={styles.callout}>
+              <Text variant="label" style={styles.calloutLabel}>
+                Tools
+              </Text>
+              <Text variant="title">Prefer a number first?</Text>
+              <Text variant="small" style={styles.calloutText}>
+                Free calculators for protein, TDEE, macros and more — each one teaches and links back into guides.
+              </Text>
+              <PillButton label="Open calculators" onPress={() => router.push("/tools")} style={styles.hubButton} />
+            </View>
+          )}
+
+          {!pillar ? (
+            <View style={styles.rail}>
+              <SectionTitle title="Go deeper" subtitle="Structured programs and honest buyer's guides." />
+              <View style={styles.guides}>
+                {(Object.keys(KNOWLEDGE_SECTIONS) as (keyof typeof KNOWLEDGE_SECTIONS)[]).map((s) => (
+                  <ImageTile
+                    key={s}
+                    image={thumb(KNOWLEDGE_SECTIONS[s].image)}
+                    eyebrow={KNOWLEDGE_SECTIONS[s].eyebrow}
+                    title={KNOWLEDGE_SECTIONS[s].label}
+                    height={140}
+                    style={styles.flex}
+                    onPress={() => router.push(`/guides/${s}`)}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {view.rest.length ? (
+            <View>
+              <SectionTitle title={pillar ? `More in ${pillar.title}` : "More guides"} />
+              <View style={styles.rows}>
+                {view.rest.map((a, i) => (
+                  <StoryRow key={a.id} article={a} first={i === 0} context={pillar ? "category" : "all"} />
+                ))}
+              </View>
+            </View>
+          ) : null}
+        </Animated.View>
+      )}
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space.lg, paddingBottom: layout.bottomClearance },
-  header: { gap: space.md, marginBottom: space.lg },
-  chips: { gap: space.sm },
+  flex: { flex: 1 },
+  intro: { gap: space.md, paddingTop: space.sm },
+  title: { fontFamily: fonts.semibold, fontSize: 38, lineHeight: 43, letterSpacing: -1.3, color: colors.ink },
+  lede: { color: colors.muted, fontSize: 16, lineHeight: 25 },
+  note: { lineHeight: 19 },
+  noteLink: { fontFamily: fonts.semibold, fontSize: 13, color: colors.ink, textDecorationLine: "underline" },
+  loading: { gap: space.md },
+  feed: { gap: space.xxl },
+  rail: { gap: space.lg, paddingBottom: space.xl, borderBottomWidth: 1, borderBottomColor: colors.border },
+  sectionHead: { flexDirection: "row", alignItems: "flex-end", gap: space.md },
+  sectionSub: { marginTop: 3 },
+  seeAll: { flexDirection: "row", alignItems: "center", gap: 4, paddingBottom: 3 },
+  seeAllText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.ink },
+  callout: {
+    gap: space.sm,
+    padding: space.xl,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "rgba(245,245,245,0.5)",
+  },
+  calloutLabel: { color: colors.ink },
+  calloutText: { lineHeight: 19 },
+  hubCard: {
+    gap: space.sm,
+    padding: space.xl,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    backgroundColor: "#FFF8EE",
+  },
+  hubButton: { alignSelf: "flex-start", marginTop: space.sm },
   guides: { flexDirection: "row", gap: space.md },
-  guide: { flex: 1 },
+  rows: { marginTop: space.md },
 });
