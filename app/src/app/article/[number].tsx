@@ -16,9 +16,11 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Skeleton } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
 import { Text } from "@/components/Text";
+import { useToast } from "@/components/Toast";
 import { SITE_URL } from "@/config";
 import { extractToc } from "@/lib/articleHtml";
 import { openLink } from "@/lib/links";
+import { useEngagement } from "@/lib/useEngagement";
 import { colors, fonts, layout, radius, space } from "@/theme";
 
 const HERO = 360;
@@ -92,12 +94,38 @@ export default function ArticleScreen() {
     scrollRef.current?.scrollTo({ y: Math.max(0, bodyY + head.top - 96), animated: true });
   };
 
-  const actions = shareUrl ? (
-    <ChromeButton
-      icon="share-outline"
-      label="Share article"
-      onPress={() => Share.share({ message: `${article!.title}\n${shareUrl}`, url: shareUrl })}
-    />
+  const { engagement, upvote, bookmark, signedIn } = useEngagement(article?.id);
+  const toast = useToast();
+  const requireSignIn = (what: string) => {
+    toast(`Sign in from the Account tab to ${what}.`);
+  };
+
+  const actions = article ? (
+    <>
+      <ChromeButton
+        icon={engagement?.upvoted ? "arrow-up-circle" : "arrow-up-circle-outline"}
+        label={`${engagement?.upvoted ? "Remove upvote" : "Upvote"}${engagement ? ` (${engagement.upvoteCount})` : ""}`}
+        active={!!engagement?.upvoted}
+        onPress={() => (signedIn ? upvote.mutate(!engagement?.upvoted) : requireSignIn("upvote articles"))}
+      />
+      <ChromeButton
+        icon={engagement?.bookmarked ? "bookmark" : "bookmark-outline"}
+        label={engagement?.bookmarked ? "Remove bookmark" : "Bookmark article"}
+        active={!!engagement?.bookmarked}
+        onPress={() => {
+          if (!signedIn) return requireSignIn("save articles");
+          const on = !engagement?.bookmarked;
+          bookmark.mutate(on, { onSuccess: () => toast(on ? "Saved to your bookmarks" : "Removed from bookmarks", "success") });
+        }}
+      />
+      {shareUrl ? (
+        <ChromeButton
+          icon="share-outline"
+          label="Share article"
+          onPress={() => Share.share({ message: `${article.title}\n${shareUrl}`, url: shareUrl })}
+        />
+      ) : null}
+    </>
   ) : null;
 
   if (!valid) return <EmptyState title="Article not found" hint="This link looks broken." />;
