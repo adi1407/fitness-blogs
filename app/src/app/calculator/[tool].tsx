@@ -1,22 +1,39 @@
 import { Stack, useLocalSearchParams } from "expo-router";
+import type { ComponentType } from "react";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 
 import { BmiCalculator } from "@/calculators/BmiCalculator";
+import { BmrCalculator } from "@/calculators/BmrCalculator";
+import { BodyFatCalculator } from "@/calculators/BodyFatCalculator";
 import { CalorieCalculator } from "@/calculators/CalorieCalculator";
+import { DeficitCalculator } from "@/calculators/DeficitCalculator";
+import { MacroCalculator } from "@/calculators/MacroCalculator";
+import { OneRepMaxCalculator } from "@/calculators/OneRepMaxCalculator";
 import { ProteinCalculator } from "@/calculators/ProteinCalculator";
+import { StepsCalculator } from "@/calculators/StepsCalculator";
+import { TdeeCalculator } from "@/calculators/TdeeCalculator";
+import { WaterCalculator } from "@/calculators/WaterCalculator";
 import { Screen } from "@/components/Screen";
 import { EmptyState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { SITE_URL } from "@/config";
 import { openLink } from "@/lib/links";
-import { TOOLS, isToolId } from "@/lib/tools";
+import { TOOLS, isToolId, type ToolId } from "@/lib/tools";
 import { colors } from "@/theme";
 
-const CALCULATORS = {
-  protein: ProteinCalculator,
+const CALCULATORS: Record<ToolId, ComponentType> = {
   calorie: CalorieCalculator,
+  deficit: DeficitCalculator,
+  tdee: TdeeCalculator,
+  bmr: BmrCalculator,
+  macro: MacroCalculator,
+  protein: ProteinCalculator,
   bmi: BmiCalculator,
-} as const;
+  "body-fat": BodyFatCalculator,
+  water: WaterCalculator,
+  "one-rep-max": OneRepMaxCalculator,
+  steps: StepsCalculator,
+};
 
 export default function CalculatorScreen() {
   const { tool } = useLocalSearchParams<{ tool: string }>();
