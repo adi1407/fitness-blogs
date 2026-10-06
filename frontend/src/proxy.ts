@@ -8,7 +8,7 @@ const API_BASE = (
   "http://localhost:4000/api/v1"
 ).replace(/\/$/, "");
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (pathname === "/account") {
