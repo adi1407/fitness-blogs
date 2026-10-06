@@ -38,6 +38,13 @@ export function fetchArticles(signal?: AbortSignal) {
   ).then((d) => d.articles.filter((a) => a.slug && a.articleNumber));
 }
 
+export function fetchArticlesByCategory(category: string, signal?: AbortSignal) {
+  return apiGet<{ articles: ArticleSummary[] }>(
+    `/public/articles?limit=300&fields=summary&category=${encodeURIComponent(category)}`,
+    signal,
+  ).then((d) => d.articles.filter((a) => a.slug && a.articleNumber));
+}
+
 export function fetchArticle(articleNumber: number, signal?: AbortSignal) {
   return apiGet<{ article: Article; related: ArticleSummary[] }>(
     `/public/articles/by-number/${articleNumber}`,
