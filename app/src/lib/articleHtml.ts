@@ -1,98 +1,84 @@
-import type { Article, ArticleSummary } from "@/api/articles";
-import { articleImage } from "@/api/articles";
-import { SITE_URL } from "@/config";
 import { colors } from "@/theme";
 
-const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+export type TocItem = { index: number; text: string };
 
-const safeUrl = (u: string | undefined) => (u && /^https?:\/\//i.test(u) ? esc(u) : null);
+const decode = (s: string) =>
+  s
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
 
-function formatDate(iso: string | null) {
-  if (!iso) return null;
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime())
-    ? null
-    : d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+/** H2 headings in document order — indices match `document.querySelectorAll('h2')`. */
+export function extractToc(html: string | null | undefined): TocItem[] {
+  if (!html) return [];
+  const out: TocItem[] = [];
+  const re = /<h2(?:\s[^>]*)?>([\s\S]*?)<\/h2>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    const text = decode(m[1].replace(/<[^>]+>/g, "")).trim();
+    out.push({ index: out.length, text });
+  }
+  return out.filter((t) => t.text);
 }
 
-/** Self-contained, brand-styled HTML document for the article WebView. */
-export function buildArticleHtml(article: Article, related: ArticleSummary[]) {
-  const img = articleImage(article);
-  const date = formatDate(article.updatedAt ?? article.publishedAt);
-  const byline = [
-    article.authorName ? `Written by <strong>${esc(article.authorName)}</strong>` : null,
-    article.reviewerName ? `Reviewed by <strong>${esc(article.reviewerName)}</strong>` : null,
-  ]
-    .filter(Boolean)
-    .join(" · ");
-  const meta = [article.categoryLabel, article.subcategoryLabel, article.readingTime ? `${article.readingTime} min read` : null]
-    .filter(Boolean)
-    .map((m) => esc(String(m)))
-    .join(" · ");
+/**
+ * Reports content height and H2 offsets to React Native so the WebView can be
+ * sized to its content (it never scrolls itself) and the native TOC can jump.
+ */
+const REPORT_SCRIPT = `
+(function () {
+  var last = "";
+  function report() {
+    var heads = Array.prototype.map.call(document.querySelectorAll("h2"), function (h, i) {
+      return { i: i, top: Math.round(h.getBoundingClientRect().top + window.scrollY) };
+    });
+    var h = Math.ceil(document.getElementById("fl-root").getBoundingClientRect().height);
+    var msg = JSON.stringify({ height: h, heads: heads });
+    if (msg !== last && window.ReactNativeWebView) {
+      last = msg;
+      window.ReactNativeWebView.postMessage(msg);
+    }
+  }
+  if (window.ResizeObserver) new ResizeObserver(report).observe(document.getElementById("fl-root"));
+  Array.prototype.forEach.call(document.images, function (img) { img.addEventListener("load", report); });
+  window.addEventListener("load", report);
+  setTimeout(report, 50);
+  setTimeout(report, 600);
+  setTimeout(report, 2000);
+})();
+true;
+`;
 
-  const faq = article.faq.length
-    ? `<section class="faq"><h2>Frequently asked questions</h2>${article.faq
-        .map((f) => `<details><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`)
-        .join("")}</section>`
-    : "";
-
-  const sources = article.sources.length
-    ? `<section class="sources"><h2>Sources</h2><ol>${article.sources
-        .map((s) => {
-          const url = safeUrl(s.url);
-          const title = esc(s.title);
-          return `<li>${url ? `<a href="${url}">${title}</a>` : title}${s.note ? `<br><span>${esc(s.note)}</span>` : ""}</li>`;
-        })
-        .join("")}</ol></section>`
-    : "";
-
-  const relatedHtml = related.length
-    ? `<section class="related"><h2>Keep reading</h2>${related
-        .filter((r) => r.path)
-        .slice(0, 6)
-        .map((r) => `<a class="rel" href="${esc(SITE_URL + r.path)}">${esc(r.title)}</a>`)
-        .join("")}</section>`
-    : "";
-
+/** Brand-styled document wrapping CMS HTML. Fonts load from Google Fonts, falling back to Georgia. */
+export function buildBodyHtml(body: string) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;padding:20px 18px 64px;font-family:'Roboto Slab',Georgia,serif;font-size:17px;line-height:1.65;color:${colors.ink};background:${colors.bg};word-wrap:break-word}
-h1{font-size:26px;line-height:1.25;margin:6px 0 10px}
-h2{font-size:21px;line-height:1.3;margin:32px 0 10px}
-h3{font-size:18px;margin:24px 0 8px}
-p,ul,ol{margin:0 0 14px}
-li{margin-bottom:6px}
-a{color:${colors.ink};text-decoration-color:${colors.accent};text-underline-offset:3px}
-img{max-width:100%;height:auto;border-radius:12px}
-.hero{width:100%;aspect-ratio:16/9;object-fit:cover;background:${colors.surface};margin:8px 0 16px}
-.meta{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:${colors.muted}}
-.byline{font-size:14px;color:${colors.muted};margin-bottom:18px}
-.qa{background:${colors.accentSoft};border-left:4px solid ${colors.accent};border-radius:12px;padding:14px 16px;margin:0 0 22px}
-.qa b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
-table{display:block;overflow-x:auto;border-collapse:collapse;margin:0 0 18px;font-size:15px;max-width:100%}
-th,td{border:1px solid ${colors.border};padding:8px 10px;text-align:left;vertical-align:top}
-th{background:${colors.surface}}
-blockquote{margin:0 0 16px;padding:10px 16px;border-left:3px solid ${colors.border};color:${colors.muted}}
-details{border:1px solid ${colors.border};border-radius:12px;padding:12px 14px;margin-bottom:10px}
-summary{font-weight:600;cursor:pointer}
-details p{margin:10px 0 0}
-.sources{font-size:14px}.sources span{color:${colors.muted}}
-.rel{display:block;padding:12px 14px;border:1px solid ${colors.border};border-radius:12px;margin-bottom:10px;text-decoration:none;font-weight:600}
-.disclaimer{margin-top:28px;font-size:13px;color:${colors.muted};border-top:1px solid ${colors.border};padding-top:14px}
-</style></head><body>
-${meta ? `<div class="meta">${meta}</div>` : ""}
-<h1>${esc(article.title)}</h1>
-${byline || date ? `<div class="byline">${byline}${byline && date ? " · " : ""}${date ? `Updated ${esc(date)}` : ""}</div>` : ""}
-${img ? `<img class="hero" src="${esc(img)}" alt="${esc(article.featuredImageAlt || article.title)}">` : ""}
-${article.quickAnswer ? `<div class="qa"><b>Quick answer</b>${esc(article.quickAnswer)}</div>` : ""}
-<article>${article.body ?? ""}</article>
-${faq}${sources}${relatedHtml}
-<p class="disclaimer">Educational information only — not medical advice. Consult a qualified professional for personal health decisions.</p>
-</body></html>`;
+html,body{margin:0;padding:0;background:${colors.bg};overflow:hidden;-webkit-text-size-adjust:100%}
+#fl-root{padding:4px 20px 8px;font-family:'Roboto Slab',Georgia,serif;font-size:17px;line-height:1.72;color:#1F1F1F;word-wrap:break-word}
+h2{font-size:22px;line-height:1.3;margin:34px 0 12px;color:${colors.ink};padding-top:4px}
+h2::before{content:"";display:block;width:28px;height:3px;background:${colors.accent};border-radius:2px;margin-bottom:12px}
+h3{font-size:18px;line-height:1.35;margin:26px 0 8px;color:${colors.ink}}
+p,ul,ol{margin:0 0 16px}
+li{margin-bottom:8px}
+ul li::marker{color:${colors.accent}}
+strong{color:${colors.ink}}
+a{color:${colors.ink};text-decoration:underline;text-decoration-color:${colors.accent};text-decoration-thickness:2px;text-underline-offset:3px}
+img{max-width:100%;height:auto;border-radius:14px;margin:6px 0}
+figure{margin:0 0 18px}figcaption{font-size:13px;color:${colors.muted};margin-top:6px}
+table{display:block;overflow-x:auto;border-collapse:collapse;margin:0 0 20px;font-size:15px;max-width:100%;border-radius:12px}
+th,td{border:1px solid ${colors.border};padding:10px 12px;text-align:left;vertical-align:top}
+th{background:${colors.ink};color:#fff;font-weight:600}
+tr:nth-child(even) td{background:${colors.surface}}
+blockquote{margin:0 0 18px;padding:12px 16px;border-left:4px solid ${colors.accent};background:${colors.accentSoft};border-radius:0 12px 12px 0}
+blockquote p:last-child{margin:0}
+hr{border:0;border-top:1px solid ${colors.border};margin:28px 0}
+code{background:${colors.surface};padding:2px 6px;border-radius:6px;font-size:15px}
+</style></head><body><div id="fl-root">${body}</div><script>${REPORT_SCRIPT}</script></body></html>`;
 }
