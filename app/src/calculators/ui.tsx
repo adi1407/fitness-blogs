@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 import { CountUp } from "@/components/CountUp";
@@ -102,6 +102,7 @@ export function ResultHero({ label, value, decimals = 0, unit, caption, aside, c
     return () => report(null);
   }, [report, label, value, unit]);
 
+  const compact = useWindowDimensions().width < 360;
   const last = useRef<number | null>(null);
   useEffect(() => {
     const t = setTimeout(() => {
@@ -113,15 +114,28 @@ export function ResultHero({ label, value, decimals = 0, unit, caption, aside, c
 
   return (
     <Animated.View entering={FadeIn.duration(300)} style={styles.heroShadow}>
-      <LinearGradient colors={gradients.inkGlow} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+      <LinearGradient
+        colors={gradients.inkGlow}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.hero, compact && styles.heroCompact]}
+      >
         <View style={styles.glow} pointerEvents="none" />
-        <View style={styles.heroTop}>
+        <View style={styles.heroTop} accessible accessibilityLabel={[label, `${value}${unit ? ` ${unit}` : ""}`, caption].filter(Boolean).join(", ")}>
           <View style={styles.heroMain}>
             <Text variant="label" style={styles.heroLabel}>
               {label}
             </Text>
             <View style={styles.heroValueRow}>
-              <CountUp value={value} decimals={decimals} variant="display" style={styles.heroValue} />
+              <CountUp
+                value={value}
+                decimals={decimals}
+                variant="display"
+                style={[styles.heroValue, compact && styles.heroValueCompact]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.6}
+              />
               {unit ? (
                 <Text variant="body" style={styles.heroUnit}>
                   {unit}
@@ -145,7 +159,7 @@ export function ResultHero({ label, value, decimals = 0, unit, caption, aside, c
 /** Small stat cell for use inside ResultHero. */
 export function HeroStat({ label, value }: { label: string; value: string }) {
   return (
-    <View style={styles.heroStat}>
+    <View style={styles.heroStat} accessible accessibilityLabel={`${label}: ${value}`}>
       <Text variant="label" style={styles.heroStatLabel}>
         {label}
       </Text>
@@ -210,6 +224,8 @@ const styles = StyleSheet.create({
   heroLabel: { color: colors.accent },
   heroValueRow: { flexDirection: "row", alignItems: "baseline", gap: 6 },
   heroValue: { color: colors.bg, fontSize: 44, lineHeight: 52 },
+  heroValueCompact: { fontSize: 36, lineHeight: 44 },
+  heroCompact: { padding: space.lg },
   heroUnit: { color: colors.inkMuted },
   heroCaption: { color: colors.inkMuted },
   heroStats: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
