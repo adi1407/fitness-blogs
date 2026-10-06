@@ -12,6 +12,7 @@ import { Card } from "@/components/Card";
 import { FeaturedArticleCard } from "@/components/FeaturedArticleCard";
 import { GradientHero } from "@/components/GradientHero";
 import { HorizontalRail } from "@/components/HorizontalRail";
+import { ImageTile } from "@/components/ImageTile";
 import { Screen } from "@/components/Screen";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Skeleton } from "@/components/Skeleton";
@@ -19,6 +20,7 @@ import { ErrorState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { ToolTile } from "@/components/ToolTile";
 import { isHighProtein, shortName } from "@/lib/nutrition";
+import { PILLARS } from "@/lib/pillars";
 import { TOOLS } from "@/lib/tools";
 import { colors, radius, space } from "@/theme";
 
@@ -103,6 +105,21 @@ export default function HomeScreen() {
           />
         </View>
       </Reveal>
+
+      <View style={styles.section}>
+        <SectionHeader eyebrow="Explore" title="Pick your goal" />
+        {PILLARS.map((p) => (
+          <ImageTile
+            key={p.slug}
+            image={p.image}
+            eyebrow="Pillar guide"
+            title={p.title}
+            subtitle={p.tagline}
+            height={150}
+            onPress={() => router.push(`/hub/${p.slug}`)}
+          />
+        ))}
+      </View>
 
       {proteinPicks.length ? (
         <View style={styles.section}>
