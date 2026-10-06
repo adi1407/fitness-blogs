@@ -20,6 +20,20 @@ function SearchButton() {
   );
 }
 
+function SettingsButton() {
+  return (
+    <Pressable
+      onPress={() => router.push("/settings")}
+      hitSlop={12}
+      accessibilityRole="button"
+      accessibilityLabel="Settings"
+      style={{ marginRight: 16 }}
+    >
+      <Ionicons name="settings-outline" size={22} color={colors.ink} />
+    </Pressable>
+  );
+}
+
 export default function TabsLayout() {
   return (
     <Tabs
@@ -37,7 +51,7 @@ export default function TabsLayout() {
       <Tabs.Screen name="learn" options={{ title: "Learn" }} />
       <Tabs.Screen name="tools" options={{ title: "Tools" }} />
       <Tabs.Screen name="library" options={{ title: "Library" }} />
-      <Tabs.Screen name="account" options={{ title: "Account" }} />
+      <Tabs.Screen name="account" options={{ title: "Account", headerRight: () => <SettingsButton /> }} />
     </Tabs>
   );
 }

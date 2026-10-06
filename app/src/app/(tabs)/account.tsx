@@ -8,6 +8,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from "react-nat
 import { deleteCalcResult, fetchBookmarks, fetchCalcResults, fetchUpvotes, type CalcResult, type LibraryArticle } from "@/api/member";
 import { Card } from "@/components/Card";
 import { GradientHero } from "@/components/GradientHero";
+import { LinkGroup, LinkRow } from "@/components/LinkRow";
 import { PressableScale } from "@/components/PressableScale";
 import { Screen } from "@/components/Screen";
 import { SkeletonList } from "@/components/Skeleton";
@@ -336,6 +337,11 @@ export default function AccountScreen() {
   return (
     <Screen refreshing={status === "signedIn" ? refreshing : undefined} onRefresh={status === "signedIn" ? onRefresh : undefined}>
       {status === "loading" ? <SkeletonList count={2} image={false} /> : status === "signedIn" ? <SignedIn /> : <SignedOut />}
+      <LinkGroup title="More">
+        <LinkRow icon="information-circle-outline" label="About fitlives" onPress={() => router.push("/about")} />
+        <LinkRow icon="settings-outline" label="Settings" onPress={() => router.push("/settings")} />
+        <LinkRow icon="lock-closed-outline" label="Privacy policy" external onPress={() => openLink(`${SITE_URL}/privacy`)} />
+      </LinkGroup>
     </Screen>
   );
 }
