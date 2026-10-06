@@ -35,6 +35,16 @@ export function openLink(url: string) {
       router.push(`/food/${food[1]}`);
       return;
     }
+    const exercise = parsed.pathname.match(/^\/exercises\/([a-z0-9-]+)\/([a-z0-9-]+)\/?$/);
+    if (exercise) {
+      router.push(`/exercise/${exercise[1]}/${exercise[2]}`);
+      return;
+    }
+    const group = parsed.pathname.match(/^\/exercises\/([a-z0-9-]+)\/?$/);
+    if (group) {
+      router.push(`/exercises/${group[1]}`);
+      return;
+    }
   }
 
   WebBrowser.openBrowserAsync(parsed.href).catch(() => {

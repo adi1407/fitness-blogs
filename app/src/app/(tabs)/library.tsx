@@ -23,6 +23,12 @@ const LIBRARY: Entry[] = [
     icon: "nutrition-outline",
     href: "/foods",
   },
+  {
+    title: "Exercise library",
+    blurb: "50 lifts across 7 muscle groups with form cues and common mistakes.",
+    icon: "barbell-outline",
+    href: "/exercises",
+  },
 ];
 
 export default function LibraryScreen() {

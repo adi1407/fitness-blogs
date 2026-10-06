@@ -7,6 +7,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { fetchArticles } from "@/api/articles";
 import { fetchFoods } from "@/api/foods";
+import { MUSCLE_GROUP_LABEL, fetchExercises } from "@/api/library";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Card } from "@/components/Card";
 import { FeaturedArticleCard } from "@/components/FeaturedArticleCard";
@@ -19,6 +20,7 @@ import { Skeleton } from "@/components/Skeleton";
 import { ErrorState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { ToolTile } from "@/components/ToolTile";
+import { MUSCLE_GROUP_IMAGE } from "@/lib/images";
 import { isHighProtein, shortName } from "@/lib/nutrition";
 import { PILLARS } from "@/lib/pillars";
 import { TOOLS } from "@/lib/tools";
@@ -30,6 +32,12 @@ const TRUST = [
   { icon: "flag-outline", label: "Built for India" },
 ] as const;
 
+/** Days since epoch in local time — rotates daily picks. */
+function dayIndex() {
+  const now = new Date();
+  return Math.floor((now.getTime() - now.getTimezoneOffset() * 60_000) / 86_400_000);
+}
+
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return <Animated.View entering={FadeInDown.duration(420).delay(delay)}>{children}</Animated.View>;
 }
@@ -38,7 +46,8 @@ export default function HomeScreen() {
   const { width } = useWindowDimensions();
   const articles = useQuery({ queryKey: ["articles"], queryFn: ({ signal }) => fetchArticles(signal) });
   const foods = useQuery({ queryKey: ["foods"], queryFn: ({ signal }) => fetchFoods(signal) });
-  const all = [articles, foods];
+  const exercises = useQuery({ queryKey: ["exercises"], queryFn: ({ signal }) => fetchExercises(signal) });
+  const all = [articles, foods, exercises];
   const refreshing = all.some((q) => q.isRefetching);
   const onRefresh = () => all.forEach((q) => q.refetch());
 
@@ -53,6 +62,7 @@ export default function HomeScreen() {
     [foods.data],
   );
   const cardWidth = Math.min(width - space.lg * 2 - 24, 360);
+  const exerciseOfDay = exercises.data?.length ? exercises.data[dayIndex() % exercises.data.length] : null;
 
   return (
     <Screen refreshing={refreshing} onRefresh={onRefresh}>
@@ -120,6 +130,20 @@ export default function HomeScreen() {
           />
         ))}
       </View>
+
+      {exerciseOfDay ? (
+        <View style={styles.section}>
+          <SectionHeader eyebrow="Train today" title="Exercise of the day" onAction={() => router.push("/exercises")} />
+          <ImageTile
+            image={MUSCLE_GROUP_IMAGE[exerciseOfDay.muscleGroup] ?? MUSCLE_GROUP_IMAGE.chest}
+            eyebrow={MUSCLE_GROUP_LABEL[exerciseOfDay.muscleGroup] ?? exerciseOfDay.muscleGroup}
+            title={exerciseOfDay.title}
+            subtitle={exerciseOfDay.quickAnswer ?? exerciseOfDay.excerpt ?? undefined}
+            height={200}
+            onPress={() => router.push(`/exercise/${exerciseOfDay.muscleGroup}/${exerciseOfDay.slug}`)}
+          />
+        </View>
+      ) : null}
 
       {proteinPicks.length ? (
         <View style={styles.section}>
