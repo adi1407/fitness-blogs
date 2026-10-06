@@ -1,0 +1,15 @@
+# Store and check out text files with LF on every OS (Render and Vercel build on Linux).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+*.pdf binary
