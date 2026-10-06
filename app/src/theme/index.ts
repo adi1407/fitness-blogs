@@ -55,6 +55,9 @@ export const shadow = {
   },
 } as const;
 
+/** bottomClearance: scroll padding so content clears the floating tab bar. */
+export const layout = { bottomClearance: 128 } as const;
+
 export const motion = { fast: 140, base: 240, slow: 420, countUp: 900 } as const;
 
 export const fonts = {

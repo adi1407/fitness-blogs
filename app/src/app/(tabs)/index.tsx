@@ -68,7 +68,7 @@ export default function HomeScreen() {
       <View style={styles.section}>
         <View style={styles.sectionHead}>
           <Text variant="label">Latest articles</Text>
-          <Text variant="small" style={styles.link} onPress={() => router.push("/articles")}>
+          <Text variant="small" style={styles.link} onPress={() => router.push("/learn")}>
             See all
           </Text>
         </View>

@@ -7,7 +7,7 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { Chip } from "@/components/Chip";
 import { SearchInput } from "@/components/SearchInput";
 import { EmptyState, ErrorState, LoadingState } from "@/components/States";
-import { colors, space } from "@/theme";
+import { colors, layout, space } from "@/theme";
 
 const ALL = "all";
 
@@ -82,7 +82,7 @@ export default function ArticlesScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space.lg, paddingBottom: space.xxl * 2 },
+  content: { padding: space.lg, paddingBottom: layout.bottomClearance },
   header: { gap: space.md, marginBottom: space.lg },
   chips: { gap: space.sm },
 });

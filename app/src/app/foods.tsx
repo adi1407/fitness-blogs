@@ -9,7 +9,7 @@ import { SearchInput } from "@/components/SearchInput";
 import { EmptyState, ErrorState, LoadingState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { isHighProtein } from "@/lib/nutrition";
-import { colors, space } from "@/theme";
+import { colors, layout, space } from "@/theme";
 
 const ALL = "all";
 const HIGH_PROTEIN = "high-protein";
@@ -77,7 +77,7 @@ export default function FoodsScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space.lg, paddingBottom: space.xxl * 2 },
+  content: { padding: space.lg, paddingBottom: layout.bottomClearance },
   header: { gap: space.md, marginBottom: space.lg },
   chips: { gap: space.sm },
 });
