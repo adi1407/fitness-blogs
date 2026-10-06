@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
-import { colors, space } from "@/theme";
+import { colors, layout, space } from "@/theme";
 
 type Props = {
   children: ReactNode;
@@ -32,5 +32,5 @@ export function Screen({ children, scroll = true, refreshing = false, onRefresh 
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: space.lg, gap: space.lg, paddingBottom: space.xxl * 2 },
+  content: { padding: space.lg, gap: space.xl, paddingBottom: layout.bottomClearance },
 });
