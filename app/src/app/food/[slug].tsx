@@ -4,11 +4,12 @@ import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { DIET_LABEL, FOOD_CATEGORY_LABEL, fetchFood, type Food, type FoodServing } from "@/api/foods";
+import { HeroStat, HeroStats, ResultHero } from "@/calculators/ui";
 import { Card } from "@/components/Card";
 import { Chip } from "@/components/Chip";
 import { MacroBar } from "@/components/MacroBar";
+import { RingChart } from "@/components/RingChart";
 import { Screen } from "@/components/Screen";
-import { StatBox } from "@/components/StatBox";
 import { ErrorState, LoadingState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { SITE_URL } from "@/config";
@@ -73,24 +74,41 @@ export default function FoodScreen() {
             <Chip key={`${s.grams}-${s.label}`} label={s.label} active={s.grams === activeGrams} onPress={() => setGrams(s.grams)} />
           ))}
         </ScrollView>
-        <Text variant="small">
-          {activeLabel} ({activeGrams} g {f.basisLabel})
-        </Text>
-        <View style={styles.stats}>
-          <StatBox label="Calories" value={String(scaled!.kcal)} unit="kcal" highlight />
-          <StatBox label="Protein" value={String(scaled!.proteinG)} unit="g" />
-        </View>
-        <View style={styles.stats}>
-          <StatBox label="Carbs" value={String(scaled!.carbsG)} unit="g" />
-          <StatBox label="Fat" value={String(scaled!.fatG)} unit="g" />
-          <StatBox label="Fibre" value={String(scaled!.fiberG)} unit="g" />
-        </View>
+        <ResultHero
+          label={activeLabel}
+          value={scaled!.kcal}
+          unit="kcal"
+          caption={`${activeGrams} g ${f.basisLabel}`}
+          aside={
+            <RingChart
+              size={92}
+              stroke={10}
+              dark
+              track="rgba(255,255,255,0.08)"
+              centerValue={`${split.proteinPct}%`}
+              centerLabel="protein"
+              segments={[
+                { value: split.proteinPct, color: colors.bg },
+                { value: split.carbsPct, color: colors.carbs },
+                { value: split.fatPct, color: colors.inkMuted },
+              ]}
+            />
+          }
+        >
+          <HeroStats>
+            <HeroStat label="Protein" value={`${scaled!.proteinG} g`} />
+            <HeroStat label="Carbs" value={`${scaled!.carbsG} g`} />
+            <HeroStat label="Fat" value={`${scaled!.fatG} g`} />
+          </HeroStats>
+        </ResultHero>
       </View>
 
       <Card style={styles.section}>
         <Text variant="heading">Where the calories come from</Text>
         <MacroBar {...split} />
-        <Text variant="small">{proteinPer100Kcal(f)} g protein per 100 kcal</Text>
+        <Text variant="small">
+          {proteinPer100Kcal(f)} g protein per 100 kcal · {scaled!.fiberG} g fibre per serving
+        </Text>
       </Card>
 
       {f.intro ? <Text variant="body">{f.intro}</Text> : null}
@@ -129,7 +147,10 @@ export default function FoodScreen() {
       ) : null}
 
       {compare ? (
-        <Card onPress={() => router.push(`/food/${compare.slug}`)} accessibilityLabel={`Compare with ${compare.name}`}>
+        <Card
+          onPress={() => router.push({ pathname: "/compare", params: { a: f.slug, b: compare.slug } })}
+          accessibilityLabel={`Compare with ${compare.name}`}
+        >
           <Text variant="label">Compare</Text>
           <Text variant="heading">
             {shortName(f.name)} vs {shortName(compare.name)}
@@ -138,7 +159,15 @@ export default function FoodScreen() {
             Per 100 g: {f.proteinG} g vs {compare.proteinG} g protein · {f.kcal} vs {compare.kcal} kcal
           </Text>
         </Card>
-      ) : null}
+      ) : (
+        <Card
+          onPress={() => router.push({ pathname: "/compare", params: { a: f.slug } })}
+          accessibilityLabel={`Compare ${f.name} with another food`}
+        >
+          <Text variant="label">Compare</Text>
+          <Text variant="heading">Compare {shortName(f.name)} with another food</Text>
+        </Card>
+      )}
 
       {related.length ? (
         <View style={styles.section}>
@@ -163,7 +192,6 @@ const styles = StyleSheet.create({
   section: { gap: space.md },
   chips: { gap: space.sm },
   chipsWrap: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
-  stats: { flexDirection: "row", gap: space.md },
   table: { borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, overflow: "hidden" },
   row: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: space.md, paddingVertical: space.sm },
   rowAlt: { backgroundColor: colors.surface },

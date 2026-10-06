@@ -54,6 +54,7 @@ export default function RootLayout() {
             <Stack.Screen name="article/[number]" options={{ title: "" }} />
             <Stack.Screen name="foods" options={{ title: "Indian food database" }} />
             <Stack.Screen name="food/[slug]" options={{ title: "Food" }} />
+            <Stack.Screen name="compare" options={{ title: "Compare foods" }} />
             <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
           </Stack>
         </ToastProvider>
