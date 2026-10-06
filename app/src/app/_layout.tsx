@@ -60,6 +60,8 @@ export default function RootLayout() {
             <Stack.Screen name="exercise/[group]/[slug]" options={{ title: "Exercise" }} />
             <Stack.Screen name="recipes" options={{ title: "Recipes" }} />
             <Stack.Screen name="recipe/[slug]" options={{ title: "" }} />
+            <Stack.Screen name="guides/[section]/index" options={{ title: "" }} />
+            <Stack.Screen name="guides/[section]/[slug]" options={{ title: "" }} />
             <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
           </Stack>
         </ToastProvider>

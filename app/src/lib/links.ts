@@ -35,6 +35,11 @@ export function openLink(url: string) {
       router.push(`/food/${food[1]}`);
       return;
     }
+    const guide = parsed.pathname.match(/^\/(programs|reviews)(?:\/([a-z0-9-]+))?\/?$/);
+    if (guide) {
+      router.push(guide[2] ? `/guides/${guide[1]}/${guide[2]}` : `/guides/${guide[1]}`);
+      return;
+    }
     const recipe = parsed.pathname.match(/^\/recipes\/([a-z0-9-]+)\/?$/);
     if (recipe) {
       router.push(`/recipe/${recipe[1]}`);
