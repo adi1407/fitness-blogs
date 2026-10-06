@@ -17,6 +17,7 @@ import { ProteinCalculator } from "@/calculators/ProteinCalculator";
 import { StepsCalculator } from "@/calculators/StepsCalculator";
 import { TdeeCalculator } from "@/calculators/TdeeCalculator";
 import { CalcResultContext, type ReportedResult } from "@/calculators/ui";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { WaterCalculator } from "@/calculators/WaterCalculator";
 import { PressableScale } from "@/components/PressableScale";
 import { Screen } from "@/components/Screen";
@@ -142,15 +143,7 @@ export default function CalculatorScreen() {
       <Stack.Screen options={{ title: "" }} />
       <Screen>
         <Animated.View entering={FadeInDown.duration(380)} style={styles.intro}>
-          <View style={styles.crumbs}>
-            <Text style={styles.crumb} onPress={() => router.navigate("/tools")} accessibilityRole="link" suppressHighlighting>
-              Calculators
-            </Text>
-            <Text style={styles.crumb}>/</Text>
-            <Text style={[styles.crumb, styles.crumbCurrent]} numberOfLines={1}>
-              {meta.title}
-            </Text>
-          </View>
+          <Breadcrumbs items={[{ label: "Calculators", href: "/tools" }, { label: meta.title }]} />
           <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
             {meta.title}
           </Text>
@@ -231,9 +224,6 @@ export default function CalculatorScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.bg },
   intro: { gap: space.sm },
-  crumbs: { flexDirection: "row", gap: space.sm, alignItems: "center" },
-  crumb: { fontFamily: fonts.regular, fontSize: 13, color: colors.muted },
-  crumbCurrent: { color: colors.ink, flexShrink: 1 },
   title: { fontFamily: fonts.semibold, fontSize: 30, lineHeight: 35, letterSpacing: -0.9, color: colors.ink, marginTop: space.xs },
   lede: { color: colors.muted, fontSize: 16, lineHeight: 24 },
   byline: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: colors.subtle },
