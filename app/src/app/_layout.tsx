@@ -10,6 +10,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
 import { ToastProvider } from "@/components/Toast";
+import { AuthProvider } from "@/lib/auth";
 import { persistOptions, queryClient, wireReactQueryToAppState } from "@/lib/queryClient";
 import { colors, fonts, navTheme } from "@/theme";
 
@@ -36,6 +37,7 @@ export default function RootLayout() {
       <ThemeProvider value={navTheme}>
         <StatusBar style="dark" />
         <ToastProvider>
+          <AuthProvider>
           <Stack
             screenOptions={{
               headerTintColor: colors.ink,
@@ -62,8 +64,9 @@ export default function RootLayout() {
             <Stack.Screen name="recipe/[slug]" options={{ title: "" }} />
             <Stack.Screen name="guides/[section]/index" options={{ title: "" }} />
             <Stack.Screen name="guides/[section]/[slug]" options={{ title: "" }} />
-            <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
+            <Stack.Screen name="auth" options={{ headerShown: false, animation: "fade" }} />            <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
           </Stack>
+          </AuthProvider>
         </ToastProvider>
       </ThemeProvider>
     </PersistQueryClientProvider>

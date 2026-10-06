@@ -13,22 +13,35 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+type RequestOptions = {
+  method?: "GET" | "POST" | "PUT" | "DELETE";
+  body?: unknown;
+  token?: string | null;
+  signal?: AbortSignal;
+};
+
+export async function apiRequest<T>(path: string, { method = "GET", body, token, signal }: RequestOptions = {}): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   const onAbort = () => controller.abort();
   signal?.addEventListener("abort", onAbort);
 
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (token) headers.Authorization = `Bearer ${token}`;
+
   try {
     const res = await fetch(`${API_URL}${path}`, {
-      headers: { Accept: "application/json" },
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
       signal: controller.signal,
     });
     if (!res.ok) {
       let message = `Request failed (${res.status})`;
       try {
-        const body = (await res.json()) as { message?: string };
-        if (body?.message) message = body.message;
+        const data = (await res.json()) as { message?: string };
+        if (data?.message) message = data.message;
       } catch {
         // non-JSON error body
       }
@@ -45,6 +58,10 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
     clearTimeout(timer);
     signal?.removeEventListener("abort", onAbort);
   }
+}
+
+export function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+  return apiRequest<T>(path, { signal });
 }
 
 /** Retry once on network/5xx errors; never on 4xx. */

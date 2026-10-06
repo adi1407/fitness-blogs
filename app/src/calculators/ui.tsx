@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
@@ -88,8 +88,20 @@ type ResultHeroProps = {
   children?: ReactNode;
 };
 
+export type ReportedResult = { label: string; value: number; unit?: string };
+
+/** Lets a calculator screen know the current headline result (e.g. to save it to the account). */
+export const CalcResultContext = createContext<((r: ReportedResult | null) => void) | null>(null);
+
 /** Dark result card with an animated headline number. Fires a light haptic when the result settles. */
 export function ResultHero({ label, value, decimals = 0, unit, caption, aside, children }: ResultHeroProps) {
+  const report = useContext(CalcResultContext);
+  useEffect(() => {
+    if (!report) return;
+    report({ label, value, unit });
+    return () => report(null);
+  }, [report, label, value, unit]);
+
   const last = useRef<number | null>(null);
   useEffect(() => {
     const t = setTimeout(() => {
