@@ -64,7 +64,9 @@ export default function RootLayout() {
             <Stack.Screen name="recipe/[slug]" options={{ title: "" }} />
             <Stack.Screen name="guides/[section]/index" options={{ title: "" }} />
             <Stack.Screen name="guides/[section]/[slug]" options={{ title: "" }} />
-            <Stack.Screen name="auth" options={{ headerShown: false, animation: "fade" }} />            <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
+            <Stack.Screen name="auth" options={{ headerShown: false, animation: "fade" }} />
+            <Stack.Screen name="about" options={{ title: "About" }} />
+            <Stack.Screen name="settings" options={{ title: "Settings" }} />            <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
           </Stack>
           </AuthProvider>
         </ToastProvider>
