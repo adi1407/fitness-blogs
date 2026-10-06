@@ -1,49 +1,56 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import type { ToolMeta } from "@/lib/tools";
-import { colors, gradients, radius, shadow, space } from "@/theme";
+import { colors, radius, space } from "@/theme";
 import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
 
+/** Website tool card: soft orange panel, ink icon chip, title and blurb. */
 export function ToolTile({ tool, height = 150 }: { tool: ToolMeta; height?: number }) {
   return (
     <PressableScale
       onPress={() => router.push(`/calculator/${tool.id}`)}
       accessibilityLabel={tool.title}
-      style={[styles.shadow, { height }]}
+      style={[styles.tile, { height }]}
     >
-      <LinearGradient colors={gradients.ink} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.tile}>
+      <View style={styles.top}>
         <View style={styles.icon}>
-          <Ionicons name={tool.icon} size={22} color={colors.ink} />
+          <Ionicons name={tool.icon} size={20} color={colors.accent} />
         </View>
-        <View style={styles.text}>
-          <Text variant="heading" style={styles.title} numberOfLines={2}>
-            {tool.title.replace(/ calculator$/i, "")}
-          </Text>
-          <Text variant="small" style={styles.blurb} numberOfLines={2}>
-            {tool.blurb}
-          </Text>
-        </View>
-      </LinearGradient>
+        <Ionicons name="arrow-forward" size={16} color={colors.muted} />
+      </View>
+      <View style={styles.text}>
+        <Text variant="heading" numberOfLines={2}>
+          {tool.title.replace(/ calculator$/i, "")}
+        </Text>
+        <Text variant="small" style={styles.blurb} numberOfLines={2}>
+          {tool.blurb}
+        </Text>
+      </View>
     </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
-  shadow: { borderRadius: radius.lg, ...shadow.md },
-  tile: { flex: 1, borderRadius: radius.lg, padding: space.lg, justifyContent: "space-between" },
+  tile: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    backgroundColor: "#FFF8EE",
+    padding: space.lg,
+    justifyContent: "space-between",
+  },
+  top: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" },
   icon: {
     width: 40,
     height: 40,
     borderRadius: radius.md,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.ink,
     alignItems: "center",
     justifyContent: "center",
   },
   text: { gap: 2 },
-  title: { color: colors.bg },
-  blurb: { color: colors.inkMuted, fontSize: 12, lineHeight: 16 },
+  blurb: { fontSize: 12, lineHeight: 16 },
 });
