@@ -199,7 +199,12 @@ export default function HomeScreen() {
         </View>
       ) : null}
 
-      <View style={styles.trust}>
+      <Pressable
+        onPress={() => router.push("/about")}
+        style={styles.trust}
+        accessibilityRole="button"
+        accessibilityLabel="How fitlives works: expert reviewed, cited sources, built for India"
+      >
         {TRUST.map((t) => (
           <View key={t.label} style={styles.trustItem}>
             <Ionicons name={t.icon} size={20} color={colors.accent} />
@@ -208,7 +213,7 @@ export default function HomeScreen() {
             </Text>
           </View>
         ))}
-      </View>
+      </Pressable>
 
       <Text variant="small" style={styles.disclaimer}>
         Educational information only — not medical advice. Consult a qualified professional for personal health
