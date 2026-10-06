@@ -1,8 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { LinearGradient } from "expo-linear-gradient";
 import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { CountUp } from "@/components/CountUp";
 import { NumberField, SegmentField, parseRange } from "@/components/Field";
@@ -10,7 +9,7 @@ import { Text } from "@/components/Text";
 import { usePersistentState } from "@/hooks/usePersistentState";
 import { ACTIVITY_LEVELS, type ActivityId, type Sex } from "@/lib/calc";
 import { haptic } from "@/lib/haptics";
-import { colors, gradients, radius, shadow, space } from "@/theme";
+import { colors, fonts, radius, space } from "@/theme";
 
 export const SEX_OPTIONS = [
   { id: "male", label: "Male" },
@@ -93,7 +92,7 @@ export type ReportedResult = { label: string; value: number; unit?: string };
 /** Lets a calculator screen know the current headline result (e.g. to save it to the account). */
 export const CalcResultContext = createContext<((r: ReportedResult | null) => void) | null>(null);
 
-/** Dark result card with an animated headline number. Fires a light haptic when the result settles. */
+/** Website result panel with an animated headline number. Fires a light haptic when the result settles. */
 export function ResultHero({ label, value, decimals = 0, unit, caption, aside, children }: ResultHeroProps) {
   const report = useContext(CalcResultContext);
   useEffect(() => {
@@ -113,19 +112,12 @@ export function ResultHero({ label, value, decimals = 0, unit, caption, aside, c
   }, [value]);
 
   return (
-    <Animated.View entering={FadeIn.duration(300)} style={styles.heroShadow}>
-      <LinearGradient
-        colors={gradients.inkGlow}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.hero, compact && styles.heroCompact]}
-      >
-        <View style={styles.glow} pointerEvents="none" />
+    <Animated.View entering={FadeInDown.duration(320)} style={styles.results}>
+      <SectionLabel>Results</SectionLabel>
+      <View style={[styles.hero, compact && styles.heroCompact]} accessibilityLiveRegion="polite">
         <View style={styles.heroTop} accessible accessibilityLabel={[label, `${value}${unit ? ` ${unit}` : ""}`, caption].filter(Boolean).join(", ")}>
           <View style={styles.heroMain}>
-            <Text variant="label" style={styles.heroLabel}>
-              {label}
-            </Text>
+            <Text style={styles.heroLabel}>{label}</Text>
             <View style={styles.heroValueRow}>
               <CountUp
                 value={value}
@@ -150,20 +142,29 @@ export function ResultHero({ label, value, decimals = 0, unit, caption, aside, c
           </View>
           {aside}
         </View>
-        {children}
-      </LinearGradient>
+      </View>
+      {children}
     </Animated.View>
   );
 }
 
-/** Small stat cell for use inside ResultHero. */
+/** Website "Your inputs" / "Results" overline. */
+export function SectionLabel({ children }: { children: ReactNode }) {
+  return (
+    <Text variant="label" style={styles.sectionLabel}>
+      {children}
+    </Text>
+  );
+}
+
+/** White result chip (website ResultChip) shown under the result panel. */
 export function HeroStat({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.heroStat} accessible accessibilityLabel={`${label}: ${value}`}>
-      <Text variant="label" style={styles.heroStatLabel}>
+      <Text style={styles.heroStatLabel} numberOfLines={1}>
         {label}
       </Text>
-      <Text variant="heading" style={styles.heroStatValue}>
+      <Text variant="heading" style={styles.heroStatValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
         {value}
       </Text>
     </View>
@@ -175,9 +176,15 @@ export function HeroStats({ children }: { children: ReactNode }) {
 }
 
 export function Notice({ children, tone = "info" }: { children: ReactNode; tone?: "info" | "warn" }) {
+  const warn = tone === "warn";
   return (
-    <View style={[styles.notice, tone === "warn" && styles.noticeWarn]}>
-      <Ionicons name={tone === "warn" ? "warning-outline" : "information-circle-outline"} size={18} color={colors.ink} />
+    <View style={[styles.notice, warn && styles.noticeWarn]}>
+      <Ionicons
+        name={warn ? "warning-outline" : "information-circle-outline"}
+        size={17}
+        color={warn ? colors.accent : colors.muted}
+        style={styles.noticeIcon}
+      />
       <Text variant="small" style={styles.noticeText}>
         {children}
       </Text>
@@ -185,8 +192,14 @@ export function Notice({ children, tone = "info" }: { children: ReactNode; tone?
   );
 }
 
+/** "Your inputs" block, separated from the results by a hairline like the website workspace. */
 export function FormCard({ children }: { children: ReactNode }) {
-  return <View style={styles.form}>{children}</View>;
+  return (
+    <View style={styles.form}>
+      <SectionLabel>Your inputs</SectionLabel>
+      {children}
+    </View>
+  );
 }
 
 export const calcStyles = StyleSheet.create({
@@ -200,53 +213,47 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   form: {
     gap: space.lg,
-    backgroundColor: colors.bg,
-    borderRadius: radius.xl,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    padding: space.lg,
-    ...shadow.sm,
+    paddingBottom: space.xl,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  heroShadow: { borderRadius: radius.xl, ...shadow.lg },
-  hero: { borderRadius: radius.xl, padding: space.xl, gap: space.lg, overflow: "hidden" },
-  glow: {
-    position: "absolute",
-    right: -70,
-    bottom: -70,
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: colors.accent,
-    opacity: 0.16,
-  },
+  sectionLabel: { color: colors.muted },
+  results: { gap: space.md },
+  hero: { borderRadius: radius.lg, padding: space.xl, backgroundColor: colors.surface },
   heroTop: { flexDirection: "row", alignItems: "center", gap: space.lg },
   heroMain: { flex: 1, gap: 2 },
-  heroLabel: { color: colors.accent },
-  heroValueRow: { flexDirection: "row", alignItems: "baseline", gap: 6 },
-  heroValue: { color: colors.bg, fontSize: 44, lineHeight: 52 },
+  heroLabel: { fontFamily: fonts.regular, fontSize: 14, color: colors.muted },
+  heroValueRow: { flexDirection: "row", alignItems: "baseline", gap: 8 },
+  heroValue: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 46, lineHeight: 54, letterSpacing: -1.4 },
   heroValueCompact: { fontSize: 36, lineHeight: 44 },
   heroCompact: { padding: space.lg },
-  heroUnit: { color: colors.inkMuted },
-  heroCaption: { color: colors.inkMuted },
+  heroUnit: { fontFamily: fonts.medium, fontSize: 16, color: colors.muted },
+  heroCaption: { color: colors.muted, marginTop: 2 },
   heroStats: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   heroStat: {
     flexGrow: 1,
     flexBasis: "30%",
-    backgroundColor: "rgba(255,255,255,0.06)",
-    borderRadius: radius.md,
-    padding: space.md,
+    backgroundColor: colors.bg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    paddingHorizontal: space.md,
+    paddingVertical: space.md - 2,
     gap: 2,
   },
-  heroStatLabel: { color: colors.inkMuted, fontSize: 10 },
-  heroStatValue: { color: colors.bg },
+  heroStatLabel: { fontFamily: fonts.medium, fontSize: 11.5, color: colors.muted },
+  heroStatValue: { fontSize: 17, lineHeight: 23 },
   notice: {
     flexDirection: "row",
     gap: space.sm,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "rgba(245,245,245,0.6)",
     padding: space.md,
     alignItems: "flex-start",
   },
-  noticeWarn: { backgroundColor: colors.accentSoft },
-  noticeText: { flex: 1, color: colors.ink },
+  noticeWarn: { backgroundColor: "#FFF8EE", borderColor: colors.accentBorder },
+  noticeIcon: { marginTop: 1 },
+  noticeText: { flex: 1, color: "#3D3D3D", lineHeight: 19 },
 });

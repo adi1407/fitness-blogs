@@ -59,10 +59,16 @@ export function OneRepMaxCalculator() {
 
 const styles = StyleSheet.create({
   table: { borderRadius: radius.lg, overflow: "hidden", borderWidth: 1, borderColor: colors.border },
-  tr: { flexDirection: "row", paddingHorizontal: space.lg, paddingVertical: space.sm + 2 },
-  th: { backgroundColor: colors.ink },
-  thText: { flex: 1, color: colors.bg },
-  alt: { backgroundColor: colors.surface },
+  tr: {
+    flexDirection: "row",
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm + 2,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  th: { backgroundColor: "rgba(245,245,245,0.6)", borderTopWidth: 0 },
+  thText: { flex: 1, color: colors.ink },
+  alt: { backgroundColor: colors.canvas },
   cell: { flex: 1 },
   right: { textAlign: "right" },
   load: { fontFamily: fonts.semibold },
