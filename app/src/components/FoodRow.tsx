@@ -7,23 +7,27 @@ import { colors, radius, space } from "@/theme";
 import { Card } from "./Card";
 import { Text } from "./Text";
 
-const DIET_COLOR = { veg: "#2E7D32", egg: colors.accent, "non-veg": colors.danger } as const;
+export const DIET_COLOR = { veg: colors.success, egg: colors.accent, "non-veg": colors.danger } as const;
 
-export function FoodRow({ food }: { food: FoodSummary }) {
+/** Indian-style veg / non-veg square mark. */
+export function DietMark({ diet }: { diet: FoodSummary["diet"] }) {
+  return (
+    <View style={[styles.diet, { borderColor: DIET_COLOR[diet] }]} accessibilityLabel={DIET_LABEL[diet]}>
+      <View style={[styles.dietDot, { backgroundColor: DIET_COLOR[diet] }]} />
+    </View>
+  );
+}
+
+export function FoodRow({ food, onPress }: { food: FoodSummary; onPress?: () => void }) {
   const tags = [isHighProtein(food) ? "High protein" : null, isLowCalorie(food) ? "Low calorie" : null].filter(
     Boolean,
   ) as string[];
 
   return (
-    <Card onPress={() => router.push(`/food/${food.slug}`)} accessibilityLabel={food.name} style={styles.card}>
+    <Card onPress={onPress ?? (() => router.push(`/food/${food.slug}`))} accessibilityLabel={food.name} style={styles.card}>
       <View style={styles.left}>
         <View style={styles.titleRow}>
-          <View
-            style={[styles.diet, { borderColor: DIET_COLOR[food.diet] }]}
-            accessibilityLabel={DIET_LABEL[food.diet]}
-          >
-            <View style={[styles.dietDot, { backgroundColor: DIET_COLOR[food.diet] }]} />
-          </View>
+          <DietMark diet={food.diet} />
           <Text variant="heading" numberOfLines={1} style={styles.name}>
             {food.name}
           </Text>

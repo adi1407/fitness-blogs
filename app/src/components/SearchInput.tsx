@@ -1,13 +1,20 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { colors, fonts, radius, space } from "@/theme";
 
-type Props = { value: string; onChangeText: (v: string) => void; placeholder: string };
+type Props = {
+  value: string;
+  onChangeText: (v: string) => void;
+  placeholder: string;
+  autoFocus?: boolean;
+  onSubmitEditing?: () => void;
+  style?: StyleProp<ViewStyle>;
+};
 
-export function SearchInput({ value, onChangeText, placeholder }: Props) {
+export function SearchInput({ value, onChangeText, placeholder, autoFocus, onSubmitEditing, style }: Props) {
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, style]}>
       <Ionicons name="search" size={18} color={colors.subtle} />
       <TextInput
         value={value}
@@ -17,6 +24,8 @@ export function SearchInput({ value, onChangeText, placeholder }: Props) {
         style={styles.input}
         autoCorrect={false}
         autoCapitalize="none"
+        autoFocus={autoFocus}
+        onSubmitEditing={onSubmitEditing}
         returnKeyType="search"
         clearButtonMode="never"
         accessibilityLabel={placeholder}
