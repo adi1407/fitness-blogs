@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { TextProps } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 
 import { motion } from "@/theme";
 import { Text } from "./Text";
@@ -16,12 +17,14 @@ type Props = Omit<TextProps, "children"> & {
 export function CountUp({ value, decimals = 0, suffix = "", variant = "display", locale = true, ...rest }: Props) {
   const [shown, setShown] = useState(value);
   const from = useRef(value);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const start = from.current;
     const delta = value - start;
-    if (!Number.isFinite(value) || delta === 0) {
+    if (!Number.isFinite(value) || delta === 0 || reduceMotion) {
       setShown(value);
+      from.current = value;
       return;
     }
     const t0 = Date.now();
@@ -38,7 +41,7 @@ export function CountUp({ value, decimals = 0, suffix = "", variant = "display",
       cancelAnimationFrame(raf);
       from.current = value;
     };
-  }, [value]);
+  }, [value, reduceMotion]);
 
   const factor = Math.pow(10, decimals);
   const rounded = Math.round(shown * factor) / factor;
