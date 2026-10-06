@@ -296,7 +296,7 @@ export default function ArticleScreen() {
                     data={related.slice(0, 8)}
                     itemWidth={Math.min(width * 0.75, 300)}
                     keyExtractor={(a) => String(a.id)}
-                    renderItem={(a) => <FeaturedArticleCard article={a} height={230} />}
+                    renderItem={(a) => <FeaturedArticleCard article={a} />}
                   />
                 </View>
               ) : null}

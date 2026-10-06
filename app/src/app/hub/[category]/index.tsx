@@ -121,7 +121,7 @@ export default function HubScreen() {
               <EmptyState title="Articles are on the way" hint="Our writers are working on this guide." />
             ) : (
               <>
-                <FeaturedArticleCard article={lead} height={280} />
+                <FeaturedArticleCard article={lead} />
                 {rest.map((a) => (
                   <ArticleCard key={a.id} article={a} compact />
                 ))}
