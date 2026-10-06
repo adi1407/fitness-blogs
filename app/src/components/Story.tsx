@@ -10,17 +10,24 @@ import { Text } from "./Text";
 
 const open = (a: ArticleSummary) => router.push(`/article/${a.articleNumber}`);
 
-/** "NUTRITION · Dietary fats · 7 min read" — orange category, muted rest. */
-function StoryMeta({ article, author = false }: { article: ArticleSummary; author?: boolean }) {
-  const rest = [
-    article.subcategoryLabel,
-    article.readingTime ? `${article.readingTime} min read` : null,
-    author ? article.authorName : null,
-  ].filter(Boolean);
+/**
+ * Where the story is listed. Inside a category hub the category is implied, so the orange slot
+ * shows the subcategory; inside a subcategory page both are implied and only read time remains.
+ */
+export type StoryContext = "all" | "category" | "subcategory";
+
+/** "NUTRITION · Dietary fats · 7 min read" — orange kicker, muted rest. */
+function StoryMeta({ article, context = "all" }: { article: ArticleSummary; context?: StoryContext }) {
+  const minutes = article.readingTime ? `${article.readingTime} min read` : null;
+  const kicker =
+    context === "all" ? article.categoryLabel : context === "category" ? article.subcategoryLabel : null;
+  const rest = [context === "all" ? article.subcategoryLabel : null, minutes, context === "subcategory" ? article.authorName : null].filter(
+    Boolean,
+  );
   return (
     <Text style={styles.meta} numberOfLines={1}>
-      {article.categoryLabel ? <Text style={styles.metaCategory}>{article.categoryLabel.toUpperCase()}</Text> : null}
-      {rest.length ? `${article.categoryLabel ? "  ·  " : ""}${rest.join("  ·  ")}` : ""}
+      {kicker ? <Text style={styles.metaCategory}>{kicker.toUpperCase()}</Text> : null}
+      {rest.length ? `${kicker ? "  ·  " : ""}${rest.join("  ·  ")}` : ""}
     </Text>
   );
 }
@@ -43,7 +50,15 @@ function Cover({ article, ratio, style }: { article: ArticleSummary; ratio: numb
 }
 
 /** Website featured lead: big uncropped cover, meta, large title, dek, byline, read link. */
-export function StoryLead({ article, label = "Featured" }: { article: ArticleSummary; label?: string }) {
+export function StoryLead({
+  article,
+  label = "Featured",
+  context,
+}: {
+  article: ArticleSummary;
+  label?: string;
+  context?: StoryContext;
+}) {
   const dek = article.excerpt || article.quickAnswer;
   return (
     <View style={styles.lead}>
@@ -52,7 +67,7 @@ export function StoryLead({ article, label = "Featured" }: { article: ArticleSum
       </Text>
       <PressableScale onPress={() => open(article)} accessibilityLabel={article.title} scaleTo={0.985} style={styles.leadPress}>
         <Cover article={article} ratio={16 / 9} />
-        <StoryMeta article={article} />
+        <StoryMeta article={article} context={context} />
         <Text style={styles.leadTitle} maxFontSizeMultiplier={1.3}>
           {article.title}
         </Text>
@@ -97,7 +112,15 @@ export function StoryRailCard({ article }: { article: ArticleSummary }) {
 }
 
 /** Website latest-feed row: thumbnail, meta, title, dek, read link — hairline separated. */
-export function StoryRow({ article, first = false }: { article: ArticleSummary; first?: boolean }) {
+export function StoryRow({
+  article,
+  first = false,
+  context,
+}: {
+  article: ArticleSummary;
+  first?: boolean;
+  context?: StoryContext;
+}) {
   return (
     <PressableScale
       onPress={() => open(article)}
@@ -107,7 +130,7 @@ export function StoryRow({ article, first = false }: { article: ArticleSummary; 
     >
       <Cover article={article} ratio={7 / 5} style={styles.rowThumb} />
       <View style={styles.rowBody}>
-        <StoryMeta article={article} />
+        <StoryMeta article={article} context={context} />
         <Text variant="heading" numberOfLines={3} style={styles.rowTitle}>
           {article.title}
         </Text>
@@ -131,7 +154,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   meta: { fontFamily: fonts.regular, fontSize: 11.5, color: colors.muted },
-  metaCategory: { fontFamily: fonts.semibold, color: colors.accent, letterSpacing: 0.6 },
+  metaCategory: { fontFamily: fonts.semibold, fontSize: 11.5, color: colors.accent, letterSpacing: 0.6 },
   lead: { gap: space.md, paddingBottom: space.xl, borderBottomWidth: 1, borderBottomColor: colors.border },
   leadLabel: { color: colors.ink },
   leadPress: { gap: space.md },

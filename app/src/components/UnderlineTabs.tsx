@@ -50,13 +50,12 @@ const styles = StyleSheet.create({
   rail: { marginHorizontal: -space.lg, flexGrow: 0 },
   content: {
     paddingHorizontal: space.lg,
-    gap: 2,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     flexGrow: 1,
   },
   tab: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 11,
     paddingVertical: space.md,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
