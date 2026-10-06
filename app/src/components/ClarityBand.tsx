@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router, type Href } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { colors, fonts, space } from "@/theme";
 import { PillButton } from "./PillButton";
@@ -13,9 +13,9 @@ const LINKS: { label: string; href: Href; primary?: boolean }[] = [
 ];
 
 /** Website closing band: dark canvas, big statement, next-step pills. */
-export function ClarityBand() {
+export function ClarityBand({ style }: { style?: StyleProp<ViewStyle> }) {
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, style]}>
       <LinearGradient
         colors={["#0A0A0A", "#171717", "#0A0A0A"]}
         style={StyleSheet.absoluteFill}
@@ -23,7 +23,7 @@ export function ClarityBand() {
         end={{ x: 0, y: 1 }}
       />
       <LinearGradient
-        colors={["rgba(255,152,0,0)", "rgba(255,152,0,0.14)"]}
+        colors={["rgba(255,152,0,0)", "rgba(255,152,0,0.1)"]}
         style={styles.glow}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
