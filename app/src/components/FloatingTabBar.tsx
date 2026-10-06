@@ -11,6 +11,8 @@ import { colors, fonts, radius, shadow, space } from "@/theme";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
+const INACTIVE = "#737373";
+
 const ICONS: Record<string, [IconName, IconName]> = {
   index: ["home", "home-outline"],
   learn: ["book", "book-outline"],
@@ -48,11 +50,11 @@ function TabItem({
       hitSlop={4}
     >
       <Animated.View style={[styles.pill, pill]} />
-      <Ionicons name={focused ? icon[0] : icon[1]} size={22} color={focused ? colors.accent : colors.inkMuted} />
+      <Ionicons name={focused ? icon[0] : icon[1]} size={21} color={focused ? colors.bg : INACTIVE} />
       <Animated.Text
         numberOfLines={1}
         maxFontSizeMultiplier={1.2}
-        style={[styles.label, { color: focused ? colors.bg : colors.inkMuted }]}
+        style={[styles.label, { color: focused ? colors.bg : INACTIVE }]}
       >
         {label}
       </Animated.Text>
@@ -67,7 +69,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
     <View style={[styles.wrap, { bottom: Math.max(insets.bottom, space.md) }]} pointerEvents="box-none">
       <View style={styles.bar}>
         {Platform.OS === "ios" ? (
-          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={60} tint="systemChromeMaterialLight" style={StyleSheet.absoluteFill} />
         ) : null}
         <View style={styles.inner} accessibilityRole="tablist">
           {state.routes.map((route, index) => {
@@ -100,23 +102,23 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
 const styles = StyleSheet.create({
   wrap: { position: "absolute", left: space.lg, right: space.lg },
   bar: {
-    borderRadius: radius.xl,
+    borderRadius: radius.pill,
     overflow: "hidden",
-    backgroundColor: Platform.OS === "ios" ? "rgba(10,10,10,0.82)" : colors.ink,
+    backgroundColor: Platform.OS === "ios" ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.97)",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
     ...shadow.lg,
   },
-  inner: { flexDirection: "row", paddingVertical: space.sm, paddingHorizontal: space.xs },
-  item: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6, gap: 2, minHeight: 52 },
+  inner: { flexDirection: "row", padding: 6 },
+  item: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6, gap: 1, minHeight: 50 },
   pill: {
     position: "absolute",
-    top: 2,
-    bottom: 2,
-    left: 4,
-    right: 4,
-    borderRadius: radius.lg,
-    backgroundColor: colors.inkSoft,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "rgba(255,152,0,0.35)",
+    top: 0,
+    bottom: 0,
+    left: 2,
+    right: 2,
+    borderRadius: radius.pill,
+    backgroundColor: colors.ink,
   },
-  label: { fontFamily: fonts.medium, fontSize: 10.5, letterSpacing: 0.2 },
+  label: { fontFamily: fonts.semibold, fontSize: 10.5, letterSpacing: 0.1 },
 });

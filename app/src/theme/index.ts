@@ -7,8 +7,10 @@ export const colors = {
   accentSoft: "#FFF3E0",
   surface: "#F5F5F5",
   border: "#E5E5E5",
-  muted: "#5C5C5C",
+  muted: "#525252",
   subtle: "#8A8A8A",
+  canvas: "#FAFAFA",
+  accentBorder: "#FFE0B2",
   danger: "#B42318",
   protein: "#0A0A0A",
   carbs: "#FF9800",
@@ -21,7 +23,8 @@ export const colors = {
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const;
 
-export const radius = { sm: 8, md: 12, lg: 16, xl: 24, pill: 999 } as const;
+/** Mirrors the website scale (rounded-lg 10 · xl 14 · 2xl 18 · 3xl 22). */
+export const radius = { sm: 8, md: 10, lg: 14, xl: 20, pill: 999 } as const;
 
 export const gradients = {
   ink: ["#0A0A0A", "#1F1F1F"] as const,
@@ -33,25 +36,25 @@ export const gradients = {
 
 export const shadow = {
   sm: {
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowColor: "#0A0A0A",
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 1,
   },
   md: {
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 5,
+    shadowColor: "#0A0A0A",
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
   lg: {
-    shadowColor: "#000",
-    shadowOpacity: 0.16,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 10,
+    shadowColor: "#0A0A0A",
+    shadowOpacity: 0.12,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 8,
   },
 } as const;
 
