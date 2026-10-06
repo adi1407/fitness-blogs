@@ -7,7 +7,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { fetchArticles } from "@/api/articles";
 import { fetchFoods } from "@/api/foods";
-import { MUSCLE_GROUP_LABEL, fetchExercises } from "@/api/library";
+import { MUSCLE_GROUP_LABEL, fetchExercises, fetchRecipes } from "@/api/library";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Card } from "@/components/Card";
 import { FeaturedArticleCard } from "@/components/FeaturedArticleCard";
@@ -20,7 +20,7 @@ import { Skeleton } from "@/components/Skeleton";
 import { ErrorState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { ToolTile } from "@/components/ToolTile";
-import { MUSCLE_GROUP_IMAGE } from "@/lib/images";
+import { MUSCLE_GROUP_IMAGE, recipeImage, thumb } from "@/lib/images";
 import { isHighProtein, shortName } from "@/lib/nutrition";
 import { PILLARS } from "@/lib/pillars";
 import { TOOLS } from "@/lib/tools";
@@ -47,7 +47,8 @@ export default function HomeScreen() {
   const articles = useQuery({ queryKey: ["articles"], queryFn: ({ signal }) => fetchArticles(signal) });
   const foods = useQuery({ queryKey: ["foods"], queryFn: ({ signal }) => fetchFoods(signal) });
   const exercises = useQuery({ queryKey: ["exercises"], queryFn: ({ signal }) => fetchExercises(signal) });
-  const all = [articles, foods, exercises];
+  const recipes = useQuery({ queryKey: ["recipes"], queryFn: ({ signal }) => fetchRecipes(signal) });
+  const all = [articles, foods, exercises, recipes];
   const refreshing = all.some((q) => q.isRefetching);
   const onRefresh = () => all.forEach((q) => q.refetch());
 
@@ -164,6 +165,26 @@ export default function HomeScreen() {
                 </Text>
                 <Text variant="small">{f.kcal} kcal</Text>
               </Card>
+            )}
+          />
+        </View>
+      ) : null}
+
+      {recipes.data?.length ? (
+        <View style={styles.section}>
+          <SectionHeader eyebrow="Cook" title="High-protein recipes" onAction={() => router.push("/recipes")} />
+          <HorizontalRail
+            data={recipes.data}
+            itemWidth={220}
+            keyExtractor={(r) => r.id}
+            renderItem={(r) => (
+              <ImageTile
+                image={thumb(recipeImage(r.slug))}
+                title={r.title}
+                subtitle={r.proteinG != null ? `${r.proteinG} g protein · ${r.calories ?? "–"} kcal` : undefined}
+                height={180}
+                onPress={() => router.push(`/recipe/${r.slug}`)}
+              />
             )}
           />
         </View>
