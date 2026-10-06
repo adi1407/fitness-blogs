@@ -20,6 +20,9 @@ const variants = StyleSheet.create({
   },
 });
 
+/** Honour Dynamic Type, but cap large display text so headings don't break layouts. */
+const MAX_SCALE: Record<Variant, number> = { display: 1.3, title: 1.4, heading: 1.6, body: 1.8, small: 1.8, label: 1.5 };
+
 export function Text({ variant = "body", style, ...rest }: TextProps & { variant?: Variant }) {
-  return <RNText {...rest} style={[variants[variant], style]} />;
+  return <RNText maxFontSizeMultiplier={MAX_SCALE[variant]} {...rest} style={[variants[variant], style]} />;
 }

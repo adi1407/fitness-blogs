@@ -15,10 +15,18 @@ export function SectionHeader({ title, eyebrow, actionLabel = "See all", onActio
             {eyebrow}
           </Text>
         ) : null}
-        <Text variant="title">{title}</Text>
+        <Text variant="title" accessibilityRole="header">
+          {title}
+        </Text>
       </View>
       {onAction ? (
-        <Pressable onPress={onAction} hitSlop={10} accessibilityRole="link" style={styles.action}>
+        <Pressable
+          onPress={onAction}
+          hitSlop={10}
+          accessibilityRole="link"
+          accessibilityLabel={`${actionLabel}: ${title}`}
+          style={styles.action}
+        >
           <Text variant="small" style={styles.actionText}>
             {actionLabel}
           </Text>
