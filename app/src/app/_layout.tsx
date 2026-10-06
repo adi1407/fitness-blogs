@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
+import { ToastProvider } from "@/components/Toast";
 import { queryClient, wireReactQueryToAppState } from "@/lib/queryClient";
 import { colors, fonts, navTheme } from "@/theme";
 
@@ -34,6 +35,7 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={navTheme}>
         <StatusBar style="dark" />
+        <ToastProvider>
         <Stack
           screenOptions={{
             headerTintColor: colors.ink,
@@ -41,6 +43,7 @@ export default function RootLayout() {
             headerBackButtonDisplayMode: "minimal",
             headerShadowVisible: false,
             contentStyle: { backgroundColor: colors.bg },
+            animation: "ios_from_right",
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -48,6 +51,7 @@ export default function RootLayout() {
           <Stack.Screen name="food/[slug]" options={{ title: "Food" }} />
           <Stack.Screen name="calculator/[tool]" options={{ title: "Calculator" }} />
         </Stack>
+        </ToastProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
