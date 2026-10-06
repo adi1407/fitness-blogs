@@ -45,6 +45,13 @@ const envSchema = z.object({
   GOOGLE_REDIRECT_URI: z
     .string()
     .default("http://localhost:4000/api/v1/public/auth/google/callback"),
+  /** Comma-separated deep links the mobile app may receive the member token on. */
+  MOBILE_AUTH_REDIRECTS: z.string().default("fitlives://auth"),
+  /** Also allow Expo Go dev links (exp://…/--/auth). Keep false in production. */
+  ALLOW_EXPO_GO_AUTH: z
+    .string()
+    .default("false")
+    .transform((v) => v.trim().toLowerCase() === "true"),
   /** Cloudinary image storage. Either the three parts or `cloudinary://KEY:SECRET@CLOUD`. */
   CLOUDINARY_CLOUD_NAME: z.string().default(""),
   CLOUDINARY_API_KEY: z.string().default(""),
@@ -100,5 +107,9 @@ export const env = {
     parsed.data.GOOGLE_REDIRECT_URI,
     defaultRedirect,
   ),
+  mobileAuthRedirects: parsed.data.MOBILE_AUTH_REDIRECTS.split(",")
+    .map((r) => r.trim())
+    .filter(Boolean),
+  allowExpoGoAuth: parsed.data.ALLOW_EXPO_GO_AUTH,
   cloudinary: resolveCloudinary(parsed.data),
 };

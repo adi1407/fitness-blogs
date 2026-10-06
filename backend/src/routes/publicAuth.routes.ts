@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { pool } from "../db/pool";
 import { env } from "../config/env";
 import { recordAudit } from "../services/auditLog";
+import { allowedAppRedirect, appRedirectWith } from "../utils/appRedirect";
 
 export const publicAuthRouter = Router();
 
@@ -63,9 +64,21 @@ publicAuthRouter.get("/google", (req, res) => {
     !req.query.next.startsWith("//")
       ? req.query.next
       : "/account";
-  const state = Buffer.from(JSON.stringify({ next }), "utf8").toString(
-    "base64url",
-  );
+
+  let appRedirect: string | undefined;
+  if (req.query.app_redirect !== undefined) {
+    const allowed = allowedAppRedirect(req.query.app_redirect);
+    if (!allowed) {
+      res.status(400).json({ message: "app_redirect is not allowed" });
+      return;
+    }
+    appRedirect = allowed;
+  }
+
+  const state = Buffer.from(
+    JSON.stringify(appRedirect ? { next, app: appRedirect } : { next }),
+    "utf8",
+  ).toString("base64url");
 
   const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   url.searchParams.set("client_id", env.googleClientId);
@@ -81,7 +94,27 @@ publicAuthRouter.get("/google", (req, res) => {
 
 /** Google redirects here — exchange code, upsert member, bounce to site. */
 publicAuthRouter.get("/google/callback", async (req, res) => {
+  const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
+  let next = "/account";
+  let appRedirect: string | null = null;
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(stateRaw, "base64url").toString("utf8"),
+    ) as { next?: string; app?: string };
+    if (parsed.next?.startsWith("/") && !parsed.next.startsWith("//")) {
+      next = parsed.next;
+    }
+    // State is client-visible, so re-check the allowlist rather than trusting it.
+    appRedirect = allowedAppRedirect(parsed.app);
+  } catch {
+    /* ignore bad state */
+  }
+
   const fail = (reason: string) => {
+    if (appRedirect) {
+      res.redirect(appRedirectWith(appRedirect, { error: reason }));
+      return;
+    }
     const dest = new URL("/login", env.publicSiteUrl);
     dest.searchParams.set("error", reason);
     res.redirect(dest.toString());
@@ -93,22 +126,9 @@ publicAuthRouter.get("/google/callback", async (req, res) => {
   }
 
   const code = typeof req.query.code === "string" ? req.query.code : "";
-  const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
   if (!code) {
     fail("missing_code");
     return;
-  }
-
-  let next = "/account";
-  try {
-    const parsed = JSON.parse(
-      Buffer.from(stateRaw, "base64url").toString("utf8"),
-    ) as { next?: string };
-    if (parsed.next?.startsWith("/") && !parsed.next.startsWith("//")) {
-      next = parsed.next;
-    }
-  } catch {
-    /* ignore bad state */
   }
 
   try {
@@ -216,6 +236,11 @@ publicAuthRouter.get("/google/callback", async (req, res) => {
       entityId: String(memberRow.id),
       summary: `Google sign-in ${memberRow.email}`,
     });
+
+    if (appRedirect) {
+      res.redirect(appRedirectWith(appRedirect, { token }));
+      return;
+    }
 
     const dest = new URL("/api/auth/session", env.publicSiteUrl);
     dest.searchParams.set("token", token);
