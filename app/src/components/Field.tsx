@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: radius.md,
   },
-  segmentWrap: { flexBasis: "30%", flexGrow: 1 },
+  segmentWrap: { flexBasis: "45%", flexGrow: 1 },
   segmentActive: { backgroundColor: colors.ink, ...shadow.sm },
   segmentText: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted },
   segmentTextActive: { color: colors.bg },
