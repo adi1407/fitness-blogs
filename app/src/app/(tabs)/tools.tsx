@@ -204,5 +204,5 @@ const styles = StyleSheet.create({
   use: { width: 112, flexDirection: "row", alignItems: "center", gap: 4 },
   useText: { flexShrink: 1, fontFamily: fonts.semibold, fontSize: 13, lineHeight: 17, color: colors.ink },
   starter: { lineHeight: 20 },
-  inlineLink: { fontFamily: fonts.semibold, color: colors.ink, textDecorationLine: "underline" },
+  inlineLink: { fontFamily: fonts.semibold, fontSize: 13, lineHeight: 20, color: colors.ink, textDecorationLine: "underline" },
 });
