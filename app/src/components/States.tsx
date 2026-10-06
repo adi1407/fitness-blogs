@@ -19,7 +19,7 @@ export function LoadingState({ label = "Loading…" }: { label?: string }) {
 export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
   const message = error instanceof Error ? error.message : "Something went wrong.";
   return (
-    <View style={styles.center}>
+    <View style={styles.center} accessibilityLiveRegion="polite">
       <Ionicons name="cloud-offline-outline" size={36} color={colors.subtle} />
       <Text variant="heading">Couldn&apos;t load this</Text>
       <Text variant="small" style={styles.hint}>
@@ -29,7 +29,8 @@ export function ErrorState({ error, onRetry }: { error: unknown; onRetry?: () =>
         <Pressable
           onPress={onRetry}
           accessibilityRole="button"
-          style={({ pressed }) => [styles.button, pressed && { opacity: 0.85 }]}
+          hitSlop={8}
+          style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         >
           <Text variant="body" style={styles.buttonText}>
             Try again
@@ -71,5 +72,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.xl,
     paddingVertical: space.md,
   },
+  pressed: { opacity: 0.85 },
   buttonText: { color: colors.bg, fontFamily: fonts.semibold },
 });

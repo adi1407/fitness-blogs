@@ -51,6 +51,7 @@ function TabItem({
       <Ionicons name={focused ? icon[0] : icon[1]} size={22} color={focused ? colors.accent : colors.inkMuted} />
       <Animated.Text
         numberOfLines={1}
+        maxFontSizeMultiplier={1.2}
         style={[styles.label, { color: focused ? colors.bg : colors.inkMuted }]}
       >
         {label}
@@ -68,7 +69,7 @@ export function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarP
         {Platform.OS === "ios" ? (
           <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFill} />
         ) : null}
-        <View style={styles.inner}>
+        <View style={styles.inner} accessibilityRole="tablist">
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label = typeof options.title === "string" ? options.title : route.name;

@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import type { ReactNode } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { StyleSheet, useWindowDimensions, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { colors, gradients, radius, shadow, space } from "@/theme";
 import { Text } from "./Text";
@@ -15,16 +15,22 @@ type Props = {
 
 /** Near-black gradient panel with an orange glow — the app's signature surface. */
 export function GradientHero({ eyebrow, title, subtitle, children, style }: Props) {
+  const compact = useWindowDimensions().width < 360;
   return (
     <View style={[styles.shadow, style]}>
-      <LinearGradient colors={gradients.inkGlow} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
+      <LinearGradient
+        colors={gradients.inkGlow}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.hero, compact && styles.heroCompact]}
+      >
         <View style={styles.glow} pointerEvents="none" />
         {eyebrow ? (
           <Text variant="label" style={styles.eyebrow}>
             {eyebrow}
           </Text>
         ) : null}
-        <Text variant="display" style={styles.title}>
+        <Text variant="display" style={[styles.title, compact && styles.titleCompact]} accessibilityRole="header">
           {title}
         </Text>
         {subtitle ? (
@@ -53,5 +59,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: { color: colors.accent },
   title: { color: colors.bg },
+  titleCompact: { fontSize: 24, lineHeight: 30 },
+  heroCompact: { padding: space.lg },
   subtitle: { color: colors.inkMuted },
 });
