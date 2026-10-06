@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 import { colors, layout, space } from "@/theme";
@@ -9,12 +9,14 @@ type Props = {
   scroll?: boolean;
   refreshing?: boolean;
   onRefresh?: () => void;
+  ref?: Ref<ScrollView>;
 };
 
-export function Screen({ children, scroll = true, refreshing = false, onRefresh }: Props) {
+export function Screen({ children, scroll = true, refreshing = false, onRefresh, ref }: Props) {
   if (!scroll) return <View style={styles.root}>{children}</View>;
   return (
     <ScrollView
+      ref={ref}
       style={styles.root}
       contentContainerStyle={styles.content}
       contentInsetAdjustmentBehavior="automatic"
