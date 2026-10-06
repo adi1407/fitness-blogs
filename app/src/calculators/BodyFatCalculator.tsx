@@ -60,8 +60,7 @@ export function BodyFatCalculator() {
             <RingChart
               size={96}
               stroke={10}
-              dark
-              track="rgba(255,255,255,0.08)"
+              track={colors.border}
               max={100}
               segments={[{ value: result.pct, color: colors.accent }]}
             />

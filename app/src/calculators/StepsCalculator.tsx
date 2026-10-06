@@ -40,8 +40,7 @@ export function StepsCalculator() {
             <RingChart
               size={96}
               stroke={10}
-              dark
-              track="rgba(255,255,255,0.08)"
+              track={colors.border}
               max={GOAL_STEPS}
               segments={[{ value: Math.min(steps.value, GOAL_STEPS), color: colors.accent }]}
               centerValue={`${Math.round((Math.min(steps.value, GOAL_STEPS) / GOAL_STEPS) * 100)}%`}

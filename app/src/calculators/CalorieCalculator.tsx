@@ -55,12 +55,11 @@ export function CalorieCalculator() {
               <RingChart
                 size={96}
                 stroke={10}
-                dark
-                track="rgba(255,255,255,0.08)"
+                track={colors.border}
                 segments={[
-                  { value: plan.macros.pct.protein, color: colors.bg },
+                  { value: plan.macros.pct.protein, color: colors.ink },
                   { value: plan.macros.pct.carbs, color: colors.accent },
-                  { value: plan.macros.pct.fat, color: "#8A8A8A" },
+                  { value: plan.macros.pct.fat, color: colors.fat },
                 ]}
               />
             }
