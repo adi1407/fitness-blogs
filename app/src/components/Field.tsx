@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { useState, type ReactNode } from "react";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
-import { colors, fonts, radius, space } from "@/theme";
-import { Chip } from "./Chip";
+import { haptic } from "@/lib/haptics";
+import { colors, fonts, radius, shadow, space } from "@/theme";
 import { Text } from "./Text";
 
 type NumberFieldProps = {
@@ -15,25 +15,29 @@ type NumberFieldProps = {
 };
 
 export function NumberField({ label, value, onChangeText, unit, error, placeholder }: NumberFieldProps) {
+  const [focused, setFocused] = useState(false);
   return (
     <View style={styles.field}>
-      <Text variant="label">{label}</Text>
-      <View style={[styles.inputWrap, !!error && styles.inputError]}>
+      <Text style={styles.label}>{label}</Text>
+      <View style={[styles.inputWrap, focused && styles.inputFocused, !!error && styles.inputError]}>
         <TextInput
           value={value}
           onChangeText={(t) => onChangeText(t.replace(/[^0-9.]/g, ""))}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           keyboardType="decimal-pad"
           inputMode="decimal"
           placeholder={placeholder}
           placeholderTextColor={colors.subtle}
+          selectionColor={colors.accent}
           style={styles.input}
           maxLength={6}
           accessibilityLabel={`${label} in ${unit}`}
         />
-        <Text variant="small">{unit}</Text>
+        <Text style={styles.unit}>{unit}</Text>
       </View>
       {error ? (
-        <Text variant="small" style={styles.error}>
+        <Text variant="small" style={styles.error} accessibilityLiveRegion="polite">
           {error}
         </Text>
       ) : null}
@@ -43,6 +47,7 @@ export function NumberField({ label, value, onChangeText, unit, error, placehold
 
 type Option<T extends string> = { id: T; label: string };
 
+/** Website segmented control: muted track, black active segment; wraps when options don't fit. */
 export function SegmentField<T extends string>({
   label,
   options,
@@ -56,15 +61,37 @@ export function SegmentField<T extends string>({
   onChange: (v: T) => void;
   hint?: ReactNode;
 }) {
+  const wraps = options.length > 3;
   return (
     <View style={styles.field}>
-      <Text variant="label">{label}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-        {options.map((o) => (
-          <Chip key={o.id} label={o.label} active={o.id === value} onPress={() => onChange(o.id)} />
-        ))}
-      </ScrollView>
-      {hint ? <Text variant="small">{hint}</Text> : null}
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.track} accessibilityRole="radiogroup" accessibilityLabel={label}>
+        {options.map((o) => {
+          const active = o.id === value;
+          return (
+            <Pressable
+              key={o.id}
+              onPress={() => {
+                if (active) return;
+                haptic.tap();
+                onChange(o.id);
+              }}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: active }}
+              style={[styles.segment, wraps && styles.segmentWrap, active && styles.segmentActive]}
+            >
+              <Text style={[styles.segmentText, active && styles.segmentTextActive]} numberOfLines={1}>
+                {o.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {hint ? (
+        <Text variant="small" style={styles.hint}>
+          {hint}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -81,18 +108,44 @@ export function parseRange(raw: string, min: number, max: number, name: string) 
 
 const styles = StyleSheet.create({
   field: { gap: space.sm },
+  label: { fontFamily: fonts.medium, fontSize: 13.5, color: colors.ink },
   inputWrap: {
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.bg,
     paddingHorizontal: space.md,
     minHeight: 48,
   },
+  inputFocused: { borderColor: colors.ink, boxShadow: "0 0 0 3px rgba(255,152,0,0.3)" },
   inputError: { borderColor: colors.danger },
-  input: { flex: 1, fontFamily: fonts.semibold, fontSize: 18, color: colors.ink, paddingVertical: space.sm },
+  input: { flex: 1, minWidth: 0, fontFamily: fonts.semibold, fontSize: 17, color: colors.ink, paddingVertical: space.sm },
+  unit: { fontFamily: fonts.medium, fontSize: 12.5, color: colors.subtle },
   error: { color: colors.danger },
-  chips: { gap: space.sm },
+  hint: { lineHeight: 18 },
+  track: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 4,
+    padding: 4,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "rgba(245,245,245,0.6)",
+  },
+  segment: {
+    flex: 1,
+    minHeight: 38,
+    paddingHorizontal: space.sm,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: radius.md,
+  },
+  segmentWrap: { flexBasis: "30%", flexGrow: 1 },
+  segmentActive: { backgroundColor: colors.ink, ...shadow.sm },
+  segmentText: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted },
+  segmentTextActive: { color: colors.bg },
 });
