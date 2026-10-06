@@ -13,6 +13,8 @@ import { SearchInput } from "@/components/SearchInput";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SkeletonList } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
+import { thumb } from "@/lib/images";
+import { KNOWLEDGE_SECTIONS } from "@/lib/knowledge";
 import { PILLARS } from "@/lib/pillars";
 import { colors, layout, space } from "@/theme";
 
@@ -88,6 +90,20 @@ export default function LearnScreen() {
               />
             )}
           />
+          <SectionHeader eyebrow="Go deeper" title="Programs & buyer's guides" />
+          <View style={styles.guides}>
+            {(Object.keys(KNOWLEDGE_SECTIONS) as (keyof typeof KNOWLEDGE_SECTIONS)[]).map((s) => (
+              <ImageTile
+                key={s}
+                image={thumb(KNOWLEDGE_SECTIONS[s].image)}
+                eyebrow={KNOWLEDGE_SECTIONS[s].eyebrow}
+                title={KNOWLEDGE_SECTIONS[s].label}
+                height={140}
+                style={styles.guide}
+                onPress={() => router.push(`/guides/${s}`)}
+              />
+            ))}
+          </View>
           <SectionHeader eyebrow="Library" title="All articles" />
           <SearchInput value={search} onChangeText={setSearch} placeholder="Search articles" />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
@@ -113,4 +129,6 @@ const styles = StyleSheet.create({
   content: { padding: space.lg, paddingBottom: layout.bottomClearance },
   header: { gap: space.md, marginBottom: space.lg },
   chips: { gap: space.sm },
+  guides: { flexDirection: "row", gap: space.md },
+  guide: { flex: 1 },
 });
