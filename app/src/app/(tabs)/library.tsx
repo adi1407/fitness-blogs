@@ -29,6 +29,12 @@ const LIBRARY: Entry[] = [
     icon: "barbell-outline",
     href: "/exercises",
   },
+  {
+    title: "High-protein recipes",
+    blurb: "Simple Indian meals with macros per serving and a servings scaler.",
+    icon: "restaurant-outline",
+    href: "/recipes",
+  },
 ];
 
 export default function LibraryScreen() {
