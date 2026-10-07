@@ -1,3 +1,5 @@
+import { API_URL } from "@/config";
+
 import { apiGet } from "./client";
 
 export type ArticleSummary = {
@@ -50,6 +52,13 @@ export function fetchArticle(articleNumber: number, signal?: AbortSignal) {
     `/public/articles/by-number/${articleNumber}`,
     signal,
   );
+}
+
+/** Counts one reader view (server dedupes repeats). Fire-and-forget. */
+export function recordArticleView(articleId: string) {
+  void fetch(`${API_URL}/public/articles/${encodeURIComponent(articleId)}/view`, {
+    method: "POST",
+  }).catch(() => {});
 }
 
 export function articleImage(a: Pick<ArticleSummary, "featuredImage" | "ogImage">) {

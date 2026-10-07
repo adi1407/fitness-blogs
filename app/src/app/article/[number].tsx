@@ -1,11 +1,11 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, Share, StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, { useAnimatedRef, useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 
-import { articleImage, fetchArticle, type Article } from "@/api/articles";
+import { articleImage, fetchArticle, recordArticleView, type Article } from "@/api/articles";
 import { Accordion } from "@/components/Accordion";
 import { FeaturedArticleCard } from "@/components/FeaturedArticleCard";
 import { HorizontalRail } from "@/components/HorizontalRail";
@@ -71,6 +71,11 @@ export default function ArticleScreen() {
     queryFn: ({ signal }) => fetchArticle(articleNumber, signal),
     enabled: valid,
   });
+
+  const loadedId = query.data?.article.id;
+  useEffect(() => {
+    if (loadedId) recordArticleView(loadedId);
+  }, [loadedId]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollY = useSharedValue(0);
