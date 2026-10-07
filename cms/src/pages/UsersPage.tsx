@@ -1,7 +1,8 @@
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { apiFetch, type StaffRole, type StaffUser } from "@/lib/api/client";
 import { useAuth } from "@/context/AuthContext";
+import { AuthorProfileEditor } from "@/features/users/components/AuthorProfileEditor";
 
 export default function UsersPage() {
   const { user: me } = useAuth();
@@ -14,6 +15,7 @@ export default function UsersPage() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<StaffRole>("writer");
+  const [editingProfile, setEditingProfile] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -148,19 +150,45 @@ export default function UsersPage() {
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3">Active</th>
                 <th className="px-4 py-3">Created</th>
+                <th className="px-4 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {users.map((u) => (
-                <tr key={u.id}>
-                  <td className="px-4 py-3 font-medium">{u.name}</td>
-                  <td className="px-4 py-3 text-slate-600">{u.email}</td>
-                  <td className="px-4 py-3 capitalize">{u.role}</td>
-                  <td className="px-4 py-3">{u.isActive ? "Yes" : "No"}</td>
-                  <td className="px-4 py-3 text-slate-500">
-                    {new Date(u.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
+                <Fragment key={u.id}>
+                  <tr>
+                    <td className="px-4 py-3 font-medium">{u.name}</td>
+                    <td className="px-4 py-3 text-slate-600">{u.email}</td>
+                    <td className="px-4 py-3 capitalize">{u.role}</td>
+                    <td className="px-4 py-3">{u.isActive ? "Yes" : "No"}</td>
+                    <td className="px-4 py-3 text-slate-500">
+                      {new Date(u.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditingProfile((cur) => (cur === u.id ? null : u.id))
+                        }
+                        className="text-sm font-semibold text-sky-600 hover:underline"
+                      >
+                        Public profile
+                      </button>
+                    </td>
+                  </tr>
+                  {editingProfile === u.id ? (
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <AuthorProfileEditor
+                          userId={u.id}
+                          onClose={() => setEditingProfile(null)}
+                        />
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
               ))}
             </tbody>
           </table>
