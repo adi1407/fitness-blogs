@@ -104,6 +104,31 @@ export const SOURCES = {
       "Ainsworth BE, et al. 2011 Compendium of Physical Activities: a second update of codes and MET values. Med Sci Sports Exerc, 2011.",
     href: "https://pubmed.ncbi.nlm.nih.gov/21681120/",
   },
+  schoenfeldLoad: {
+    label:
+      "Schoenfeld BJ, et al. Strength and hypertrophy adaptations between low- vs. high-load resistance training: a systematic review and meta-analysis. J Strength Cond Res, 2017.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/28834797/",
+  },
+  helmsRir: {
+    label:
+      "Helms ER, et al. Application of the repetitions in reserve-based rating of perceived exertion scale for resistance training. Strength Cond J, 2016.",
+    href: "https://doi.org/10.1519/SSC.0000000000000218",
+  },
+  saintMauriceSteps: {
+    label:
+      "Saint-Maurice PF, et al. Association of daily step count and step intensity with mortality among US adults. JAMA, 2020.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/32207799/",
+  },
+  paluchSteps: {
+    label:
+      "Paluch AE, et al. Daily steps and all-cause mortality: a meta-analysis of 15 international cohorts. Lancet Public Health, 2022.",
+    href: "https://pubmed.ncbi.nlm.nih.gov/35247352/",
+  },
+  iomWater: {
+    label:
+      "Institute of Medicine. Dietary Reference Intakes for Water, Potassium, Sodium, Chloride, and Sulfate. National Academies Press, 2005.",
+    href: "https://nap.nationalacademies.org/catalog/10925",
+  },
   tudorLocke: {
     label: "Tudor-Locke C, et al. How many steps/day are enough? For adults. Int J Behav Nutr Phys Act, 2011.",
     href: "https://pubmed.ncbi.nlm.nih.gov/21798015/",
