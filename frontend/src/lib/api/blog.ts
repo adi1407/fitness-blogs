@@ -201,6 +201,41 @@ const CALC_CTA = {
     label: "Macro calculator",
     blurb: "Split your calories into protein, carbs, and fat.",
   },
+  deficit: {
+    href: "/calorie-deficit-calculator",
+    label: "Calorie deficit calculator",
+    blurb: "Get the daily calories that reach your goal weight on a safe timeline.",
+  },
+  tdee: {
+    href: "/tdee-calculator",
+    label: "TDEE calculator",
+    blurb: "Find your maintenance calories — the starting point for any fat-loss plan.",
+  },
+  bmr: {
+    href: "/bmr-calculator",
+    label: "BMR calculator",
+    blurb: "See how many calories your body burns at complete rest.",
+  },
+  bodyFat: {
+    href: "/body-fat-calculator",
+    label: "Body fat calculator",
+    blurb: "Estimate body fat % with a tape measure and track real progress.",
+  },
+  oneRepMax: {
+    href: "/one-rep-max-calculator",
+    label: "One rep max calculator",
+    blurb: "Estimate your 1RM and get working weights for every rep range.",
+  },
+  water: {
+    href: "/water-intake-calculator",
+    label: "Water intake calculator",
+    blurb: "Get a daily water target for your weight, training and climate.",
+  },
+  steps: {
+    href: "/steps-to-calories-calculator",
+    label: "Steps to calories calculator",
+    blurb: "Turn your daily steps into distance and calories burned.",
+  },
   all: {
     href: "/tools",
     label: "Fitness calculators",
@@ -209,13 +244,44 @@ const CALC_CTA = {
 } satisfies Record<string, CalculatorCta>;
 
 const CALC_BY_SUBCATEGORY: Record<string, CalculatorCta> = {
-  protein: CALC_CTA.protein,
-  "sports-nutrition": CALC_CTA.protein,
-  "muscle-building-nutrition": CALC_CTA.protein,
+  // Muscle building
   "muscle-growth-hypertrophy": CALC_CTA.protein,
-  "training-programs": CALC_CTA.protein,
+  bulking: CALC_CTA.calorie,
+  "muscle-building-nutrition": CALC_CTA.protein,
+  "strength-performance": CALC_CTA.oneRepMax,
+  "training-programs": CALC_CTA.oneRepMax,
   "beginner-muscle-building": CALC_CTA.macro,
-  hydration: CALC_CTA.calorie,
+  "advanced-muscle-building": CALC_CTA.oneRepMax,
+  "recovery-muscle-growth": CALC_CTA.protein,
+  "muscle-building-mistakes": CALC_CTA.protein,
+  "muscle-building-science": CALC_CTA.protein,
+  // Weight loss
+  "fat-loss-basics": CALC_CTA.tdee,
+  "calorie-deficit": CALC_CTA.deficit,
+  "weight-loss-nutrition": CALC_CTA.calorie,
+  "diet-meal-planning": CALC_CTA.macro,
+  "cardio-weight-loss": CALC_CTA.steps,
+  "strength-training-weight-loss": CALC_CTA.bodyFat,
+  "walking-daily-activity": CALC_CTA.steps,
+  "intermittent-fasting": CALC_CTA.calorie,
+  "beginner-weight-loss": CALC_CTA.deficit,
+  "weight-loss-plateaus": CALC_CTA.tdee,
+  "sustainable-weight-loss": CALC_CTA.deficit,
+  "weight-loss-mistakes": CALC_CTA.tdee,
+  "weight-loss-myths": CALC_CTA.calorie,
+  "weight-maintenance": CALC_CTA.tdee,
+  // Nutrition
+  "nutrition-basics": CALC_CTA.macro,
+  "calories-energy": CALC_CTA.bmr,
+  protein: CALC_CTA.protein,
+  carbohydrates: CALC_CTA.macro,
+  "dietary-fats": CALC_CTA.macro,
+  "meal-planning": CALC_CTA.macro,
+  hydration: CALC_CTA.water,
+  "sports-nutrition": CALC_CTA.protein,
+  "pre-workout-nutrition": CALC_CTA.protein,
+  "post-workout-nutrition": CALC_CTA.protein,
+  "food-labels-portions": CALC_CTA.calorie,
 };
 
 const CALC_BY_CATEGORY: Record<string, CalculatorCta> = {
