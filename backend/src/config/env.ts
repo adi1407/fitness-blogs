@@ -57,6 +57,8 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().default(""),
   CLOUDINARY_API_SECRET: z.string().default(""),
   CLOUDINARY_URL: z.string().default(""),
+  /** Shared secret for the site's on-demand revalidation endpoint. Empty = disabled. */
+  REVALIDATE_SECRET: z.string().default(""),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -112,4 +114,5 @@ export const env = {
     .filter(Boolean),
   allowExpoGoAuth: parsed.data.ALLOW_EXPO_GO_AUTH,
   cloudinary: resolveCloudinary(parsed.data),
+  revalidateSecret: parsed.data.REVALIDATE_SECRET.trim(),
 };
