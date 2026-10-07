@@ -140,13 +140,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   TRUST_PATHS.forEach((path) => add(path, 0.3, "monthly"));
   MUSCLE_GROUPS.forEach((g) => add(`/exercises/${g}`, 0.7, "weekly"));
 
-  const [articles, exercises, recipes, programs, reviews, foods] = await Promise.all([
+  const [articles, exercises, recipes, programs, reviews, foods, authors] = await Promise.all([
     fetchApi<{ articles?: ArticleItem[] }>("/public/articles?limit=500&fields=summary"),
     fetchApi<{ exercises?: PathItem[] }>("/public/exercises"),
     fetchApi<{ recipes?: PathItem[] }>("/public/recipes"),
     fetchApi<{ pages?: PathItem[] }>("/public/knowledge/programs"),
     fetchApi<{ pages?: PathItem[] }>("/public/knowledge/reviews"),
     fetchApi<{ foods?: { slug: string; updatedAt?: string | null }[] }>("/public/foods"),
+    fetchApi<{ authors?: { slug: string }[] }>("/public/authors"),
   ]);
 
   const subcategories = new Set<string>();
@@ -173,6 +174,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   addItems(reviews?.pages, 0.7);
   for (const f of foods?.foods ?? []) {
     add(`/foods/${f.slug}`, 0.75, "weekly", safeDate(f.updatedAt));
+  }
+  if (authors?.authors?.length) {
+    add("/authors", 0.4, "monthly");
+    for (const a of authors.authors) add(`/authors/${a.slug}`, 0.4, "monthly");
   }
 
   return entries;

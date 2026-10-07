@@ -107,6 +107,10 @@ export function BlogArticleView({
 
   const authorName = article.authorName?.trim() || null;
   const reviewerName = article.reviewerName?.trim() || null;
+  const authorPath = article.authorSlug ? `/authors/${article.authorSlug}` : null;
+  const reviewerPath = article.reviewerSlug
+    ? `/authors/${article.reviewerSlug}`
+    : null;
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
@@ -166,7 +170,7 @@ export function BlogArticleView({
           author: {
             "@type": "Person",
             name: authorName,
-            url: `${siteUrl}/authors`,
+            ...(authorPath ? { url: `${siteUrl}${authorPath}` } : {}),
           },
         }
       : { author: ORG_REF }),
@@ -175,6 +179,18 @@ export function BlogArticleView({
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": absoluteUrl,
+      ...(reviewerName
+        ? {
+            reviewedBy: {
+              "@type": "Person",
+              name: reviewerName,
+              ...(reviewerPath ? { url: `${siteUrl}${reviewerPath}` } : {}),
+            },
+            ...(article.lastReviewedAt
+              ? { lastReviewed: article.lastReviewedAt }
+              : {}),
+          }
+        : {}),
     },
   };
 
@@ -245,6 +261,7 @@ export function BlogArticleView({
 
         {!preview && article.slug && catSlug && subSlug ? (
           <ArticleOpenBeacon
+            articleId={article.id}
             slug={article.slug}
             category={catSlug}
             subcategory={subSlug}
@@ -302,7 +319,7 @@ export function BlogArticleView({
                         <span className="font-medium text-foreground">
                           Written by
                         </span>{" "}
-                        <Link href="/authors" className="fk-link">
+                        <Link href={authorPath ?? "/authors"} className="fk-link">
                           {authorName}
                         </Link>
                       </p>
@@ -312,7 +329,7 @@ export function BlogArticleView({
                         <span className="font-medium text-foreground">
                           Reviewed by
                         </span>{" "}
-                        <Link href="/authors" className="fk-link">
+                        <Link href={reviewerPath ?? "/authors"} className="fk-link">
                           {reviewerName}
                         </Link>
                       </p>
