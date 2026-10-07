@@ -107,15 +107,23 @@ export async function fetchPublishedArticles(opts?: {
   category?: string;
   subcategory?: string;
   limit?: number;
+  /** Omit body/faq/sources (listing pages only need card fields). */
+  summary?: boolean;
+  /** Seconds to cache (ISR). Omit for an uncached, always-fresh fetch. */
+  revalidate?: number;
 }): Promise<PublicBlogArticle[]> {
   const params = new URLSearchParams();
   if (opts?.category) params.set("category", opts.category);
   if (opts?.subcategory) params.set("subcategory", opts.subcategory);
+  if (opts?.summary) params.set("fields", "summary");
   params.set("limit", String(opts?.limit ?? 48));
 
   try {
     const data = await apiFetch<{ articles: PublicBlogArticle[] }>(
       `/public/articles?${params.toString()}`,
+      opts?.revalidate != null
+        ? { next: { revalidate: opts.revalidate, tags: ["articles"] } }
+        : undefined,
     );
     return data.articles ?? [];
   } catch (err) {
