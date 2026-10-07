@@ -8,9 +8,13 @@ export function getApiBase(): string {
   return API_BASE;
 }
 
+export type ApiFetchInit = RequestInit & {
+  next?: { revalidate?: number | false; tags?: string[] };
+};
+
 export async function apiFetch<T>(
   path: string,
-  init?: RequestInit,
+  init?: ApiFetchInit,
 ): Promise<T> {
   const url = `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
 
@@ -20,8 +24,9 @@ export async function apiFetch<T>(
       "Content-Type": "application/json",
       ...init?.headers,
     },
-    // Always hit the live API in production so publishes show immediately.
-    cache: "no-store",
+    // Uncached by default so publishes show immediately; callers that opt into
+    // `next.revalidate` (static hubs) get ISR instead.
+    ...(init?.next ? {} : { cache: "no-store" as const }),
   });
 
   if (!response.ok) {

@@ -4,13 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const ITEMS = [
+/** `href` is the canonical hub; `match` also lights up the tab on `/blog/{category}/…`. */
+const ITEMS: ReadonlyArray<{ label: string; href: string; match?: string }> = [
   { label: "Latest", href: "/blog" },
-  { label: "Nutrition", href: "/blog/nutrition" },
-  { label: "Weight Loss", href: "/blog/weight-loss" },
-  { label: "Muscle Building", href: "/blog/muscle-building" },
+  { label: "Nutrition", href: "/nutrition", match: "/blog/nutrition" },
+  { label: "Weight Loss", href: "/weight-loss", match: "/blog/weight-loss" },
+  {
+    label: "Muscle Building",
+    href: "/muscle-building",
+    match: "/blog/muscle-building",
+  },
   { label: "Tools", href: "/tools" },
-] as const;
+];
+
+function isUnder(pathname: string, base: string): boolean {
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
 
 /** Topic strip — MNT-like underline active state (not heavy pills). */
 export function BlogPillNav() {
@@ -25,7 +34,8 @@ export function BlogPillNav() {
         const active =
           item.href === "/blog"
             ? pathname === "/blog"
-            : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            : isUnder(pathname, item.href) ||
+              (item.match != null && isUnder(pathname, item.match));
         return (
           <Link
             key={item.href}
