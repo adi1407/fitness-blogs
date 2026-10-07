@@ -216,6 +216,6 @@ export const waterIntakeContent: CalculatorContent = {
   ],
   related: {
     calculators: [CALCULATORS.calorie, CALCULATORS.deficit, CALCULATORS.steps, CALCULATORS.protein],
-    articles: [ARTICLES.indianWeightLossFoods, ARTICLES.walking, ARTICLES.caloriesToLoseWeight, ARTICLES.proteinTiming],
+    articles: [ARTICLES.waterPerDay, ARTICLES.indianWeightLossFoods, ARTICLES.walking, ARTICLES.caloriesToLoseWeight],
   },
 };

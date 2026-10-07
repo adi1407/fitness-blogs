@@ -231,6 +231,6 @@ export const oneRepMaxContent: CalculatorContent = {
   ],
   related: {
     calculators: [CALCULATORS.protein, CALCULATORS.bodyFat, CALCULATORS.calorie, CALCULATORS.macro],
-    articles: [ARTICLES.progressiveOverload, ARTICLES.buildMuscleTime, ARTICLES.proteinMuscle, ARTICLES.beginnerGymDiet],
+    articles: [ARTICLES.progressiveOverload, ARTICLES.buildMuscleTime, ARTICLES.proteinMuscle, ARTICLES.creatineSafe],
   },
 };
