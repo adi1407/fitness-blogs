@@ -404,6 +404,10 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS sources JSONB NOT NULL DEFAULT '[]'::jsonb;
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS robots_index BOOLEAN NOT NULL DEFAULT TRUE;
     ALTER TABLE articles ADD COLUMN IF NOT EXISTS last_reviewed_at TIMESTAMPTZ;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS slug TEXT;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
+    CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL;
   `);
 
   // Allow changes_requested status on existing DBs
@@ -507,6 +511,38 @@ async function ensureArticleNumbers(): Promise<void> {
   }
 }
 
+function slugifyName(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+/** Public author profile URLs (`/authors/{slug}`) need a stable slug per staff user. */
+export async function ensureUserSlugs(): Promise<void> {
+  const missing = await pool.query(
+    `SELECT id, name, email FROM users WHERE slug IS NULL ORDER BY created_at ASC`,
+  );
+  for (const row of missing.rows) {
+    const base =
+      slugifyName(String(row.name || "")) ||
+      slugifyName(String(row.email || "").split("@")[0]) ||
+      "author";
+    for (let n = 1; n < 100; n++) {
+      const candidate = n === 1 ? base : `${base}-${n}`;
+      const res = await pool.query(
+        `UPDATE users SET slug = $1
+         WHERE id = $2 AND NOT EXISTS (SELECT 1 FROM users WHERE slug = $1)`,
+        [candidate, row.id],
+      );
+      if (res.rowCount) break;
+    }
+  }
+}
+
 /** Remove legacy demo posts (slug `seed-*`) so they never reappear. */
 async function removeSeededArticles(): Promise<void> {
   const result = await pool.query(
@@ -557,6 +593,7 @@ export async function ensureCmsSchema(): Promise<void> {
       `[db] seeded ${user.email} / ${user.password} — change after first login`,
     );
   }
+  await ensureUserSlugs();
 
   await removeSeededArticles();
   await seedKnowledgeContent();
