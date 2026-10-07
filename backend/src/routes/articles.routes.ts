@@ -21,6 +21,7 @@ import {
 import { upsertRedirect } from "../services/urlRedirects";
 import { normalizeArticleLinks } from "../services/internalLinks";
 import { pingIndexNow } from "../services/indexNow";
+import { revalidateSite } from "../services/revalidateSite";
 import { blogArticlePath } from "../constants/blogTaxonomy";
 import { canEditArticle, canPublish } from "../utils/roles";
 import { env } from "../config/env";
@@ -31,6 +32,12 @@ import {
 } from "../utils/articleSlug";
 
 export const articlesRouter = Router();
+
+/** A live URL changed: tell search engines and drop the site's cached pages. */
+function announceChange(paths: Array<string | null | undefined>): void {
+  pingIndexNow(paths);
+  revalidateSite(paths);
+}
 
 /** Allows a few minutes of clock skew; there is no scheduler, so no future dates. */
 const MAX_FUTURE_PUBLISH_MS = 5 * 60 * 1000;
@@ -93,6 +100,8 @@ const articleBodySchema = z.object({
   lastReviewedAt: z
     .union([z.string().min(1), z.null()])
     .optional(),
+  /** Editors/admins only: the person who actually checked the content. */
+  reviewerId: z.string().uuid().nullable().optional(),
 });
 
 const ARTICLE_SELECT = `
@@ -103,7 +112,9 @@ const ARTICLE_SELECT = `
     s.label AS subcategory_label,
     u.name AS author_name,
     u.email AS author_email,
-    rev.name AS reviewer_name
+    u.slug AS author_slug,
+    rev.name AS reviewer_name,
+    rev.slug AS reviewer_slug
   FROM articles a
   LEFT JOIN categories c ON c.id = a.category_id
   LEFT JOIN subcategories s ON s.id = a.subcategory_id
@@ -189,11 +200,14 @@ export function mapArticle(row: Record<string, unknown>) {
         : null,
     authorEmail:
       typeof row.author_email === "string" ? row.author_email : null,
+    authorSlug: typeof row.author_slug === "string" ? row.author_slug : null,
     reviewerId: row.reviewer_id,
     reviewerName:
       typeof row.reviewer_name === "string" && row.reviewer_name
         ? row.reviewer_name
         : null,
+    reviewerSlug:
+      typeof row.reviewer_slug === "string" ? row.reviewer_slug : null,
     publishedBy: row.published_by,
     rejectReason: row.reject_reason,
     editorNote: row.reject_reason,
@@ -203,6 +217,20 @@ export function mapArticle(row: Record<string, unknown>) {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+/** Public API shape: drops staff-only fields (emails, workflow notes, user ids). */
+export function mapPublicArticle(row: Record<string, unknown>) {
+  const {
+    authorEmail: _authorEmail,
+    authorId: _authorId,
+    reviewerId: _reviewerId,
+    publishedBy: _publishedBy,
+    rejectReason: _rejectReason,
+    editorNote: _editorNote,
+    ...rest
+  } = mapArticle(row);
+  return rest;
 }
 
 export async function resolveRelatedArticles(
@@ -423,6 +451,22 @@ articlesRouter.get("/", async (req, res) => {
     limit,
     total,
     totalPages,
+  });
+});
+
+/** Staff who may be credited as "Reviewed by" (active editors and admins). */
+articlesRouter.get("/reviewer-options", async (_req, res) => {
+  const result = await pool.query(
+    `SELECT id, name, role FROM users
+     WHERE is_active = TRUE AND role IN ('editor', 'admin')
+     ORDER BY name ASC`,
+  );
+  res.json({
+    reviewers: result.rows.map((r) => ({
+      id: r.id,
+      name: r.name || "Unnamed",
+      role: r.role,
+    })),
   });
 });
 
@@ -783,10 +827,37 @@ articlesRouter.put("/:id", async (req, res) => {
     data.robotsIndex !== undefined
       ? data.robotsIndex
       : row.robots_index !== false;
-  const lastReviewedAt =
+  let reviewerId: string | null = row.reviewer_id ?? null;
+  if (data.reviewerId !== undefined && data.reviewerId !== reviewerId) {
+    if (!canPublish(req.user!.role)) {
+      res.status(403).json({ message: "Only editors/admins can set a reviewer" });
+      return;
+    }
+    if (data.reviewerId) {
+      const reviewer = await pool.query(
+        `SELECT id FROM users
+         WHERE id = $1 AND is_active = TRUE AND role IN ('editor', 'admin')`,
+        [data.reviewerId],
+      );
+      if (!reviewer.rowCount) {
+        res.status(400).json({ message: "Reviewer must be an active editor or admin" });
+        return;
+      }
+      if (data.reviewerId === row.author_id) {
+        res.status(400).json({ message: "The author can’t review their own article" });
+        return;
+      }
+    }
+    reviewerId = data.reviewerId;
+  }
+
+  let lastReviewedAt =
     data.lastReviewedAt !== undefined
       ? data.lastReviewedAt
       : row.last_reviewed_at;
+  if (reviewerId && reviewerId !== row.reviewer_id && data.lastReviewedAt === undefined) {
+    lastReviewedAt = new Date().toISOString();
+  }
 
   await pool.query(
     `UPDATE articles SET
@@ -798,7 +869,7 @@ articlesRouter.put("/:id", async (req, res) => {
       quick_answer = $15, tags = $16, topics = $17,
       related_article_numbers = $18, faq = $19::jsonb, sources = $20::jsonb,
       reading_time = $21, robots_index = $22, last_reviewed_at = $23,
-      updated_at = NOW()
+      reviewer_id = $25, updated_at = NOW()
      WHERE id = $24`,
     [
       title,
@@ -825,6 +896,7 @@ articlesRouter.put("/:id", async (req, res) => {
       robotsIndex,
       lastReviewedAt,
       row.id,
+      reviewerId,
     ],
   );
 
@@ -839,7 +911,7 @@ articlesRouter.put("/:id", async (req, res) => {
     });
   }
   if (row.status === "published") {
-    pingIndexNow([newPath, oldPath !== newPath ? oldPath : null]);
+    announceChange([newPath, oldPath !== newPath ? oldPath : null]);
   }
   res.json({ article });
 });
@@ -979,7 +1051,7 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
   await pool.query(
     `UPDATE articles SET
       status = 'published', published_at = COALESCE($3::timestamptz, NOW()),
-      published_by = $1, reviewer_id = $1, reject_reason = '',
+      published_by = $1, reject_reason = '',
       last_reviewed_at = COALESCE(last_reviewed_at, NOW()),
       updated_at = NOW()
      WHERE id = $2`,
@@ -1004,7 +1076,7 @@ articlesRouter.patch("/:id/publish", async (req, res) => {
       articleId: String(article.id),
     });
   }
-  pingIndexNow([article.path, "/blog"]);
+  announceChange([article.path, "/blog"]);
   res.json({ article, gates });
 });
 
@@ -1053,7 +1125,7 @@ articlesRouter.patch("/:id/published-at", async (req, res) => {
       to: parsed.date.toISOString(),
     },
   });
-  pingIndexNow([article.path]);
+  announceChange([article.path]);
   res.json({ article });
 });
 
@@ -1090,7 +1162,7 @@ articlesRouter.patch("/:id/unpublish", async (req, res) => {
     entityId: String(article.id),
     summary: `Unpublished “${article.title}”`,
   });
-  pingIndexNow([article.path, "/blog"]);
+  announceChange([article.path, "/blog"]);
   res.json({ article });
 });
 
@@ -1229,5 +1301,6 @@ articlesRouter.delete("/:id", async (req, res) => {
     entityId: row.id,
     summary: `Deleted “${row.title}”`,
   });
+  if (row.status === "published") revalidateSite(["/blog"]);
   res.json({ ok: true });
 });
