@@ -214,6 +214,6 @@ export const calorieDeficitContent: CalculatorContent = {
   ],
   related: {
     calculators: [CALCULATORS.tdee, CALCULATORS.protein, CALCULATORS.steps, CALCULATORS.bodyFat],
-    articles: [ARTICLES.calorieDeficit, ARTICLES.lose10kg, ARTICLES.caloriesToLoseWeight, ARTICLES.bellyFat],
+    articles: [ARTICLES.calorieDeficit, ARTICLES.lose10kg, ARTICLES.notLosingWeight, ARTICLES.intermittentFasting],
   },
 };

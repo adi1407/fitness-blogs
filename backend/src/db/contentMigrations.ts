@@ -1,4 +1,6 @@
 import { pool } from "./pool";
+import { SEO_META } from "./intentArticles/seoMeta";
+import { INTENT_ARTICLES } from "./seedIntentArticles";
 
 /**
  * One-off editorial changes to live article bodies. Each migration runs once
@@ -30,6 +32,10 @@ const PATHS: Record<string, string> = {
   "how-long-does-it-take-to-build-muscle": "muscle-building/muscle-growth-hypertrophy",
   "beginner-gym-diet-plan": "muscle-building/beginner-muscle-building",
   "what-is-progressive-overload": "muscle-building/training-programs",
+  "is-whey-protein-safe": "nutrition/protein",
+  "is-ghee-good-for-you": "nutrition/dietary-fats",
+  "is-creatine-safe": "muscle-building/muscle-building-nutrition",
+  "does-intermittent-fasting-work": "weight-loss/intermittent-fasting",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -113,8 +119,27 @@ const READ_NEXT: Record<string, string> = {
   ),
 };
 
-async function insertReadNextLinks(): Promise<void> {
-  const slugs = Object.keys(READ_NEXT);
+/** Articles published after the first read-next pass. */
+const READ_NEXT_NEWEST: Record<string, string> = {
+  "is-whey-protein-safe": readNext(
+    `Work out how much protein you actually need with the ${calc("protein-calculator", "protein calculator")} and ${a("how-much-protein-do-you-need-per-day", "how much protein per day")}. Prefer food first? Start with the ${a("best-high-protein-indian-foods", "best high-protein Indian foods")}, and if you train, read ${a("is-creatine-safe", "is creatine safe?")}`,
+  ),
+  "is-ghee-good-for-you": readNext(
+    `Fit ghee into a daily target with the ${calc("calorie-calculator", "calorie calculator")}. Trying to lose weight? See the ${a("best-indian-foods-for-weight-loss", "best Indian foods for weight loss")} and ${a("is-paneer-good-for-weight-loss", "whether paneer is good for weight loss")}.`,
+  ),
+  "is-creatine-safe": readNext(
+    `Creatine works best with training that keeps progressing — read ${a("what-is-progressive-overload", "what progressive overload is")} and track your lifts with the ${calc("one-rep-max-calculator", "one rep max calculator")}. Then cover the basics: ${a("how-much-protein-to-build-muscle", "how much protein builds muscle")} and ${a("is-whey-protein-safe", "is whey protein safe?")}`,
+  ),
+  "why-am-i-not-losing-weight": readNext(
+    `Recheck your numbers with the ${calc("tdee-calculator", "TDEE calculator")} and the ${calc("calorie-deficit-calculator", "calorie deficit calculator")}, then read ${a("how-to-calculate-your-calorie-deficit", "how to calculate your calorie deficit")}. Daily steps help more than most people expect: ${a("does-walking-help-you-lose-weight", "does walking help you lose weight?")}`,
+  ),
+  "does-intermittent-fasting-work": readNext(
+    `Fasting only works if it creates a deficit — get your target from the ${calc("calorie-deficit-calculator", "calorie deficit calculator")} and read ${a("how-many-calories-should-i-eat-to-lose-weight", "how many calories to eat to lose weight")}. Plan your eating window with the ${a("best-breakfast-for-weight-loss", "best breakfasts")} and ${a("best-dinner-for-weight-loss", "best dinners for weight loss")}.`,
+  ),
+};
+
+async function insertReadNextLinks(blocks: Record<string, string> = READ_NEXT): Promise<void> {
+  const slugs = Object.keys(blocks);
   const res = await pool.query<{ id: string; slug: string; body: string }>(
     `SELECT id, slug, body FROM articles WHERE slug = ANY($1::text[])`,
     [slugs],
@@ -122,7 +147,7 @@ async function insertReadNextLinks(): Promise<void> {
   let updated = 0;
   for (const row of res.rows) {
     if (!row.body || row.body.includes(READ_NEXT_MARKER)) continue;
-    const block = READ_NEXT[row.slug];
+    const block = blocks[row.slug];
     const anchor = row.body.indexOf("<h2>Key takeaways</h2>");
     const body =
       anchor >= 0
@@ -190,10 +215,38 @@ async function insertFoodDataLinks(): Promise<void> {
   console.log(`[db] food data links added to ${updated} articles`);
 }
 
+/**
+ * Search-intent meta titles/descriptions (docs/SEO_KEYWORD_MAP.md). Each field is
+ * only replaced while it still holds the original seeded value, so CMS edits win.
+ */
+async function applySeoMeta(): Promise<void> {
+  let titles = 0;
+  let descriptions = 0;
+  for (const def of INTENT_ARTICLES) {
+    const meta = SEO_META[def.slug];
+    if (!meta) continue;
+    const t = await pool.query(
+      `UPDATE articles SET meta_title = $1
+        WHERE slug = $2 AND (COALESCE(meta_title, '') = '' OR meta_title = $3)`,
+      [meta.metaTitle, def.slug, def.metaTitle],
+    );
+    const d = await pool.query(
+      `UPDATE articles SET meta_description = $1
+        WHERE slug = $2 AND (COALESCE(meta_description, '') = '' OR meta_description = $3)`,
+      [meta.metaDescription, def.slug, def.metaDescription],
+    );
+    titles += t.rowCount ?? 0;
+    descriptions += d.rowCount ?? 0;
+  }
+  console.log(`[db] SEO meta applied: ${titles} titles, ${descriptions} descriptions`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
-  { id: "2026-09-29-read-next-links", run: insertReadNextLinks },
+  { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
   { id: "2026-10-06-food-data-links", run: insertFoodDataLinks },
+  { id: "2026-10-07-seo-meta", run: applySeoMeta },
+  { id: "2026-10-07-read-next-newest", run: () => insertReadNextLinks(READ_NEXT_NEWEST) },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

@@ -112,23 +112,19 @@ export default async function BlogArticleByIdPage({ params }: PageProps) {
   if (!payload?.article?.slug) notFound();
   const { article, related } = payload;
 
-  if (
-    article.articleNumber == null ||
-    String(article.articleNumber) !== articleId
-  ) {
-    notFound();
-  }
+  if (article.articleNumber == null) notFound();
 
   if (
-    article.categorySlug &&
-    article.subcategorySlug &&
-    (article.categorySlug !== categorySlug ||
-      article.subcategorySlug !== subcategorySlug)
+    String(article.articleNumber) !== articleId ||
+    (article.categorySlug &&
+      article.subcategorySlug &&
+      (article.categorySlug !== categorySlug ||
+        article.subcategorySlug !== subcategorySlug))
   ) {
     permanentRedirect(
       canonicalPath(
-        article.categorySlug,
-        article.subcategorySlug,
+        article.categorySlug || categorySlug,
+        article.subcategorySlug || subcategorySlug,
         article.slug!,
         article.articleNumber,
       ),

@@ -11,8 +11,9 @@ import { batch8 } from "./intentArticles/batch8";
 import { batch9 } from "./intentArticles/batch9";
 import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
+import { SEO_META } from "./intentArticles/seoMeta";
 
-const ARTICLES: IntentArticleDef[] = [
+export const INTENT_ARTICLES: IntentArticleDef[] = [
   ...batch1,
   ...batch2,
   ...batch3,
@@ -23,6 +24,7 @@ const ARTICLES: IntentArticleDef[] = [
   ...batch8,
   ...batch9,
 ];
+const ARTICLES = INTENT_ARTICLES;
 
 const AUTHOR_EMAIL = "aditya@fitknowledge.local";
 
@@ -128,8 +130,8 @@ async function insertIfMissing(
       def.body,
       categoryId,
       subcategoryId,
-      def.metaTitle,
-      def.metaDescription,
+      SEO_META[def.slug]?.metaTitle ?? def.metaTitle,
+      SEO_META[def.slug]?.metaDescription ?? def.metaDescription,
       def.primaryKeyword,
       def.quickAnswer,
       def.tags,

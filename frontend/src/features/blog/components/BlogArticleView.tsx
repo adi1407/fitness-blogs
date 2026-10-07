@@ -20,7 +20,7 @@ import {
   type PublicBlogArticle,
 } from "@/lib/api/blog";
 import { articleHref } from "@/features/home/utils/articleMedia";
-import { ORG_REF } from "@/lib/seo";
+import { ORG_REF, pageTitle } from "@/lib/seo";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 import { KeepAtmosphere, KeepRelatedStack } from "@/features/keep";
 
@@ -151,12 +151,15 @@ export function BlogArticleView({
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: article.title,
+    headline: article.metaTitle ? pageTitle(article.metaTitle) : article.title,
+    name: article.title,
     description: article.metaDescription || article.excerpt,
     datePublished: article.publishedAt ?? undefined,
     dateModified: article.updatedAt ?? article.publishedAt ?? undefined,
     articleSection: catLabel,
-    keywords: [...article.tags, ...article.topics].join(", ") || undefined,
+    keywords:
+      [...new Set([article.primaryKeyword, ...article.tags, ...article.topics].filter(Boolean))].join(", ") ||
+      undefined,
     image: article.featuredImage || article.ogImage || undefined,
     ...(authorName
       ? {

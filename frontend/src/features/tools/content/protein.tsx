@@ -244,7 +244,7 @@ export const proteinContent: CalculatorContent = {
       ARTICLES.proteinPerDay,
       ARTICLES.proteinMuscle,
       ARTICLES.indianProteinFoods,
-      ARTICLES.beginnerGymDiet,
+      ARTICLES.wheySafe,
     ],
   },
 };
