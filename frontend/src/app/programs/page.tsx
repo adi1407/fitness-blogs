@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import {
   KnowledgeBreadcrumbs,
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: "/programs" },
-    openGraph: { title: `${title} | fitlives`, description, url: "/programs" },
+    openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: "/programs" },
   };
 }
 

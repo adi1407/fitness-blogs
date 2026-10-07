@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
     "Latest fitlives articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
   alternates: { canonical: "/blog" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Latest | fitlives",
     description:
       "Recent fitness articles across three pillars: muscle building, weight loss, and nutrition.",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "Learn how much protein you need per day for general health, muscle growth, and fat loss. Includes calculator links and Indian high-protein food pathways.",
   alternates: { canonical: "/nutrition/protein" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Protein Guide | fitlives",
     description:
       "Protein requirements by goal, with calculators and Indian food next steps.",

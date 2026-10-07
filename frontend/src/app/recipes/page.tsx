@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import {
   KnowledgeBreadcrumbs,
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     "Calorie-aware, high-protein recipes with macros — paneer, dal, eggs, chicken, and more.",
   alternates: { canonical: "/recipes" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Recipes | fitlives",
     description: "Practical high-protein meals with honest macros.",
     url: "/recipes",

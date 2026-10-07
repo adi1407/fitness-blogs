@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import { BRAND_NAME } from "@/lib/brand";
 import { ogImageUrl } from "@/lib/og/url";
 
@@ -19,6 +20,7 @@ export function calculatorMetadata(slug: string, meta: CalculatorMeta): Metadata
     description: meta.description,
     alternates: { canonical: path },
     openGraph: {
+      ...OG_DEFAULTS,
       title: shareTitle,
       description: meta.description,
       url: path,

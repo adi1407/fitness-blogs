@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FoodIndex } from "@/features/foods/components/FoodIndex";
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/foods/indian" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Indian Food Calories & Protein Chart | fitlives",
     description,
     url: "/foods/indian",

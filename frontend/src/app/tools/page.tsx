@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   alternates: { canonical: "/tools" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: `${TITLE} | ${BRAND_NAME}`,
     description: DESCRIPTION,
     url: "/tools",

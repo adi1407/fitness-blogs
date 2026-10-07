@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -44,6 +45,7 @@ export async function generateMetadata({
     },
     robots: articles.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: {
+      ...OG_DEFAULTS,
       title: `${subcategory.label} | fitlives`,
       description,
       url: `/blog/${category.slug}/${subcategory.slug}`,

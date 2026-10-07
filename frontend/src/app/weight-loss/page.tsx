@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "Learn how weight loss works: calorie deficit, protein, training, habits, and plateaus. Use TDEE and calorie calculators, then build a realistic plan.",
   alternates: { canonical: "/weight-loss" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Weight Loss Guide | fitlives",
     description:
       "Sustainable fat-loss pillars with calculators and nutrition next steps.",
