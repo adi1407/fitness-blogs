@@ -56,8 +56,8 @@
 | how-much-protein-do-you-need-per-day | how much protein per day | How Much Protein Per Day? Simple Guide by Goal |
 | 100g-chicken-breast-calories-and-protein | 100g chicken breast protein | 100g Chicken Breast: Protein & Calories |
 | 100g-paneer-calories-and-protein | 100g paneer protein | 100g Paneer: Calories, Protein & Fat |
-| 2-eggs-calories-and-protein | 2 eggs protein | 2 Eggs Calories & Protein (Boiled, Whole) |
-| best-high-protein-indian-foods | high protein indian foods | High Protein Indian Foods: Veg & Non-Veg List |
+| 2-eggs-calories-and-protein | 2 eggs protein | 2 Eggs: Calories & Protein (Whole vs Whites) |
+| best-high-protein-indian-foods | high protein indian foods | Best High Protein Indian Foods (With Servings) |
 | is-whey-protein-safe | is whey protein safe | Is Whey Protein Safe? Side Effects & Kidney Myths |
 | protein-before-or-after-workout | protein before or after workout | Protein Before or After Workout? What Matters |
 | how-much-water-should-you-drink | how much water should you drink | How Much Water Should You Drink a Day? |
@@ -65,7 +65,7 @@
 | how-much-protein-to-build-muscle | protein to build muscle | How Much Protein to Build Muscle? (g/kg Guide) |
 | is-creatine-safe | is creatine safe | Is Creatine Safe? Side Effects, Kidneys & Dosage |
 | how-long-does-it-take-to-build-muscle | how long to build muscle | How Long Does It Take to Build Muscle? |
-| beginner-gym-diet-plan | beginner gym diet plan | Beginner Gym Diet Plan (Indian Veg & Non-Veg) |
+| beginner-gym-diet-plan | beginner gym diet plan | Beginner Gym Diet Plan (Indian-Friendly) |
 | what-is-progressive-overload | what is progressive overload | What Is Progressive Overload? Beginner Guide |
 | how-many-calories-should-i-eat-to-lose-weight | calories to lose weight | How Many Calories to Eat to Lose Weight? |
 | how-to-calculate-your-calorie-deficit | how to calculate calorie deficit | How to Calculate Your Calorie Deficit |
@@ -79,6 +79,8 @@
 | best-dinner-for-weight-loss | best dinner for weight loss | Best Dinner for Weight Loss: Indian Meal Ideas |
 | does-walking-help-you-lose-weight | does walking help you lose weight | Does Walking Help You Lose Weight? |
 | why-am-i-not-losing-weight | why am i not losing weight | Why Am I Not Losing Weight? Reasons & Fixes |
+
+The live values (with 140–160 character meta descriptions) are in `backend/src/db/intentArticles/seoMeta.ts`, applied by the `2026-10-07-seo-meta` content migration.
 | does-intermittent-fasting-work | does intermittent fasting work | Does Intermittent Fasting Work? 16:8 Evidence |
 
 ### Known overlaps and how they're resolved
