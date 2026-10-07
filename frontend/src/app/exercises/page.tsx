@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { ExercisesHaloSection } from "@/features/exercises/components/ExercisesHaloSection";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
     "Browse exercises by muscle group with form-focused guidance. Connect training to muscle building, programs, and recovery.",
   alternates: { canonical: "/exercises" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Exercise Library | fitlives",
     description: "Muscle-group hubs for technique and programming pathways.",
     url: "/exercises",

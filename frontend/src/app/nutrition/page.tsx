@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { NutritionFocusCards } from "@/features/nutrition/components/NutritionFocusCards";
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
     "Learn nutrition for fat loss and muscle gain: protein, calories, carbs, fats, hydration, meal timing, and Indian diet guidance with calculators.",
   alternates: { canonical: "/nutrition" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Nutrition Guides | fitlives",
     description:
       "Evidence-informed nutrition pillars with calculators and food database links.",

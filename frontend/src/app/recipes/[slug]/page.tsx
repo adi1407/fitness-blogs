@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -22,13 +23,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await fetchRecipe(slug);
   if (!data) return { title: "Recipe" };
   const { recipe } = data;
-  const title = recipe.metaTitle || recipe.title;
+  const title = pageTitle(recipe.metaTitle || recipe.title);
   const description = recipe.metaDescription || recipe.excerpt;
   return {
     title,
     description,
+    robots: recipe.robotsIndex === false ? { index: false, follow: true } : undefined,
     alternates: { canonical: `/recipes/${slug}` },
     openGraph: {
+      ...OG_DEFAULTS,
       title: `${title} | fitlives`,
       description,
       url: `/recipes/${slug}`,

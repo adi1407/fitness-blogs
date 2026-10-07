@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { fetchFoodsSafe } from "@/features/foods/api/foods";
 import { forGrams, formatG, proteinPer100Kcal, shortName } from "@/features/foods/lib/nutrition";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
     "Look up calories, protein, carbs and fat for Indian foods per serving and per 100 g, with values from IFCT 2017. Find high-protein and low-calorie foods fast.",
   alternates: { canonical: "/foods" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Food Calories & Macros Database | fitlives",
     description: "Calories and macros for Indian foods per katori, roti and 100 g.",
     url: "/foods",

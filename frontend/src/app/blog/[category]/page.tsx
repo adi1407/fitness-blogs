@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (/^\d{9}$/.test(category)) {
     return { title: "Article", robots: { index: false } };
   }
-  if (!CATEGORIES.has(category)) return { title: "Blog" };
+  if (!CATEGORIES.has(category)) return { title: "Blog", robots: { index: false } };
   return {
     title: `${category.replace(/-/g, " ")} articles`,
-    robots: { index: true },
+    alternates: { canonical: `/${category}` },
   };
 }
 

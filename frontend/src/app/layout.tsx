@@ -12,6 +12,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
 import { ADSENSE_CLIENT } from "@/lib/ads/adsense";
 import { SOCIAL_SAME_AS } from "@/lib/social";
+import { ORG_ID, ORG_LOGO_URL, SITE_URL, WEBSITE_ID } from "@/lib/seo";
 import "./globals.css";
 
 const robotoSlab = Roboto_Slab({
@@ -21,7 +22,7 @@ const robotoSlab = Roboto_Slab({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_IN",
     url: siteUrl,
     siteName: BRAND_NAME,
     title: `${BRAND_NAME} — Fitness, Nutrition & Training Guides`,
@@ -99,8 +100,11 @@ export const viewport: Viewport = {
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": WEBSITE_ID,
   name: BRAND_NAME,
   url: siteUrl,
+  inLanguage: "en-IN",
+  publisher: { "@id": ORG_ID },
   potentialAction: {
     "@type": "SearchAction",
     target: `${siteUrl}/search?q={search_term_string}`,
@@ -111,9 +115,10 @@ const websiteJsonLd = {
 const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": ORG_ID,
   name: BRAND_NAME,
   url: siteUrl,
-  logo: `${siteUrl}/brand/logofitness.png`,
+  logo: { "@type": "ImageObject", url: ORG_LOGO_URL },
   sameAs: SOCIAL_SAME_AS,
 };
 
@@ -124,7 +129,7 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`${robotoSlab.variable} h-full antialiased font-sans`}
     >
       <head>

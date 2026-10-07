@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     "Learn how to build muscle: progressive overload, protein targets, recovery, and programming. Explore exercise libraries and protein calculators.",
   alternates: { canonical: "/muscle-building" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Muscle Building Guide | fitlives",
     description:
       "Hypertrophy fundamentals with tools, exercises, and nutrition links.",

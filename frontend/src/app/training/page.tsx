@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { TrainingScrollMorph } from "@/features/training/components/TrainingScrollMorph";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
     "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.",
   alternates: { canonical: "/training" },
   openGraph: {
+    ...OG_DEFAULTS,
     title: "Training Guides | fitlives",
     description: "Programming principles that connect to exercises and goals.",
     url: "/training",

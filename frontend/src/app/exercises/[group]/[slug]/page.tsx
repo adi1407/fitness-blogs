@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -35,13 +36,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await fetchExercise(group, slug);
   if (!data) return { title: "Exercise" };
   const { exercise } = data;
-  const title = exercise.metaTitle || exercise.title;
+  const title = pageTitle(exercise.metaTitle || exercise.title);
   const description = exercise.metaDescription || exercise.excerpt;
   return {
     title,
     description,
+    robots: exercise.robotsIndex === false ? { index: false, follow: true } : undefined,
     alternates: { canonical: `/exercises/${group}/${slug}` },
     openGraph: {
+      ...OG_DEFAULTS,
       title: `${title} | fitlives`,
       description,
       url: `/exercises/${group}/${slug}`,

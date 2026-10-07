@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/exercises/${group}` },
-    openGraph: { title: `${title} | fitlives`, description, url: `/exercises/${group}` },
+    openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: `/exercises/${group}` },
   };
 }
 

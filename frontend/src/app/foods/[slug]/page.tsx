@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
@@ -74,6 +75,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     description,
     alternates: { canonical: `/foods/${food.slug}` },
     openGraph: {
+      ...OG_DEFAULTS,
       title: `${title} | ${BRAND_NAME}`,
       description,
       url: `/foods/${food.slug}`,
