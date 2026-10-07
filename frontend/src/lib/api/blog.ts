@@ -42,12 +42,25 @@ export type PublicBlogArticle = {
   featuredImageCaption?: string;
   ogImage?: string;
   authorName?: string | null;
+  authorSlug?: string | null;
   reviewerName?: string | null;
+  reviewerSlug?: string | null;
   /** Present on preview payloads only. */
   status?: string;
   robotsIndex?: boolean;
   lastReviewedAt?: string | null;
 };
+
+/**
+ * Published content is ISR-cached under the `articles` tag; the API calls
+ * `/api/revalidate` on publish/edit so changes don't wait for the window.
+ */
+export const ARTICLES_REVALIDATE_SECONDS = 300;
+export const ARTICLES_TAG = "articles";
+
+export function articlesCache(seconds = ARTICLES_REVALIDATE_SECONDS) {
+  return { next: { revalidate: seconds, tags: [ARTICLES_TAG] } };
+}
 
 export type PublicTaxonomyCategory = {
   id: string;
@@ -95,7 +108,10 @@ export function toBlogCategoryDefs(
 
 export async function fetchPublicTaxonomy(): Promise<PublicTaxonomy> {
   try {
-    const data = await apiFetch<PublicTaxonomy>("/public/taxonomy");
+    const data = await apiFetch<PublicTaxonomy>(
+      "/public/taxonomy",
+      articlesCache(3600),
+    );
     if (!data.categories?.length) return staticTaxonomyFallback();
     return data;
   } catch {
@@ -109,7 +125,7 @@ export async function fetchPublishedArticles(opts?: {
   limit?: number;
   /** Omit body/faq/sources (listing pages only need card fields). */
   summary?: boolean;
-  /** Seconds to cache (ISR). Omit for an uncached, always-fresh fetch. */
+  /** Seconds to cache (ISR). Defaults to ARTICLES_REVALIDATE_SECONDS. */
   revalidate?: number;
 }): Promise<PublicBlogArticle[]> {
   const params = new URLSearchParams();
@@ -121,9 +137,7 @@ export async function fetchPublishedArticles(opts?: {
   try {
     const data = await apiFetch<{ articles: PublicBlogArticle[] }>(
       `/public/articles?${params.toString()}`,
-      opts?.revalidate != null
-        ? { next: { revalidate: opts.revalidate, tags: ["articles"] } }
-        : undefined,
+      articlesCache(opts?.revalidate),
     );
     return data.articles ?? [];
   } catch (err) {
@@ -139,7 +153,7 @@ export async function fetchPublishedArticleBySlug(
     const data = await apiFetch<{
       article: PublicBlogArticle;
       related?: PublicBlogArticle[];
-    }>(`/public/articles/${encodeURIComponent(slug)}`);
+    }>(`/public/articles/${encodeURIComponent(slug)}`, articlesCache());
     if (!data.article) return null;
     return {
       article: {
@@ -185,6 +199,7 @@ export async function fetchPublishedArticleByNumber(
   try {
     const data = await apiFetch<{ article: PublicBlogArticle }>(
       `/public/articles/by-number/${articleNumber}`,
+      articlesCache(),
     );
     return data.article ?? null;
   } catch {

@@ -10,7 +10,7 @@ import {
   isBlogCategorySlug,
 } from "@/lib/blogTaxonomy";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 type PageProps = {
   params: Promise<{

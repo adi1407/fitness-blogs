@@ -4,7 +4,7 @@ import { HomeMagazine } from "@/features/home/components/HomeMagazine";
 import { fetchPublishedArticles } from "@/lib/api/blog";
 import { BRAND_NAME, BRAND_SLOGAN } from "@/lib/brand";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 const HOME_TITLE = `${BRAND_NAME} — ${BRAND_SLOGAN} | Fitness Guides`;
 
