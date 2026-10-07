@@ -33,6 +33,7 @@ export type PublicBlogArticle = {
   sources: ArticleSourceItem[];
   metaTitle: string;
   metaDescription: string;
+  primaryKeyword?: string | null;
   publishedAt: string | null;
   updatedAt?: string;
   readingTime: number;
