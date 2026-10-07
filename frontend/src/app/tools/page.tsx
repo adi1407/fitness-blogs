@@ -5,13 +5,42 @@ import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CALCULATORS, type LinkItem } from "@/features/tools/content/links";
 import { HomeGhostFoldBand } from "@/features/home/components/HomeGhostFoldBand";
+import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { BRAND_NAME } from "@/lib/brand";
 import { ogImageUrl } from "@/lib/og/url";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
-const TITLE = "Free Fitness Calculators: Calories, Protein, Body Fat & More";
+const TITLE = "Free Fitness Calculators (Calories, Protein, BMI)";
 const DESCRIPTION =
-  "11 free calculators for calories, calorie deficit, TDEE, macros, protein, BMI, body fat, one-rep max, water and steps — with Indian context and clear next steps.";
+  "11 free fitness calculators: calories, deficit, TDEE, BMR, macros, protein, BMI, body fat, 1RM, water and steps — with Indian food context. No sign-up needed.";
+
+const FAQ = [
+  {
+    question: "Which calculator should I use to lose weight?",
+    answer:
+      "Start with the calorie calculator or TDEE calculator to find your maintenance calories, then use the calorie deficit calculator to set a daily target for your goal weight and timeline. Add the protein calculator so you keep muscle while you lose fat.",
+  },
+  {
+    question: "Are these fitness calculators free?",
+    answer:
+      "Yes. Every calculator is free and shows the full result without signing in. Signing in is optional and only saves your results so you can track them over time.",
+  },
+  {
+    question: "How accurate are calorie and TDEE calculators?",
+    answer:
+      "They use the Mifflin–St Jeor equation, which is usually within about 10% of measured resting metabolism for most adults. Treat the number as a starting point and adjust after 2–3 weeks based on how your weight actually changes.",
+  },
+  {
+    question: "Do the calculators work for Indian diets?",
+    answer:
+      "Yes. The maths is the same for everyone, and each calculator explains its result with Indian foods, Indian/Asian BMI cut-offs where relevant, and example meal plans built around dal, roti, rice, paneer and eggs.",
+  },
+  {
+    question: "What is the difference between BMR and TDEE?",
+    answer:
+      "BMR is the energy your body burns at complete rest. TDEE adds everything else — daily movement, exercise and digesting food — so it is the number to base your eating on. Use the BMR calculator or TDEE calculator to see both.",
+  },
+];
 const OG_IMAGE = ogImageUrl({ title: "Free fitness calculators", eyebrow: "Calories · Protein · Body fat" });
 
 export const metadata: Metadata = {
@@ -94,11 +123,22 @@ const breadcrumbLd = {
   ],
 };
 
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
+};
+
 export default function ToolsPage() {
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd data={itemListLd} />
       <JsonLd data={breadcrumbLd} />
+      <JsonLd data={faqLd} />
       <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
         <ol className="flex flex-wrap gap-2">
           <li>
@@ -216,6 +256,12 @@ export default function ToolsPage() {
           professional if you have a medical condition.
         </p>
       </section>
+
+      <FaqAccordion
+        className="mt-16"
+        items={FAQ}
+        subtitle="Quick answers about our calculators. Educational estimates only — not medical advice."
+      />
 
       <div className="mt-16 -mx-4 sm:-mx-6 lg:-mx-8">
         <HomeGhostFoldBand />

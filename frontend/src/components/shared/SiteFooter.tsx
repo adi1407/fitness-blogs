@@ -16,13 +16,17 @@ const explore = [
 
 const tools = [
   { href: "/tools", label: "All Calculators" },
-  { href: "/tdee-calculator", label: "TDEE Calculator" },
-  { href: "/protein-calculator", label: "Protein Calculator" },
   { href: "/calorie-calculator", label: "Calorie Calculator" },
+  { href: "/calorie-deficit-calculator", label: "Calorie Deficit Calculator" },
+  { href: "/tdee-calculator", label: "TDEE Calculator" },
+  { href: "/bmr-calculator", label: "BMR Calculator" },
+  { href: "/protein-calculator", label: "Protein Calculator" },
   { href: "/macro-calculator", label: "Macro Calculator" },
   { href: "/bmi-calculator", label: "BMI Calculator" },
-  { href: "/calorie-deficit-calculator", label: "Calorie Deficit Calculator" },
   { href: "/body-fat-calculator", label: "Body Fat Calculator" },
+  { href: "/one-rep-max-calculator", label: "One Rep Max Calculator" },
+  { href: "/water-intake-calculator", label: "Water Intake Calculator" },
+  { href: "/steps-to-calories-calculator", label: "Steps to Calories Calculator" },
 ];
 
 const trust = [

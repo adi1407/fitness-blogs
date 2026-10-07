@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const bmiMeta = {
-  title: "BMI Calculator: Check Your Body Mass Index",
+  title: "BMI Calculator with Indian & Asian Ranges",
   description:
-    "Calculate your BMI from height and weight and see where you fall on both international and Indian/Asian cut-offs — plus what BMI can and can't tell you.",
+    "Free BMI calculator with Indian and Asian cut-offs: check your body mass index from height and weight, see your category and what BMI can and can't tell you.",
   h1: "BMI Calculator",
   intro:
-    "Check your body mass index against both the international ranges and the lower cut-offs recommended for Indians and other Asian populations.",
+    "This BMI calculator checks your body mass index against both the international ranges and the lower cut-offs recommended for Indians and other Asian populations.",
 };
 
 export const bmiContent: CalculatorContent = {
@@ -208,7 +208,7 @@ export const bmiContent: CalculatorContent = {
     },
   ],
   related: {
-    calculators: [CALCULATORS.calorie, CALCULATORS.tdee, CALCULATORS.protein, CALCULATORS.bmr],
+    calculators: [CALCULATORS.bodyFat, CALCULATORS.calorie, CALCULATORS.tdee, CALCULATORS.protein],
     articles: [ARTICLES.bellyFat, ARTICLES.caloriesToLoseWeight, ARTICLES.walking, ARTICLES.indianWeightLossFoods],
   },
 };

@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const oneRepMaxMeta = {
-  title: "One Rep Max Calculator (1RM): Estimate Your Max Lift",
+  title: "One Rep Max Calculator (1RM) & Load Chart",
   description:
     "Estimate your one-rep max for bench press, squat or deadlift from any set of 1–12 reps, and get working weights for strength and muscle-building rep ranges.",
   h1: "One Rep Max Calculator",
   intro:
-    "Enter the weight and reps from a hard set. We'll estimate your one-rep max and give you a load chart for every common rep range.",
+    "Enter the weight and reps from a hard set into this one rep max calculator. We'll estimate your one-rep max and give you a load chart for every common rep range.",
 };
 
 export const oneRepMaxContent: CalculatorContent = {
@@ -100,6 +100,58 @@ export const oneRepMaxContent: CalculatorContent = {
       ),
     },
     {
+      id: "safe-testing",
+      heading: "How to test your 1RM safely",
+      body: (
+        <>
+          <p>
+            If you do want to test a true max — usually only after several
+            months of consistent training — build up gradually so the heavy
+            single feels familiar rather than shocking:
+          </p>
+          <ol>
+            <li>Warm up with 5–10 minutes of light cardio and an empty bar.</li>
+            <li>Do sets of 5 reps at about 40–50% of your estimated max, then 3 reps at 60–70%.</li>
+            <li>Do singles at about 80%, 90% and 95%, resting 3–5 minutes between them.</li>
+            <li>Attempt your max. If it moves cleanly, add 2.5–5 kg for one more attempt; stop when form breaks down.</li>
+          </ol>
+          <p>
+            Always use a spotter on bench press and safety bars on squats.
+            For most people, the estimate above is all they ever need.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "rir",
+      heading: "Reps in reserve: training without maxing out",
+      body: (
+        <>
+          <p>
+            Reps in reserve (RIR) is how many more reps you could have done at
+            the end of a set. Stopping at 1–3 RIR gives nearly the same muscle
+            and strength gains as training to failure, with less fatigue and
+            injury risk — and it lets you adjust for good and bad days without
+            retesting your max.
+          </p>
+          <CalcTable
+            head={["RIR", "How the last rep feels", "Use it for"]}
+            rows={[
+              ["0", "Couldn't do another rep", "Occasional final sets, machines"],
+              ["1–2", "Slow, hard grind", "Most strength and muscle-building sets"],
+              ["3–4", "Challenging but controlled", "Technique work, deloads, beginners"],
+            ]}
+          />
+          <p>
+            Light loads build muscle too: a large meta-analysis found
+            similar muscle growth from low- and high-load training when sets
+            are taken close to failure, while heavier loads produced bigger
+            strength gains.
+          </p>
+        </>
+      ),
+    },
+    {
       id: "strength-standards",
       heading: "Is my 1RM good?",
       body: (
@@ -154,7 +206,7 @@ export const oneRepMaxContent: CalculatorContent = {
       </p>
     </>
   ),
-  sources: [SOURCES.reynolds1rm],
+  sources: [SOURCES.reynolds1rm, SOURCES.schoenfeldLoad, SOURCES.helmsRir],
   faq: [
     {
       q: "How do I calculate my one rep max?",

@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const stepsToCaloriesMeta = {
-  title: "Steps to Calories Calculator: Calories Burned Walking",
+  title: "Steps to Calories Calculator (Walking)",
   description:
     "Convert your daily steps into calories burned and distance walked, based on your height, weight and walking pace. See how many calories 10,000 steps burns.",
   h1: "Steps to Calories Calculator",
   intro:
-    "Enter your steps, height, weight and pace to see how far you walked and how many calories you burned — including the extra above resting.",
+    "Enter your steps, height, weight and pace into this steps to calories calculator to see how far you walked and how many calories you burned — including the extra above resting.",
 };
 
 export const stepsToCaloriesContent: CalculatorContent = {
@@ -90,6 +90,48 @@ export const stepsToCaloriesContent: CalculatorContent = {
       ),
     },
     {
+      id: "steps-and-health",
+      heading: "What the research says about daily steps",
+      body: (
+        <>
+          <p>
+            Large studies that tracked people with step counters found that
+            mortality risk falls steadily as daily steps rise, levelling off
+            at around <strong>6,000–8,000 steps for adults over 60</strong>{" "}
+            and <strong>8,000–10,000 for younger adults</strong>. Step
+            intensity mattered far less than the total number of steps.
+          </p>
+          <p>
+            That&apos;s good news if brisk walking feels hard: getting the
+            steps in at any comfortable pace is what counts most.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "pace",
+      heading: "Walking pace and calories per minute",
+      body: (
+        <>
+          <CalcTable
+            caption="70 kg adult, flat ground"
+            head={["Pace", "Speed", "kcal per 10 min (total)", "Steps per minute (approx.)"]}
+            rows={[
+              ["Slow / strolling", "3.2 km/h", "≈ 33", "80–90"],
+              ["Moderate", "4.8 km/h", "≈ 41", "100–110"],
+              ["Brisk", "5.6 km/h", "≈ 50", "115–125"],
+            ]}
+          />
+          <p>
+            A rough test for brisk: you can talk in short sentences but
+            couldn&apos;t sing. Walking uphill, on sand or carrying a bag
+            raises the burn further — the calculator assumes flat ground, so
+            treat hilly walks as a bonus.
+          </p>
+        </>
+      ),
+    },
+    {
       id: "walking-for-weight-loss",
       heading: "Walking for weight loss",
       body: (
@@ -147,7 +189,7 @@ export const stepsToCaloriesContent: CalculatorContent = {
       </p>
     </>
   ),
-  sources: [SOURCES.compendium, SOURCES.tudorLocke],
+  sources: [SOURCES.compendium, SOURCES.tudorLocke, SOURCES.saintMauriceSteps, SOURCES.paluchSteps],
   faq: [
     {
       q: "How many calories does 1,000 steps burn?",

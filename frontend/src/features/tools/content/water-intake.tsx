@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const waterIntakeMeta = {
-  title: "Water Intake Calculator: How Much Water Should I Drink a Day?",
+  title: "Water Intake Calculator: How Much Water a Day?",
   description:
     "Find out how much water to drink each day based on your weight, exercise and climate — with extra guidance for Indian summers, pregnancy and breastfeeding.",
   h1: "Water Intake Calculator",
   intro:
-    "Get a daily drinking target in litres and glasses, adjusted for your body weight, training and how hot it is where you live.",
+    "This water intake calculator gives you a daily drinking target in litres and glasses, adjusted for your body weight, training and how hot it is where you live.",
 };
 
 export const waterIntakeContent: CalculatorContent = {
@@ -69,6 +69,41 @@ export const waterIntakeContent: CalculatorContent = {
             salt, chaas or ORS work well.
           </p>
         </>
+      ),
+    },
+    {
+      id: "special-cases",
+      heading: "Pregnancy, breastfeeding, children and older adults",
+      body: (
+        <>
+          <CalcTable
+            head={["Group", "Typical extra or total need", "Notes"]}
+            rows={[
+              ["Pregnancy", "+300 ml a day", "On top of your usual intake"],
+              ["Breastfeeding", "+700 ml a day", "Thirst often rises naturally — keep water nearby while feeding"],
+              ["Children 4–8 years", "≈ 1.6 L total water", "From food and drinks combined"],
+              ["Adults over 65", "Same as younger adults", "Thirst weakens with age, so drink on a routine rather than waiting"],
+            ]}
+          />
+          <p>
+            Figures are adequate intakes from EFSA and the US Institute of
+            Medicine for healthy people. Anyone with a medical condition, or
+            on diuretics, should follow their doctor&apos;s guidance.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "habits",
+      heading: "Easy ways to drink more through the day",
+      body: (
+        <ul>
+          <li>Start the day with a glass of water before tea or coffee.</li>
+          <li>Keep a 1-litre bottle at your desk and aim to finish it twice by evening.</li>
+          <li>Have a glass with every meal — it also slows down fast eating.</li>
+          <li>Eat water-rich foods: cucumber, watermelon, buttermilk, curd and dal.</li>
+          <li>In summer, carry nimbu pani or chaas instead of sugary cold drinks.</li>
+        </ul>
       ),
     },
     {
@@ -156,7 +191,7 @@ export const waterIntakeContent: CalculatorContent = {
       </p>
     </>
   ),
-  sources: [SOURCES.efsaWater, SOURCES.acsmFluid, SOURCES.popkinWater],
+  sources: [SOURCES.efsaWater, SOURCES.iomWater, SOURCES.acsmFluid, SOURCES.popkinWater],
   faq: [
     {
       q: "How much water should I drink a day according to my weight?",

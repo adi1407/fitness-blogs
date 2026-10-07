@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const proteinMeta = {
-  title: "Protein Calculator: How Much Protein Per Day?",
+  title: "Protein Calculator: Daily Intake for Indian Diets",
   description:
-    "Find out how much protein you need per day for general health, fat loss or muscle gain — with per-meal targets and Indian vegetarian protein sources.",
+    "Free protein calculator: find how much protein you need per day for health, fat loss or muscle gain — with per-meal targets and Indian veg protein sources.",
   h1: "Protein Calculator",
   intro:
-    "Work out how much protein you need each day for your body weight and goal, and how to split it across your meals.",
+    "Use this protein calculator to work out how much protein you need each day for your body weight and goal, and how to split it across your meals.",
 };
 
 export const proteinContent: CalculatorContent = {
@@ -239,7 +239,7 @@ export const proteinContent: CalculatorContent = {
     },
   ],
   related: {
-    calculators: [CALCULATORS.macro, CALCULATORS.calorie, CALCULATORS.tdee, CALCULATORS.bmi],
+    calculators: [CALCULATORS.macro, CALCULATORS.calorie, CALCULATORS.tdee, CALCULATORS.oneRepMax],
     articles: [
       ARTICLES.proteinPerDay,
       ARTICLES.proteinMuscle,

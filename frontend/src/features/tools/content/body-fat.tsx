@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const bodyFatMeta = {
-  title: "Body Fat Calculator: Estimate Body Fat % with a Tape Measure",
+  title: "Body Fat Calculator (US Navy Tape Method)",
   description:
     "Estimate your body fat percentage with the U.S. Navy tape-measure method. See your category, fat and lean mass, and what the numbers mean for South Asians.",
   h1: "Body Fat Calculator",
   intro:
-    "All you need is a tape measure. Enter your neck and waist (and hips, for women) to estimate body fat percentage, fat mass and lean mass.",
+    "This body fat calculator needs only a tape measure. Enter your neck and waist (and hips, for women) to estimate body fat percentage, fat mass and lean mass.",
 };
 
 export const bodyFatContent: CalculatorContent = {

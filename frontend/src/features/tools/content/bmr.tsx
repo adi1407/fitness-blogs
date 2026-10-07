@@ -9,10 +9,10 @@ import { SOURCES } from "@/features/tools/content/sources";
 export const bmrMeta = {
   title: "BMR Calculator: Basal Metabolic Rate",
   description:
-    "Calculate your BMR — the calories your body burns at complete rest — with the Mifflin–St Jeor equation. Learn how BMR differs from TDEE and what changes it.",
+    "Free BMR calculator: find the calories your body burns at complete rest with the Mifflin–St Jeor equation, and learn how BMR differs from TDEE (maintenance calories).",
   h1: "BMR Calculator",
   intro:
-    "Estimate your basal metabolic rate: the calories your body burns at complete rest, before any movement or exercise.",
+    "This BMR calculator estimates your basal metabolic rate: the calories your body burns at complete rest, before any movement or exercise.",
 };
 
 export const bmrContent: CalculatorContent = {
