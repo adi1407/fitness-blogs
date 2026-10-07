@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { BlogArticleView } from "@/features/blog/components/BlogArticleView";
 import { fetchPublishedArticleBySlug } from "@/lib/api/blog";
 import { ogImageUrl } from "@/lib/og/card";
+import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
 import {
   findCategory,
   findSubcategory,
@@ -29,11 +30,6 @@ function canonicalPath(
   return `/blog/${category}/${subcategory}/${slug}/${articleNumber}`;
 }
 
-/** The root layout's title template appends the brand; CMS meta titles often already end with it. */
-function pageTitle(raw: string): string {
-  return raw.replace(/\s*[|–—-]\s*fitlives\s*$/i, "");
-}
-
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -47,7 +43,10 @@ export async function generateMetadata({
     article.articleNumber != null &&
     String(article.articleNumber) !== articleId
   ) {
-    return { title: pageTitle(article.metaTitle || article.title) };
+    return {
+      title: pageTitle(article.metaTitle || article.title),
+      alternates: { canonical: article.path ?? undefined },
+    };
   }
 
   const title = pageTitle(article.metaTitle || article.title);
@@ -76,6 +75,7 @@ export async function generateMetadata({
       canonical: article.path ?? undefined,
     },
     openGraph: {
+      ...OG_DEFAULTS,
       title,
       description,
       url: article.path ?? undefined,
