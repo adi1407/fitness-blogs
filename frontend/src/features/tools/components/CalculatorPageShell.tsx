@@ -6,6 +6,7 @@ import { SocialFollow } from "@/components/shared/SocialFollow";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import type { LinkItem } from "@/features/tools/content/links";
+import { ORG_REF } from "@/lib/seo";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
 const siteUrl = getPublicSiteUrl();
@@ -25,6 +26,8 @@ export type CalculatorContent = {
   related: { calculators: LinkItem[]; articles: LinkItem[] };
   /** ISO date (YYYY-MM-DD) the page content was last reviewed. */
   updated: string;
+  /** ISO date the calculator first went live; defaults to `updated`. */
+  published?: string;
 };
 
 type Props = {
@@ -106,8 +109,10 @@ export function CalculatorPageShell({
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
     description,
+    datePublished: content.published ?? content.updated,
     dateModified: content.updated,
-    publisher: { "@type": "Organization", name: "fitlives", url: siteUrl },
+    inLanguage: "en-IN",
+    publisher: ORG_REF,
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",

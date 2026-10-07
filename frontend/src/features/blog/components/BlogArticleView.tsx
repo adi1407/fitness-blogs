@@ -20,6 +20,7 @@ import {
   type PublicBlogArticle,
 } from "@/lib/api/blog";
 import { articleHref } from "@/features/home/utils/articleMedia";
+import { ORG_REF } from "@/lib/seo";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 import { KeepAtmosphere, KeepRelatedStack } from "@/features/keep";
 
@@ -165,22 +166,9 @@ export function BlogArticleView({
             url: `${siteUrl}/authors`,
           },
         }
-      : {
-          author: {
-            "@type": "Organization",
-            name: "fitlives",
-            url: siteUrl,
-          },
-        }),
-    publisher: {
-      "@type": "Organization",
-      name: "fitlives",
-      url: siteUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${siteUrl}/logo.svg`,
-      },
-    },
+      : { author: ORG_REF }),
+    publisher: ORG_REF,
+    inLanguage: "en-IN",
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": absoluteUrl,
