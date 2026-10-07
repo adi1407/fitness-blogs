@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const calorieMeta = {
-  title: "Calorie Calculator: Daily Calorie Needs & Targets",
+  title: "Calorie Calculator: Daily Calories by Goal",
   description:
-    "Calculate your daily calorie needs with the fitlives Calorie Calculator. Estimate BMR, TDEE, maintenance calories and targets for weight loss or muscle gain.",
+    "Free calorie calculator: find your daily calorie needs for weight loss, maintenance or muscle gain from age, height, weight and activity. Includes BMR and TDEE.",
   h1: "Calorie Calculator",
   intro:
-    "Calculate your estimated daily calorie needs from your age, sex, height, weight and activity level — with targets for fat loss, maintenance and muscle gain.",
+    "This free calorie calculator estimates how many calories you need a day from your age, sex, height, weight and activity — with targets for fat loss, maintenance and muscle gain.",
 };
 
 export const calorieContent: CalculatorContent = {

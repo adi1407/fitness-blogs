@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const calorieDeficitMeta = {
-  title: "Calorie Deficit Calculator: Daily Calories to Reach Your Goal Weight",
+  title: "Calorie Deficit Calculator for Weight Loss",
   description:
-    "Enter your goal weight and timeline to get a daily calorie target, the deficit it needs and a safer timeline if your plan is too aggressive. Built for Indian diets.",
+    "Free calorie deficit calculator: enter your goal weight and timeline to get daily calories, the deficit you need and a safer pace if your plan is too fast.",
   h1: "Calorie Deficit Calculator",
   intro:
-    "Pick a goal weight and a timeline. We'll work out the daily calories that gets you there — and tell you honestly if the pace is too fast.",
+    "Use this calorie deficit calculator to pick a goal weight and timeline. We'll work out the daily calories that get you there — and tell you honestly if the pace is too fast.",
 };
 
 export const calorieDeficitContent: CalculatorContent = {
@@ -213,7 +213,7 @@ export const calorieDeficitContent: CalculatorContent = {
     },
   ],
   related: {
-    calculators: [CALCULATORS.tdee, CALCULATORS.protein, CALCULATORS.steps, CALCULATORS.calorie],
+    calculators: [CALCULATORS.tdee, CALCULATORS.protein, CALCULATORS.steps, CALCULATORS.bodyFat],
     articles: [ARTICLES.calorieDeficit, ARTICLES.lose10kg, ARTICLES.caloriesToLoseWeight, ARTICLES.bellyFat],
   },
 };

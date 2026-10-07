@@ -7,12 +7,12 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const tdeeMeta = {
-  title: "TDEE Calculator: Total Daily Energy Expenditure",
+  title: "TDEE Calculator: Your Maintenance Calories",
   description:
-    "Estimate your TDEE — the calories you burn in a day — from age, sex, height, weight and activity. See BMR, maintenance calories and next steps.",
+    "Free TDEE calculator: estimate your total daily energy expenditure — the calories you burn each day — from age, height, weight and activity. Includes BMR.",
   h1: "TDEE Calculator",
   intro:
-    "Find out roughly how many calories you burn in a day — your maintenance calories — from your body stats and activity level.",
+    "This TDEE calculator estimates how many calories you burn in a day — your maintenance calories — from your body stats and activity level.",
 };
 
 export const tdeeContent: CalculatorContent = {

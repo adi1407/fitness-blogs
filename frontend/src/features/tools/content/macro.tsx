@@ -9,10 +9,10 @@ import { SOURCES } from "@/features/tools/content/sources";
 export const macroMeta = {
   title: "Macro Calculator: Protein, Carbs & Fat Grams",
   description:
-    "Split your daily calories into protein, carbs and fat in grams for weight loss, maintenance or muscle gain — with an Indian diet example day.",
+    "Free macro calculator: split your calories into grams of protein, carbs and fat for weight loss, maintenance or muscle gain — with an Indian diet example.",
   h1: "Macro Calculator",
   intro:
-    "Turn your daily calorie target into grams of protein, carbohydrate and fat that fit your goal.",
+    "This macro calculator turns your daily calorie target into grams of protein, carbohydrate and fat that fit your goal.",
 };
 
 export const macroContent: CalculatorContent = {
@@ -185,7 +185,7 @@ export const macroContent: CalculatorContent = {
     },
   ],
   related: {
-    calculators: [CALCULATORS.calorie, CALCULATORS.protein, CALCULATORS.tdee, CALCULATORS.bmr],
+    calculators: [CALCULATORS.calorie, CALCULATORS.protein, CALCULATORS.tdee, CALCULATORS.water],
     articles: [
       ARTICLES.indianProteinFoods,
       ARTICLES.indianWeightLossFoods,
