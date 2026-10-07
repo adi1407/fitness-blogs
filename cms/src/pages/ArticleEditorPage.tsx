@@ -62,7 +62,11 @@ type FormState = {
   sources: SourceItem[];
   robotsIndex: boolean;
   lastReviewedAt: string;
+  /** "" = no reviewer credited. */
+  reviewerId: string;
 };
+
+type ReviewerOption = { id: string; name: string; role: string };
 
 const emptyForm: FormState = {
   title: "",
@@ -86,6 +90,7 @@ const emptyForm: FormState = {
   sources: [],
   robotsIndex: true,
   lastReviewedAt: "",
+  reviewerId: "",
 };
 
 const SITE_ORIGIN =
@@ -131,6 +136,8 @@ export default function ArticleEditorPage() {
   const [linkedArticles, setLinkedArticles] = useState<LinkedArticle[]>([]);
   const [assignment, setAssignment] = useState<AssignmentBrief | null>(null);
   const [gatesRefresh, setGatesRefresh] = useState(0);
+  const [reviewerOptions, setReviewerOptions] = useState<ReviewerOption[]>([]);
+  const [authorId, setAuthorId] = useState<string | null>(null);
 
   const formRef = useRef(form);
   const articleIdRef = useRef(articleId);
@@ -183,6 +190,24 @@ export default function ArticleEditorPage() {
   }, []);
 
   useEffect(() => {
+    if (!publisher) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const data = await apiFetch<{ reviewers: ReviewerOption[] }>(
+          "/articles/reviewer-options",
+        );
+        if (!cancelled) setReviewerOptions(data.reviewers);
+      } catch {
+        if (!cancelled) setReviewerOptions([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [publisher]);
+
+  useEffect(() => {
     if (!articleId) {
       setAssignment(null);
       return;
@@ -207,6 +232,7 @@ export default function ArticleEditorPage() {
         const a = data.article;
         skipAutosave.current = true;
         setArticleId(a.id);
+        setAuthorId(a.authorId);
         setStatus(a.status);
         setEditorNote(a.editorNote || a.rejectReason || "");
         setNoteDraft(a.editorNote || a.rejectReason || "");
@@ -246,6 +272,7 @@ export default function ArticleEditorPage() {
           lastReviewedAt: a.lastReviewedAt
             ? String(a.lastReviewedAt).slice(0, 10)
             : "",
+          reviewerId: a.reviewerId || "",
         });
         setLinkedArticles(
           (a.relatedArticleNumbers || []).map((n) => ({
@@ -353,11 +380,14 @@ export default function ArticleEditorPage() {
       lastReviewedAt: state.lastReviewedAt
         ? new Date(`${state.lastReviewedAt}T12:00:00.000Z`).toISOString()
         : null,
+      // The API rejects reviewer changes from writers, so only publishers send it.
+      ...(publisher ? { reviewerId: state.reviewerId || null } : {}),
     };
   }
 
   function applyArticle(a: Article) {
     setArticleId(a.id);
+    setAuthorId(a.authorId);
     setStatus(a.status);
     setArticleNumber(a.articleNumber);
     setPublicPath(a.path);
@@ -401,6 +431,7 @@ export default function ArticleEditorPage() {
       lastReviewedAt: a.lastReviewedAt
         ? String(a.lastReviewedAt).slice(0, 10)
         : "",
+      reviewerId: a.reviewerId || "",
     });
     setLinkedArticles(
       (a.relatedArticleNumbers || []).map((n) => ({
@@ -1155,6 +1186,29 @@ export default function ArticleEditorPage() {
               Used for the stale-content queue. Set when you refresh a live URL.
             </span>
           </label>
+          {publisher ? (
+            <label className="block text-sm font-medium">
+              Reviewed by
+              <select
+                value={form.reviewerId}
+                onChange={(e) => patch("reviewerId", e.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2"
+              >
+                <option value="">No reviewer (hide “Reviewed by”)</option>
+                {reviewerOptions
+                  .filter((r) => r.id !== authorId || r.id === form.reviewerId)
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name} ({r.role})
+                    </option>
+                  ))}
+              </select>
+              <span className="mt-1 block text-xs font-normal text-slate-500">
+                Only credit someone who actually checked this article. It shows
+                on the live page and in search structured data.
+              </span>
+            </label>
+          ) : null}
         </section>
 
       <RelatedArticlesPanel

@@ -241,12 +241,40 @@ async function applySeoMeta(): Promise<void> {
   console.log(`[db] SEO meta applied: ${titles} titles, ${descriptions} descriptions`);
 }
 
+/**
+ * Publishing used to stamp the publisher as reviewer, which showed "Reviewed by"
+ * without a real review. Clear only those auto-set values.
+ */
+async function clearAutoReviewers(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE articles SET reviewer_id = NULL
+      WHERE reviewer_id IS NOT NULL AND reviewer_id = published_by`,
+  );
+  console.log(`[db] cleared auto-set reviewer on ${res.rowCount ?? 0} articles`);
+}
+
+const AUTHOR_BIOS: Record<string, string> = {
+  "Aditya Choudhary":
+    "Aditya Choudhary writes fitlives' guides on nutrition, weight loss and muscle building, with a focus on everyday Indian food. His articles are built from published research and official guidelines, and every guide lists its sources so you can check the evidence yourself.",
+};
+
+async function seedAuthorBios(): Promise<void> {
+  for (const [name, bio] of Object.entries(AUTHOR_BIOS)) {
+    await pool.query(
+      `UPDATE users SET bio = $1 WHERE name = $2 AND COALESCE(bio, '') = ''`,
+      [bio, name],
+    );
+  }
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
   { id: "2026-10-06-food-data-links", run: insertFoodDataLinks },
   { id: "2026-10-07-seo-meta", run: applySeoMeta },
   { id: "2026-10-07-read-next-newest", run: () => insertReadNextLinks(READ_NEXT_NEWEST) },
+  { id: "2026-10-08-clear-auto-reviewers", run: clearAutoReviewers },
+  { id: "2026-10-08-author-bios", run: seedAuthorBios },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

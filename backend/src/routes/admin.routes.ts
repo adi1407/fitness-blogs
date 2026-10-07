@@ -2,6 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { pool } from "../db/pool";
+import { ensureUserSlugs } from "../db/ensureCmsSchema";
 import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { STAFF_ROLES } from "../utils/roles";
@@ -88,6 +89,7 @@ adminRouter.post("/users", authorize("admin"), async (req, res) => {
     [email.toLowerCase(), hash, name, role],
   );
 
+  await ensureUserSlugs();
   const user = mapUser(result.rows[0]);
   await recordAudit(req, {
     action: "user.created",
@@ -98,6 +100,71 @@ adminRouter.post("/users", authorize("admin"), async (req, res) => {
   });
 
   res.status(201).json({ user });
+});
+
+const profileSchema = z.object({
+  bio: z.string().max(1200).optional(),
+  credentials: z.string().max(200).optional(),
+});
+
+const uuidSchema = z.string().uuid();
+
+/** Public author-page fields. Admins edit anyone; staff edit their own. */
+adminRouter.get("/users/:id/profile", async (req, res) => {
+  if (!uuidSchema.safeParse(req.params.id).success) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  if (req.user!.role !== "admin" && req.user!.id !== req.params.id) {
+    res.status(403).json({ message: "Insufficient permissions" });
+    return;
+  }
+  const result = await pool.query(
+    `SELECT id, name, slug, bio, credentials FROM users WHERE id = $1`,
+    [req.params.id],
+  );
+  if (!result.rows[0]) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  res.json({ profile: result.rows[0] });
+});
+
+adminRouter.patch("/users/:id/profile", async (req, res) => {
+  if (!uuidSchema.safeParse(req.params.id).success) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  if (req.user!.role !== "admin" && req.user!.id !== req.params.id) {
+    res.status(403).json({ message: "Insufficient permissions" });
+    return;
+  }
+  const parsed = profileSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ message: "Invalid profile payload" });
+    return;
+  }
+  const { bio, credentials } = parsed.data;
+  const result = await pool.query(
+    `UPDATE users SET
+       bio = COALESCE($1, bio),
+       credentials = COALESCE($2, credentials),
+       updated_at = NOW()
+     WHERE id = $3
+     RETURNING id, name, slug, bio, credentials`,
+    [bio?.trim() ?? null, credentials?.trim() ?? null, req.params.id],
+  );
+  if (!result.rows[0]) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  await recordAudit(req, {
+    action: "user.profile_updated",
+    entityType: "user",
+    entityId: req.params.id,
+    summary: `Updated public profile for ${result.rows[0].name}`,
+  });
+  res.json({ profile: result.rows[0] });
 });
 
 adminRouter.get("/activity", authorize("admin"), async (req, res) => {

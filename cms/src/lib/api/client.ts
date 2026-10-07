@@ -111,6 +111,7 @@ export type Article = {
   readingTime: number;
   authorId: string | null;
   authorName?: string | null;
+  reviewerId?: string | null;
   reviewerName?: string | null;
   rejectReason: string;
   editorNote?: string;

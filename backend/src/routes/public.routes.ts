@@ -26,7 +26,7 @@ import {
   publicCalcResultsRouter,
 } from "./publicMemberCalc.routes";
 import {
-  mapArticle,
+  mapPublicArticle,
   resolveRelatedArticles,
 } from "./articles.routes";
 
@@ -47,8 +47,9 @@ const ARTICLE_SELECT = `
     s.slug AS subcategory_slug,
     s.label AS subcategory_label,
     u.name AS author_name,
-    u.email AS author_email,
-    rev.name AS reviewer_name
+    u.slug AS author_slug,
+    rev.name AS reviewer_name,
+    rev.slug AS reviewer_slug
   FROM articles a
   LEFT JOIN categories c ON c.id = a.category_id
   LEFT JOIN subcategories s ON s.id = a.subcategory_id
@@ -57,8 +58,30 @@ const ARTICLE_SELECT = `
 `;
 
 function mapPublic(row: Record<string, unknown>) {
-  return mapArticle(row);
+  return mapPublicArticle(row);
 }
+
+const VIEW_DEDUPE_MS = 30 * 60 * 1000;
+const VIEW_DEDUPE_MAX = 50_000;
+/** `${ip}:${articleId}` → last counted at. Per-instance; good enough to stop refresh spam. */
+const recentViews = new Map<string, number>();
+
+function shouldCountView(key: string): boolean {
+  const now = Date.now();
+  const last = recentViews.get(key);
+  if (last && now - last < VIEW_DEDUPE_MS) return false;
+  if (recentViews.size >= VIEW_DEDUPE_MAX) {
+    for (const [k, t] of recentViews) {
+      if (now - t >= VIEW_DEDUPE_MS) recentViews.delete(k);
+    }
+    if (recentViews.size >= VIEW_DEDUPE_MAX) recentViews.clear();
+  }
+  recentViews.set(key, now);
+  return true;
+}
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 publicRouter.get("/redirects/resolve", async (req, res) => {
   const path =
@@ -173,10 +196,6 @@ publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
     return;
   }
 
-  await pool.query(`UPDATE articles SET views = views + 1 WHERE id = $1`, [
-    row.id,
-  ]);
-  row.views = Number(row.views ?? 0) + 1;
   const article = mapPublic(row);
   const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],
@@ -308,6 +327,107 @@ publicRouter.get("/articles/preview/:token", async (req, res) => {
   res.json({ article, related: relatedList, preview: true });
 });
 
+/**
+ * Counts a reader view. Called by the browser/app after the article renders, so
+ * cached page builds, crawlers fetching HTML and server re-renders don't inflate it.
+ */
+publicRouter.post("/articles/:id/view", async (req, res) => {
+  const id = req.params.id;
+  if (!UUID_RE.test(id)) {
+    res.status(400).json({ message: "Invalid article id" });
+    return;
+  }
+  // The site proxies this call server-side, so it forwards the reader's IP.
+  const forwarded = req.get("x-client-ip")?.trim().slice(0, 64);
+  if (!shouldCountView(`${forwarded || req.ip || "unknown"}:${id}`)) {
+    res.status(204).end();
+    return;
+  }
+  await pool.query(
+    `UPDATE articles SET views = views + 1 WHERE id = $1 AND status = 'published'`,
+    [id],
+  );
+  res.status(204).end();
+});
+
+type PublicAuthorRow = {
+  id: string;
+  slug: string;
+  name: string;
+  bio: string;
+  credentials: string;
+  role: string;
+  written: number;
+  reviewed: number;
+};
+
+const AUTHOR_SELECT = `
+  SELECT u.id, u.slug, u.name, u.bio, u.credentials, u.role,
+    (SELECT COUNT(*)::int FROM articles a
+      WHERE a.author_id = u.id AND a.status = 'published') AS written,
+    (SELECT COUNT(*)::int FROM articles a
+      WHERE a.reviewer_id = u.id AND a.status = 'published') AS reviewed
+  FROM users u
+`;
+
+function mapAuthor(row: PublicAuthorRow) {
+  return {
+    slug: row.slug,
+    name: row.name,
+    bio: row.bio,
+    credentials: row.credentials,
+    role: row.role,
+    writtenCount: row.written,
+    reviewedCount: row.reviewed,
+  };
+}
+
+/** Staff with at least one published article written or reviewed. */
+publicRouter.get("/authors", async (_req, res) => {
+  const result = await pool.query<PublicAuthorRow>(
+    `SELECT * FROM (${AUTHOR_SELECT}
+       WHERE u.is_active = TRUE AND u.slug IS NOT NULL) t
+     WHERE t.written > 0 OR t.reviewed > 0
+     ORDER BY t.written DESC, t.name ASC`,
+  );
+  res.json({ authors: result.rows.map(mapAuthor) });
+});
+
+publicRouter.get("/authors/:slug", async (req, res) => {
+  const result = await pool.query<PublicAuthorRow>(
+    `${AUTHOR_SELECT} WHERE u.slug = $1 AND u.is_active = TRUE LIMIT 1`,
+    [req.params.slug],
+  );
+  const row = result.rows[0];
+  if (!row || (row.written === 0 && row.reviewed === 0)) {
+    res.status(404).json({ message: "Author not found" });
+    return;
+  }
+  const [written, reviewed] = await Promise.all([
+    pool.query(
+      `${ARTICLE_SELECT}
+       WHERE a.author_id = $1 AND a.status = 'published' AND a.slug IS NOT NULL
+       ORDER BY a.published_at DESC NULLS LAST LIMIT 100`,
+      [row.id],
+    ),
+    pool.query(
+      `${ARTICLE_SELECT}
+       WHERE a.reviewer_id = $1 AND a.status = 'published' AND a.slug IS NOT NULL
+       ORDER BY a.published_at DESC NULLS LAST LIMIT 100`,
+      [row.id],
+    ),
+  ]);
+  const summarize = (r: Record<string, unknown>) => {
+    const { body: _b, faq: _f, sources: _s, ...rest } = mapPublic(r);
+    return rest;
+  };
+  res.json({
+    author: mapAuthor(row),
+    written: written.rows.map(summarize),
+    reviewed: reviewed.rows.map(summarize),
+  });
+});
+
 publicRouter.get("/articles/:slug", async (req, res) => {
   const result = await pool.query(
     `${ARTICLE_SELECT}
@@ -320,10 +440,6 @@ publicRouter.get("/articles/:slug", async (req, res) => {
     return;
   }
 
-  await pool.query(`UPDATE articles SET views = views + 1 WHERE id = $1`, [
-    row.id,
-  ]);
-  row.views = Number(row.views ?? 0) + 1;
   const article = mapPublic(row);
   const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],

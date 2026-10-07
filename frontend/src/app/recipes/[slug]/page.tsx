@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
+import {
+  ORG_REF,
+  OG_DEFAULTS,
+  absoluteUrl,
+  breadcrumbLd,
+  pageTitle,
+} from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
 import {
   KnowledgeBreadcrumbs,
   KnowledgeDisclaimer,
@@ -47,9 +54,55 @@ export default async function RecipeDetailPage({ params }: Props) {
 
   const ingredients = (recipe.ingredients ?? []).map(String);
   const steps = (recipe.steps ?? []).map(String);
+  const path = `/recipes/${recipe.slug}`;
+
+  const nutrition = {
+    ...(recipe.calories != null ? { calories: `${recipe.calories} calories` } : {}),
+    ...(recipe.proteinG != null ? { proteinContent: `${recipe.proteinG} g` } : {}),
+    ...(recipe.carbsG != null ? { carbohydrateContent: `${recipe.carbsG} g` } : {}),
+    ...(recipe.fatG != null ? { fatContent: `${recipe.fatG} g` } : {}),
+  };
+
+  const recipeLd = {
+    "@context": "https://schema.org",
+    "@type": "Recipe",
+    name: recipe.title,
+    description: recipe.metaDescription || recipe.excerpt,
+    url: absoluteUrl(path),
+    author: ORG_REF,
+    publisher: ORG_REF,
+    inLanguage: "en-IN",
+    ...(recipe.publishedAt ? { datePublished: recipe.publishedAt } : {}),
+    ...(recipe.updatedAt ? { dateModified: recipe.updatedAt } : {}),
+    ...(recipe.mealType ? { recipeCategory: recipe.mealType } : {}),
+    ...(recipe.cuisineTags.length
+      ? { recipeCuisine: recipe.cuisineTags.join(", "), keywords: recipe.cuisineTags.join(", ") }
+      : {}),
+    ...(ingredients.length ? { recipeIngredient: ingredients } : {}),
+    ...(steps.length
+      ? {
+          recipeInstructions: steps.map((text, i) => ({
+            "@type": "HowToStep",
+            position: i + 1,
+            text,
+          })),
+        }
+      : {}),
+    ...(Object.keys(nutrition).length
+      ? { nutrition: { "@type": "NutritionInformation", ...nutrition } }
+      : {}),
+  };
 
   return (
     <main className="fk-page flex-1 py-16">
+      {recipe.robotsIndex !== false ? <JsonLd data={recipeLd} /> : null}
+      <JsonLd
+        data={breadcrumbLd([
+          ["Home", "/"],
+          ["Recipes", "/recipes"],
+          [recipe.title, path],
+        ])}
+      />
       <KnowledgeBreadcrumbs
         items={[
           { href: "/", label: "Home" },

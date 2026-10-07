@@ -13,7 +13,7 @@ import { getApiBase } from "@/lib/api/client";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { articleHref } from "@/features/home/utils/articleMedia";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 const siteUrl = SITE_URL;
 const RAIL_SIZE = 4;
