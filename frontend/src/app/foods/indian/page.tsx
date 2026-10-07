@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { OG_DEFAULTS } from "@/lib/seo";
+import { OG_DEFAULTS, SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FoodIndex } from "@/features/foods/components/FoodIndex";
@@ -9,7 +9,7 @@ import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 3600;
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = SITE_URL;
 
 const title = "Indian Food Calories & Protein Chart — Dal, Roti, Paneer & More";
 const description =

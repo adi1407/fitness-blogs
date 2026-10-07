@@ -23,21 +23,21 @@ const PILLAR_ACCORDION: AccordionItem[] = [
     url: HUB.deadlift,
     title: "Muscle Building",
     description: "Hypertrophy & strength",
-    href: "/blog/muscle-building",
+    href: "/muscle-building",
   },
   {
     id: "weight-loss",
     url: HUB.outdoorRun,
     title: "Weight Loss",
     description: "Deficit done right",
-    href: "/blog/weight-loss",
+    href: "/weight-loss",
   },
   {
     id: "nutrition",
     url: HUB.chickenBowl,
     title: "Nutrition",
     description: "Protein, macros & meals",
-    href: "/blog/nutrition",
+    href: "/nutrition",
   },
 ];
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { OG_DEFAULTS } from "@/lib/seo";
+import { OG_DEFAULTS, SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
@@ -15,7 +15,7 @@ import { articleHref } from "@/features/home/utils/articleMedia";
 
 export const dynamic = "force-dynamic";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = SITE_URL;
 const RAIL_SIZE = 4;
 
 export const metadata: Metadata = {
