@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { CALCULATOR_CONTENT } from "@/features/tools/content/registry";
 import { MUSCLE_GROUPS } from "@/lib/api/knowledge";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
@@ -50,6 +51,9 @@ const STATIC_PATHS = [
   "/recipes",
   "/programs",
   "/reviews",
+];
+
+const TRUST_PATHS = [
   "/about",
   "/editorial-policy",
   "/medical-disclaimer",
@@ -62,10 +66,20 @@ const STATIC_PATHS = [
   "/contact",
 ];
 
-function safeDate(value?: string | null): Date {
-  if (!value) return new Date();
+/** Money pages: pillar hubs, the calculator directory and every calculator. */
+const PRIORITY_PATHS = new Set([
+  "/nutrition",
+  "/nutrition/protein",
+  "/weight-loss",
+  "/muscle-building",
+  "/tools",
+  ...Object.keys(CALCULATOR_CONTENT),
+]);
+
+function safeDate(value?: string | null): Date | undefined {
+  if (!value) return undefined;
   const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? new Date() : d;
+  return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
 async function fetchApi<T>(path: string): Promise<T | null> {
@@ -102,24 +116,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
   const seen = new Set<string>();
 
+  /** `lastModified` is omitted when unknown: a fake "now" on every rebuild teaches Google to ignore it. */
   const add = (
     path: string,
     priority: number,
-    changeFrequency: "daily" | "weekly",
-    lastModified: Date = now,
+    changeFrequency: "daily" | "weekly" | "monthly",
+    lastModified?: Date,
   ) => {
     const url = `${siteUrl}${path}`;
     if (seen.has(url)) return;
     seen.add(url);
-    entries.push({ url, lastModified, changeFrequency, priority });
+    entries.push({ url, changeFrequency, priority, ...(lastModified ? { lastModified } : {}) });
   };
 
-  STATIC_PATHS.forEach((path, index) => {
-    const daily = path === "" || path === "/blog";
-    const priority =
-      path === "" ? 1 : path === "/blog" ? 0.95 : index < 6 ? 0.9 : 0.7;
-    add(path, priority, daily ? "daily" : "weekly");
-  });
+  for (const path of STATIC_PATHS) {
+    if (path === "" || path === "/blog") {
+      add(path, path === "" ? 1 : 0.95, "daily", now);
+      continue;
+    }
+    const calc = CALCULATOR_CONTENT[path];
+    add(path, PRIORITY_PATHS.has(path) ? 0.9 : 0.7, "weekly", safeDate(calc?.updated));
+  }
+  TRUST_PATHS.forEach((path) => add(path, 0.3, "monthly"));
   MUSCLE_GROUPS.forEach((g) => add(`/exercises/${g}`, 0.7, "weekly"));
 
   const [articles, exercises, recipes, programs, reviews, foods] = await Promise.all([
@@ -133,6 +151,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const subcategories = new Set<string>();
   for (const a of articles?.articles ?? []) {
+    if (a.robotsIndex === false) continue;
     const path = articlePath(a);
     if (!path) continue;
     if (a.categorySlug && a.subcategorySlug) {
