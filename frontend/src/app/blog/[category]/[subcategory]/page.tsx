@@ -1,24 +1,57 @@
 import type { Metadata } from "next";
-import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
+import { articleHref } from "@/features/home/utils/articleMedia";
 import { fetchPublishedArticles } from "@/lib/api/blog";
 import {
   findCategory,
   findSubcategory,
   isBlogCategorySlug,
+  type BlogCategoryDef,
+  type BlogSubcategoryDef,
 } from "@/lib/blogTaxonomy";
+import { OG_DEFAULTS, breadcrumbLd, collectionPageLd } from "@/lib/seo";
 
-export const dynamic = "force-dynamic";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+export const revalidate = 600;
 
 type PageProps = {
   params: Promise<{ category: string; subcategory: string }>;
 };
+
+function subcategoryIntro(
+  category: BlogCategoryDef,
+  subcategory: BlogSubcategoryDef,
+): string {
+  return (
+    subcategory.intro ??
+    `Practical, evidence-informed reading on ${subcategory.label.toLowerCase()} within ${category.label.toLowerCase()}. Educational content only; consult a professional for personal guidance.`
+  );
+}
+
+/** First sentence(s) of the intro that fit a meta description. */
+function metaDescription(intro: string): string {
+  if (intro.length <= 160) return intro;
+  const sentences = intro.match(/[^.!?]+[.!?]+/g) ?? [intro];
+  let out = "";
+  for (const s of sentences) {
+    const next = `${out}${s}`.trim();
+    if (next.length > 160) break;
+    out = `${next} `;
+  }
+  return out.trim() || `${intro.slice(0, 157).trimEnd()}...`;
+}
+
+function listArticles(category: string, subcategory: string, limit: number) {
+  return fetchPublishedArticles({
+    category,
+    subcategory,
+    limit,
+    revalidate,
+  });
+}
 
 export async function generateMetadata({
   params,
@@ -30,25 +63,21 @@ export async function generateMetadata({
     return { title: "Not found", robots: { index: false } };
   }
 
-  const articles = await fetchPublishedArticles({
-    category: category.slug,
-    subcategory: subcategory.slug,
-    limit: 1,
-  });
-  const description = `${subcategory.label} articles under ${category.label}. ${category.description}`;
+  const articles = await listArticles(category.slug, subcategory.slug, 48);
+  const title = `${subcategory.label} Guides (${category.label})`;
+  const description = metaDescription(subcategoryIntro(category, subcategory));
+  const path = `/blog/${category.slug}/${subcategory.slug}`;
 
   return {
-    title: `${subcategory.label} — ${category.label}`,
+    title,
     description,
-    alternates: {
-      canonical: `/blog/${category.slug}/${subcategory.slug}`,
-    },
+    alternates: { canonical: path },
     robots: articles.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: {
       ...OG_DEFAULTS,
-      title: `${subcategory.label} | fitlives`,
+      title: `${title} | fitlives`,
       description,
-      url: `/blog/${category.slug}/${subcategory.slug}`,
+      url: path,
     },
   };
 }
@@ -61,41 +90,35 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
   const subcategory = findSubcategory(categorySlug, subcategorySlug);
   if (!category || !subcategory) notFound();
 
-  const articles = await fetchPublishedArticles({
-    category: category.slug,
-    subcategory: subcategory.slug,
-    limit: 48,
-  });
+  const articles = await listArticles(category.slug, subcategory.slug, 48);
+  const path = `/blog/${category.slug}/${subcategory.slug}`;
+  const intro = subcategoryIntro(category, subcategory);
 
-  const breadcrumbLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Blog",
-        item: `${siteUrl}/blog`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: category.label,
-        item: `${siteUrl}/${category.slug}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: subcategory.label,
-        item: `${siteUrl}/blog/${category.slug}/${subcategory.slug}`,
-      },
-    ],
-  };
+  const listItems = articles.flatMap((a) => {
+    const href = articleHref(a);
+    return href && a.title ? [{ name: a.title, path: href }] : [];
+  });
 
   return (
     <main className="fk-page fk-page--content flex-1 py-12">
-      <JsonLd data={breadcrumbLd} />
+      <JsonLd
+        data={breadcrumbLd([
+          ["Home", "/"],
+          ["Blog", "/blog"],
+          [category.label, `/${category.slug}`],
+          [subcategory.label, path],
+        ])}
+      />
+      {listItems.length > 0 ? (
+        <JsonLd
+          data={collectionPageLd({
+            name: `${subcategory.label} guides`,
+            description: metaDescription(intro),
+            path,
+            items: listItems,
+          })}
+        />
+      ) : null}
       <BlogBreadcrumbs
         items={[
           { label: "Home", href: "/" },
@@ -111,22 +134,19 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
           {subcategory.label}
         </h1>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-          Practical, evidence-informed reading on {subcategory.label.toLowerCase()}{" "}
-          within {category.label.toLowerCase()}. Educational content only —
-          consult a professional for personal guidance.
+          {intro}
         </p>
       </header>
 
       <section className="mt-12">
-        <h2 className="text-2xl font-semibold tracking-tight">Articles</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">
+          {subcategory.label} articles
+        </h2>
         {articles.length === 0 ? (
           <p className="mt-6 rounded-xl border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
             No published articles in this subcategory yet. Explore related
             topics under{" "}
-            <Link
-              href={`/${category.slug}`}
-              className="fk-link"
-            >
+            <Link href={`/${category.slug}`} className="fk-link">
               {category.label}
             </Link>
             .
@@ -138,6 +158,13 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
             ))}
           </div>
         )}
+        <p className="mt-8 text-sm text-muted-foreground">
+          More in{" "}
+          <Link href={`/${category.slug}`} className="fk-link">
+            the {category.label.toLowerCase()} guide
+          </Link>
+          .
+        </p>
       </section>
     </main>
   );
