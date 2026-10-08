@@ -29,8 +29,11 @@ import {
   mapPublicArticle,
   resolveRelatedArticles,
 } from "./articles.routes";
+import { publicSubscribeRouter } from "./subscribers.routes";
 
 export const publicRouter = Router();
+
+publicRouter.use(publicSubscribeRouter);
 
 publicRouter.use("/auth", publicAuthRouter);
 publicRouter.use("/me/bookmarks", publicBookmarksRouter);
