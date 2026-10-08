@@ -84,6 +84,7 @@ Each pillar server-renders **every** published article in its cluster (`PillarGu
 | does-walking-help-you-lose-weight | does walking help you lose weight | Does Walking Help You Lose Weight? |
 | why-am-i-not-losing-weight | why am i not losing weight | Why Am I Not Losing Weight? Reasons & Fixes |
 | does-intermittent-fasting-work | does intermittent fasting work | Does Intermittent Fasting Work? 16:8 Evidence |
+| maintenance-calories | maintenance calories | What Are Maintenance Calories? How to Find Yours |
 
 The live values (with 140–160 character meta descriptions) are in `backend/src/db/intentArticles/seoMeta.ts`, applied by the `2026-10-07-seo-meta` content migration. CMS edits win: the migration only replaces values that still equal the seeded text.
 
@@ -94,6 +95,7 @@ The live values (with 140–160 character meta descriptions) are in `backend/src
 | how much protein per day | article `how-much-protein-do-you-need-per-day` | `/protein-calculator` (owns "protein calculator"), `/nutrition/protein` (owns "protein guide") |
 | calories to lose weight | article `how-many-calories-should-i-eat-to-lose-weight` | `/calorie-deficit-calculator`, `/weight-loss` |
 | protein to build muscle | article `how-much-protein-to-build-muscle` | `/muscle-building`, `/protein-calculator` |
+| maintenance calories | article `maintenance-calories` | `/tdee-calculator` (owns "tdee calculator" and "maintenance calorie calculator") |
 | how much water should you drink | article `how-much-water-should-you-drink` | `/water-intake-calculator` (owns the "calculator" variant) |
 
 ---
@@ -116,7 +118,7 @@ Write only when the page can be genuinely better than what ranks today. Clusters
 
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
-| maintenance calories | What Are Maintenance Calories? How to Find Yours | nutrition / calories-energy | `/tdee-calculator` | calories to lose weight, how to calculate calorie deficit, BMR vs TDEE |
+| ~~maintenance calories~~ (published, `maintenance-calories`) | What Are Maintenance Calories? How to Find Yours | nutrition / calories-energy | `/tdee-calculator` | calories to lose weight, how to calculate calorie deficit, BMR vs TDEE |
 | bmr vs tdee | BMR vs TDEE: What's the Difference? | nutrition / calories-energy | `/bmr-calculator` | maintenance calories, `/tdee-calculator`, calories to lose weight |
 | 1500 calorie diet plan indian | 1500 Calorie Indian Diet Plan (Veg & Non-Veg) | weight-loss / diet-meal-planning | `/calorie-calculator` | best breakfast / best dinner for weight loss, high protein indian foods, calories to lose weight |
 
@@ -202,6 +204,7 @@ Run on the first working day of each month. Allow about 30 minutes. Use **Perfor
 | 2026-10 | 27 articles | Meta titles/descriptions from `seoMeta.ts`, cluster links (PR #52) | |
 | 2026-10 | 4 pillars + subcategories | Retargeted titles/H1s, expanded copy, full cluster lists (PR #54) | |
 | 2026-10 | Articles, authors, recipes | Real reviewers only, author pages, Recipe schema, ISR (PR #56) | |
+| 2026-10 | `maintenance-calories` (new) | First calories-cluster article; linked from the two calorie-deficit articles; opens `/blog/nutrition/calories-energy` for indexing | |
 
 ---
 
