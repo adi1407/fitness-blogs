@@ -36,6 +36,7 @@ const PATHS: Record<string, string> = {
   "is-ghee-good-for-you": "nutrition/dietary-fats",
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
   "does-intermittent-fasting-work": "weight-loss/intermittent-fasting",
+  "maintenance-calories": "nutrition/calories-energy",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -267,6 +268,34 @@ async function seedAuthorBios(): Promise<void> {
   }
 }
 
+const MAINTENANCE_MARKER = "<strong>Not sure of your maintenance?</strong>";
+
+const MAINTENANCE_LINKS: Record<string, string> = {
+  "how-many-calories-should-i-eat-to-lose-weight": `Every deficit starts from that number — learn ${a("maintenance-calories", "what maintenance calories are and how to find yours")}, including how to check the calculator’s estimate against two weeks of weigh-ins.`,
+  "how-to-calculate-your-calorie-deficit": `A deficit is only as accurate as the number it comes from. See ${a("maintenance-calories", "how to find your maintenance calories")} and confirm them before you subtract anything.`,
+};
+
+/** Inbound links to the maintenance-calories article from its two closest siblings. */
+async function insertMaintenanceLinks(): Promise<void> {
+  const res = await pool.query<{ id: string; slug: string; body: string }>(
+    `SELECT id, slug, body FROM articles WHERE slug = ANY($1::text[])`,
+    [Object.keys(MAINTENANCE_LINKS)],
+  );
+  let updated = 0;
+  for (const row of res.rows) {
+    if (!row.body || row.body.includes(MAINTENANCE_MARKER)) continue;
+    const block = `<p>${MAINTENANCE_MARKER} ${MAINTENANCE_LINKS[row.slug]}</p>`;
+    const anchor = row.body.indexOf("<h2>Key takeaways</h2>");
+    const body =
+      anchor >= 0
+        ? `${row.body.slice(0, anchor)}${block}\n${row.body.slice(anchor)}`
+        : `${row.body}\n${block}`;
+    await pool.query(`UPDATE articles SET body = $1 WHERE id = $2`, [body, row.id]);
+    updated++;
+  }
+  console.log(`[db] maintenance-calories links added to ${updated} articles`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -275,6 +304,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-07-read-next-newest", run: () => insertReadNextLinks(READ_NEXT_NEWEST) },
   { id: "2026-10-08-clear-auto-reviewers", run: clearAutoReviewers },
   { id: "2026-10-08-author-bios", run: seedAuthorBios },
+  { id: "2026-10-09-maintenance-calories-links", run: insertMaintenanceLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
