@@ -21,10 +21,10 @@ Links to fitlives.in inside articles (articles, foods, exercises, recipes, progr
 ```bash
 cd app
 npm install
-npx expo start
+npm run start:go
 ```
 
-Scan the QR code with **Expo Go** (Android) or the Camera app (iOS), or press `a` for an Android emulator. Expo Go must be the version that supports SDK 57 — update it from the store if you see errors like `Cannot find native module 'ExpoAsset'`.
+Scan the QR code with **Expo Go** (Android) or the Camera app (iOS), or press `a` for an Android emulator. Use `start:go`, not plain `npx expo start`: because `expo-dev-client` is installed, plain start serves a development-build QR (`exp+fitlives://…`) that Expo Go and the iOS camera can't open ("No usable data found"). If Metro is already running, press `s` to switch to Expo Go. Expo Go must be the version that supports SDK 57 — update it from the store if you see errors like `Cannot find native module 'ExpoAsset'`.
 
 The first request can take ~15 s while the Render API wakes up; screens show skeletons and retry once. Content is cached offline for 7 days (member data is never persisted).
 
