@@ -332,6 +332,31 @@ function insertPlanLinks(): Promise<void> {
   return insertMarkedParagraphs(PLAN_MARKER, PLAN_LINKS, "diet-plan and protein links");
 }
 
+const NEXT_STEP_MARKER = "<strong>Your next step:</strong>";
+
+/** Journey links on the two top-traffic articles, pointing at tools and the newest guides. */
+const NEXT_STEP_LINKS: Record<string, string> = {
+  "why-am-i-not-losing-weight": `Start by confirming your ${a("maintenance-calories", "maintenance calories")} — most stalls come from an estimate that was never checked. Then make sure ${a("protein-for-weight-loss", "protein is high enough for a deficit")}, see what your daily walking is worth with the ${calc("steps-to-calories-calculator", "steps to calories calculator")}, and if meals are the problem, follow our ${a("indian-diet-plan-for-weight-loss", "7-day Indian diet plan for weight loss")}.`,
+  "is-creatine-safe": `Creatine only helps if training and protein are in place. Get your daily target from the ${calc("protein-calculator", "protein calculator")} — vegetarians can hit it with these ${a("vegetarian-protein-sources-india", "vegetarian protein sources")}. Expecting the early water weight? Track whether you are gaining muscle or fat with the ${calc("body-fat-calculator", "body fat calculator")}, and set a fluid target with the ${calc("water-intake-calculator", "water intake calculator")}.`,
+};
+
+function insertNextStepLinks(): Promise<void> {
+  return insertMarkedParagraphs(NEXT_STEP_MARKER, NEXT_STEP_LINKS, "next-step journey links");
+}
+
+const PORTION_MARKER = "<strong>Check your portions:</strong>";
+
+/** Diet articles that name staples but never linked their /foods pages. */
+const PORTION_LINKS: Record<string, string> = {
+  "best-breakfast-for-weight-loss": `See calories and protein per serving for ${food("boiled-egg", "eggs")}, ${food("moong-dal", "moong dal")} (for chilla), ${food("paneer", "paneer")}, ${food("poha", "poha")} and ${food("roti", "roti")}, and scale them to your own portion.`,
+  "best-dinner-for-weight-loss": `Measure the carb portion with calories per roti and per katori on our ${food("roti", "roti")} and ${food("rice", "rice")} pages, and size your protein with ${food("paneer", "paneer")}, ${food("chicken-breast", "chicken breast")} or ${food("moong-dal", "moong dal")}.`,
+  "best-indian-foods-for-weight-loss": `Compare the everyday staples side by side: ${food("roti", "roti")}, ${food("rice", "rice")}, ${food("paneer", "paneer")}, ${food("moong-dal", "moong dal")} and ${food("kala-chana", "kala chana")} — each page has a serving calculator.`,
+};
+
+function insertPortionLinks(): Promise<void> {
+  return insertMarkedParagraphs(PORTION_MARKER, PORTION_LINKS, "food portion links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -362,6 +387,8 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-09-maintenance-calories-links", run: insertMaintenanceLinks },
   { id: "2026-10-09-restore-split-tags", run: restoreSplitTags },
   { id: "2026-10-10-diet-plan-protein-links", run: insertPlanLinks },
+  { id: "2026-10-11-next-step-links", run: insertNextStepLinks },
+  { id: "2026-10-11-food-portion-links", run: insertPortionLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
