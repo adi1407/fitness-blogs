@@ -85,6 +85,11 @@ Each pillar server-renders **every** published article in its cluster (`PillarGu
 | why-am-i-not-losing-weight | why am i not losing weight | Why Am I Not Losing Weight? Reasons & Fixes |
 | does-intermittent-fasting-work | does intermittent fasting work | Does Intermittent Fasting Work? 16:8 Evidence |
 | maintenance-calories | maintenance calories | What Are Maintenance Calories? How to Find Yours |
+| bmr-vs-tdee | bmr vs tdee | BMR vs TDEE: What’s the Difference? |
+| 1500-calorie-indian-diet-plan | 1500 calorie diet plan indian | 1500 Calorie Indian Diet Plan (Veg & Non-Veg) |
+| indian-diet-plan-for-weight-loss | weight loss diet plan india | Indian Diet Plan for Weight Loss (7-Day Veg) |
+| vegetarian-protein-sources-india | vegetarian protein sources india | Vegetarian Protein Sources: Best Indian Foods |
+| protein-for-weight-loss | protein for weight loss | Protein for Weight Loss: How Much Per Day? |
 
 The live values (with 140–160 character meta descriptions) are in `backend/src/db/intentArticles/seoMeta.ts`, applied by the `2026-10-07-seo-meta` content migration. CMS edits win: the migration only replaces values that still equal the seeded text.
 
@@ -96,6 +101,10 @@ The live values (with 140–160 character meta descriptions) are in `backend/src
 | calories to lose weight | article `how-many-calories-should-i-eat-to-lose-weight` | `/calorie-deficit-calculator`, `/weight-loss` |
 | protein to build muscle | article `how-much-protein-to-build-muscle` | `/muscle-building`, `/protein-calculator` |
 | maintenance calories | article `maintenance-calories` | `/tdee-calculator` (owns "tdee calculator" and "maintenance calorie calculator") |
+| bmr vs tdee | article `bmr-vs-tdee` | `maintenance-calories`, `/bmr-calculator`, `/tdee-calculator` |
+| weight loss diet plan india | article `indian-diet-plan-for-weight-loss` | `1500-calorie-indian-diet-plan` (owns the "1500 calorie" variant), `/weight-loss` (owns "weight loss guide") |
+| vegetarian protein sources india | article `vegetarian-protein-sources-india` | `best-high-protein-indian-foods` (owns "high protein indian foods", includes non-veg), `/nutrition/protein` |
+| protein for weight loss | article `protein-for-weight-loss` | `how-much-protein-do-you-need-per-day` (owns "how much protein per day"), `/protein-calculator` |
 | how much water should you drink | article `how-much-water-should-you-drink` | `/water-intake-calculator` (owns the "calculator" variant) |
 
 ---
@@ -119,8 +128,8 @@ Write only when the page can be genuinely better than what ranks today. Clusters
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
 | ~~maintenance calories~~ (published, `maintenance-calories`) | What Are Maintenance Calories? How to Find Yours | nutrition / calories-energy | `/tdee-calculator` | calories to lose weight, how to calculate calorie deficit, BMR vs TDEE |
-| bmr vs tdee | BMR vs TDEE: What's the Difference? | nutrition / calories-energy | `/bmr-calculator` | maintenance calories, `/tdee-calculator`, calories to lose weight |
-| 1500 calorie diet plan indian | 1500 Calorie Indian Diet Plan (Veg & Non-Veg) | weight-loss / diet-meal-planning | `/calorie-calculator` | best breakfast / best dinner for weight loss, high protein indian foods, calories to lose weight |
+| ~~bmr vs tdee~~ (published, `bmr-vs-tdee`) | BMR vs TDEE: What's the Difference? | nutrition / calories-energy | `/bmr-calculator` | maintenance calories, `/tdee-calculator`, calories to lose weight |
+| ~~1500 calorie diet plan indian~~ (published, `1500-calorie-indian-diet-plan`) | 1500 Calorie Indian Diet Plan (Veg & Non-Veg) | weight-loss / diet-meal-planning | `/calorie-calculator` | best breakfast / best dinner for weight loss, high protein indian foods, calories to lose weight |
 
 Angle to beat the current results: worked examples for a typical Indian adult (e.g. 70 kg office worker), and a full day of real Indian meals with gram weights from `/foods`. Suggested sources: Mifflin-St Jeor equation paper (1990), ICMR-NIN *Dietary Guidelines for Indians* (2024).
 
@@ -139,7 +148,7 @@ Angle: Indian buying advice (third-party tested brands, price per effective gram
 
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
-| weight loss diet plan india | Indian Diet Plan for Weight Loss (7-Day Veg) | weight-loss / diet-meal-planning | `/calorie-deficit-calculator` | 1500 calorie diet plan, best indian foods for weight loss, rice vs roti |
+| ~~weight loss diet plan india~~ (published, `indian-diet-plan-for-weight-loss`) | Indian Diet Plan for Weight Loss (7-Day Veg) | weight-loss / diet-meal-planning | `/calorie-deficit-calculator` | 1500 calorie diet plan, best indian foods for weight loss, rice vs roti |
 | strength training for fat loss | Strength Training for Fat Loss: Beginner Plan | weight-loss / strength-training-weight-loss | `/body-fat-calculator` | what is progressive overload, does walking help you lose weight, calories to lose weight |
 
 These two give `/weight-loss` its strongest supporting links; once published, add them to the "How to lose weight in 5 steps" section on the pillar (`frontend/src/app/weight-loss/page.tsx`).
@@ -148,8 +157,8 @@ These two give `/weight-loss` its strongest supporting links; once published, ad
 
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
-| vegetarian protein sources india | Vegetarian Protein Sources: Best Indian Foods | nutrition / protein | `/protein-calculator` | high protein indian foods, 100g paneer protein, `/nutrition/protein` |
-| protein for weight loss | Protein for Weight Loss: How Much Per Day? | weight-loss / weight-loss-nutrition | `/protein-calculator` | how much protein per day, is paneer good for weight loss, calories to lose weight |
+| ~~vegetarian protein sources india~~ (published, `vegetarian-protein-sources-india`) | Vegetarian Protein Sources: Best Indian Foods | nutrition / protein | `/protein-calculator` | high protein indian foods, 100g paneer protein, `/nutrition/protein` |
+| ~~protein for weight loss~~ (published, `protein-for-weight-loss`) | Protein for Weight Loss: How Much Per Day? | weight-loss / weight-loss-nutrition | `/protein-calculator` | how much protein per day, is paneer good for weight loss, calories to lose weight |
 
 Watch for overlap: "vegetarian protein sources" sits next to the `/nutrition/protein` hub ("protein foods india"). The article goes deep on vegetarian-only meal building; the hub stays the broad overview and links to it.
 
@@ -205,6 +214,7 @@ Run on the first working day of each month. Allow about 30 minutes. Use **Perfor
 | 2026-10 | 4 pillars + subcategories | Retargeted titles/H1s, expanded copy, full cluster lists (PR #54) | |
 | 2026-10 | Articles, authors, recipes | Real reviewers only, author pages, Recipe schema, ISR (PR #56) | |
 | 2026-10 | `maintenance-calories` (new) | First calories-cluster article; linked from the two calorie-deficit articles; opens `/blog/nutrition/calories-energy` for indexing | |
+| 2026-10 | 5 new articles | `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `indian-diet-plan-for-weight-loss`, `vegetarian-protein-sources-india`, `protein-for-weight-loss`; inbound links from 9 siblings (`2026-10-10-diet-plan-protein-links`); opens `/blog/weight-loss/diet-meal-planning` further | |
 
 ---
 

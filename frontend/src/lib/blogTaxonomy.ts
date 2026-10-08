@@ -86,7 +86,7 @@ export const BLOG_TAXONOMY: BlogCategoryDef[] = [
         slug: "diet-meal-planning",
         label: "Diet & Meal Planning",
         intro:
-          "Practical weight-loss meal ideas built from everyday Indian food. Find high-protein breakfasts and lighter dinners that fit a calorie target without special diet products.",
+          "Practical weight-loss meal plans built from everyday Indian food: a 1500 calorie day with gram weights, a 7-day vegetarian plan, and high-protein breakfasts and lighter dinners that fit a calorie target without special diet products.",
       },
       { slug: "cardio-weight-loss", label: "Cardio & Weight Loss" },
       {
@@ -140,7 +140,7 @@ export const BLOG_TAXONOMY: BlogCategoryDef[] = [
         slug: "protein",
         label: "Protein",
         intro:
-          "How much protein you need per day, and the best high-protein Indian foods to get there. Includes calories and protein for paneer, eggs and chicken, plus an honest look at whey protein safety.",
+          "How much protein you need per day, and the best high-protein Indian foods to get there — including vegetarian sources ranked by protein per calorie. Includes calories and protein for paneer, eggs and chicken, plus an honest look at whey protein safety.",
       },
       { slug: "carbohydrates", label: "Carbohydrates" },
       {
