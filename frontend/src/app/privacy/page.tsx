@@ -42,6 +42,7 @@ export default function PrivacyPage() {
       title="Privacy Policy"
       intro="This notice explains what personal data fitlives processes when you read the Site, sign in with Google, save or upvote articles, or when we measure traffic."
       toc={toc}
+      lastUpdated="7 October 2026"
       related={[
         LEGAL_RELATED.cookies,
         LEGAL_RELATED.terms,
@@ -99,6 +100,12 @@ export default function PrivacyPage() {
           ).
         </li>
         <li>
+          <strong>Newsletter</strong>: if you subscribe, the email address you
+          enter, where on the Site you signed up, and when. Stored in our own
+          database; every email includes an unsubscribe link, and you can also
+          ask us to delete it.
+        </li>
+        <li>
           <strong>Email you send us</strong> (corrections, privacy requests).
         </li>
       </LegalUl>
@@ -111,6 +118,7 @@ export default function PrivacyPage() {
       <LegalUl>
         <li>To operate the Site and member features (sign-in, save, upvote).</li>
         <li>To keep accounts secure and prevent abuse.</li>
+        <li>To email newsletter subscribers about new guides and tools.</li>
         <li>To understand which pages help readers (aggregated analytics).</li>
         <li>To respond to your emails and correction requests.</li>
         <li>To comply with law if we are legally required to.</li>
@@ -179,7 +187,8 @@ export default function PrivacyPage() {
       <p>
         Member accounts and engagement records are kept while the account is
         active and for a reasonable period after last login (or until you
-        request deletion). Server logs are rotated on a typical hosting
+        request deletion). Newsletter addresses are kept until you unsubscribe
+        or ask us to delete them. Server logs are rotated on a typical hosting
         schedule. Analytics data follows OpenPanel and Google Analytics
         retention for our properties. Backups may persist for a limited time
         after deletion requests complete.

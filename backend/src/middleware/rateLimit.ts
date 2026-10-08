@@ -44,6 +44,6 @@ export function rateLimit({ windowMs, max, key, message }: RateLimitOptions) {
 
 /** Site proxy forwards the visitor IP; direct callers fall back to the socket IP. */
 export function clientIp(req: Request): string {
-  const forwarded = req.get("x-fitlives-client-ip")?.trim();
+  const forwarded = req.get("x-client-ip")?.trim();
   return (forwarded || req.ip || "unknown").slice(0, 64);
 }

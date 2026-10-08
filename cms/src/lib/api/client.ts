@@ -69,6 +69,48 @@ export async function apiUpload<T>(
   return response.json() as Promise<T>;
 }
 
+/** Authenticated file download (e.g. CSV exports) — saves via a temporary object URL. */
+export async function apiDownload(path: string, fallbackName: string): Promise<void> {
+  const token = getToken();
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!response.ok) {
+    let message = `Download failed (${response.status})`;
+    try {
+      const data = (await response.json()) as { message?: string };
+      if (data.message) message = data.message;
+    } catch {
+      /* ignore */
+    }
+    throw new Error(message);
+  }
+  const disposition = response.headers.get("Content-Disposition") ?? "";
+  const name = /filename="([^"]+)"/.exec(disposition)?.[1] ?? fallbackName;
+  const url = URL.createObjectURL(await response.blob());
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export type Subscriber = {
+  id: string;
+  email: string;
+  source: string;
+  createdAt: string;
+  unsubscribedAt: string | null;
+};
+
+export type SubscriberSummary = {
+  active: number;
+  unsubscribed: number;
+  bySource: { source: string; active: number; unsubscribed: number }[];
+};
+
 export type StaffRole = "admin" | "editor" | "writer";
 
 export type CmsUser = {

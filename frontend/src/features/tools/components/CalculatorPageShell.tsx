@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SocialFollow } from "@/components/shared/SocialFollow";
+import { SubscribeForm } from "@/features/newsletter/components/SubscribeForm";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import type { LinkItem } from "@/features/tools/content/links";
@@ -183,6 +184,14 @@ export function CalculatorPageShell({
       </p>
 
       <div className="mt-6 sm:mt-8">{form}</div>
+
+      <SubscribeForm
+        source={`calc_${slug.replace(/-calculator$/, "").replace(/-/g, "_")}`}
+        variant="inline"
+        className="mt-4"
+        title="Get your next step by email"
+        description="New calculators, Indian meal ideas and guides that build on your numbers. No spam."
+      />
 
       <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12">
         <article className="min-w-0 space-y-12">

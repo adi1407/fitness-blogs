@@ -3,6 +3,7 @@ import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CoverImage } from "@/components/shared/CoverImage";
 import { SocialFollow } from "@/components/shared/SocialFollow";
+import { SubscribeForm } from "@/features/newsletter/components/SubscribeForm";
 import { SocialLinks } from "@/components/ui/social-links";
 import {
   ArticleShare,
@@ -446,11 +447,16 @@ export function BlogArticleView({
                 </section>
               ) : null}
 
-              <SocialFollow
-                variant="card"
-                placement="article_end"
+              <SubscribeForm
+                source="article_end"
                 className="mt-10"
-                description="Liked this guide? Get short, evidence-based fitness and nutrition tips for India every week. Reels on Instagram, guides on Facebook."
+                title="Liked this guide? Get the next one by email"
+              />
+              <SocialFollow
+                variant="strip"
+                placement="article_end"
+                className="mt-4"
+                description="Short, evidence-based fitness and nutrition tips for India every week. Reels on Instagram, guides on Facebook."
               />
               <p className="mt-3 text-sm text-muted-foreground">
                 Questions about this article?{" "}
