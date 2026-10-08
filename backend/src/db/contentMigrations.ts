@@ -37,6 +37,11 @@ const PATHS: Record<string, string> = {
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
   "does-intermittent-fasting-work": "weight-loss/intermittent-fasting",
   "maintenance-calories": "nutrition/calories-energy",
+  "bmr-vs-tdee": "nutrition/calories-energy",
+  "1500-calorie-indian-diet-plan": "weight-loss/diet-meal-planning",
+  "indian-diet-plan-for-weight-loss": "weight-loss/diet-meal-planning",
+  "vegetarian-protein-sources-india": "nutrition/protein",
+  "protein-for-weight-loss": "weight-loss/weight-loss-nutrition",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -275,16 +280,23 @@ const MAINTENANCE_LINKS: Record<string, string> = {
   "how-to-calculate-your-calorie-deficit": `A deficit is only as accurate as the number it comes from. See ${a("maintenance-calories", "how to find your maintenance calories")} and confirm them before you subtract anything.`,
 };
 
-/** Inbound links to the maintenance-calories article from its two closest siblings. */
-async function insertMaintenanceLinks(): Promise<void> {
+/**
+ * Adds one `<p><strong>marker</strong> sentence</p>` per article, just before
+ * "Key takeaways" (or at the end). Skips articles that already contain the marker.
+ */
+async function insertMarkedParagraphs(
+  marker: string,
+  sentences: Record<string, string>,
+  label: string,
+): Promise<void> {
   const res = await pool.query<{ id: string; slug: string; body: string }>(
     `SELECT id, slug, body FROM articles WHERE slug = ANY($1::text[])`,
-    [Object.keys(MAINTENANCE_LINKS)],
+    [Object.keys(sentences)],
   );
   let updated = 0;
   for (const row of res.rows) {
-    if (!row.body || row.body.includes(MAINTENANCE_MARKER)) continue;
-    const block = `<p>${MAINTENANCE_MARKER} ${MAINTENANCE_LINKS[row.slug]}</p>`;
+    if (!row.body || row.body.includes(marker)) continue;
+    const block = `<p>${marker} ${sentences[row.slug]}</p>`;
     const anchor = row.body.indexOf("<h2>Key takeaways</h2>");
     const body =
       anchor >= 0
@@ -293,7 +305,31 @@ async function insertMaintenanceLinks(): Promise<void> {
     await pool.query(`UPDATE articles SET body = $1 WHERE id = $2`, [body, row.id]);
     updated++;
   }
-  console.log(`[db] maintenance-calories links added to ${updated} articles`);
+  console.log(`[db] ${label} added to ${updated} articles`);
+}
+
+/** Inbound links to the maintenance-calories article from its two closest siblings. */
+function insertMaintenanceLinks(): Promise<void> {
+  return insertMarkedParagraphs(MAINTENANCE_MARKER, MAINTENANCE_LINKS, "maintenance-calories links");
+}
+
+const PLAN_MARKER = "<strong>Put it into practice:</strong>";
+
+/** Inbound links to the October calories, diet-plan and protein articles. */
+const PLAN_LINKS: Record<string, string> = {
+  "maintenance-calories": `Calculators show two numbers — here is ${a("bmr-vs-tdee", "BMR vs TDEE and which one to use")}. Ready to eat below maintenance? Start with our ${a("1500-calorie-indian-diet-plan", "1500 calorie Indian diet plan")}.`,
+  "how-many-calories-should-i-eat-to-lose-weight": `Turn your number into meals with the ${a("1500-calorie-indian-diet-plan", "1500 calorie Indian diet plan")}, or follow a full week with our ${a("indian-diet-plan-for-weight-loss", "7-day Indian diet plan for weight loss")}. Mixing up the calculator’s numbers? Read ${a("bmr-vs-tdee", "BMR vs TDEE")}.`,
+  "best-breakfast-for-weight-loss": `See how these breakfasts fit a whole day in our ${a("1500-calorie-indian-diet-plan", "1500 calorie Indian diet plan")} and the ${a("indian-diet-plan-for-weight-loss", "7-day Indian diet plan for weight loss")}.`,
+  "best-dinner-for-weight-loss": `Plan the rest of the week with our ${a("indian-diet-plan-for-weight-loss", "7-day Indian diet plan for weight loss")}, or see a full day with gram weights in the ${a("1500-calorie-indian-diet-plan", "1500 calorie Indian diet plan")}.`,
+  "best-indian-foods-for-weight-loss": `Build these foods into a week of meals with our ${a("indian-diet-plan-for-weight-loss", "Indian diet plan for weight loss")}, and keep protein high with ${a("protein-for-weight-loss", "how much protein you need for weight loss")}.`,
+  "best-high-protein-indian-foods": `Vegetarian? Our guide to ${a("vegetarian-protein-sources-india", "vegetarian protein sources in India")} ranks every option by protein per calorie. Cutting calories? See ${a("protein-for-weight-loss", "protein for weight loss")}.`,
+  "how-much-protein-do-you-need-per-day": `Losing weight? Targets are a little higher in a deficit — read ${a("protein-for-weight-loss", "protein for weight loss")}. Vegetarian? See the ${a("vegetarian-protein-sources-india", "best vegetarian protein sources in India")}.`,
+  "is-paneer-good-for-weight-loss": `Paneer is one way to protect muscle in a deficit — here is ${a("protein-for-weight-loss", "how much protein you need for weight loss")} and how to spread it across your meals.`,
+  "100g-paneer-calories-and-protein": `See how paneer compares with soya, dals and rajma in our ranking of ${a("vegetarian-protein-sources-india", "vegetarian protein sources in India")}.`,
+};
+
+function insertPlanLinks(): Promise<void> {
+  return insertMarkedParagraphs(PLAN_MARKER, PLAN_LINKS, "diet-plan and protein links");
 }
 
 /**
@@ -325,6 +361,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-08-author-bios", run: seedAuthorBios },
   { id: "2026-10-09-maintenance-calories-links", run: insertMaintenanceLinks },
   { id: "2026-10-09-restore-split-tags", run: restoreSplitTags },
+  { id: "2026-10-10-diet-plan-protein-links", run: insertPlanLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

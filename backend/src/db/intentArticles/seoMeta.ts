@@ -144,4 +144,29 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "What are maintenance calories? Calculate yours from BMR and activity level with worked Indian examples, then confirm the number with two weeks of weigh-ins.",
   },
+  "bmr-vs-tdee": {
+    metaTitle: "BMR vs TDEE: What’s the Difference?",
+    metaDescription:
+      "BMR vs TDEE explained: what each number measures, how to calculate both with a worked Indian example, and why calorie targets should start from TDEE.",
+  },
+  "1500-calorie-indian-diet-plan": {
+    metaTitle: "1500 Calorie Indian Diet Plan (Veg & Non-Veg)",
+    metaDescription:
+      "A 1500 calorie Indian diet plan with veg and non-veg menus, gram weights, protein per meal and simple swaps to scale it to 1,200 or 1,800 calories a day.",
+  },
+  "indian-diet-plan-for-weight-loss": {
+    metaTitle: "Indian Diet Plan for Weight Loss (7-Day Veg)",
+    metaDescription:
+      "A 7-day vegetarian Indian diet plan for weight loss with home-style meals, calories and protein for each day, portion guides and a simple weekly grocery list.",
+  },
+  "vegetarian-protein-sources-india": {
+    metaTitle: "Vegetarian Protein Sources: Best Indian Foods",
+    metaDescription:
+      "Vegetarian protein sources in India ranked by protein per serving and per calorie, how to combine dal and grains, and a sample 90 g protein vegetarian day.",
+  },
+  "protein-for-weight-loss": {
+    metaTitle: "Protein for Weight Loss: How Much Per Day?",
+    metaDescription:
+      "How much protein for weight loss? Simple g/kg targets by body weight, why protein helps in a deficit, and how to hit it with Indian veg and non-veg meals.",
+  },
 };
