@@ -230,6 +230,12 @@ Every `trackEvent()` call goes to both OpenPanel and GA4 (`frontend/src/lib/anal
 
 To see parameters such as `tool` or `source` in reports, register them under **Admin → Custom definitions → Create custom dimension** (event scope).
 
+### Social links and UTM tags
+
+- **Link in bio** (Instagram, Facebook): `https://fitlives.in/start?utm_source=instagram&utm_medium=social&utm_campaign=bio` (use `facebook` as the source on Facebook). `/start` is noindex and leads with the TDEE calculator, popular articles, topic tiles and the email form.
+- **Reel, story or post about one topic:** link straight to the matching page and name the campaign after the topic, lowercase with hyphens: `https://fitlives.in/tdee-calculator?utm_source=instagram&utm_medium=social&utm_campaign=tdee-reel`.
+- Keep `utm_medium=social` for every organic social link so GA4 groups them under Organic Social. Never add UTM tags to internal links on the site.
+
 ---
 
 ## 7. Off-page (honest only)
