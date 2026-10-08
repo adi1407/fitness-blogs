@@ -97,7 +97,11 @@ const steps = [
         <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
           high-protein Indian foods
         </Link>
-        .
+        . Not lifting yet? See{" "}
+        <Link href={ARTICLES.proteinForWeightLoss.href} className="fk-link">
+          protein for weight loss
+        </Link>{" "}
+        for targets by body weight.
       </>
     ),
   },
@@ -249,7 +253,15 @@ export default function WeightLossPage() {
               or rice), a protein (dal, paneer, curd, eggs, chicken or fish) and
               vegetables. Weight loss comes from adjusting the proportions: a
               bigger protein and vegetable share, a measured carb portion, and
-              less oil and ghee in cooking.
+              less oil and ghee in cooking. To see it on a plate, follow our{" "}
+              <Link href={ARTICLES.indianDietPlan.href} className="fk-link">
+                7-day Indian diet plan for weight loss
+              </Link>{" "}
+              or the{" "}
+              <Link href={ARTICLES.plan1500.href} className="fk-link">
+                1500 calorie Indian diet plan
+              </Link>{" "}
+              with gram weights.
             </p>
             <p>
               The biggest hidden calories are usually fried snacks, sweets,
