@@ -204,6 +204,6 @@ export const bmrContent: CalculatorContent = {
   ],
   related: {
     calculators: [CALCULATORS.tdee, CALCULATORS.calorie, CALCULATORS.macro, CALCULATORS.bmi],
-    articles: [ARTICLES.caloriesToLoseWeight, ARTICLES.calorieDeficit, ARTICLES.notLosingWeight, ARTICLES.progressiveOverload],
+    articles: [ARTICLES.maintenanceCalories, ARTICLES.caloriesToLoseWeight, ARTICLES.calorieDeficit, ARTICLES.notLosingWeight],
   },
 };

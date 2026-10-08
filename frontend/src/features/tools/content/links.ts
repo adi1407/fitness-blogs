@@ -15,6 +15,7 @@ export const ARTICLES = {
   bellyFat: article("How to lose belly fat", "weight-loss/fat-loss-basics", "how-to-lose-belly-fat", 355528441),
   walking: article("Does walking help you lose weight?", "weight-loss/walking-daily-activity", "does-walking-help-you-lose-weight", 727382084),
   notLosingWeight: article("Why am I not losing weight?", "weight-loss/weight-loss-plateaus", "why-am-i-not-losing-weight", 686723666),
+  maintenanceCalories: article("What are maintenance calories?", "nutrition/calories-energy", "maintenance-calories", 561064519),
   intermittentFasting: article("Does intermittent fasting work?", "weight-loss/intermittent-fasting", "does-intermittent-fasting-work", 723207649),
   proteinPerDay: article("How much protein do you need per day?", "nutrition/protein", "how-much-protein-do-you-need-per-day", 210790133),
   proteinMuscle: article("How much protein to build muscle?", "muscle-building/muscle-building-nutrition", "how-much-protein-to-build-muscle", 418755868),
