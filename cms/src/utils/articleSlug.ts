@@ -75,18 +75,18 @@ export function finalizeTagsInput(value: unknown): string {
     .join(" ");
 }
 
-/** Tags for API — strip `#` and empty values. */
+/** Tags for API — strip `#` and empty values; `_` joins words (`#weight_loss` → "weight loss"). */
 export function tagsFromInput(value: unknown): string[] {
   return String(value ?? "")
     .split(/[,\s]+/)
-    .map((t) => t.replace(/^#+/, "").trim())
+    .map((t) => t.replace(/^#+/, "").replace(/_+/g, " ").trim())
     .filter(Boolean);
 }
 
-/** Display stored tags with `#` prefixes. */
+/** Display stored tags with `#` prefixes; spaces become `_` so multi-word tags survive a save. */
 export function tagsToInput(tags: string[]): string {
   return tags
-    .map((t) => t.replace(/^#+/, "").trim())
+    .map((t) => t.replace(/^#+/, "").trim().replace(/\s+/g, "_"))
     .filter(Boolean)
     .map((t) => `#${t}`)
     .join(" ");
