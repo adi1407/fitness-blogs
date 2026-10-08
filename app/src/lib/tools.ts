@@ -155,6 +155,63 @@ export const TOOL_GUIDE: { goal: string; tool: ToolId }[] = [
   { goal: "How much water should I drink?", tool: "water" },
 ];
 
+/** Same mapping as `calculatorCtaFor` on the website (frontend/src/lib/api/blog.ts). */
+const TOOL_BY_SUBCATEGORY: Record<string, ToolId> = {
+  "muscle-growth-hypertrophy": "protein",
+  bulking: "calorie",
+  "muscle-building-nutrition": "protein",
+  "strength-performance": "one-rep-max",
+  "training-programs": "one-rep-max",
+  "beginner-muscle-building": "macro",
+  "advanced-muscle-building": "one-rep-max",
+  "recovery-muscle-growth": "protein",
+  "muscle-building-mistakes": "protein",
+  "muscle-building-science": "protein",
+  "fat-loss-basics": "tdee",
+  "calorie-deficit": "deficit",
+  "weight-loss-nutrition": "calorie",
+  "diet-meal-planning": "macro",
+  "cardio-weight-loss": "steps",
+  "strength-training-weight-loss": "body-fat",
+  "walking-daily-activity": "steps",
+  "intermittent-fasting": "calorie",
+  "beginner-weight-loss": "deficit",
+  "weight-loss-plateaus": "tdee",
+  "sustainable-weight-loss": "deficit",
+  "weight-loss-mistakes": "tdee",
+  "weight-loss-myths": "calorie",
+  "weight-maintenance": "tdee",
+  "nutrition-basics": "macro",
+  "calories-energy": "bmr",
+  protein: "protein",
+  carbohydrates: "macro",
+  "dietary-fats": "macro",
+  "meal-planning": "macro",
+  hydration: "water",
+  "sports-nutrition": "protein",
+  "pre-workout-nutrition": "protein",
+  "post-workout-nutrition": "protein",
+  "food-labels-portions": "calorie",
+};
+
+const TOOL_BY_CATEGORY: Record<string, ToolId> = {
+  "weight-loss": "calorie",
+  "muscle-building": "protein",
+  nutrition: "macro",
+};
+
+/** Most relevant calculator for an article: subcategory first, then category. */
+export function toolForArticle(category: string | null, subcategory: string | null): ToolMeta | null {
+  const id = (subcategory && TOOL_BY_SUBCATEGORY[subcategory]) || (category && TOOL_BY_CATEGORY[category]);
+  return id ? toolById(id) : null;
+}
+
+/** Calculator for a website path such as `/tdee-calculator` (or the old `/tools/tdee-calculator`). */
+export function toolByWebPath(pathname: string): ToolMeta | null {
+  const path = pathname.replace(/^\/tools(?=\/[a-z-]+-calculator)/, "").replace(/\/+$/, "");
+  return TOOLS.find((t) => t.webPath === path) ?? null;
+}
+
 export function toolById(id: ToolId): ToolMeta {
   const tool = TOOLS.find((t) => t.id === id);
   if (!tool) throw new Error(`Unknown tool: ${id}`);
