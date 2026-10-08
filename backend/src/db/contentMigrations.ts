@@ -296,6 +296,25 @@ async function insertMaintenanceLinks(): Promise<void> {
   console.log(`[db] maintenance-calories links added to ${updated} articles`);
 }
 
+/**
+ * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
+ * Restore the seeded tags only where the stored value is exactly that split, so
+ * tags edited on purpose are left alone.
+ */
+async function restoreSplitTags(): Promise<void> {
+  let restored = 0;
+  for (const def of INTENT_ARTICLES) {
+    if (!def.tags.some((t) => /\s/.test(t))) continue;
+    const split = def.tags.flatMap((t) => t.split(/\s+/)).filter(Boolean);
+    const res = await pool.query(
+      `UPDATE articles SET tags = $1 WHERE slug = $2 AND tags = $3::text[]`,
+      [def.tags, def.slug, split],
+    );
+    restored += res.rowCount ?? 0;
+  }
+  console.log(`[db] restored multi-word tags on ${restored} articles`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -305,6 +324,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-08-clear-auto-reviewers", run: clearAutoReviewers },
   { id: "2026-10-08-author-bios", run: seedAuthorBios },
   { id: "2026-10-09-maintenance-calories-links", run: insertMaintenanceLinks },
+  { id: "2026-10-09-restore-split-tags", run: restoreSplitTags },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
