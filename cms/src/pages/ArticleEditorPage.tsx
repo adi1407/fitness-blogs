@@ -996,13 +996,16 @@ export default function ArticleEditorPage() {
                 }
               }}
               className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              placeholder="protein indian-diet beginners"
+              placeholder="protein weight_loss beginners"
             />
             <span className="mt-1 block text-xs font-normal text-slate-500">
               Type a word, then press space —{" "}
               <code className="rounded bg-slate-100 px-1">#</code> is added in
               front (e.g. <code className="rounded bg-slate-100 px-1">protein</code>{" "}
-              → <code className="rounded bg-slate-100 px-1">#protein</code>).
+              → <code className="rounded bg-slate-100 px-1">#protein</code>). Join
+              words with <code className="rounded bg-slate-100 px-1">_</code>:{" "}
+              <code className="rounded bg-slate-100 px-1">#weight_loss</code> is
+              saved as “weight loss”.
             </span>
           </label>
           <fieldset className="sm:col-span-2">
