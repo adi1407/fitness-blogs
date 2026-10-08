@@ -3,10 +3,12 @@ import * as WebBrowser from "expo-web-browser";
 import { Linking } from "react-native";
 
 import { SITE_URL } from "@/config";
+import { isPillarSlug } from "./pillars";
+import { toolByWebPath } from "./tools";
 
 /**
- * Route fitlives.in links to native screens when we have one
- * (articles by trailing number, foods by slug); everything else opens in a browser.
+ * Route fitlives.in links to native screens when we have one (articles, foods,
+ * calculators, topic hubs, guides…); everything else opens in a browser.
  */
 export function openLink(url: string) {
   let parsed: URL;
@@ -61,6 +63,25 @@ export function openLink(url: string) {
     const group = parsed.pathname.match(/^\/exercises\/([a-z0-9-]+)\/?$/);
     if (group) {
       router.push(`/exercises/${group[1]}`);
+      return;
+    }
+    const tool = toolByWebPath(parsed.pathname);
+    if (tool) {
+      router.push(`/calculator/${tool.id}`);
+      return;
+    }
+    if (/^\/tools\/?$/.test(parsed.pathname)) {
+      router.push("/tools");
+      return;
+    }
+    const subcategory = parsed.pathname.match(/^\/blog\/([a-z0-9-]+)\/([a-z0-9-]+)\/?$/);
+    if (subcategory && isPillarSlug(subcategory[1])) {
+      router.push(`/hub/${subcategory[1]}/${subcategory[2]}`);
+      return;
+    }
+    const pillar = parsed.pathname.match(/^\/([a-z0-9-]+)\/?$/);
+    if (pillar && isPillarSlug(pillar[1])) {
+      router.push(`/hub/${pillar[1]}`);
       return;
     }
   }

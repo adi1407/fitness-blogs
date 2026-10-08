@@ -27,10 +27,17 @@ export type ArticleSummary = {
 export type ArticleFaq = { question: string; answer: string };
 export type ArticleSource = { title: string; url?: string; note?: string };
 
+/** Optional fields may be missing from articles cached by older app versions. */
 export type Article = ArticleSummary & {
   body: string;
   faq: ArticleFaq[];
   sources: ArticleSource[];
+  tags?: string[];
+  topics?: string[];
+  views?: number;
+  authorSlug?: string | null;
+  reviewerSlug?: string | null;
+  featuredImageCaption?: string | null;
 };
 
 export function fetchArticles(signal?: AbortSignal) {
