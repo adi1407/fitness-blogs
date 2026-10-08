@@ -52,33 +52,42 @@ const REPORT_SCRIPT = `
 true;
 `;
 
-/** Brand-styled document wrapping CMS HTML. Fonts load from Google Fonts, falling back to Georgia. */
+/**
+ * Document wrapping CMS HTML, styled like `.article-body` on the website.
+ * Fonts load from Google Fonts, falling back to Georgia.
+ */
 export function buildBodyHtml(body: string) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:${colors.bg};overflow:hidden;-webkit-text-size-adjust:100%}
-#fl-root{padding:4px 20px 8px;font-family:'Roboto Slab',Georgia,serif;font-size:17px;line-height:1.72;color:#1F1F1F;word-wrap:break-word}
-h2{font-size:22px;line-height:1.3;margin:34px 0 12px;color:${colors.ink};padding-top:4px}
-h2::before{content:"";display:block;width:28px;height:3px;background:${colors.accent};border-radius:2px;margin-bottom:12px}
-h3{font-size:18px;line-height:1.35;margin:26px 0 8px;color:${colors.ink}}
+#fl-root{padding:0 20px 4px;font-family:'Roboto Slab',Georgia,serif;font-size:16.5px;line-height:1.7;color:${colors.muted};overflow-wrap:anywhere}
+#fl-root>:first-child{margin-top:0}
+h2{font-size:23px;line-height:1.3;font-weight:600;letter-spacing:-0.02em;margin:36px 0 12px;color:${colors.ink}}
+h3{font-size:19px;line-height:1.35;font-weight:600;margin:26px 0 8px;color:${colors.ink}}
+h4{font-size:17px;font-weight:600;margin:22px 0 8px;color:${colors.ink}}
 p,ul,ol{margin:0 0 16px}
-li{margin-bottom:8px}
-ul li::marker{color:${colors.accent}}
-strong{color:${colors.ink}}
-a{color:${colors.ink};text-decoration:underline;text-decoration-color:${colors.accent};text-decoration-thickness:2px;text-underline-offset:3px}
-img{max-width:100%;height:auto;border-radius:14px;margin:6px 0}
-figure{margin:0 0 18px}figcaption{font-size:13px;color:${colors.muted};margin-top:6px}
-table{display:block;overflow-x:auto;border-collapse:collapse;margin:0 0 20px;font-size:15px;max-width:100%;border-radius:12px}
-th,td{border:1px solid ${colors.border};padding:10px 12px;text-align:left;vertical-align:top}
-th{background:${colors.ink};color:#fff;font-weight:600}
-tr:nth-child(even) td{background:${colors.surface}}
-blockquote{margin:0 0 18px;padding:12px 16px;border-left:4px solid ${colors.accent};background:${colors.accentSoft};border-radius:0 12px 12px 0}
+ul,ol{padding-left:20px}
+li{margin-bottom:6px}
+li>ul,li>ol{margin:6px 0 0}
+strong{font-weight:600;color:${colors.ink}}
+a{color:${colors.ink};font-weight:500;text-decoration:underline;text-decoration-color:${colors.accent};text-decoration-thickness:2px;text-underline-offset:3px}
+img{display:block;width:100%;max-width:100%;height:auto;max-height:36rem;object-fit:contain;margin:20px auto;border-radius:12px;border:1px solid ${colors.border};background:${colors.surface}}
+figure{margin:20px 0 28px;overflow:hidden;border-radius:12px;border:1px solid ${colors.border};background:${colors.surface}}
+figure img{margin:0;border:0;border-radius:0}
+figcaption{padding:10px 16px;font-size:13px;color:${colors.muted}}
+table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-collapse:collapse;margin:16px 0 20px;font-size:14px;overflow-wrap:normal}
+th,td{border:1px solid ${colors.border};padding:8px 12px;text-align:left;vertical-align:top}
+th{background:${colors.canvas};color:${colors.ink};font-weight:600}
+blockquote{margin:0 0 18px;padding:12px 16px;border-left:4px solid ${colors.accent};background:${colors.accentSoft}}
 blockquote p:last-child{margin:0}
-hr{border:0;border-top:1px solid ${colors.border};margin:28px 0}
-code{background:${colors.surface};padding:2px 6px;border-radius:6px;font-size:15px}
+.read-also{margin:24px 0;padding:12px 16px;font-size:14px;border:1px solid ${colors.border};border-left:4px solid ${colors.accent};border-radius:12px;background:${colors.accentSoft}}
+hr{border:0;border-top:1px solid ${colors.border};margin:32px 0}
+code{background:${colors.surface};color:${colors.ink};padding:2px 6px;border-radius:4px;font-size:0.875em}
+pre{max-width:100%;overflow-x:auto;padding:16px;border:1px solid ${colors.border};border-radius:12px;background:${colors.surface};font-size:14px}
+pre code{background:none;padding:0}
 </style></head><body><div id="fl-root">${body}</div><script>${REPORT_SCRIPT}</script></body></html>`;
 }
