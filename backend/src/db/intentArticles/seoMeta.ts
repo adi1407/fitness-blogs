@@ -139,4 +139,9 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Does intermittent fasting work for weight loss? What big 16:8 trials found, an Indian-friendly fasting day, what breaks a fast and who should avoid it.",
   },
+  "maintenance-calories": {
+    metaTitle: "What Are Maintenance Calories? How to Find Yours",
+    metaDescription:
+      "What are maintenance calories? Calculate yours from BMR and activity level with worked Indian examples, then confirm the number with two weeks of weigh-ins.",
+  },
 };
