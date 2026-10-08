@@ -214,6 +214,22 @@ Run on the first working day of each month. Allow about 30 minutes. Use **Perfor
 - **IndexNow** (Bing and others) is pinged automatically on publish and edit; Google relies on the sitemap and internal links.
 - **Views** are counted by a beacon after the page renders (`POST /public/articles/:id/view`), so crawlers and cached renders don't inflate them.
 
+### GA4 key events
+
+Every `trackEvent()` call goes to both OpenPanel and GA4 (`frontend/src/lib/analytics/openpanel.ts`). New events show up in **GA4 Admin → Data display → Events** about 24 hours after they first fire. Mark these as key events with the star toggle:
+
+| Event | Fires when | Mark as key event |
+|---|---|---|
+| `calc_complete` | A calculator shows a result (`tool` parameter) | Yes |
+| `newsletter_signup` | Someone joins the email list (`source` parameter) | Yes |
+| `sign_up` | A new member finishes Google sign-in | Yes |
+| `article_read` | 75% of an article body scrolled, or 45 s visible (`trigger` = scroll/time) | Yes |
+| `login` | A returning member signs in | No (track only) |
+| `cta_click` | Calculator card or next-step link clicked (`placement`, `href`) | No (track only) |
+| `article_open`, `calc_open`, `share_click`, `hub_click`, `site_search`, `food_view` | Navigation and engagement detail | No |
+
+To see parameters such as `tool` or `source` in reports, register them under **Admin → Custom definitions → Create custom dimension** (event scope).
+
 ---
 
 ## 7. Off-page (honest only)

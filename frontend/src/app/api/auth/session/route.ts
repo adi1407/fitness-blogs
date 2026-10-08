@@ -6,6 +6,7 @@ import {
   MEMBER_COOKIE,
   safeNextPath,
 } from "@/lib/auth/memberCookie";
+import { JUST_SIGNED_IN_COOKIE } from "@/lib/auth/signInMarker";
 
 /**
  * Google OAuth lands here (server) so the JWT is stored HttpOnly
@@ -28,5 +29,11 @@ export async function GET(req: NextRequest) {
   const dest = new URL(next, req.url);
   const res = NextResponse.redirect(dest);
   res.cookies.set(MEMBER_COOKIE, token, memberCookieOptions());
+  res.cookies.set(JUST_SIGNED_IN_COOKIE, "1", {
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 120,
+  });
   return res;
 }

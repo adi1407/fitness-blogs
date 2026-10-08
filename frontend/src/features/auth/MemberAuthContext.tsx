@@ -9,6 +9,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { trackEvent } from "@/lib/analytics/openpanel";
+import { JUST_SIGNED_IN_COOKIE, NEW_MEMBER_WINDOW_MS } from "@/lib/auth/signInMarker";
 
 export type Member = {
   id: string;
@@ -43,6 +45,17 @@ function isMember(value: unknown): value is Member {
   );
 }
 
+/** Records `sign_up` or `login` once, right after the OAuth landing set the marker cookie. */
+function trackSignInOnce(member: Member) {
+  if (typeof document === "undefined") return;
+  const marker = `${JUST_SIGNED_IN_COOKIE}=1`;
+  if (!document.cookie.split("; ").includes(marker)) return;
+  document.cookie = `${JUST_SIGNED_IN_COOKIE}=; Max-Age=0; Path=/; SameSite=Lax`;
+  const created = member.createdAt ? Date.parse(member.createdAt) : NaN;
+  const isNew = Number.isFinite(created) && Date.now() - created < NEW_MEMBER_WINDOW_MS;
+  trackEvent(isNew ? "sign_up" : "login", { method: "google" });
+}
+
 export function MemberAuthProvider({ children }: { children: ReactNode }) {
   const [member, setMember] = useState<Member | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,6 +77,7 @@ export function MemberAuthProvider({ children }: { children: ReactNode }) {
       const data = (await res.json()) as { member: Member };
       if (!isMember(data.member)) throw new Error("invalid");
       setMember(data.member);
+      trackSignInOnce(data.member);
     } catch {
       setMember(null);
     } finally {
