@@ -27,7 +27,12 @@ export const tdeeContent: CalculatorContent = {
             TDEE stands for <strong>total daily energy expenditure</strong>:
             all the calories your body uses in 24 hours. Eat about your TDEE
             and your weight stays roughly stable, which is why it is also
-            called your <em>maintenance calories</em>.
+            called your <em>maintenance calories</em>. To check the estimate
+            against your real weight, see{" "}
+            <Link href={ARTICLES.maintenanceCalories.href}>
+              how to find your maintenance calories
+            </Link>
+            .
           </p>
           <p>
             Knowing it is the foundation for any goal. Fat loss means eating
@@ -202,10 +207,10 @@ export const tdeeContent: CalculatorContent = {
   related: {
     calculators: [CALCULATORS.calorie, CALCULATORS.bmr, CALCULATORS.macro, CALCULATORS.protein],
     articles: [
+      ARTICLES.maintenanceCalories,
       ARTICLES.caloriesToLoseWeight,
       ARTICLES.calorieDeficit,
       ARTICLES.walking,
-      ARTICLES.bellyFat,
     ],
   },
 };
