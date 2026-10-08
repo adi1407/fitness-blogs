@@ -14,6 +14,7 @@ import {
   Link2,
   ListTodo,
   LogOut,
+  Mail,
   Menu,
   PenLine,
   Soup,
@@ -188,6 +189,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/redirects"),
           },
           {
+            to: "/subscribers",
+            label: "Subscribers",
+            description: "Email list",
+            icon: Mail,
+            match: (p) => p.startsWith("/subscribers"),
+          },
+          {
             to: "/exercises",
             label: "Exercises",
             description: "Muscle-group library",
@@ -300,6 +308,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "301 map",
           icon: Link2,
           match: (p) => p.startsWith("/redirects"),
+        },
+        {
+          to: "/subscribers",
+          label: "Subscribers",
+          description: "Email list",
+          icon: Mail,
+          match: (p) => p.startsWith("/subscribers"),
         },
         {
           to: "/admin/analytics",
