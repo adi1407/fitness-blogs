@@ -6,10 +6,12 @@ import { ensureUserSlugs } from "../db/ensureCmsSchema";
 import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { STAFF_ROLES } from "../utils/roles";
+import { adminSubscribersRouter } from "./subscribers.routes";
 
 export const adminRouter = Router();
 
 adminRouter.use(authenticate);
+adminRouter.use("/subscribers", adminSubscribersRouter);
 
 const createUserSchema = z.object({
   email: z.string().email().max(200),
