@@ -130,7 +130,12 @@ export const BLOG_TAXONOMY: BlogCategoryDef[] = [
       "Calories, macros, micronutrients, food quality, hydration, and meal planning.",
     subcategories: [
       { slug: "nutrition-basics", label: "Nutrition Basics" },
-      { slug: "calories-energy", label: "Calories & Energy" },
+      {
+        slug: "calories-energy",
+        label: "Calories & Energy",
+        intro:
+          "How many calories your body burns and how to find your maintenance calories. Learn the difference between BMR and TDEE, and how to check a calculator's estimate against your real weight.",
+      },
       {
         slug: "protein",
         label: "Protein",
