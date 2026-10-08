@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CoverImage } from "@/components/shared/CoverImage";
 import { SocialFollow } from "@/components/shared/SocialFollow";
@@ -41,8 +42,10 @@ type Props = {
 
 function CalculatorCtaCard({
   calc,
+  placement,
 }: {
   calc: { href: string; label: string; blurb: string };
+  placement: string;
 }) {
   return (
     <div className="fk-tool-card">
@@ -51,9 +54,15 @@ function CalculatorCtaCard({
         {calc.label}
       </h3>
       <p className="mt-1.5 text-sm text-muted-foreground">{calc.blurb}</p>
-      <Link href={calc.href} className="fk-btn-primary mt-3 px-3">
+      <TrackedHubLink
+        href={calc.href}
+        label={calc.label}
+        event="cta_click"
+        placement={placement}
+        className="fk-btn-primary mt-3 px-3"
+      >
         Open calculator
-      </Link>
+      </TrackedHubLink>
     </div>
   );
 }
@@ -372,7 +381,7 @@ export function BlogArticleView({
 
               {calc ? (
                 <div className="mt-6 lg:hidden">
-                  <CalculatorCtaCard calc={calc} />
+                  <CalculatorCtaCard calc={calc} placement="article_top" />
                 </div>
               ) : null}
 
@@ -465,7 +474,7 @@ export function BlogArticleView({
               title="Related reading"
               limit={5}
             />
-            {calc ? <CalculatorCtaCard calc={calc} /> : null}
+            {calc ? <CalculatorCtaCard calc={calc} placement="article_sidebar" /> : null}
           </aside>
         </div>
 
