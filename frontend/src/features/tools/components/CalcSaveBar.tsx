@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Loader2, X } from "lucide-react";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
 import { CalcShareButton } from "@/features/tools/components/CalcShareButton";
+import { NextSteps } from "@/features/tools/components/NextSteps";
 import {
   clearPendingSave,
   stashPendingSave,
@@ -15,8 +16,8 @@ import type { CalcSavePayload } from "@/features/tools/types";
 type Status = "idle" | "saving" | "saved" | "error";
 
 /**
- * Optional "save to account" row under a result. Key it by the result run so
- * each new calculation starts unsaved.
+ * Everything under a result: guided next steps, the optional "save to account"
+ * row and sharing. Key it by the result run so each new calculation starts unsaved.
  */
 export function CalcSaveBar({
   calc,
@@ -73,6 +74,7 @@ export function CalcSaveBar({
   return (
     <>
       {notice}
+      <NextSteps payload={payload} />
       <div className="mt-5 rounded-xl border border-border bg-white p-4">
         {status === "saved" ? (
           <p className="flex flex-wrap items-center gap-2 text-sm text-foreground">
