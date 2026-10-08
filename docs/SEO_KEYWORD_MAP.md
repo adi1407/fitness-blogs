@@ -215,6 +215,7 @@ Run on the first working day of each month. Allow about 30 minutes. Use **Perfor
 | 2026-10 | Articles, authors, recipes | Real reviewers only, author pages, Recipe schema, ISR (PR #56) | |
 | 2026-10 | `maintenance-calories` (new) | First calories-cluster article; linked from the two calorie-deficit articles; opens `/blog/nutrition/calories-energy` for indexing | |
 | 2026-10 | 5 new articles | `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `indian-diet-plan-for-weight-loss`, `vegetarian-protein-sources-india`, `protein-for-weight-loss`; inbound links from 9 siblings (`2026-10-10-diet-plan-protein-links`); opens `/blog/weight-loss/diet-meal-planning` further | |
+| 2026-10 | `why-am-i-not-losing-weight`, `is-creatine-safe` (refresh) | "Your next step" journey links to tools and new guides; breakfast/dinner/Indian-foods articles link `/foods` staples; calculators and `/weight-loss` link the new plans | |
 
 ---
 
