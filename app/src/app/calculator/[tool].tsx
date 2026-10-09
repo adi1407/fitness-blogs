@@ -17,16 +17,19 @@ import { ProteinCalculator } from "@/calculators/ProteinCalculator";
 import { StepsCalculator } from "@/calculators/StepsCalculator";
 import { TdeeCalculator } from "@/calculators/TdeeCalculator";
 import { CalcResultContext, type ReportedResult } from "@/calculators/ui";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { WaterCalculator } from "@/calculators/WaterCalculator";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { NextSteps } from "@/components/NextSteps";
 import { PressableScale } from "@/components/PressableScale";
 import { Screen } from "@/components/Screen";
 import { EmptyState } from "@/components/States";
+import { SubscribeCard } from "@/components/SubscribeCard";
 import { Text } from "@/components/Text";
 import { useToast } from "@/components/Toast";
 import { SITE_URL } from "@/config";
 import { useAuth } from "@/lib/auth";
 import { haptic } from "@/lib/haptics";
+import { nextStepsFor } from "@/lib/journeys";
 import { openLink } from "@/lib/links";
 import { TOOL_SECTIONS, TOOLS, isToolId, toolById, type ToolId, type ToolMeta } from "@/lib/tools";
 import { colors, fonts, radius, shadow, space } from "@/theme";
@@ -172,12 +175,19 @@ export default function CalculatorScreen() {
               <Calculator />
             </CalcResultContext.Provider>
             {result ? <SaveResult meta={meta} result={result} /> : null}
+            {result ? <NextSteps steps={nextStepsFor(tool, result)} /> : null}
             <Text style={styles.fineprint}>
               This calculator gives an estimate and isn&apos;t a substitute for individualised medical or dietary advice.
               If you have a medical condition, are pregnant, or take medication, talk to a qualified professional first.
             </Text>
           </View>
         </Animated.View>
+
+        <SubscribeCard
+          source={`app_calc_${tool}`}
+          title="Get new calculators and guides by email"
+          description="A short email when something useful goes live — new tools, Indian meal plans and evidence-based guides. No spam."
+        />
 
         <View style={styles.section}>
           <Text variant="title" accessibilityRole="header">

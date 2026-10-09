@@ -46,6 +46,7 @@ export function CalorieCalculator() {
             label="Daily target"
             value={plan.target}
             unit="kcal/day"
+            goal={form.goal}
             caption={
               plan.weeklyKg !== 0
                 ? `≈ ${plan.weeklyKg > 0 ? "+" : ""}${plan.weeklyKg} kg per week`

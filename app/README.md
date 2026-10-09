@@ -9,7 +9,7 @@ Expo (SDK 57) + Expo Router + TypeScript app with full parity with [fitlives.in]
 | Home | Hero search, featured carousel, calculators rail, pillar tiles, exercise of the day, protein picks, recipes, latest articles |
 | Learn | Pillar hubs (`/hub/[category]`, subcategories), all articles with search and category chips, programs and buyer's guides |
 | Reader | `/article/[number]` — parallax hero, quick answer, table of contents, FAQ, sources, related; upvote, bookmark and share |
-| Tools | All 11 calculators (calorie, deficit, TDEE, BMR, macro, protein, BMI, body fat, water, 1RM, steps) with animated results; save results when signed in |
+| Tools | All 11 calculators (calorie, deficit, TDEE, BMR, macro, protein, BMI, body fat, water, 1RM, steps) with animated results, "Your next step" journeys (same as the website) and email signup; save results when signed in |
 | Library | Indian food database (diet filters, sorting, compare), exercise library (7 muscle groups, 50 lifts), high-protein recipes (servings scaler) |
 | Search | Global search across articles, foods, exercises, recipes, tools and guides with recent searches |
 | Account | Google sign-in, bookmarks, upvotes, saved calculator results, body-profile sync, settings, About and trust pages |
@@ -66,7 +66,7 @@ src/
     search, about, settings, auth (deep-link landing)
   api/                    fetch client (20 s timeout, bearer auth) + endpoint modules
   calculators/            calculator screens + shared result UI
-  components/             design system (PressableScale, GradientHero, RingChart, CountUp, …)
+  components/             design system (PageIntro, PillButton, PressableScale, RingChart, CountUp, …)
   hooks/                  usePersistentState (AsyncStorage)
   lib/                    calc math, auth, engagement, search, link routing, React Query client
   theme/                  brand colours, gradients, shadows, motion, Roboto Slab
