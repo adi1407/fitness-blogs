@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
-import { router } from "expo-router";
+import { Stack, router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Platform, StyleSheet, View } from "react-native";
 
 import { LinkGroup, LinkRow } from "@/components/LinkRow";
+import { PageIntro } from "@/components/PageIntro";
 import { Screen } from "@/components/Screen";
 import { Text } from "@/components/Text";
 import { useToast } from "@/components/Toast";
@@ -79,6 +80,13 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
+      <Stack.Screen options={{ title: "" }} />
+      <PageIntro
+        crumbs={[{ label: "Account", href: "/account" }, { label: "Settings" }]}
+        title="Settings"
+        lede="Your account, what's stored on this device, and the policies behind fitlives."
+      />
+
       <LinkGroup title="Account">
         <LinkRow
           icon="person-circle-outline"
