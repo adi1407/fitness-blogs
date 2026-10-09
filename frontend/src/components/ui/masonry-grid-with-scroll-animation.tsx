@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -101,17 +102,16 @@ const MasonryCard = ({
           large ? "space-y-3 p-5" : "space-y-2 p-3",
         )}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={item.src}
           alt={item.alt}
-          height={large ? 720 : 500}
+          height={large ? 540 : 500}
           width={large ? 720 : 500}
+          sizes={large ? "(min-width: 1024px) 50vw, 100vw" : "(min-width: 1024px) 25vw, 50vw"}
           className={cn(
             "w-full rounded-md bg-muted object-cover",
             large ? "aspect-[4/3] min-h-[200px]" : "aspect-square",
           )}
-          loading="lazy"
         />
         <p
           className={cn(

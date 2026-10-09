@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
@@ -134,10 +135,12 @@ export default function AboutPage() {
                 href={hub.href}
                 className="group overflow-hidden rounded-2xl border border-border bg-brand-50/40 transition hover:border-primary"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={hub.src}
                   alt=""
+                  width={640}
+                  height={288}
+                  sizes="(min-width: 640px) 33vw, 100vw"
                   className="h-36 w-full object-cover transition group-hover:scale-[1.02]"
                 />
                 <div className="px-4 py-3">

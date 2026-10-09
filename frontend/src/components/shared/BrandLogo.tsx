@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { BRAND_LOGO_SRC, BRAND_NAME } from "@/lib/brand";
+import { BRAND_LOGO_WEB_SRC, BRAND_NAME } from "@/lib/brand";
 
 type BrandLogoProps = {
   href?: string;
@@ -51,7 +51,9 @@ export function BrandLogo({
     <span className={tileClass}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={BRAND_LOGO_SRC}
+        src={BRAND_LOGO_WEB_SRC}
+        width={160}
+        height={153}
         alt=""
         className="h-full w-full object-contain"
       />
@@ -64,7 +66,9 @@ export function BrandLogo({
     inner = (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={BRAND_LOGO_SRC}
+        src={BRAND_LOGO_WEB_SRC}
+        width={160}
+        height={153}
         alt={BRAND_NAME}
         className={cn(
           "rounded-md object-contain object-left",
