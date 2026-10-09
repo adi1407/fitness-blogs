@@ -54,6 +54,8 @@ export function SignInGateModal({
         </p>
         <Link
           href={loginHref}
+          rel="nofollow"
+          prefetch={false}
           className="mt-5 flex w-full items-center justify-center rounded-xl bg-[#0A0A0A] px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90"
         >
           Continue with Google
