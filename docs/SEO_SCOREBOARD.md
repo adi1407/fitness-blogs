@@ -54,6 +54,8 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | --- | --- | --- | --- | --- |
 | 9 Oct 2026 | Sign-in links `rel="nofollow"` | site-wide header | Fewer `/login` URLs discovered | 6 Nov |
 | 9 Oct 2026 | Baseline recorded | — | — | — |
+| 9 Oct 2026 | Calculator titles matched to query wording ("how many calories per day", "how much protein per day", "litres per day", "calories burned", "at rest") | calorie, protein, water-intake, steps-to-calories, BMR calculators | Higher CTR once indexed | 6 Nov |
+| 9 Oct 2026 | Article titles sharpened (example, steps, timeline, litres, research) via migration `2026-10-12-seo-meta-rewrites` | calorie-deficit how-to, walking, build-muscle timeline, water, protein timing | Higher CTR | 6 Nov |
 
 ## Monthly loop
 

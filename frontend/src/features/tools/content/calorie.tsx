@@ -7,9 +7,9 @@ import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const calorieMeta = {
-  title: "Calorie Calculator: Daily Calories by Goal",
+  title: "Calorie Calculator: How Many Calories Per Day?",
   description:
-    "Free calorie calculator: find your daily calorie needs for weight loss, maintenance or muscle gain from age, height, weight and activity. Includes BMR and TDEE.",
+    "Free calorie calculator: how many calories you need per day to lose weight, maintain or gain muscle, from your age, height, weight and activity. Shows BMR and TDEE.",
   h1: "Calorie Calculator",
   intro:
     "This free calorie calculator estimates how many calories you need a day from your age, sex, height, weight and activity — with targets for fat loss, maintenance and muscle gain.",

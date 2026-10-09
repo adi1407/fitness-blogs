@@ -1,5 +1,5 @@
 import { pool } from "./pool";
-import { SEO_META } from "./intentArticles/seoMeta";
+import { SEO_META, SEO_META_REWRITES } from "./intentArticles/seoMeta";
 import { INTENT_ARTICLES } from "./seedIntentArticles";
 
 /**
@@ -247,6 +247,27 @@ async function applySeoMeta(): Promise<void> {
   console.log(`[db] SEO meta applied: ${titles} titles, ${descriptions} descriptions`);
 }
 
+async function applySeoMetaRewrites(): Promise<void> {
+  let updated = 0;
+  for (const [slug, { from, to }] of Object.entries(SEO_META_REWRITES)) {
+    if (to.metaTitle) {
+      const r = await pool.query(
+        `UPDATE articles SET meta_title = $1 WHERE slug = $2 AND meta_title = $3`,
+        [to.metaTitle, slug, from.metaTitle],
+      );
+      updated += r.rowCount ?? 0;
+    }
+    if (to.metaDescription) {
+      const r = await pool.query(
+        `UPDATE articles SET meta_description = $1 WHERE slug = $2 AND meta_description = $3`,
+        [to.metaDescription, slug, from.metaDescription],
+      );
+      updated += r.rowCount ?? 0;
+    }
+  }
+  console.log(`[db] SEO meta rewrites applied: ${updated} fields`);
+}
+
 /**
  * Publishing used to stamp the publisher as reviewer, which showed "Reviewed by"
  * without a real review. Clear only those auto-set values.
@@ -389,6 +410,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-10-diet-plan-protein-links", run: insertPlanLinks },
   { id: "2026-10-11-next-step-links", run: insertNextStepLinks },
   { id: "2026-10-11-food-portion-links", run: insertPortionLinks },
+  { id: "2026-10-12-seo-meta-rewrites", run: applySeoMetaRewrites },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

@@ -170,3 +170,39 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
       "How much protein for weight loss? Simple g/kg targets by body weight, why protein helps in a deficit, and how to hit it with Indian veg and non-veg meals.",
   },
 };
+
+type SeoRewrite = {
+  from: { metaTitle: string; metaDescription: string };
+  to: { metaTitle?: string; metaDescription?: string };
+};
+
+/**
+ * Later title/description rewrites (logged in docs/SEO_SCOREBOARD.md). `from` is
+ * the value being replaced; live rows are only updated while they still hold it.
+ */
+export const SEO_META_REWRITES: Record<string, SeoRewrite> = {
+  "how-to-calculate-your-calorie-deficit": {
+    from: SEO_META["how-to-calculate-your-calorie-deficit"],
+    to: {
+      metaTitle: "How to Calculate a Calorie Deficit (With Example)",
+      metaDescription:
+        "Calculate your calorie deficit in 3 steps: find maintenance calories (TDEE), subtract 10–20%, then check it against weekly weigh-ins. Worked Indian example.",
+    },
+  },
+  "does-walking-help-you-lose-weight": {
+    from: SEO_META["does-walking-help-you-lose-weight"],
+    to: { metaTitle: "Does Walking Help You Lose Weight? (Steps Guide)" },
+  },
+  "how-long-does-it-take-to-build-muscle": {
+    from: SEO_META["how-long-does-it-take-to-build-muscle"],
+    to: { metaTitle: "How Long Does It Take to Build Muscle? Timeline" },
+  },
+  "how-much-water-should-you-drink": {
+    from: SEO_META["how-much-water-should-you-drink"],
+    to: { metaTitle: "How Much Water Should You Drink a Day? (Litres)" },
+  },
+  "protein-before-or-after-workout": {
+    from: SEO_META["protein-before-or-after-workout"],
+    to: { metaTitle: "Protein Before or After Workout? Research Says" },
+  },
+};

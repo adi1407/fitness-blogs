@@ -7,7 +7,7 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const stepsToCaloriesMeta = {
-  title: "Steps to Calories Calculator (Walking)",
+  title: "Steps to Calories Burned Calculator (Walking)",
   description:
     "Convert your daily steps into calories burned and distance walked, based on your height, weight and walking pace. See how many calories 10,000 steps burns.",
   h1: "Steps to Calories Calculator",
