@@ -1,4 +1,6 @@
 import { pool } from "./pool";
+import { estimateReadingTime } from "../utils/articleSlug";
+import { ARTICLE_REWRITES } from "./intentArticles/rewrites";
 import { SEO_META, SEO_META_REWRITES } from "./intentArticles/seoMeta";
 import { INTENT_ARTICLES } from "./seedIntentArticles";
 
@@ -378,6 +380,79 @@ function insertPortionLinks(): Promise<void> {
   return insertMarkedParagraphs(PORTION_MARKER, PORTION_LINKS, "food portion links");
 }
 
+async function applyArticleRewrites(): Promise<void> {
+  let updated = 0;
+  for (const [slug, r] of Object.entries(ARTICLE_REWRITES)) {
+    const res = await pool.query(
+      `UPDATE articles
+          SET body = $1, excerpt = $2, quick_answer = $3,
+              faq = $4::jsonb, sources = $5::jsonb, reading_time = $6,
+              updated_at = NOW()
+        WHERE slug = $7 AND position($8 in body) > 0`,
+      [
+        r.body,
+        r.excerpt,
+        r.quickAnswer,
+        JSON.stringify(r.faq),
+        JSON.stringify(r.sources),
+        estimateReadingTime(r.body),
+        slug,
+        r.originalOpening,
+      ],
+    );
+    updated += res.rowCount ?? 0;
+  }
+  console.log(`[db] rewrote ${updated} thin articles`);
+}
+
+const PILLAR_MARKER = "<strong>Explore the guide:</strong>";
+
+const PROTEIN_GUIDE = `<a href="/nutrition/protein">protein guide</a>`;
+const CALORIES_GUIDE = `<a href="/nutrition/calories">calories guide</a>`;
+const WEIGHT_LOSS_GUIDE = `<a href="/weight-loss">weight loss guide</a>`;
+const MUSCLE_GUIDE = `<a href="/muscle-building">muscle building guide</a>`;
+const NUTRITION_GUIDE = `<a href="/nutrition">nutrition guide</a>`;
+
+/** Every article links up to its pillar hub; the thinnest-linked ones also gain siblings. */
+const PILLAR_LINKS: Record<string, string> = {
+  "how-much-protein-do-you-need-per-day": `Everything on protein in one place — targets by goal, the best Indian sources and every related article — is in our ${PROTEIN_GUIDE}.`,
+  "100g-chicken-breast-calories-and-protein": `For targets and more sources, see the ${PROTEIN_GUIDE}, and compare chicken with the ${a("best-high-protein-indian-foods", "best high-protein Indian foods")}.`,
+  "100g-paneer-calories-and-protein": `For daily targets and every protein article, see the ${PROTEIN_GUIDE}.`,
+  "2-eggs-calories-and-protein": `Find out how much protein you need in ${a("how-much-protein-do-you-need-per-day", "how much protein per day")}, see where eggs rank among the ${a("best-high-protein-indian-foods", "best high-protein Indian foods")}, or browse the full ${PROTEIN_GUIDE}.`,
+  "best-high-protein-indian-foods": `Targets by goal and every protein article are collected in our ${PROTEIN_GUIDE}.`,
+  "is-whey-protein-safe": `Food first? The ${PROTEIN_GUIDE} covers targets and the best Indian protein foods.`,
+  "vegetarian-protein-sources-india": `Targets by goal and every protein article are collected in our ${PROTEIN_GUIDE}.`,
+  "protein-before-or-after-workout": `For daily targets and food sources, see the ${PROTEIN_GUIDE} and the ${MUSCLE_GUIDE}.`,
+  "how-much-protein-to-build-muscle": `See the ${MUSCLE_GUIDE} for training and the ${PROTEIN_GUIDE} for Indian protein foods.`,
+  "is-creatine-safe": `Supplements come last — start with training and nutrition in the ${MUSCLE_GUIDE}.`,
+  "how-long-does-it-take-to-build-muscle": `Training, nutrition and recovery for beginners are all in the ${MUSCLE_GUIDE}.`,
+  "beginner-gym-diet-plan": `For training plans and more nutrition guides, see the ${MUSCLE_GUIDE} and the ${PROTEIN_GUIDE}.`,
+  "what-is-progressive-overload": `Put it into a full plan with the ${MUSCLE_GUIDE}.`,
+  "maintenance-calories": `Targets by goal and calories in everyday Indian foods are in the ${CALORIES_GUIDE}.`,
+  "bmr-vs-tdee": `Targets by goal and calories in everyday Indian foods are in the ${CALORIES_GUIDE}.`,
+  "how-many-calories-should-i-eat-to-lose-weight": `See the ${CALORIES_GUIDE} for calories in Indian foods, and the ${WEIGHT_LOSS_GUIDE} for the full plan.`,
+  "how-to-calculate-your-calorie-deficit": `See the ${CALORIES_GUIDE} for calorie targets by goal, and the ${WEIGHT_LOSS_GUIDE} for the full plan.`,
+  "how-many-calories-should-i-eat-to-lose-10-kg": `See the ${CALORIES_GUIDE} for calories in Indian foods, and the ${WEIGHT_LOSS_GUIDE} for the full plan.`,
+  "1500-calorie-indian-diet-plan": `Not sure 1,500 is your number? Check the ${CALORIES_GUIDE}, then see the ${WEIGHT_LOSS_GUIDE}.`,
+  "indian-diet-plan-for-weight-loss": `Calories in everyday Indian foods are in the ${CALORIES_GUIDE}; the ${WEIGHT_LOSS_GUIDE} covers training and habits.`,
+  "best-breakfast-for-weight-loss": `Plan the whole day with the ${CALORIES_GUIDE} and the ${WEIGHT_LOSS_GUIDE}.`,
+  "best-dinner-for-weight-loss": `Plan the whole day with the ${CALORIES_GUIDE} and the ${WEIGHT_LOSS_GUIDE}.`,
+  "rice-vs-roti-for-weight-loss": `Rice or roti, portions decide the result. Read ${a("is-rice-good-for-weight-loss", "how much rice to eat for weight loss")}, see the ${a("best-indian-foods-for-weight-loss", "best Indian foods for weight loss")}, set your target with ${a("how-many-calories-should-i-eat-to-lose-weight", "how many calories to eat to lose weight")}, or browse the ${CALORIES_GUIDE}.`,
+  "best-indian-foods-for-weight-loss": `The full plan — calories, protein, training and habits — is in the ${WEIGHT_LOSS_GUIDE}.`,
+  "is-paneer-good-for-weight-loss": `For the full plan, see the ${WEIGHT_LOSS_GUIDE} and the ${PROTEIN_GUIDE}.`,
+  "protein-for-weight-loss": `For the full plan, see the ${WEIGHT_LOSS_GUIDE} and the ${PROTEIN_GUIDE}.`,
+  "how-to-lose-belly-fat": `The full plan — calories, protein, training and habits — is in the ${WEIGHT_LOSS_GUIDE}.`,
+  "does-walking-help-you-lose-weight": `The full plan — calories, protein, training and habits — is in the ${WEIGHT_LOSS_GUIDE}.`,
+  "why-am-i-not-losing-weight": `Go back to basics with the ${CALORIES_GUIDE} and the ${WEIGHT_LOSS_GUIDE}.`,
+  "does-intermittent-fasting-work": `Fasting is one tool among many — see the ${WEIGHT_LOSS_GUIDE} and the ${CALORIES_GUIDE}.`,
+  "how-much-water-should-you-drink": `Water is one part of your diet: see ${a("maintenance-calories", "how to find your maintenance calories")}, ${a("does-walking-help-you-lose-weight", "whether walking helps you lose weight")}, and the full ${NUTRITION_GUIDE}.`,
+  "is-ghee-good-for-you": `See how fats fit your daily calories in the ${CALORIES_GUIDE} and the ${NUTRITION_GUIDE}.`,
+};
+
+function insertPillarLinks(): Promise<void> {
+  return insertMarkedParagraphs(PILLAR_MARKER, PILLAR_LINKS, "pillar hub links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -411,6 +486,8 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-11-next-step-links", run: insertNextStepLinks },
   { id: "2026-10-11-food-portion-links", run: insertPortionLinks },
   { id: "2026-10-12-seo-meta-rewrites", run: applySeoMetaRewrites },
+  { id: "2026-10-12-article-rewrites", run: applyArticleRewrites },
+  { id: "2026-10-12-pillar-links", run: insertPillarLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
