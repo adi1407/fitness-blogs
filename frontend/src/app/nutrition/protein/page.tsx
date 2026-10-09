@@ -226,6 +226,10 @@ export default function ProteinHubPage() {
             <Link href="/foods/indian" className="fk-link">
               Indian food database
             </Link>
+            , or see all of them{" "}
+            <Link href="/foods/indian/protein-ranking" className="fk-link">
+              ranked by protein
+            </Link>
             .
           </p>
           <div className="mt-6 overflow-x-auto rounded-xl border border-border">

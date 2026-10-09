@@ -125,6 +125,12 @@ export default async function IndianFoodsPage() {
           >
             Protein guide
           </Link>
+          <Link
+            href="/foods/indian/protein-ranking"
+            className="rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold hover:border-[#FF9800] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9800]"
+          >
+            Foods ranked by protein
+          </Link>
         </div>
       </aside>
 

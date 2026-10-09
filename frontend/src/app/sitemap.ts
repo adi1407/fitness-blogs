@@ -49,6 +49,7 @@ const STATIC_PATHS = [
   "/exercises",
   "/foods",
   "/foods/indian",
+  "/foods/indian/protein-ranking",
   "/recipes",
   "/programs",
   "/reviews",
