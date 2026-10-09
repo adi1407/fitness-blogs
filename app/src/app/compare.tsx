@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 import { fetchFoods, type FoodSummary } from "@/api/foods";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { DietMark, FoodRow } from "@/components/FoodRow";
 import { PressableScale } from "@/components/PressableScale";
 import { RingChart } from "@/components/RingChart";
@@ -122,7 +123,18 @@ export default function CompareScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: "Compare foods" }} />
+      <Stack.Screen options={{ title: "" }} />
+      <View style={styles.intro}>
+        <Breadcrumbs
+          items={[{ label: "Library", href: "/library" }, { label: "Indian foods", href: "/foods" }, { label: "Compare" }]}
+        />
+        <Text style={styles.title} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+          Compare foods
+        </Text>
+        <Text variant="body" style={styles.lede}>
+          Protein, calories and macros side by side, per 100 g and per typical serving.
+        </Text>
+      </View>
       <View style={styles.slots}>
         <FoodSlot food={a} onPress={() => setPicking("a")} />
         <View style={styles.vs}>
@@ -204,6 +216,9 @@ export default function CompareScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   flex: { flex: 1 },
+  intro: { gap: space.sm, paddingTop: space.sm },
+  title: { fontFamily: fonts.semibold, fontSize: 32, lineHeight: 37, letterSpacing: -1, color: colors.ink },
+  lede: { color: colors.muted, fontSize: 16, lineHeight: 25 },
   pickList: { padding: space.lg, paddingBottom: layout.bottomClearance },
   pickHead: { flexDirection: "row", alignItems: "center", gap: space.md, marginBottom: space.lg },
   cancel: { color: colors.ink, fontFamily: fonts.semibold },
@@ -235,8 +250,8 @@ const styles = StyleSheet.create({
   vsText: { color: colors.accent },
   table: { borderRadius: radius.lg, overflow: "hidden", borderWidth: 1, borderColor: colors.border },
   tr: { flexDirection: "row", alignItems: "center", paddingHorizontal: space.md, paddingVertical: space.sm + 2, gap: space.sm },
-  th: { backgroundColor: colors.ink },
-  thText: { color: colors.bg },
+  th: { backgroundColor: colors.surface },
+  thText: { color: colors.ink },
   alt: { backgroundColor: colors.surface },
   cell: { flex: 1.3 },
   val: { flex: 1, textAlign: "right" },

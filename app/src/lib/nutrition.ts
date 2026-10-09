@@ -48,3 +48,33 @@ export function shortName(name: string) {
 export function formatG(v: number) {
   return `${Number.isInteger(v) ? v : v.toFixed(1)} g`;
 }
+
+/** Plain-language goal notes computed from the numbers (mirrors the website). */
+export function goalNotes(food: FoodSummary): { weightLoss: string; muscle: string } {
+  const density = proteinPer100Kcal(food);
+  const name = shortName(food.name);
+  const serving = food.defaultServing;
+  const servingKcal = serving ? forGrams(food, serving.grams).kcal : null;
+  const servingNote = serving && servingKcal != null ? ` (${serving.label}: about ${servingKcal} kcal)` : "";
+
+  let weightLoss: string;
+  if (food.kcal <= 60) {
+    weightLoss = `${name} is low in calories (${food.kcal} kcal per 100 g), so it adds volume to meals without adding much energy.`;
+  } else if (food.kcal >= 450) {
+    weightLoss = `${name} is energy-dense (${food.kcal} kcal per 100 g). It can fit a weight-loss diet, but measure portions — small amounts add up quickly.`;
+  } else if (food.fiberG >= 8 || density >= 7) {
+    weightLoss = `${name} is filling for its calories thanks to its ${food.fiberG >= 8 ? "fibre" : "protein"}${servingNote}. A good fit for a calorie deficit in normal portions.`;
+  } else {
+    weightLoss = `${name} fits a weight-loss diet in measured portions${servingNote}. Total daily calories matter more than any single food.`;
+  }
+
+  let muscle: string;
+  if (density >= 10) {
+    muscle = `Excellent protein for the calories: about ${density} g of protein per 100 kcal. A strong choice when you're trying to hit a daily protein target.`;
+  } else if (density >= 5) {
+    muscle = `A useful protein source with about ${density} g of protein per 100 kcal. Combine it with other protein foods across the day.`;
+  } else {
+    muscle = `Not a significant protein source (${density} g per 100 kcal). Pair it with dal, paneer, eggs, curd or meat to reach your protein target.`;
+  }
+  return { weightLoss, muscle };
+}
