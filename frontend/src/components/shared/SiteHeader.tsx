@@ -226,6 +226,8 @@ export function SiteHeader() {
             ) : !authLoading ? (
               <Link
                 href={`/login?next=${encodeURIComponent(pathname)}`}
+                rel="nofollow"
+                prefetch={false}
                 className="ml-2 inline-flex h-9 items-center rounded-full px-4 text-[15px] font-semibold text-white transition hover:opacity-90"
                 style={{ background: brand }}
               >
@@ -609,6 +611,8 @@ export function SiteHeader() {
                       ) : !authLoading ? (
                         <Link
                           href={`/login?next=${encodeURIComponent(pathname)}`}
+                          rel="nofollow"
+                          prefetch={false}
                           onClick={() => setMobileOpen(false)}
                           className="mb-3 flex w-full items-center justify-center rounded-2xl px-4 py-3.5 text-sm font-semibold text-white"
                           style={{ background: brand }}
