@@ -6,7 +6,7 @@ import { Text } from "@/components/Text";
 import { usePersistentState } from "@/hooks/usePersistentState";
 import { calcCaloriePlan, type CalorieGoal } from "@/lib/calc";
 import { colors, radius, space } from "@/theme";
-import { BodyProfileFields, FormCard, Notice, calcStyles, useBodyProfile } from "./ui";
+import { BodyProfileFields, FormCard, Notice, calcStyles, useBodyProfile, useReportResult } from "./ui";
 
 const GOAL_OPTIONS = [
   { id: "loss", label: "Fat loss" },
@@ -31,6 +31,7 @@ export function MacroCalculator() {
   const profile = useBodyProfile();
   const [form, setForm] = usePersistentState("calc:macro", { goal: "maintain" as CalorieGoal });
   const plan = profile.values ? calcCaloriePlan({ ...profile.values, goal: form.goal, pace: "moderate" }) : null;
+  useReportResult(plan ? { label: "Daily calories", value: plan.target, unit: "kcal/day", goal: form.goal } : null);
 
   return (
     <View style={calcStyles.wrap}>

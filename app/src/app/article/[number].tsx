@@ -16,6 +16,7 @@ import { HtmlBody, type HeadingOffset } from "@/components/HtmlBody";
 import { ChromeButton, ReaderChrome } from "@/components/ReaderChrome";
 import { Skeleton } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
+import { SubscribeCard } from "@/components/SubscribeCard";
 import { Text } from "@/components/Text";
 import { useToast } from "@/components/Toast";
 import { ToolCtaCard } from "@/components/ToolCtaCard";
@@ -419,6 +420,8 @@ export default function ArticleScreen() {
                   ) : null}
 
                   <Sources sources={article.sources} />
+
+                  <SubscribeCard source="app_article_end" />
 
                   <Text variant="small" style={styles.contact}>
                     Questions about this article?{" "}

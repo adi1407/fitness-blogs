@@ -7,7 +7,7 @@ import { CountUp } from "@/components/CountUp";
 import { NumberField, SegmentField, parseRange } from "@/components/Field";
 import { Text } from "@/components/Text";
 import { usePersistentState } from "@/hooks/usePersistentState";
-import { ACTIVITY_LEVELS, type ActivityId, type Sex } from "@/lib/calc";
+import { ACTIVITY_LEVELS, type ActivityId, type CalorieGoal, type Sex } from "@/lib/calc";
 import { haptic } from "@/lib/haptics";
 import { colors, fonts, radius, space } from "@/theme";
 
@@ -83,23 +83,31 @@ type ResultHeroProps = {
   decimals?: number;
   unit?: string;
   caption?: string;
+  /** Calorie goal behind the result, used to pick the next step. */
+  goal?: CalorieGoal;
   aside?: ReactNode;
   children?: ReactNode;
 };
 
-export type ReportedResult = { label: string; value: number; unit?: string };
+export type ReportedResult = { label: string; value: number; unit?: string; goal?: CalorieGoal };
 
 /** Lets a calculator screen know the current headline result (e.g. to save it to the account). */
 export const CalcResultContext = createContext<((r: ReportedResult | null) => void) | null>(null);
 
-/** Website result panel with an animated headline number. Fires a light haptic when the result settles. */
-export function ResultHero({ label, value, decimals = 0, unit, caption, aside, children }: ResultHeroProps) {
+/** Reports the headline result to the calculator screen while mounted; pass `null` when there is none. */
+export function useReportResult(result: ReportedResult | null) {
   const report = useContext(CalcResultContext);
+  const { label, value, unit, goal } = result ?? {};
   useEffect(() => {
-    if (!report) return;
-    report({ label, value, unit });
+    if (!report || label == null || value == null) return;
+    report({ label, value, unit, goal });
     return () => report(null);
-  }, [report, label, value, unit]);
+  }, [report, label, value, unit, goal]);
+}
+
+/** Website result panel with an animated headline number. Fires a light haptic when the result settles. */
+export function ResultHero({ label, value, decimals = 0, unit, caption, goal, aside, children }: ResultHeroProps) {
+  useReportResult({ label, value, unit, goal });
 
   const compact = useWindowDimensions().width < 360;
   const last = useRef<number | null>(null);

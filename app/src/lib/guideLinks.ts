@@ -20,6 +20,13 @@ export const GUIDES = {
   riceVsRoti: guide("Rice vs roti for weight loss", "weight-loss/weight-loss-nutrition", "rice-vs-roti-for-weight-loss", 785934834),
   beginnerGymDiet: guide("Beginner gym diet plan", "muscle-building/beginner-muscle-building", "beginner-gym-diet-plan", 912245706),
   indianDietPlan: guide("7-day Indian diet plan for weight loss", "weight-loss/diet-meal-planning", "indian-diet-plan-for-weight-loss", 859354254),
+  plan1500: guide("1500 calorie Indian diet plan", "weight-loss/diet-meal-planning", "1500-calorie-indian-diet-plan", 966317033),
+  maintenanceCalories: guide("What are maintenance calories?", "nutrition/calories-energy", "maintenance-calories", 561064519),
+  bmrVsTdee: guide("BMR vs TDEE: what's the difference?", "nutrition/calories-energy", "bmr-vs-tdee", 557888306),
+  walking: guide("Does walking help you lose weight?", "weight-loss/walking-daily-activity", "does-walking-help-you-lose-weight", 727382084),
+  waterPerDay: guide("How much water should you drink a day?", "nutrition/hydration", "how-much-water-should-you-drink", 225187540),
+  buildMuscleTime: guide("How long does it take to build muscle?", "muscle-building/muscle-growth-hypertrophy", "how-long-does-it-take-to-build-muscle", 739011960),
+  progressiveOverload: guide("What is progressive overload?", "muscle-building/training-programs", "what-is-progressive-overload", 399232323),
 } as const;
 
 /** Related guides per food category (same choices as the website's food pages). */
