@@ -7,7 +7,7 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const waterIntakeMeta = {
-  title: "Water Intake Calculator: How Much Water a Day?",
+  title: "Water Intake Calculator: Litres Per Day by Weight",
   description:
     "Find out how much water to drink each day based on your weight, exercise and climate — with extra guidance for Indian summers, pregnancy and breastfeeding.",
   h1: "Water Intake Calculator",

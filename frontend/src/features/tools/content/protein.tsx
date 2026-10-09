@@ -7,7 +7,7 @@ import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const proteinMeta = {
-  title: "Protein Calculator: Daily Intake for Indian Diets",
+  title: "Protein Calculator: How Much Protein Per Day?",
   description:
     "Free protein calculator: find how much protein you need per day for health, fat loss or muscle gain — with per-meal targets and Indian veg protein sources.",
   h1: "Protein Calculator",

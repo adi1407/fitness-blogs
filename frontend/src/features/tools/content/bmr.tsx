@@ -7,7 +7,7 @@ import { ARTICLES, CALCULATORS } from "@/features/tools/content/links";
 import { SOURCES } from "@/features/tools/content/sources";
 
 export const bmrMeta = {
-  title: "BMR Calculator: Basal Metabolic Rate",
+  title: "BMR Calculator: Calories Your Body Burns at Rest",
   description:
     "Free BMR calculator: find the calories your body burns at complete rest with the Mifflin–St Jeor equation, and learn how BMR differs from TDEE (maintenance calories).",
   h1: "BMR Calculator",
