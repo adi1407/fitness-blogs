@@ -3,12 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useEffect, useState, type ComponentProps } from "react";
-import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, Linking, Pressable, StyleSheet, View } from "react-native";
 
 import { deleteCalcResult, fetchBookmarks, fetchCalcResults, fetchUpvotes, type CalcResult, type LibraryArticle } from "@/api/member";
-import { Card } from "@/components/Card";
-import { GradientHero } from "@/components/GradientHero";
 import { LinkGroup, LinkRow } from "@/components/LinkRow";
+import { PageIntro } from "@/components/PageIntro";
+import { PillButton } from "@/components/PillButton";
 import { PressableScale } from "@/components/PressableScale";
 import { Screen } from "@/components/Screen";
 import { SkeletonList } from "@/components/Skeleton";
@@ -21,15 +21,16 @@ import { haptic } from "@/lib/haptics";
 import { openLink } from "@/lib/links";
 import { pullProfile, pushProfile } from "@/lib/profileSync";
 import { TOOLS } from "@/lib/tools";
+import { CONTACT_EMAIL } from "@/lib/trust";
 import { colors, fonts, radius, shadow, space } from "@/theme";
 
 type Tab = "bookmarks" | "upvotes" | "results";
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
-const BENEFITS: { icon: IconName; text: string }[] = [
-  { icon: "bookmark-outline", text: "Bookmark articles and read them on any device" },
-  { icon: "arrow-up-circle-outline", text: "Upvote the guides that helped you" },
-  { icon: "calculator-outline", text: "Save calculator results and sync your body profile" },
+const BENEFITS: { icon: IconName; title: string; text: string }[] = [
+  { icon: "bookmark-outline", title: "Save guides", text: "Bookmark articles and read them on any device." },
+  { icon: "arrow-up-circle-outline", title: "Upvote what helped", text: "Tell us which guides were worth your time." },
+  { icon: "calculator-outline", title: "Keep your numbers", text: "Save calculator results and sync your body profile." },
 ];
 
 function formatDate(iso: string | null | undefined) {
@@ -62,29 +63,34 @@ function SignedOut() {
 
   return (
     <>
-      <GradientHero eyebrow="Your fitlives" title="Save what matters." subtitle="One account across the app and fitlives.in.">
+      <PageIntro
+        crumbs={[{ label: "Home", href: "/" }, { label: "Account" }]}
+        title="Save what matters"
+        lede="One free account across the app and fitlives.in — your saved guides, upvotes and calculator results in one place."
+      >
         <PressableScale onPress={onSignIn} accessibilityLabel="Continue with Google" style={styles.google} disabled={busy}>
-          {busy ? <ActivityIndicator color={colors.ink} /> : <Ionicons name="logo-google" size={18} color={colors.ink} />}
-          <Text variant="heading" style={styles.googleText}>
-            {busy ? "Opening Google…" : "Continue with Google"}
-          </Text>
+          {busy ? <ActivityIndicator color={colors.bg} /> : <Ionicons name="logo-google" size={18} color={colors.bg} />}
+          <Text style={styles.googleText}>{busy ? "Opening Google…" : "Continue with Google"}</Text>
         </PressableScale>
-      </GradientHero>
-      <View style={styles.benefits}>
+      </PageIntro>
+
+      <View style={styles.list}>
         {BENEFITS.map((b) => (
-          <View key={b.text} style={styles.benefit}>
-            <View style={styles.benefitIcon}>
-              <Ionicons name={b.icon} size={20} color={colors.accent} />
+          <View key={b.title} style={styles.benefit}>
+            <View style={styles.iconTile}>
+              <Ionicons name={b.icon} size={20} color={colors.ink} />
             </View>
-            <Text variant="body" style={styles.flex}>
-              {b.text}
-            </Text>
+            <View style={styles.flex}>
+              <Text variant="heading">{b.title}</Text>
+              <Text variant="small">{b.text}</Text>
+            </View>
           </View>
         ))}
       </View>
-      <Text variant="small" style={styles.center}>
+
+      <Text variant="small" style={styles.privacyLine}>
         We only use your Google name, email and photo to create your account.{" "}
-        <Text variant="small" style={styles.link} onPress={() => openLink(`${SITE_URL}/privacy`)}>
+        <Text variant="small" style={styles.link} onPress={() => openLink(`${SITE_URL}/privacy`)} suppressHighlighting>
           Privacy policy
         </Text>
       </Text>
@@ -93,11 +99,25 @@ function SignedOut() {
 }
 
 function ArticleList({ items, emptyTitle, emptyHint }: { items: LibraryArticle[]; emptyTitle: string; emptyHint: string }) {
-  if (!items.length) return <EmptyState title={emptyTitle} hint={emptyHint} />;
+  if (!items.length) {
+    return (
+      <View style={styles.empty}>
+        <EmptyState title={emptyTitle} hint={emptyHint} />
+        <PillButton label="Browse the latest" variant="ghost" onPress={() => router.navigate("/learn")} style={styles.pill} />
+      </View>
+    );
+  }
   return (
     <View style={styles.list}>
       {items.map((a) => (
-        <Card key={a.id} onPress={() => openArticle(a)} accessibilityLabel={a.title} style={styles.row}>
+        <PressableScale
+          key={a.id}
+          onPress={() => openArticle(a)}
+          accessibilityRole="link"
+          accessibilityLabel={a.title}
+          scaleTo={0.985}
+          style={styles.row}
+        >
           <View style={styles.flex}>
             <Text variant="heading" numberOfLines={2}>
               {a.title}
@@ -107,12 +127,14 @@ function ArticleList({ items, emptyTitle, emptyHint }: { items: LibraryArticle[]
                 {a.excerpt}
               </Text>
             ) : null}
-            <Text variant="label" style={styles.date}>
-              {formatDate(a.bookmarkedAt ?? a.upvotedAt)}
-            </Text>
+            {formatDate(a.bookmarkedAt ?? a.upvotedAt) ? (
+              <Text variant="small" style={styles.date}>
+                {formatDate(a.bookmarkedAt ?? a.upvotedAt)}
+              </Text>
+            ) : null}
           </View>
-          <Ionicons name="chevron-forward" size={18} color={colors.subtle} />
-        </Card>
+          <Ionicons name="arrow-forward" size={16} color={colors.ink} />
+        </PressableScale>
       ))}
     </View>
   );
@@ -139,31 +161,39 @@ function ResultList({ items }: { items: CalcResult[] }) {
   });
 
   if (!items.length) {
-    return <EmptyState title="No saved results yet" hint="Run any calculator and tap “Save this result”." />;
+    return (
+      <View style={styles.empty}>
+        <EmptyState title="No saved results yet" hint="Run any calculator and tap “Save this result”." />
+        <PillButton label="Open calculators" variant="ghost" onPress={() => router.navigate("/tools")} style={styles.pill} />
+      </View>
+    );
   }
   return (
     <View style={styles.list}>
       {items.map((r) => {
         const tool = TOOLS.find((t) => t.webPath === `/${r.tool}`);
         return (
-          <Card
+          <PressableScale
             key={r.id}
             onPress={tool ? () => router.push(`/calculator/${tool.id}`) : undefined}
+            disabled={!tool}
+            accessibilityRole={tool ? "link" : "none"}
             accessibilityLabel={tool?.title ?? r.tool}
+            scaleTo={0.985}
             style={styles.row}
           >
-            <View style={styles.resultIcon}>
-              <Ionicons name={tool?.icon ?? "calculator-outline"} size={18} color={colors.accent} />
+            <View style={styles.iconTile}>
+              <Ionicons name={tool?.icon ?? "calculator-outline"} size={18} color={colors.ink} />
             </View>
             <View style={styles.flex}>
-              <Text variant="label">{tool?.title ?? r.tool}</Text>
-              <Text variant="title">
+              <Text variant="small" style={styles.resultTool}>
+                {tool?.title ?? r.tool}
+              </Text>
+              <Text variant="title" style={styles.resultValue}>
                 {String(r.result.value ?? "–")}
                 {r.result.unit ? <Text variant="small"> {r.result.unit}</Text> : null}
               </Text>
-              <Text variant="small">
-                {[r.result.label, formatDate(r.createdAt)].filter(Boolean).join(" · ")}
-              </Text>
+              <Text variant="small">{[r.result.label, formatDate(r.createdAt)].filter(Boolean).join(" · ")}</Text>
             </View>
             <Pressable
               onPress={() => {
@@ -176,7 +206,7 @@ function ResultList({ items }: { items: CalcResult[] }) {
             >
               <Ionicons name="trash-outline" size={20} color={colors.subtle} />
             </Pressable>
-          </Card>
+          </PressableScale>
         );
       })}
     </View>
@@ -237,28 +267,29 @@ function SignedIn() {
   return (
     <>
       <View style={styles.profile}>
-        {member?.picture ? (
-          <Image source={member.picture} style={styles.avatar} contentFit="cover" transition={200} />
-        ) : (
-          <View style={[styles.avatar, styles.avatarFallback]}>
-            <Text variant="title" style={styles.avatarText}>
-              {name.charAt(0).toUpperCase()}
+        <View style={styles.profileTop}>
+          {member?.picture ? (
+            <Image source={member.picture} style={styles.avatar} contentFit="cover" transition={200} />
+          ) : (
+            <View style={[styles.avatar, styles.avatarFallback]}>
+              <Ionicons name="person-outline" size={28} color={colors.muted} />
+            </View>
+          )}
+          <View style={styles.flex}>
+            <Text style={styles.profileName} numberOfLines={1} accessibilityRole="header">
+              {name}
+            </Text>
+            {member?.email ? (
+              <Text variant="small" numberOfLines={1}>
+                {member.email}
+              </Text>
+            ) : null}
+            <Text variant="small" style={styles.date}>
+              Signed in with Google
             </Text>
           </View>
-        )}
-        <View style={styles.flex}>
-          <Text variant="label" style={styles.eyebrow}>
-            Signed in
-          </Text>
-          <Text variant="title" numberOfLines={1} style={styles.profileName}>
-            {name}
-          </Text>
-          {member?.email ? (
-            <Text variant="small" numberOfLines={1} style={styles.profileEmail}>
-              {member.email}
-            </Text>
-          ) : null}
         </View>
+        <PillButton label="Sign out" variant="ghost" icon="log-out-outline" onPress={confirmSignOut} style={styles.pill} />
       </View>
 
       <View style={styles.tabs} accessibilityRole="tablist">
@@ -273,9 +304,7 @@ function SignedIn() {
             accessibilityRole="tab"
             accessibilityState={{ selected: tab === t.id }}
           >
-            <Text variant="heading" style={tab === t.id ? styles.tabTextActive : styles.tabText}>
-              {t.label}
-            </Text>
+            <Text style={[styles.tabText, tab === t.id && styles.tabTextActive]}>{t.label}</Text>
             {t.count != null ? (
               <Text variant="small" style={tab === t.id ? styles.tabCountActive : undefined}>
                 {t.count}
@@ -290,14 +319,14 @@ function SignedIn() {
       ) : active.isError ? (
         <ErrorState error={active.error} onRetry={() => active.refetch()} />
       ) : tab === "bookmarks" ? (
-        <ArticleList items={bookmarks.data ?? []} emptyTitle="No bookmarks yet" emptyHint="Tap the bookmark icon on any article." />
+        <ArticleList items={bookmarks.data ?? []} emptyTitle="No saved guides yet" emptyHint="Save a guide from any article." />
       ) : tab === "upvotes" ? (
-        <ArticleList items={upvotes.data ?? []} emptyTitle="No upvotes yet" emptyHint="Upvote articles that helped you." />
+        <ArticleList items={upvotes.data ?? []} emptyTitle="No upvotes yet" emptyHint="Upvote what helped." />
       ) : (
         <ResultList items={results.data ?? []} />
       )}
 
-      <View style={styles.syncCard}>
+      <View style={styles.panel}>
         <Text variant="heading">Body profile</Text>
         <Text variant="small">Sex, age, height, weight and activity used by every calculator.</Text>
         <View style={styles.syncRow}>
@@ -316,9 +345,23 @@ function SignedIn() {
         </View>
       </View>
 
-      <Text variant="body" style={styles.signOut} onPress={confirmSignOut} accessibilityRole="button">
-        Sign out
-      </Text>
+      <View style={[styles.panel, styles.panelMuted]}>
+        <Text variant="heading">Privacy and cookies</Text>
+        <Text variant="small" style={styles.privacyText}>
+          Name and photo come from Google. To delete your fitlives member data,{" "}
+          <Text
+            variant="small"
+            style={styles.link}
+            onPress={() =>
+              Linking.openURL(`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Delete my fitlives account")}`).catch(() => {})
+            }
+            suppressHighlighting
+          >
+            email a deletion request
+          </Text>{" "}
+          from this address.
+        </Text>
+      </View>
     </>
   );
 }
@@ -348,44 +391,53 @@ export default function AccountScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, gap: 2 },
-  center: { textAlign: "center" },
-  link: { color: colors.ink, textDecorationLine: "underline" },
+  link: { fontFamily: fonts.semibold, color: colors.ink, textDecorationLine: "underline" },
+  pill: { minHeight: 40, paddingHorizontal: space.lg, alignSelf: "flex-start" },
   google: {
     marginTop: space.md,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: space.sm,
-    minHeight: 52,
+    minHeight: 50,
     borderRadius: radius.pill,
-    backgroundColor: colors.bg,
-  },
-  googleText: { color: colors.ink },
-  benefits: { gap: space.md },
-  benefit: { flexDirection: "row", alignItems: "center", gap: space.md },
-  benefitIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.md,
-    backgroundColor: colors.ink,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  profile: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: space.lg,
-    padding: space.lg,
-    borderRadius: radius.xl,
     backgroundColor: colors.ink,
     ...shadow.md,
   },
-  avatar: { width: 60, height: 60, borderRadius: 30, borderWidth: 2, borderColor: colors.accent },
-  avatarFallback: { backgroundColor: colors.inkSoft, alignItems: "center", justifyContent: "center" },
-  avatarText: { color: colors.accent },
-  eyebrow: { color: colors.accent },
-  profileName: { color: colors.bg },
-  profileEmail: { color: colors.inkMuted },
+  googleText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.bg },
+  list: { gap: space.sm },
+  benefit: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  iconTile: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  privacyLine: { lineHeight: 19 },
+  profile: {
+    gap: space.lg,
+    padding: space.lg,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
+  },
+  profileTop: { flexDirection: "row", alignItems: "center", gap: space.lg },
+  avatar: { width: 64, height: 64, borderRadius: 32, borderWidth: 1, borderColor: colors.border },
+  avatarFallback: { backgroundColor: colors.surface, alignItems: "center", justifyContent: "center" },
+  profileName: { fontFamily: fonts.semibold, fontSize: 22, lineHeight: 28, letterSpacing: -0.5, color: colors.ink },
   tabs: { flexDirection: "row", backgroundColor: colors.surface, borderRadius: radius.pill, padding: 4 },
   tab: {
     flex: 1,
@@ -397,21 +449,32 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   tabActive: { backgroundColor: colors.ink },
-  tabText: { color: colors.muted, fontSize: 14 },
-  tabTextActive: { color: colors.bg, fontSize: 14 },
+  tabText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.muted },
+  tabTextActive: { color: colors.bg },
   tabCountActive: { color: colors.accent },
-  list: { gap: space.sm },
-  row: { flexDirection: "row", alignItems: "center", gap: space.md },
-  date: { color: colors.subtle, marginTop: 2 },
-  resultIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.md,
-    backgroundColor: colors.ink,
+  empty: { alignItems: "center", gap: space.sm },
+  row: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
   },
-  syncCard: { gap: space.sm, backgroundColor: colors.surface, borderRadius: radius.lg, padding: space.lg },
+  date: { color: colors.subtle, marginTop: 2 },
+  resultTool: { fontFamily: fonts.medium, color: colors.muted },
+  resultValue: { fontSize: 20, lineHeight: 26 },
+  panel: {
+    gap: space.sm,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  panelMuted: { backgroundColor: colors.surface },
+  privacyText: { lineHeight: 19 },
   syncRow: { flexDirection: "row", gap: space.sm, marginTop: space.xs },
   syncBtn: {
     flex: 1,
@@ -420,11 +483,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 6,
     minHeight: 44,
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     backgroundColor: colors.bg,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
     borderColor: colors.border,
   },
   syncText: { color: colors.ink, fontFamily: fonts.medium },
-  signOut: { color: colors.danger, textAlign: "center", fontFamily: fonts.medium, paddingVertical: space.sm },
 });

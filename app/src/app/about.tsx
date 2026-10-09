@@ -1,12 +1,14 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { router } from "expo-router";
+import { Image } from "expo-image";
+import { Stack, router, type Href } from "expo-router";
 import { Linking, StyleSheet, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
-import { GradientHero } from "@/components/GradientHero";
 import { ImageTile } from "@/components/ImageTile";
 import { LinkGroup, LinkRow } from "@/components/LinkRow";
+import { KnowledgeDisclaimer, PageIntro } from "@/components/PageIntro";
+import { PillButton } from "@/components/PillButton";
+import { PressableScale } from "@/components/PressableScale";
 import { Screen } from "@/components/Screen";
-import { SectionHeader } from "@/components/SectionHeader";
 import { Text } from "@/components/Text";
 import { SITE_URL } from "@/config";
 import { IMG, thumb } from "@/lib/images";
@@ -16,56 +18,95 @@ import { CONTACT_EMAIL, SOCIAL, TRUST_PAGES } from "@/lib/trust";
 import { colors, radius, space } from "@/theme";
 
 const PRINCIPLES = [
-  { icon: "search-outline", title: "Search intent first", text: "Every page answers a real question completely." },
-  { icon: "library-outline", title: "Cited sources", text: "Health and nutrition claims link to reputable research." },
-  { icon: "shield-checkmark-outline", title: "Educational, not medical", text: "No cures or medication advice — we point you to professionals." },
-  { icon: "flag-outline", title: "Built for India", text: "Indian foods, portions and BMI cut-offs, not copy-pasted Western norms." },
-] as const;
-
-const DATABASES = [
-  { title: "Calculators", image: IMG.healthConsult, go: () => router.push("/tools") },
-  { title: "Indian foods", image: IMG.indianThali, go: () => router.push("/foods") },
-  { title: "Exercises", image: IMG.gymFloor, go: () => router.push("/exercises") },
+  "Search intent first, keywords second",
+  "Cite reputable sources for health and nutrition claims",
+  "Prefer educational framing over medical promises",
+  "Build topic clusters that interconnect with tools and databases",
+  "Highlight Indian nutrition context as a differentiator",
 ];
+
+const DATABASES: { title: string; blurb: string; image: string; href: Href }[] = [
+  { title: "Calculators", blurb: "Educational tools that teach and link into guides.", image: IMG.healthConsult, href: "/tools" },
+  { title: "Indian foods", blurb: "High-protein staples mapped to real goals.", image: IMG.indianThali, href: "/foods" },
+  { title: "Exercises", blurb: "Browse by muscle group, then connect to guidance.", image: IMG.gymFloor, href: "/exercises" },
+];
+
+function SectionTitle({ title, lede }: { title: string; lede: string }) {
+  return (
+    <View style={styles.sectionHead}>
+      <Text variant="title" style={styles.sectionTitle} accessibilityRole="header">
+        {title}
+      </Text>
+      <Text variant="small" style={styles.sectionLede}>
+        {lede}
+      </Text>
+    </View>
+  );
+}
 
 export default function AboutScreen() {
   return (
     <Screen>
-      <GradientHero
-        eyebrow="About fitlives"
-        title="Fitness knowledge, not filler."
-        subtitle="A searchable platform of articles, calculators, Indian foods and exercises — written to answer real questions better than a thin blog post."
-      />
+      <Stack.Screen options={{ title: "" }} />
+      <PageIntro
+        crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
+        kicker="About the platform"
+        title="Build a stronger body. Understand your nutrition."
+        lede="fitlives is a searchable fitness knowledge platform — articles, guides, calculators, foods and exercises — designed to answer real questions better than a thin blog post."
+      >
+        <View style={styles.pills}>
+          <PillButton label="Latest guides" onPress={() => router.navigate("/learn")} style={styles.pill} />
+          <PillButton label="Free calculators" variant="ghost" onPress={() => router.navigate("/tools")} style={styles.pill} />
+        </View>
+      </PageIntro>
 
       <View style={styles.section}>
-        <SectionHeader eyebrow="What we cover" title="Three knowledge pillars" />
-        {PILLARS.map((p) => (
-          <ImageTile key={p.slug} image={thumb(p.image)} title={p.title} subtitle={p.tagline} height={120} onPress={() => router.push(`/hub/${p.slug}`)} />
+        <SectionTitle
+          title="Three knowledge pillars"
+          lede="Deep clusters — muscle building, weight loss and nutrition — with articles under each subcategory."
+        />
+        {PILLARS.map((p, i) => (
+          <Animated.View key={p.slug} entering={FadeInDown.delay(60 + i * 50).duration(320)}>
+            <ImageTile image={thumb(p.image)} title={p.title} subtitle={p.tagline} height={120} onPress={() => router.push(`/hub/${p.slug}`)} />
+          </Animated.View>
         ))}
       </View>
 
       <View style={styles.section}>
-        <SectionHeader eyebrow="Beyond articles" title="Tools & databases" />
-        <View style={styles.row}>
-          {DATABASES.map((d) => (
-            <ImageTile key={d.title} image={thumb(d.image)} title={d.title} height={110} style={styles.flex} onPress={d.go} />
+        <SectionTitle
+          title="Tools & databases"
+          lede="Calculators and libraries that complement the articles — the part a blog alone can't do."
+        />
+        {DATABASES.map((d) => (
+          <PressableScale
+            key={d.title}
+            onPress={() => router.push(d.href)}
+            accessibilityRole="link"
+            accessibilityLabel={`${d.title}. ${d.blurb}`}
+            scaleTo={0.985}
+            style={styles.dbCard}
+          >
+            <Image source={thumb(d.image)} style={styles.dbImage} contentFit="cover" transition={200} />
+            <View style={styles.dbText}>
+              <Text variant="heading">{d.title}</Text>
+              <Text variant="small">{d.blurb}</Text>
+            </View>
+          </PressableScale>
+        ))}
+      </View>
+
+      <View style={styles.section}>
+        <SectionTitle title="Editorial philosophy" lede="How every article, tool and database entry is put together." />
+        <View style={styles.principles}>
+          {PRINCIPLES.map((p) => (
+            <View key={p} style={styles.principle}>
+              <View style={styles.bullet} />
+              <Text variant="body" style={styles.flex}>
+                {p}
+              </Text>
+            </View>
           ))}
         </View>
-      </View>
-
-      <View style={styles.section}>
-        <SectionHeader eyebrow="How we work" title="Editorial philosophy" />
-        {PRINCIPLES.map((p) => (
-          <View key={p.title} style={styles.principle}>
-            <View style={styles.principleIcon}>
-              <Ionicons name={p.icon} size={20} color={colors.accent} />
-            </View>
-            <View style={styles.flexText}>
-              <Text variant="heading">{p.title}</Text>
-              <Text variant="small">{p.text}</Text>
-            </View>
-          </View>
-        ))}
       </View>
 
       <LinkGroup title="Trust & transparency">
@@ -87,36 +128,29 @@ export default function AboutScreen() {
         />
       </LinkGroup>
 
-      <View style={styles.disclaimer}>
-        <Ionicons name="information-circle-outline" size={18} color={colors.ink} />
-        <Text variant="small" style={styles.flexText}>
-          fitlives is educational. It isn&apos;t a substitute for advice from a doctor, registered dietitian or physiotherapist
-          — consult a qualified professional for personal health decisions.
-        </Text>
-      </View>
+      <KnowledgeDisclaimer />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  section: { gap: space.md },
-  row: { flexDirection: "row", gap: space.sm },
   flex: { flex: 1 },
-  flexText: { flex: 1, gap: 2 },
-  principle: { flexDirection: "row", gap: space.md, alignItems: "flex-start" },
-  principleIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.md,
-    backgroundColor: colors.ink,
-    alignItems: "center",
-    justifyContent: "center",
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.sm },
+  pill: { minHeight: 40, paddingHorizontal: space.lg },
+  section: { gap: space.md },
+  sectionHead: { gap: 4 },
+  sectionTitle: { fontSize: 21, lineHeight: 27 },
+  sectionLede: { lineHeight: 19 },
+  dbCard: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
+    overflow: "hidden",
   },
-  disclaimer: {
-    flexDirection: "row",
-    gap: space.sm,
-    backgroundColor: colors.accentSoft,
-    borderRadius: radius.md,
-    padding: space.md,
-  },
+  dbImage: { width: "100%", height: 110, backgroundColor: colors.surface },
+  dbText: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: 2 },
+  principles: { gap: space.sm },
+  principle: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
+  bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.accent, marginTop: 9 },
 });

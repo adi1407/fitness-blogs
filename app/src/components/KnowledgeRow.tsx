@@ -3,47 +3,50 @@ import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import type { KnowledgePage } from "@/api/library";
-import { KNOWLEDGE_SECTIONS } from "@/lib/knowledge";
-import { colors, radius, space } from "@/theme";
-import { Card } from "./Card";
+import { colors, fonts, radius, space } from "@/theme";
+import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
 
-export function KnowledgeRow({ page, index }: { page: KnowledgePage; index?: number }) {
-  const meta = KNOWLEDGE_SECTIONS[page.section];
+/** Website program / buyer's-guide card: bordered, title + excerpt, optional step number. */
+export function KnowledgeRow({ page, index, compact }: { page: KnowledgePage; index?: number; compact?: boolean }) {
   return (
-    <Card onPress={() => router.push(`/guides/${page.section}/${page.slug}`)} accessibilityLabel={page.title} style={styles.card}>
-      <View style={styles.badge}>
-        {index != null ? (
-          <Text variant="heading" style={styles.badgeText}>
-            {String(index + 1).padStart(2, "0")}
-          </Text>
-        ) : (
-          <Ionicons name={meta?.icon ?? "document-text-outline"} size={20} color={colors.accent} />
-        )}
-      </View>
+    <PressableScale
+      onPress={() => router.push(`/guides/${page.section}/${page.slug}`)}
+      accessibilityRole="link"
+      accessibilityLabel={page.title}
+      scaleTo={0.985}
+      style={[styles.card, compact && styles.compact]}
+    >
       <View style={styles.text}>
-        <Text variant="heading">{page.title}</Text>
-        {page.excerpt ? (
+        {index != null ? <Text style={styles.index}>{String(index + 1).padStart(2, "0")}</Text> : null}
+        <Text variant="heading" style={compact ? styles.titleCompact : styles.title}>
+          {page.title}
+        </Text>
+        {page.excerpt && !compact ? (
           <Text variant="small" numberOfLines={3}>
             {page.excerpt}
           </Text>
         ) : null}
       </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.subtle} />
-    </Card>
+      <Ionicons name="arrow-forward" size={16} color={colors.ink} />
+    </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
-  badge: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    backgroundColor: colors.ink,
+  card: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: space.md,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
   },
-  badgeText: { color: colors.accent },
+  compact: { paddingVertical: space.md, borderRadius: radius.md },
   text: { flex: 1, gap: 4 },
+  index: { fontFamily: fonts.semibold, fontSize: 12, letterSpacing: 1, color: colors.muted },
+  title: { fontSize: 17, lineHeight: 23 },
+  titleCompact: { fontSize: 15, lineHeight: 21 },
 });
