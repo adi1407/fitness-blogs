@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Roboto_Slab } from "next/font/google";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
+import { ChromeGate } from "@/components/shared/ChromeGate";
 import { OpenPanelProvider } from "@/components/analytics/OpenPanelProvider";
 import { GoogleConsentInit } from "@/components/analytics/GoogleAnalytics";
 import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
@@ -140,15 +141,19 @@ export default function RootLayout({
         <JsonLd data={orgJsonLd} />
         <MemberAuthProvider>
           <CookieConsentProvider>
-            <SiteHeader />
+            <ChromeGate>
+              <SiteHeader />
+            </ChromeGate>
             <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
               <Suspense fallback={null}>
                 <OpenPanelProvider />
               </Suspense>
               {children}
             </div>
-            <SiteFooter />
-            <CookieBanner />
+            <ChromeGate>
+              <SiteFooter />
+              <CookieBanner />
+            </ChromeGate>
           </CookieConsentProvider>
         </MemberAuthProvider>
       </body>

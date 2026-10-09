@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { CopySnippet } from "@/components/shared/CopySnippet";
+import { embedSnippet, isCalcTool } from "@/features/tools/embed/snippet";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { SubscribeForm } from "@/features/newsletter/components/SubscribeForm";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -279,6 +281,21 @@ export function CalculatorPageShell({
             title="Get weekly tips that build on your numbers"
             description="Simple meal ideas, protein swaps and training cues — on Instagram and Facebook."
           />
+
+          {isCalcTool(slug) ? (
+            <details className="group rounded-xl border border-border bg-white p-4">
+              <summary className="cursor-pointer text-sm font-semibold text-foreground marker:text-[#FF9800]">
+                Embed this calculator on your website
+              </summary>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Free for gyms, coaches and bloggers. Paste this HTML where you want the calculator to appear — please
+                keep the credit link.
+              </p>
+              <div className="mt-3">
+                <CopySnippet label="Embed code (HTML)" code={embedSnippet(siteUrl, slug)} event={`embed_${slug}`} />
+              </div>
+            </details>
+          ) : null}
 
           <p className="rounded-xl border border-accent/30 bg-[#FFF8E1] px-4 py-3 text-xs leading-relaxed text-foreground/80">
             This calculator provides an estimate and isn&apos;t a substitute for
