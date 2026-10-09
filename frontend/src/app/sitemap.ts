@@ -30,6 +30,7 @@ const STATIC_PATHS = [
   "/blog",
   "/nutrition",
   "/nutrition/protein",
+  "/nutrition/calories",
   "/weight-loss",
   "/muscle-building",
   "/training",
@@ -70,6 +71,7 @@ const TRUST_PATHS = [
 const PRIORITY_PATHS = new Set([
   "/nutrition",
   "/nutrition/protein",
+  "/nutrition/calories",
   "/weight-loss",
   "/muscle-building",
   "/tools",
