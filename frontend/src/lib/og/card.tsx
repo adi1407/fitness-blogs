@@ -11,7 +11,7 @@ const MUTED = "#525252";
 let fontPromise: Promise<ArrayBuffer | null> | null = null;
 
 /** Roboto Slab Bold as TTF (Satori can't read woff2). Cached per server instance; null on failure. */
-function loadFont(): Promise<ArrayBuffer | null> {
+export function loadOgFont(): Promise<ArrayBuffer | null> {
   fontPromise ??= (async () => {
     try {
       const css = await fetch(
@@ -48,7 +48,7 @@ export async function renderOgCard({
   statLabel,
   origin,
 }: OgCardInput): Promise<ImageResponse> {
-  const font = await loadFont();
+  const font = await loadOgFont();
   const safeTitle = clamp(title || BRAND_NAME, stat ? 70 : 110);
   const titleSize = stat ? 48 : safeTitle.length > 70 ? 56 : 68;
 
