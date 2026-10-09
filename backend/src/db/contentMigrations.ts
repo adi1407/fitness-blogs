@@ -65,6 +65,9 @@ const PATHS: Record<string, string> = {
   "dal-vs-chicken-for-protein": "nutrition/protein",
   "oats-vs-poha-for-weight-loss": "weight-loss/weight-loss-nutrition",
   "curd-vs-milk": "nutrition/protein",
+  "how-many-steps-a-day-to-lose-weight": "weight-loss/walking-daily-activity",
+  "strength-training-for-fat-loss": "weight-loss/strength-training-weight-loss",
+  "how-to-lose-weight-on-a-vegetarian-diet": "weight-loss/weight-loss-nutrition",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -527,6 +530,24 @@ function insertProteinGuideLinks(): Promise<void> {
   return insertMarkedParagraphs(PROTEIN_GUIDES_MARKER, PROTEIN_GUIDES_LINKS, "protein guide links");
 }
 
+const WEIGHT_LOSS_GUIDES_MARKER = "<strong>Keep going:</strong>";
+
+/** Inbound links to the October weight-loss articles. */
+const WEIGHT_LOSS_GUIDES_LINKS: Record<string, string> = {
+  "does-walking-help-you-lose-weight": `Set a realistic target with ${a("how-many-steps-a-day-to-lose-weight", "how many steps a day to lose weight")}, and add ${a("strength-training-for-fat-loss", "strength training for fat loss")} to protect muscle.`,
+  "calories-burned-walking-10000-steps": `Not sure 10,000 is right for you? Read ${a("how-many-steps-a-day-to-lose-weight", "how many steps a day to lose weight")}.`,
+  "how-to-lose-belly-fat": `Build the training side with ${a("strength-training-for-fat-loss", "strength training for fat loss")} and ${a("how-many-steps-a-day-to-lose-weight", "a daily step target")}.`,
+  "why-am-i-not-losing-weight": `Losing muscle instead of fat? See ${a("strength-training-for-fat-loss", "strength training for fat loss")}.`,
+  "beginner-3-day-gym-workout-plan": `Training to lose fat rather than bulk? See ${a("strength-training-for-fat-loss", "strength training for fat loss")}.`,
+  "protein-for-weight-loss": `Vegetarian? Read ${a("how-to-lose-weight-on-a-vegetarian-diet", "how to lose weight on a vegetarian Indian diet")}.`,
+  "indian-diet-plan-for-weight-loss": `The principles behind this plan — plate method, protein and swaps — are in ${a("how-to-lose-weight-on-a-vegetarian-diet", "how to lose weight on a vegetarian Indian diet")}.`,
+  "best-indian-foods-for-weight-loss": `Put them together with ${a("how-to-lose-weight-on-a-vegetarian-diet", "how to lose weight on a vegetarian Indian diet")}.`,
+};
+
+function insertWeightLossGuideLinks(): Promise<void> {
+  return insertMarkedParagraphs(WEIGHT_LOSS_GUIDES_MARKER, WEIGHT_LOSS_GUIDES_LINKS, "weight loss guide links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -565,6 +586,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-13-training-plan-links", run: insertTrainingPlanLinks },
   { id: "2026-10-13-calorie-guide-links", run: insertCalorieGuideLinks },
   { id: "2026-10-13-protein-guide-links", run: insertProteinGuideLinks },
+  { id: "2026-10-13-weight-loss-guide-links", run: insertWeightLossGuideLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
