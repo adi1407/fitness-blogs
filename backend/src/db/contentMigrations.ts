@@ -544,6 +544,22 @@ const WEIGHT_LOSS_GUIDES_LINKS: Record<string, string> = {
   "best-indian-foods-for-weight-loss": `Put them together with ${a("how-to-lose-weight-on-a-vegetarian-diet", "how to lose weight on a vegetarian Indian diet")}.`,
 };
 
+const RANKING_MARKER = "<strong>See the data:</strong>";
+const RANKING = `<a href="/foods/indian/protein-ranking">protein in Indian foods, ranked</a>`;
+
+/** Inbound links to the protein-ranking data page. */
+const RANKING_LINKS: Record<string, string> = {
+  "best-high-protein-indian-foods": `Every food in our database sorted per serving, per calorie and per 100 g: ${RANKING}.`,
+  "how-much-protein-do-you-need-per-day": `Find foods that fit your target in ${RANKING}.`,
+  "soya-chunks-protein": `Compare soya with 49 other foods in ${RANKING}.`,
+  "dal-vs-chicken-for-protein": `How every dal, meat and dairy food compares: ${RANKING}.`,
+  "paneer-vs-tofu": `See where paneer ranks among 50 Indian foods in ${RANKING}.`,
+};
+
+function insertRankingLinks(): Promise<void> {
+  return insertMarkedParagraphs(RANKING_MARKER, RANKING_LINKS, "protein ranking links");
+}
+
 function insertWeightLossGuideLinks(): Promise<void> {
   return insertMarkedParagraphs(WEIGHT_LOSS_GUIDES_MARKER, WEIGHT_LOSS_GUIDES_LINKS, "weight loss guide links");
 }
@@ -587,6 +603,8 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-13-calorie-guide-links", run: insertCalorieGuideLinks },
   { id: "2026-10-13-protein-guide-links", run: insertProteinGuideLinks },
   { id: "2026-10-13-weight-loss-guide-links", run: insertWeightLossGuideLinks },
+  { id: "2026-10-14-article-rewrites", run: applyArticleRewrites },
+  { id: "2026-10-14-protein-ranking-links", run: insertRankingLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

@@ -24,7 +24,7 @@ Plan: 12-week SEO traffic plan (Oct–Dec 2026). Rules: `SEO_PLAYBOOK.md`, roadm
 | Queries in top 3 | needs export | | | | — |
 | Pages indexed | needs export | | | | all sitemap URLs |
 | Referring domains | 0 known | | | | 10+ |
-| Published articles | 33 | | | | 57+ |
+| Published articles | 33 (41 live on 9 Oct; 16 more seeded and awaiting review) | | | | 57+ |
 | Calculator users clicking a next step | not measured yet | | | | 25%+ |
 
 ## Indexing baseline (GSC Pages report, data from 4 Oct 2026)
@@ -60,6 +60,33 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | 9 Oct 2026 | Pillar-hub link in all 33 articles; extra sibling links where an article had fewer than 3 (migration `2026-10-12-pillar-links`) | all articles | Hubs gain internal links; more crawl paths | 20 Nov |
 | 9 Oct 2026 | `is-rice-good-for-weight-loss` rewritten (185 → ~1,150 words): portions by goal, rice types, cooking, regional plates — distinct from rice vs roti | rice article | Google stops treating it as a duplicate of rice-vs-roti | 20 Nov |
 | 9 Oct 2026 | New `/nutrition/calories` pillar; Calories + Protein guides linked from the site-wide footer | calories cluster | Ranking for "how many calories do I need"; more internal links to calculators and food pages | 20 Nov |
+| 9 Oct 2026 | Muscle-building cluster: 6 articles (skinny gain, 3-day plan, sets per muscle, Indian bulking, PPL, days per week) + inbound links | muscle building | Rankings for beginner training queries | 20 Nov |
+| 9 Oct 2026 | Calories cluster: 6 articles (calories per day, calorie deficit, 1,200 / 2,000 kcal plans, 10,000 steps, thali) + inbound links | calories | Fills the new pillar; long-tail diet-plan queries | 20 Nov |
+| 9 Oct 2026 | Protein cluster: 9 articles (veg breakfast, beginners, kidneys, soya chunks, eggetarians, paneer vs tofu, dal vs chicken, oats vs poha, curd vs milk) + inbound links | protein | "X vs Y" and Indian protein queries | 20 Nov |
+| 9 Oct 2026 | Weight-loss articles: steps a day, strength training for fat loss, vegetarian Indian diet + inbound links | weight loss | Rankings for core weight-loss queries | 20 Nov |
+| 9 Oct 2026 | Article API unwraps links to unpublished articles at serve time | all articles | No internal links to 404s while drafts are in review | — |
+| 9 Oct 2026 | Linkable asset `/foods/indian/protein-ranking` + infographic (`/foods/indian/protein-ranking/infographic.png`) with embed and citation code; linked from 5 protein articles | foods | Backlinks; image search; "protein in Indian foods" queries | 4 Dec |
+| 9 Oct 2026 | Embeddable calculators `/embed/{calculator}` (noindex) with credit-link snippet on every calculator page; `frame-ancestors 'self'` everywhere else | calculators | Backlinks from gyms/bloggers; clickjacking protection | 4 Dec |
+| 9 Oct 2026 | Refreshed `protein-before-or-after-workout` (177 → ~850 words) and `how-long-does-it-take-to-build-muscle` (185 → ~750 words) via migration `2026-10-14-article-rewrites` | 2 articles | Leave "Crawled – not indexed"; rank for timing/timeline queries | 20 Nov |
+
+## Content status
+
+16 seeded articles are not published (status changed in the CMS) and return 404 until republished. Their inbound links are hidden automatically and reappear when each one is published:
+
+- **Older:** `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `vegetarian-protein-sources-india`, `protein-for-weight-loss` — also linked from calculator pages, `/weight-loss` and `/nutrition/calories` (static links that 404 until published).
+- **Muscle building:** `how-to-gain-weight-for-skinny-guys`, `beginner-3-day-gym-workout-plan`, `how-many-sets-per-muscle-per-week`, `bulking-on-an-indian-diet`, `push-pull-legs-for-beginners`, `how-many-days-a-week-should-i-work-out`.
+- **Calories:** `how-many-calories-should-i-eat-per-day`, `what-is-a-calorie-deficit`, `1200-calorie-indian-diet-plan`, `2000-calorie-indian-diet-plan`, `calories-burned-walking-10000-steps`, `calories-in-indian-thali`.
+
+Other thin early articles to refresh next (body words): `is-paneer-good-for-weight-loss` (197), `how-much-water-should-you-drink` (207), `2-eggs-calories-and-protein` (226), `best-high-protein-indian-foods` (243).
+
+## Backlink assets
+
+| Asset | Share it with | Measure |
+| --- | --- | --- |
+| `/foods/indian/protein-ranking` + infographic | Indian fitness/nutrition bloggers, dietitians, gym Instagram pages, Reddit (r/IndianFitness) | GSC → Links → top linking sites; GA4 referrals to the page |
+| `/embed/{calculator}` | Gyms, personal trainers, coaching websites | GA4 sessions with `utm_source=embed` (link clicks from widgets); GSC links to calculator pages |
+
+Outreach template: one-line intro, why the asset helps their readers (IFCT data, free, no sign-up), the embed code, and a request to keep the credit link.
 
 ## Monthly loop
 
@@ -69,3 +96,6 @@ Until that export exists, titles were tuned for the pages with the highest comme
 4. Refresh two older articles: update numbers, add a section answering a query from GSC, update `updated_at` only when the content really changed.
 5. Pages still "Crawled – not indexed" after 6 weeks: improve content and inbound links, then request indexing once.
 6. Revisit gated work only with GSC demand: calculator variants (`/calorie-calculator/women`), Hindi pages (month 3).
+7. Publish or delete anything listed under "Content status"; send 5–10 outreach emails for the backlink assets and record new referring domains.
+
+Refreshes ship as entries in `backend/src/db/intentArticles/rewrites.ts` plus a new migration id that runs `applyArticleRewrites` (each rewrite applies only while the live body still has its original opening, so CMS edits are never overwritten).
