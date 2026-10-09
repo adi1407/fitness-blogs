@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check, Loader2, X } from "lucide-react";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
 import { CalcShareButton } from "@/features/tools/components/CalcShareButton";
+import { useIsEmbed } from "@/features/tools/embed/EmbedFrame";
 import { NextSteps } from "@/features/tools/components/NextSteps";
 import {
   clearPendingSave,
@@ -29,7 +30,10 @@ export function CalcSaveBar({
   const [status, setStatus] = useState<Status>("idle");
   const [updateProfile, setUpdateProfile] = useState(true);
   const [signInOpen, setSignInOpen] = useState(false);
+  const embedded = useIsEmbed();
   const signedIn = Boolean(calc.memberId);
+
+  if (embedded) return null;
 
   const notice = calc.notice ? (
     <div
