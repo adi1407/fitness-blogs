@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -34,11 +35,12 @@ export const Card = React.memo(function Card({
         hovered !== null && hovered !== index && "scale-[0.98] blur-sm",
       )}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={card.src}
         alt={card.title}
-        className="absolute inset-0 h-full w-full object-cover"
+        fill
+        sizes="(min-width: 768px) 33vw, 100vw"
+        className="object-cover"
       />
       <div
         className={cn(

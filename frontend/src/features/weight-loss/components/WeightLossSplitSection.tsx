@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import SplitAxisConvergence, {
   type StackSpreadCard,
@@ -100,12 +101,13 @@ function StaticFallback() {
       <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {FITNESS_IMGS.map((src, i) => (
           <li key={src} className="overflow-hidden rounded-xl">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={src}
               alt={ALTS[i]}
+              width={480}
+              height={640}
+              sizes="(min-width: 640px) 25vw, 50vw"
               className="aspect-[3/4] h-full w-full object-cover"
-              loading="lazy"
             />
           </li>
         ))}
