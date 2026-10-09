@@ -44,6 +44,12 @@ const PATHS: Record<string, string> = {
   "indian-diet-plan-for-weight-loss": "weight-loss/diet-meal-planning",
   "vegetarian-protein-sources-india": "nutrition/protein",
   "protein-for-weight-loss": "weight-loss/weight-loss-nutrition",
+  "how-to-gain-weight-for-skinny-guys": "muscle-building/bulking",
+  "beginner-3-day-gym-workout-plan": "muscle-building/training-programs",
+  "how-many-sets-per-muscle-per-week": "muscle-building/muscle-growth-hypertrophy",
+  "bulking-on-an-indian-diet": "muscle-building/bulking",
+  "push-pull-legs-for-beginners": "muscle-building/training-programs",
+  "how-many-days-a-week-should-i-work-out": "muscle-building/beginner-muscle-building",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -453,6 +459,22 @@ function insertPillarLinks(): Promise<void> {
   return insertMarkedParagraphs(PILLAR_MARKER, PILLAR_LINKS, "pillar hub links");
 }
 
+const TRAINING_PLAN_MARKER = "<strong>Training plan:</strong>";
+
+/** Inbound links to the October muscle-building articles. */
+const TRAINING_PLAN_LINKS: Record<string, string> = {
+  "how-much-protein-to-build-muscle": `Protein needs a surplus and a plan to work: see ${a("bulking-on-an-indian-diet", "bulking on an Indian diet")} or, if you are very thin, ${a("how-to-gain-weight-for-skinny-guys", "how to gain weight for skinny guys")}. Start training with the ${a("beginner-3-day-gym-workout-plan", "beginner 3-day gym workout plan")}.`,
+  "what-is-progressive-overload": `Apply it with the ${a("beginner-3-day-gym-workout-plan", "beginner 3-day gym workout plan")} or ${a("push-pull-legs-for-beginners", "push pull legs")}, and set your weekly volume with ${a("how-many-sets-per-muscle-per-week", "how many sets per muscle per week")}.`,
+  "how-long-does-it-take-to-build-muscle": `Get the basics right from day one: ${a("how-many-days-a-week-should-i-work-out", "how many days a week to work out")}, the ${a("beginner-3-day-gym-workout-plan", "beginner 3-day gym workout plan")} and ${a("how-many-sets-per-muscle-per-week", "how many sets per muscle per week")}.`,
+  "beginner-gym-diet-plan": `Pair this diet with the ${a("beginner-3-day-gym-workout-plan", "beginner 3-day gym workout plan")}. Struggling to gain? Read ${a("how-to-gain-weight-for-skinny-guys", "how to gain weight for skinny guys")} or ${a("bulking-on-an-indian-diet", "bulking on an Indian diet")}.`,
+  "protein-before-or-after-workout": `Need a routine to go with it? Try the ${a("beginner-3-day-gym-workout-plan", "beginner 3-day gym workout plan")} or ${a("push-pull-legs-for-beginners", "push pull legs for beginners")}.`,
+  "is-creatine-safe": `Creatine helps most with a solid plan and a calorie surplus — see ${a("bulking-on-an-indian-diet", "bulking on an Indian diet")} and ${a("push-pull-legs-for-beginners", "push pull legs for beginners")}.`,
+};
+
+function insertTrainingPlanLinks(): Promise<void> {
+  return insertMarkedParagraphs(TRAINING_PLAN_MARKER, TRAINING_PLAN_LINKS, "training plan links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -488,6 +510,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-12-seo-meta-rewrites", run: applySeoMetaRewrites },
   { id: "2026-10-12-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-12-pillar-links", run: insertPillarLinks },
+  { id: "2026-10-13-training-plan-links", run: insertTrainingPlanLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
