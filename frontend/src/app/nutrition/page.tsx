@@ -125,9 +125,9 @@ const topics = [
     text: "Protein needs by goal and the best Indian protein foods.",
   },
   {
-    href: "/calorie-calculator",
+    href: "/nutrition/calories",
     title: "Calories",
-    text: "Estimate needs and connect calorie targets to real meal planning.",
+    text: "How many calories you need, targets by goal and calories in Indian food.",
   },
   {
     href: "/macro-calculator",

@@ -10,6 +10,8 @@ const explore = [
   { href: "/muscle-building", label: "Muscle Building" },
   { href: "/weight-loss", label: "Weight Loss" },
   { href: "/nutrition", label: "Nutrition" },
+  { href: "/nutrition/calories", label: "Calories Guide" },
+  { href: "/nutrition/protein", label: "Protein Guide" },
   { href: "/exercises", label: "Exercises" },
   { href: "/foods/indian", label: "Indian Foods" },
 ];
