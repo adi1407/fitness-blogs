@@ -56,6 +56,15 @@ const PATHS: Record<string, string> = {
   "2000-calorie-indian-diet-plan": "weight-loss/diet-meal-planning",
   "calories-burned-walking-10000-steps": "weight-loss/walking-daily-activity",
   "calories-in-indian-thali": "nutrition/calories-energy",
+  "high-protein-vegetarian-indian-breakfast": "nutrition/protein",
+  "protein-for-beginners": "nutrition/protein",
+  "is-too-much-protein-bad-for-kidneys": "nutrition/protein",
+  "soya-chunks-protein": "nutrition/protein",
+  "protein-sources-for-eggetarians": "nutrition/protein",
+  "paneer-vs-tofu": "nutrition/protein",
+  "dal-vs-chicken-for-protein": "nutrition/protein",
+  "oats-vs-poha-for-weight-loss": "weight-loss/weight-loss-nutrition",
+  "curd-vs-milk": "nutrition/protein",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -499,6 +508,25 @@ function insertCalorieGuideLinks(): Promise<void> {
   return insertMarkedParagraphs(CALORIE_GUIDES_MARKER, CALORIE_GUIDES_LINKS, "calorie guide links");
 }
 
+const PROTEIN_GUIDES_MARKER = "<strong>Compare protein foods:</strong>";
+
+/** Inbound links to the October protein-cluster and food-comparison articles. */
+const PROTEIN_GUIDES_LINKS: Record<string, string> = {
+  "how-much-protein-do-you-need-per-day": `Just starting out? Read ${a("protein-for-beginners", "protein for beginners")}. Worried about your kidneys? See ${a("is-too-much-protein-bad-for-kidneys", "whether too much protein is bad for your kidneys")}.`,
+  "best-high-protein-indian-foods": `Head-to-head: ${a("paneer-vs-tofu", "paneer vs tofu")}, ${a("dal-vs-chicken-for-protein", "dal vs chicken")} and ${a("curd-vs-milk", "curd vs milk")}. The cheapest option per gram is covered in ${a("soya-chunks-protein", "soya chunks protein")}.`,
+  "vegetarian-protein-sources-india": `Start the day right with a ${a("high-protein-vegetarian-indian-breakfast", "high-protein vegetarian Indian breakfast")}, or see ${a("protein-sources-for-eggetarians", "protein sources for eggetarians")} if you eat eggs.`,
+  "100g-paneer-calories-and-protein": `Comparing options? Read ${a("paneer-vs-tofu", "paneer vs tofu")}.`,
+  "100g-chicken-breast-calories-and-protein": `Vegetarian at home? See ${a("dal-vs-chicken-for-protein", "dal vs chicken for protein")}.`,
+  "2-eggs-calories-and-protein": `Build a full day around eggs with ${a("protein-sources-for-eggetarians", "protein sources for eggetarians")}.`,
+  "is-whey-protein-safe": `Concerned about high intakes? Read ${a("is-too-much-protein-bad-for-kidneys", "is too much protein bad for your kidneys")}.`,
+  "best-breakfast-for-weight-loss": `Choosing between two staples? See ${a("oats-vs-poha-for-weight-loss", "oats vs poha for weight loss")}, or try a ${a("high-protein-vegetarian-indian-breakfast", "high-protein vegetarian breakfast")}.`,
+  "is-paneer-good-for-weight-loss": `See how it stacks up in ${a("paneer-vs-tofu", "paneer vs tofu")}.`,
+};
+
+function insertProteinGuideLinks(): Promise<void> {
+  return insertMarkedParagraphs(PROTEIN_GUIDES_MARKER, PROTEIN_GUIDES_LINKS, "protein guide links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -536,6 +564,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-12-pillar-links", run: insertPillarLinks },
   { id: "2026-10-13-training-plan-links", run: insertTrainingPlanLinks },
   { id: "2026-10-13-calorie-guide-links", run: insertCalorieGuideLinks },
+  { id: "2026-10-13-protein-guide-links", run: insertProteinGuideLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
