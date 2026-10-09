@@ -10,7 +10,10 @@
     "backgroundColor": "#FFFFFF",
     "ios": {
       "bundleIdentifier": "in.fitlives.app",
-      "supportsTablet": true
+      "supportsTablet": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "in.fitlives.app",
