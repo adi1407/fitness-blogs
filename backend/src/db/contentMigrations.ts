@@ -50,6 +50,12 @@ const PATHS: Record<string, string> = {
   "bulking-on-an-indian-diet": "muscle-building/bulking",
   "push-pull-legs-for-beginners": "muscle-building/training-programs",
   "how-many-days-a-week-should-i-work-out": "muscle-building/beginner-muscle-building",
+  "how-many-calories-should-i-eat-per-day": "nutrition/calories-energy",
+  "what-is-a-calorie-deficit": "weight-loss/calorie-deficit",
+  "1200-calorie-indian-diet-plan": "weight-loss/diet-meal-planning",
+  "2000-calorie-indian-diet-plan": "weight-loss/diet-meal-planning",
+  "calories-burned-walking-10000-steps": "weight-loss/walking-daily-activity",
+  "calories-in-indian-thali": "nutrition/calories-energy",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -475,6 +481,24 @@ function insertTrainingPlanLinks(): Promise<void> {
   return insertMarkedParagraphs(TRAINING_PLAN_MARKER, TRAINING_PLAN_LINKS, "training plan links");
 }
 
+const CALORIE_GUIDES_MARKER = "<strong>More on calories:</strong>";
+
+/** Inbound links to the October calories-cluster articles. */
+const CALORIE_GUIDES_LINKS: Record<string, string> = {
+  "maintenance-calories": `See typical numbers by age and activity in ${a("how-many-calories-should-i-eat-per-day", "how many calories you should eat per day")}, and what a restaurant meal costs you in ${a("calories-in-indian-thali", "calories in an Indian thali")}.`,
+  "bmr-vs-tdee": `Turn your TDEE into a daily target with ${a("how-many-calories-should-i-eat-per-day", "how many calories to eat per day")}, then see ${a("what-is-a-calorie-deficit", "what a calorie deficit is")} if you want to lose weight.`,
+  "how-to-calculate-your-calorie-deficit": `New to the idea? Start with ${a("what-is-a-calorie-deficit", "what a calorie deficit is")}, and see how many steps can add to it in ${a("calories-burned-walking-10000-steps", "calories burned walking 10,000 steps")}.`,
+  "how-many-calories-should-i-eat-to-lose-weight": `Pick a ready-made day: the ${a("2000-calorie-indian-diet-plan", "2,000 calorie Indian diet plan")} suits many men, and smaller women can read the ${a("1200-calorie-indian-diet-plan", "1,200 calorie plan")} — including who should not follow it.`,
+  "1500-calorie-indian-diet-plan": `Need a different target? See the ${a("2000-calorie-indian-diet-plan", "2,000 calorie Indian diet plan")} or the ${a("1200-calorie-indian-diet-plan", "1,200 calorie plan")} (and who it is not for).`,
+  "does-walking-help-you-lose-weight": `See the numbers for your body weight in ${a("calories-burned-walking-10000-steps", "calories burned walking 10,000 steps")}.`,
+  "why-am-i-not-losing-weight": `Eating out often? Check ${a("calories-in-indian-thali", "calories in an Indian thali")}. Unsure your deficit is real? Read ${a("what-is-a-calorie-deficit", "what a calorie deficit is")}.`,
+  "best-indian-foods-for-weight-loss": `See how a full plate adds up in ${a("calories-in-indian-thali", "calories in an Indian thali")}.`,
+};
+
+function insertCalorieGuideLinks(): Promise<void> {
+  return insertMarkedParagraphs(CALORIE_GUIDES_MARKER, CALORIE_GUIDES_LINKS, "calorie guide links");
+}
+
 /**
  * The CMS used to split multi-word tags on save ("weight loss" → "weight", "loss").
  * Restore the seeded tags only where the stored value is exactly that split, so
@@ -511,6 +535,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-12-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-12-pillar-links", run: insertPillarLinks },
   { id: "2026-10-13-training-plan-links", run: insertTrainingPlanLinks },
+  { id: "2026-10-13-calorie-guide-links", run: insertCalorieGuideLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
