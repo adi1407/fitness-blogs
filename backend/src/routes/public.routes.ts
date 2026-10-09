@@ -8,6 +8,7 @@ import {
   KNOWLEDGE_HUB_SLUG,
 } from "../constants/knowledgeContent";
 import { env } from "../config/env";
+import { unlinkUnpublishedArticles } from "../services/internalLinks";
 import { resolveRedirect } from "../services/urlRedirects";
 import {
   mapExercise,
@@ -62,6 +63,12 @@ const ARTICLE_SELECT = `
 
 function mapPublic(row: Record<string, unknown>) {
   return mapPublicArticle(row);
+}
+
+/** Full article for reading: links to unpublished articles are unwrapped. */
+async function mapPublicWithBody(row: Record<string, unknown>) {
+  const article = mapPublic(row);
+  return { ...article, body: await unlinkUnpublishedArticles(String(article.body ?? "")) };
 }
 
 const VIEW_DEDUPE_MS = 30 * 60 * 1000;
@@ -199,7 +206,7 @@ publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
     return;
   }
 
-  const article = mapPublic(row);
+  const article = await mapPublicWithBody(row);
   const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],
     String(article.id),
@@ -443,7 +450,7 @@ publicRouter.get("/articles/:slug", async (req, res) => {
     return;
   }
 
-  const article = mapPublic(row);
+  const article = await mapPublicWithBody(row);
   const curated = await resolveRelatedArticles(
     article.relatedArticleNumbers as number[],
     String(article.id),

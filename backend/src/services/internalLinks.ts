@@ -59,6 +59,37 @@ export async function normalizeArticleLinks(html: string): Promise<string> {
   });
 }
 
+const ANCHOR = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
+const ARTICLE_HREF_SLUG =
+  /\bhref="(?:https?:\/\/(?:www\.)?fitlives\.in)?\/blog\/[a-z0-9-]+\/[a-z0-9-]+\/([a-z0-9-]+)(?:\/\d+)?\/?(?:#[^"]*)?"/i;
+
+/**
+ * Serve-time guard: unwrap links to articles that are not published (draft,
+ * in review, unpublished), keeping the link text, so live pages never point
+ * at a 404. The stored body is untouched, so links return on republish.
+ */
+export async function unlinkUnpublishedArticles(html: string): Promise<string> {
+  if (!html || !html.includes("/blog/")) return html;
+  const slugs = new Set<string>();
+  for (const [, attrs] of html.matchAll(ANCHOR)) {
+    const slug = attrs.match(ARTICLE_HREF_SLUG)?.[1];
+    if (slug) slugs.add(slug.toLowerCase());
+  }
+  if (!slugs.size) return html;
+
+  const res = await pool.query<{ slug: string }>(
+    `SELECT slug FROM articles WHERE slug = ANY($1::text[]) AND status = 'published'`,
+    [[...slugs]],
+  );
+  const published = new Set(res.rows.map((r) => r.slug));
+  if (published.size === slugs.size) return html;
+
+  return html.replace(ANCHOR, (full, attrs: string, inner: string) => {
+    const slug = attrs.match(ARTICLE_HREF_SLUG)?.[1]?.toLowerCase();
+    return slug && !published.has(slug) ? inner : full;
+  });
+}
+
 /** Boot-time pass over every article body. Idempotent; leaves `updated_at` alone. */
 export async function normalizeAllArticleLinks(): Promise<void> {
   const res = await pool.query<{ id: string; body: string }>(
