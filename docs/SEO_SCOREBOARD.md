@@ -57,6 +57,8 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | 9 Oct 2026 | Calculator titles matched to query wording ("how many calories per day", "how much protein per day", "litres per day", "calories burned", "at rest") | calorie, protein, water-intake, steps-to-calories, BMR calculators | Higher CTR once indexed | 6 Nov |
 | 9 Oct 2026 | Article titles sharpened (example, steps, timeline, litres, research) via migration `2026-10-12-seo-meta-rewrites` | calorie-deficit how-to, walking, build-muscle timeline, water, protein timing | Higher CTR | 6 Nov |
 | 9 Oct 2026 | 221 KB logo → 4 KB WebP on page; next/image on hub cards | site-wide | Faster LCP on mobile | 6 Nov (PageSpeed) |
+| 9 Oct 2026 | Pillar-hub link in all 33 articles; extra sibling links where an article had fewer than 3 (migration `2026-10-12-pillar-links`) | all articles | Hubs gain internal links; more crawl paths | 20 Nov |
+| 9 Oct 2026 | `is-rice-good-for-weight-loss` rewritten (185 → ~1,150 words): portions by goal, rice types, cooking, regional plates — distinct from rice vs roti | rice article | Google stops treating it as a duplicate of rice-vs-roti | 20 Nov |
 | 9 Oct 2026 | New `/nutrition/calories` pillar; Calories + Protein guides linked from the site-wide footer | calories cluster | Ranking for "how many calories do I need"; more internal links to calculators and food pages | 20 Nov |
 
 ## Monthly loop
