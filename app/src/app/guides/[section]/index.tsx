@@ -1,100 +1,107 @@
 import { useQuery } from "@tanstack/react-query";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { RefreshControl, StyleSheet, View } from "react-native";
-import Animated, { FadeInDown, useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
+import { Stack, router, useLocalSearchParams } from "expo-router";
+import { StyleSheet, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { fetchKnowledge } from "@/api/library";
 import { HtmlBody } from "@/components/HtmlBody";
 import { KnowledgeRow } from "@/components/KnowledgeRow";
-import { ParallaxHeader } from "@/components/ParallaxHeader";
-import { SectionHeader } from "@/components/SectionHeader";
+import { KnowledgeDisclaimer, PageIntro } from "@/components/PageIntro";
+import { PillButton } from "@/components/PillButton";
+import { Screen } from "@/components/Screen";
 import { SkeletonList } from "@/components/Skeleton";
 import { EmptyState, ErrorState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { SITE_URL } from "@/config";
 import { KNOWLEDGE_SECTIONS, isKnowledgeSection } from "@/lib/knowledge";
 import { openLink } from "@/lib/links";
-import { colors, layout, space } from "@/theme";
+import { colors, space } from "@/theme";
 
 export default function KnowledgeHubScreen() {
   const { section } = useLocalSearchParams<{ section: string }>();
   const valid = isKnowledgeSection(section);
-  const meta = valid ? KNOWLEDGE_SECTIONS[section] : null;
   const query = useQuery({
     queryKey: ["knowledge", section],
     queryFn: ({ signal }) => fetchKnowledge(section as "programs" | "reviews", signal),
     enabled: valid,
   });
-  const scrollY = useSharedValue(0);
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollY.value = e.contentOffset.y;
-  });
 
-  if (!valid || !meta) return <EmptyState title="Section not found" />;
+  if (!valid) return <EmptyState title="Section not found" />;
 
+  const meta = KNOWLEDGE_SECTIONS[section];
   const hub = query.data?.hub;
   const pages = query.data?.pages ?? [];
+  const programs = section === "programs";
 
   return (
-    <View style={styles.root}>
-      <Stack.Screen options={{ title: "", headerTransparent: true, headerTintColor: colors.bg }} />
-      <Animated.ScrollView
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: layout.bottomClearance }}
-        refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => query.refetch()} tintColor={colors.accent} />}
+    <Screen refreshing={query.isRefetching} onRefresh={() => query.refetch()}>
+      <Stack.Screen options={{ title: "" }} />
+      <PageIntro
+        crumbs={[{ label: "Library", href: "/library" }, { label: meta.eyebrow }]}
+        title={hub?.title ?? meta.label}
+        lede={hub?.excerpt ?? meta.lede}
       >
-        <ParallaxHeader image={meta.image} height={300} scrollY={scrollY}>
-          <Text variant="label" style={styles.eyebrow}>
-            {meta.eyebrow}
-          </Text>
-          <Text variant="display" style={styles.heroTitle}>
-            {hub?.title ?? meta.label}
-          </Text>
-          {hub?.excerpt ? (
-            <Text variant="body" style={styles.heroSub}>
-              {hub.excerpt}
-            </Text>
-          ) : null}
-        </ParallaxHeader>
-
-        <View style={styles.body}>
-          <SectionHeader eyebrow={`${pages.length || ""} guides`.trim()} title={section === "programs" ? "Pick a plan" : "Read before you buy"} />
-          {query.isPending ? (
-            <SkeletonList count={3} image={false} />
-          ) : query.isError ? (
-            <ErrorState error={query.error} onRetry={() => query.refetch()} />
-          ) : pages.length ? (
-            pages.map((p, i) => (
-              <Animated.View key={p.id} entering={FadeInDown.delay(i * 60).duration(320)}>
-                <KnowledgeRow page={p} index={section === "programs" ? i : undefined} />
-              </Animated.View>
-            ))
+        <View style={styles.pills}>
+          {programs ? (
+            <>
+              <PillButton label="Exercise library" onPress={() => router.push("/exercises")} style={styles.pill} />
+              <PillButton
+                label="Muscle building"
+                variant="ghost"
+                onPress={() => router.push("/hub/muscle-building")}
+                style={styles.pill}
+              />
+            </>
           ) : (
-            <EmptyState title="Guides are on the way" />
+            <>
+              <PillButton label="Nutrition hub" onPress={() => router.push("/hub/nutrition")} style={styles.pill} />
+              <PillButton
+                label="Affiliate disclosure"
+                variant="ghost"
+                onPress={() => openLink(`${SITE_URL}/affiliate-disclosure`)}
+                style={styles.pill}
+              />
+            </>
           )}
-
-          {hub?.bodyHtml ? (
-            <View style={styles.bodyWrap}>
-              <HtmlBody html={hub.bodyHtml} />
-            </View>
-          ) : null}
-
-          <Text variant="small" style={styles.link} onPress={() => openLink(`${SITE_URL}${hub?.path ?? `/${section}`}`)}>
-            View on fitlives.in
-          </Text>
         </View>
-      </Animated.ScrollView>
-    </View>
+      </PageIntro>
+
+      <View style={styles.section}>
+        <Text variant="title" style={styles.sectionTitle} accessibilityRole="header">
+          {meta.listTitle}
+          {pages.length ? <Text style={styles.count}> ({pages.length})</Text> : null}
+        </Text>
+        {query.isPending ? (
+          <SkeletonList count={3} image={false} />
+        ) : query.isError ? (
+          <ErrorState error={query.error} onRetry={() => query.refetch()} />
+        ) : pages.length ? (
+          pages.map((p, i) => (
+            <Animated.View key={p.id} entering={FadeInDown.delay(i * 50).duration(320)}>
+              <KnowledgeRow page={p} index={programs ? i : undefined} />
+            </Animated.View>
+          ))
+        ) : (
+          <EmptyState title="Guides are on the way" />
+        )}
+      </View>
+
+      {hub?.bodyHtml ? (
+        <View style={styles.bodyWrap}>
+          <HtmlBody html={hub.bodyHtml} />
+        </View>
+      ) : null}
+
+      <KnowledgeDisclaimer />
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bg },
-  eyebrow: { color: colors.accent },
-  heroTitle: { color: colors.bg, fontSize: 32, lineHeight: 38 },
-  heroSub: { color: "#D4D4D4" },
-  body: { padding: space.lg, gap: space.md },
-  bodyWrap: { marginHorizontal: -space.lg, marginTop: space.lg },
-  link: { color: colors.ink, textDecorationLine: "underline", textAlign: "center", marginTop: space.lg },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginTop: space.sm },
+  pill: { minHeight: 40, paddingHorizontal: space.lg },
+  section: { gap: space.md },
+  sectionTitle: { fontSize: 21, lineHeight: 27 },
+  count: { fontSize: 15, color: colors.muted },
+  bodyWrap: { marginHorizontal: -space.lg },
 });

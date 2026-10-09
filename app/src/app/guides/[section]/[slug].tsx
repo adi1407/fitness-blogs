@@ -1,14 +1,14 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import { Share, StyleSheet, View } from "react-native";
+import { Pressable, Share, StyleSheet, View } from "react-native";
 
 import { fetchKnowledgePage } from "@/api/library";
-import { GradientHero } from "@/components/GradientHero";
 import { HtmlBody } from "@/components/HtmlBody";
 import { KnowledgeRow } from "@/components/KnowledgeRow";
+import { KnowledgeDisclaimer, PageIntro } from "@/components/PageIntro";
+import { PillButton } from "@/components/PillButton";
 import { Screen } from "@/components/Screen";
-import { SectionHeader } from "@/components/SectionHeader";
 import { EmptyState, ErrorState, LoadingState } from "@/components/States";
 import { Text } from "@/components/Text";
 import { SITE_URL } from "@/config";
@@ -30,16 +30,17 @@ export default function KnowledgePageScreen() {
   const header = (
     <Stack.Screen
       options={{
-        title: valid ? KNOWLEDGE_SECTIONS[section].eyebrow : "",
+        title: "",
         headerRight: () =>
           page ? (
-            <Ionicons
-              name="share-outline"
-              size={22}
-              color={colors.ink}
-              accessibilityLabel="Share"
+            <Pressable
               onPress={() => Share.share({ message: `${page.title} — ${webUrl}` }).catch(() => {})}
-            />
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityLabel="Share guide"
+            >
+              <Ionicons name="share-outline" size={22} color={colors.ink} />
+            </Pressable>
           ) : null,
       }}
     />
@@ -51,11 +52,20 @@ export default function KnowledgePageScreen() {
 
   const { page: p, related } = query.data;
   const meta = KNOWLEDGE_SECTIONS[section];
+  const programs = section === "programs";
 
   return (
     <Screen refreshing={query.isRefetching} onRefresh={() => query.refetch()}>
       {header}
-      <GradientHero eyebrow={meta.label} title={p.title} subtitle={p.excerpt ?? undefined} />
+      <PageIntro
+        crumbs={[
+          { label: "Library", href: "/library" },
+          { label: meta.eyebrow, href: `/guides/${section}` },
+          { label: p.title },
+        ]}
+        title={p.title}
+        lede={p.excerpt}
+      />
 
       {p.bodyHtml ? (
         <View style={styles.bodyWrap}>
@@ -63,35 +73,45 @@ export default function KnowledgePageScreen() {
         </View>
       ) : null}
 
-      {section === "programs" ? (
-        <Text variant="small" style={styles.cta} onPress={() => router.push("/exercises")}>
-          Look up any lift in the exercise library →
-        </Text>
-      ) : null}
+      <View style={styles.pills}>
+        {programs ? (
+          <>
+            <PillButton label="Browse exercises" onPress={() => router.push("/exercises")} style={styles.pill} />
+            <PillButton label="All programs" variant="ghost" onPress={() => router.navigate("/guides/programs")} style={styles.pill} />
+          </>
+        ) : (
+          <>
+            <PillButton label="All guides" variant="ghost" onPress={() => router.navigate("/guides/reviews")} style={styles.pill} />
+            <PillButton
+              label="Affiliate disclosure"
+              variant="ghost"
+              onPress={() => openLink(`${SITE_URL}/affiliate-disclosure`)}
+              style={styles.pill}
+            />
+          </>
+        )}
+      </View>
 
       {related.length ? (
         <View style={styles.section}>
-          <SectionHeader eyebrow="Related" title={`More ${meta.eyebrow.toLowerCase()}`} />
+          <Text variant="title" style={styles.sectionTitle} accessibilityRole="header">
+            {meta.relatedTitle}
+          </Text>
           {related.map((r) => (
-            <KnowledgeRow key={r.id} page={r} />
+            <KnowledgeRow key={r.id} page={r} compact />
           ))}
         </View>
       ) : null}
 
-      <Text variant="small" style={styles.link} onPress={() => openLink(webUrl)}>
-        View on fitlives.in
-      </Text>
-      <Text variant="small" style={styles.disclaimer}>
-        Educational only — not medical advice. Check with a professional if you have an injury or health condition.
-      </Text>
+      <KnowledgeDisclaimer />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   bodyWrap: { marginHorizontal: -space.lg },
-  section: { gap: space.md },
-  cta: { color: colors.ink, fontWeight: "600", textAlign: "center" },
-  link: { color: colors.ink, textDecorationLine: "underline", textAlign: "center" },
-  disclaimer: { textAlign: "center", color: colors.subtle },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
+  pill: { minHeight: 40, paddingHorizontal: space.lg },
+  section: { gap: space.sm },
+  sectionTitle: { fontSize: 21, lineHeight: 27 },
 });
