@@ -3,8 +3,9 @@ import { router } from "expo-router";
 import { StyleSheet, View } from "react-native";
 
 import { MUSCLE_GROUP_LABEL, type Exercise } from "@/api/library";
-import { colors, radius, space } from "@/theme";
+import { colors, fonts, radius, space } from "@/theme";
 import { Card } from "./Card";
+import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
 
 const LEVEL: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
@@ -35,6 +36,45 @@ export function DifficultyMeter({ difficulty, light = false }: { difficulty: str
         {capitalise(difficulty ?? "")}
       </Text>
     </View>
+  );
+}
+
+/** Website exercise card: title, difficulty pill, excerpt and equipment. */
+export function ExerciseCard({ exercise, showGroup = false }: { exercise: Exercise; showGroup?: boolean }) {
+  return (
+    <PressableScale
+      onPress={() => router.push(`/exercise/${exercise.muscleGroup}/${exercise.slug}`)}
+      accessibilityRole="link"
+      accessibilityLabel={`${exercise.title}${exercise.difficulty ? `, ${exercise.difficulty}` : ""}`}
+      scaleTo={0.985}
+      style={styles.panel}
+    >
+      {showGroup ? (
+        <Text variant="label" style={styles.group}>
+          {MUSCLE_GROUP_LABEL[exercise.muscleGroup] ?? exercise.muscleGroup}
+        </Text>
+      ) : null}
+      <View style={styles.panelHead}>
+        <Text variant="heading" style={styles.panelTitle}>
+          {exercise.title}
+        </Text>
+        {exercise.difficulty ? (
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>{capitalise(exercise.difficulty)}</Text>
+          </View>
+        ) : null}
+      </View>
+      {exercise.excerpt ? (
+        <Text variant="small" style={styles.excerpt} numberOfLines={3}>
+          {exercise.excerpt}
+        </Text>
+      ) : null}
+      {exercise.equipment.length ? (
+        <Text variant="small" style={styles.equipmentLine} numberOfLines={1}>
+          {exercise.equipment.map(capitalise).join(" · ")}
+        </Text>
+      ) : null}
+    </PressableScale>
   );
 }
 
@@ -86,4 +126,19 @@ const styles = StyleSheet.create({
   bar: { width: 4, borderRadius: 1 },
   equipment: { flexShrink: 1 },
   light: { color: "#D4D4D4" },
+  panel: {
+    gap: space.sm,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.bg,
+  },
+  group: { color: colors.accent },
+  panelHead: { flexDirection: "row", alignItems: "flex-start", gap: space.md },
+  panelTitle: { flex: 1, fontSize: 17, lineHeight: 23 },
+  pill: { borderRadius: radius.pill, backgroundColor: colors.surface, paddingHorizontal: space.sm, paddingVertical: 2 },
+  pillText: { fontFamily: fonts.medium, fontSize: 11.5, color: colors.muted },
+  excerpt: { lineHeight: 19 },
+  equipmentLine: { fontSize: 12, color: colors.subtle },
 });
