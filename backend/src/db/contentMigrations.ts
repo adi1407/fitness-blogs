@@ -68,6 +68,11 @@ const PATHS: Record<string, string> = {
   "how-many-steps-a-day-to-lose-weight": "weight-loss/walking-daily-activity",
   "strength-training-for-fat-loss": "weight-loss/strength-training-weight-loss",
   "how-to-lose-weight-on-a-vegetarian-diet": "weight-loss/weight-loss-nutrition",
+  "best-chest-exercises": "muscle-building/muscle-growth-hypertrophy",
+  "best-back-exercises": "muscle-building/muscle-growth-hypertrophy",
+  "best-leg-exercises": "muscle-building/muscle-growth-hypertrophy",
+  "best-shoulder-exercises": "muscle-building/muscle-growth-hypertrophy",
+  "best-arm-exercises": "muscle-building/muscle-growth-hypertrophy",
 };
 
 /** Un-numbered on purpose: `normalizeAllArticleLinks` rewrites them to live URLs. */
@@ -560,6 +565,25 @@ function insertRankingLinks(): Promise<void> {
   return insertMarkedParagraphs(RANKING_MARKER, RANKING_LINKS, "protein ranking links");
 }
 
+const EXERCISE_GUIDES_MARKER = "<strong>Exercise guides:</strong>";
+const EXERCISE_GUIDES = `${a("best-chest-exercises", "chest")}, ${a("best-back-exercises", "back")}, ${a("best-leg-exercises", "legs")}, ${a("best-shoulder-exercises", "shoulders")} and ${a("best-arm-exercises", "arms")}`;
+
+/** Inbound links to the October "best exercises" articles. */
+const EXERCISE_GUIDES_LINKS: Record<string, string> = {
+  "what-is-progressive-overload": `Pick exercises worth progressing — the best moves for ${EXERCISE_GUIDES}.`,
+  "how-long-does-it-take-to-build-muscle": `Choose your exercises: the best moves for ${EXERCISE_GUIDES}.`,
+  "how-much-protein-to-build-muscle": `Pair your protein with the right training — the best exercises for ${EXERCISE_GUIDES}.`,
+  "strength-training-for-fat-loss": `Want more options? See the best exercises for ${EXERCISE_GUIDES}.`,
+  "beginner-gym-diet-plan": `What to do in the gym: the best exercises for ${EXERCISE_GUIDES}.`,
+  "beginner-3-day-gym-workout-plan": `Swap in alternatives from the best exercises for ${EXERCISE_GUIDES}.`,
+  "push-pull-legs-for-beginners": `Exercise options for each day: ${EXERCISE_GUIDES}.`,
+  "how-many-sets-per-muscle-per-week": `Spend those sets on the best exercises for ${EXERCISE_GUIDES}.`,
+};
+
+function insertExerciseGuideLinks(): Promise<void> {
+  return insertMarkedParagraphs(EXERCISE_GUIDES_MARKER, EXERCISE_GUIDES_LINKS, "exercise guide links");
+}
+
 function insertWeightLossGuideLinks(): Promise<void> {
   return insertMarkedParagraphs(WEIGHT_LOSS_GUIDES_MARKER, WEIGHT_LOSS_GUIDES_LINKS, "weight loss guide links");
 }
@@ -605,6 +629,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-13-weight-loss-guide-links", run: insertWeightLossGuideLinks },
   { id: "2026-10-14-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-14-protein-ranking-links", run: insertRankingLinks },
+  { id: "2026-10-15-exercise-guide-links", run: insertExerciseGuideLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

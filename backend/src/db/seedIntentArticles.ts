@@ -16,6 +16,7 @@ import { batch13 } from "./intentArticles/batch13";
 import { batch14 } from "./intentArticles/batch14";
 import { batch15 } from "./intentArticles/batch15";
 import { batch16 } from "./intentArticles/batch16";
+import { batch17 } from "./intentArticles/batch17";
 import { coverForSlug } from "./intentArticles/covers";
 import type { IntentArticleDef } from "./intentArticles/helpers";
 import { SEO_META } from "./intentArticles/seoMeta";
@@ -37,6 +38,7 @@ export const INTENT_ARTICLES: IntentArticleDef[] = [
   ...batch14,
   ...batch15,
   ...batch16,
+  ...batch17,
 ];
 const ARTICLES = INTENT_ARTICLES;
 
