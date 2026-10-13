@@ -45,8 +45,9 @@ export default function ExercisesPage() {
         Exercise library
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        Muscle-group hubs capture “best exercises for X” demand and feed into
-        programs and hypertrophy content — without thin doorway pages.
+        Step-by-step guides to 50 exercises, organised by muscle group — with
+        setup, technique, common mistakes, variations and sets-and-reps
+        guidance for each one.
       </p>
 
       <div className="mt-8 flex flex-wrap gap-3">
@@ -79,6 +80,129 @@ export default function ExercisesPage() {
           </li>
         ))}
       </ul>
+
+      <section className="article-body mt-14 max-w-3xl">
+        <h2>How to use the exercise library</h2>
+        <p>
+          Each muscle-group page explains how to train that area and lists its
+          exercises. Every exercise guide covers what it trains, how to set up,
+          how to perform each rep, breathing, variations for different
+          equipment and levels, how many sets and reps to do, how to progress,
+          and safety notes. Use the guides to learn technique, then follow a{" "}
+          <Link href="/programs">training program</Link> so you know which
+          exercises to do and when.
+        </p>
+
+        <h2>Compound vs isolation exercises</h2>
+        <p>
+          <strong>Compound exercises</strong> — squats, deadlifts, presses,
+          rows and pull-ups — work several muscles and joints at once. They
+          build the most strength and muscle per minute and should come first
+          in a session. <strong>Isolation exercises</strong> — curls, raises,
+          leg extensions — target one muscle. They&apos;re useful for adding
+          volume to specific areas once the compound lifts are covered.
+        </p>
+
+        <h2>A balanced starting point</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Movement</th>
+              <th>Gym option</th>
+              <th>Home option</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Squat</td>
+              <td>
+                <Link href="/exercises/legs/back-squat">Back squat</Link>
+              </td>
+              <td>
+                <Link href="/exercises/legs/bulgarian-split-squat">
+                  Bulgarian split squat
+                </Link>
+              </td>
+            </tr>
+            <tr>
+              <td>Hinge</td>
+              <td>
+                <Link href="/exercises/legs/romanian-deadlift">
+                  Romanian deadlift
+                </Link>
+              </td>
+              <td>Backpack Romanian deadlift</td>
+            </tr>
+            <tr>
+              <td>Push</td>
+              <td>
+                <Link href="/exercises/chest/barbell-bench-press">
+                  Bench press
+                </Link>
+              </td>
+              <td>
+                <Link href="/exercises/chest/push-ups">Push-ups</Link>
+              </td>
+            </tr>
+            <tr>
+              <td>Pull</td>
+              <td>
+                <Link href="/exercises/back/lat-pulldown">Lat pulldown</Link>
+              </td>
+              <td>
+                <Link href="/exercises/back/pull-up">Pull-ups</Link>
+              </td>
+            </tr>
+            <tr>
+              <td>Core</td>
+              <td>
+                <Link href="/exercises/core/pallof-press">Pallof press</Link>
+              </td>
+              <td>
+                <Link href="/exercises/core/dead-bug">Dead bug</Link>
+              </td>
+            </tr>
+            <tr>
+              <td>Cardio</td>
+              <td>
+                <Link href="/exercises/cardio/zone-2-incline-walk">
+                  Incline walk
+                </Link>
+              </td>
+              <td>
+                <Link href="/exercises/cardio/jump-rope">Jump rope</Link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          One exercise from each row, done for 2–3 sets two or three times a
+          week, makes a complete beginner routine. Add weight or reps gradually
+          — see the <Link href="/training">training fundamentals</Link> for how
+          much to train and how to progress.
+        </p>
+
+        <h2>Choosing the right exercises for you</h2>
+        <ul>
+          <li>
+            <strong>Pick variations that feel good on your joints.</strong>{" "}
+            There is no single best exercise; several options train each muscle
+            well.
+          </li>
+          <li>
+            <strong>Match your equipment.</strong> Every guide lists dumbbell,
+            machine or bodyweight alternatives.
+          </li>
+          <li>
+            <strong>Keep the same exercises for several weeks</strong> so you
+            can measure progress and keep adding load.
+          </li>
+          <li>
+            <strong>Stop if you feel sharp pain</strong> and see a qualified
+            professional if it continues.
+          </li>
+        </ul>
+      </section>
     </main>
   );
 }

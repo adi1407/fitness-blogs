@@ -107,6 +107,41 @@ export default async function AuthorsPage() {
         </ul>
       )}
 
+      <section className="article-body mt-14 max-w-3xl">
+        <h2>How authorship works at fitlives</h2>
+        <p>
+          Every article on fitlives shows who wrote it. The author researches
+          the topic, writes the guide and lists the sources used, so you can
+          check the evidence yourself. When a qualified professional has
+          reviewed an article for accuracy and safety, they are named
+          separately as the reviewer — we never present a reviewer as the
+          author, or the other way round.
+        </p>
+        <h2>What you can expect from our writers</h2>
+        <ul>
+          <li>
+            A direct answer to your question near the top of every article.
+          </li>
+          <li>
+            Claims backed by research or guidance from recognised health
+            organisations, with sources listed.
+          </li>
+          <li>
+            Indian foods, portions and examples wherever they are relevant.
+          </li>
+          <li>
+            No cure claims or medication advice — and a clear note when you
+            should speak to a professional.
+          </li>
+        </ul>
+        <p>
+          Each profile lists the articles that person has written or reviewed.
+          Spotted an error in one of them? Our{" "}
+          <Link href="/corrections">corrections policy</Link> explains how to
+          report it.
+        </p>
+      </section>
+
       <ul className="mt-12 space-y-3 text-sm text-muted-foreground">
         <li>
           <Link href="/editorial-policy" className="text-primary underline">

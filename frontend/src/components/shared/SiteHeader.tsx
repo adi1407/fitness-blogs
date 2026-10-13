@@ -339,7 +339,7 @@ export function SiteHeader() {
                             </p>
                           </div>
                           <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-white/70">
-                            Searchable fitness knowledge — not a thin blog.
+                            Evidence-informed fitness and nutrition for Indian readers.
                           </p>
                         </div>
                         <button

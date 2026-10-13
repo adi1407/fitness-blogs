@@ -81,7 +81,7 @@ export default function AboutPage() {
               />
             </h1>
             <BlurText
-              text="fitlives is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — designed to answer real questions better than a thin blog post."
+              text="fitlives is a searchable fitness knowledge platform — articles, guides, calculators, foods, and exercises — built to answer real questions completely, with numbers you can use."
               delay={40}
               animateBy="words"
               direction="top"

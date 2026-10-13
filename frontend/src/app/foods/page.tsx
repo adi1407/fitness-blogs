@@ -112,6 +112,64 @@ export default async function FoodsPage() {
           </li>
         ))}
       </ul>
+
+      <section className="article-body mt-14 max-w-3xl">
+        <h2>How to use the food database</h2>
+        <ol>
+          <li>
+            <strong>Find a food</strong> in the{" "}
+            <Link href="/foods/indian">Indian foods list</Link> — filter by
+            category, vegetarian or non-vegetarian, or sort by protein.
+          </li>
+          <li>
+            <strong>Pick your portion.</strong> Each food page shows values per
+            100 g and per common serving such as a katori, a roti or one egg,
+            and the serving calculator works out any amount.
+          </li>
+          <li>
+            <strong>Compare and plan.</strong> Use the{" "}
+            <Link href="/foods/indian/protein-ranking">protein ranking</Link>{" "}
+            to find foods that give the most protein for their calories, then
+            build meals that fit the targets from the{" "}
+            <Link href="/calorie-calculator">calorie calculator</Link>.
+          </li>
+        </ol>
+
+        <h2>Where the numbers come from</h2>
+        <p>
+          Values come from the Indian Food Composition Tables (IFCT 2017),
+          published by the ICMR–National Institute of Nutrition and based on
+          laboratory analysis of foods grown and sold in India. That makes them
+          a better match for Indian staples — dals, millets, rice varieties,
+          paneer — than databases built on Western foods.
+        </p>
+        <p>
+          Raw and cooked weights differ. Grains and pulses are listed dry
+          (uncooked) unless a page says otherwise, because water added in
+          cooking changes the weight but not the calories. Weighing food raw
+          gives the most consistent numbers.
+        </p>
+
+        <h2>Tips for accurate tracking</h2>
+        <ul>
+          <li>
+            Count cooking oil and ghee separately — one tablespoon of oil is
+            about 120 kcal.
+          </li>
+          <li>
+            Weigh a few of your usual portions once; after that, you can
+            estimate them with a katori or spoon.
+          </li>
+          <li>
+            Home-cooked dishes vary, so treat every number as a close estimate
+            rather than an exact figure.
+          </li>
+        </ul>
+        <p>
+          Looking for meal ideas? Our <Link href="/recipes">recipes</Link> list
+          ingredients in grams with macros calculated from the same data.
+        </p>
+      </section>
     </main>
   );
 }

@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
-import { SUBCATEGORY_GUIDES } from "@/features/blog/content/subcategoryGuides";
+import {
+  SUBCATEGORY_FAQS,
+  SUBCATEGORY_GUIDES,
+} from "@/features/blog/content/subcategoryGuides";
 import { articleHref } from "@/features/home/utils/articleMedia";
 import { fetchPublishedArticles } from "@/lib/api/blog";
 import {
@@ -94,7 +97,9 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
   const articles = await listArticles(category.slug, subcategory.slug, 48);
   const path = `/blog/${category.slug}/${subcategory.slug}`;
   const intro = subcategoryIntro(category, subcategory);
-  const guide = SUBCATEGORY_GUIDES[`${category.slug}/${subcategory.slug}`];
+  const guideKey = `${category.slug}/${subcategory.slug}`;
+  const guide = SUBCATEGORY_GUIDES[guideKey];
+  const faqs = SUBCATEGORY_FAQS[guideKey] ?? [];
 
   const listItems = articles.flatMap((a) => {
     const href = articleHref(a);
@@ -181,6 +186,16 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
               <li key={point}>{point}</li>
             ))}
           </ul>
+          {faqs.length > 0 ? (
+            <>
+              <h3>Common questions</h3>
+              {faqs.map((f) => (
+                <p key={f.q}>
+                  <strong>{f.q}</strong> {f.a}
+                </p>
+              ))}
+            </>
+          ) : null}
           <h3>Useful tools and guides</h3>
           <ul>
             {guide.links.map((link) => (
