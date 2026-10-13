@@ -1,6 +1,7 @@
 import { pool } from "./pool";
 import type { MuscleGroup } from "../constants/knowledgeContent";
 import { KNOWLEDGE_HUB_SLUG } from "../constants/knowledgeContent";
+import { EXERCISE_GUIDES } from "./knowledge/exerciseGuides";
 
 type SeedExercise = {
   muscleGroup: MuscleGroup;
@@ -2024,10 +2025,16 @@ async function upsertKnowledgePage(page: SeedPage): Promise<void> {
   );
 }
 
+function withGuide(ex: SeedExercise): SeedExercise {
+  const guide = EXERCISE_GUIDES[ex.muscleGroup]?.[ex.slug];
+  if (!guide) return ex;
+  return { ...ex, ...guide, quickAnswer: guide.quickAnswer ?? ex.quickAnswer };
+}
+
 /** Idempotent seed of exercises, recipes, and knowledge pages. */
 export async function seedKnowledgeContent(): Promise<void> {
   for (const ex of EXERCISES) {
-    await upsertExercise(ex);
+    await upsertExercise(withGuide(ex));
   }
   for (const recipe of RECIPES) {
     await upsertRecipe(recipe);
