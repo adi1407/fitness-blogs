@@ -111,8 +111,8 @@ export default function AboutPage() {
           Three knowledge pillars
         </h2>
         <p className="mt-2 max-w-xl text-muted-foreground">
-          Deep clusters for topical authority — muscle building, weight loss,
-          and nutrition — with articles under each subcategory.
+          Everything we publish sits under muscle building, weight loss or
+          nutrition, so related guides are always one click apart.
         </p>
         <div className="mt-8">
           <TailwindImageAccordion items={PILLAR_ACCORDION} />
@@ -125,8 +125,8 @@ export default function AboutPage() {
             Tools & databases
           </h2>
           <p className="mt-2 max-w-xl text-muted-foreground">
-            Calculators and libraries that complement the blog — the product
-            flywheel beyond articles alone.
+            Free calculators, an Indian food database and an exercise library
+            that turn the guides into numbers and plans you can use.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {SECONDARY_HUBS.map((hub) => (
@@ -158,16 +158,72 @@ export default function AboutPage() {
       </section>
 
       <section className="fk-page py-14">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Editorial philosophy
-        </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-muted-foreground">
-          <li>Search intent first, keywords second</li>
-          <li>Cite reputable sources for health and nutrition claims</li>
-          <li>Prefer educational framing over medical promises</li>
-          <li>Build topic clusters that interconnect with tools and databases</li>
-          <li>Highlight Indian nutrition context as a differentiator</li>
-        </ul>
+        <div className="article-body max-w-3xl">
+          <h2>Why fitlives exists</h2>
+          <p>
+            Most fitness advice online is written for Western diets, hidden
+            behind vague claims, or spread thin across short posts that never
+            answer the question. fitlives aims to fix that for Indian readers:
+            clear answers built on evidence, with real numbers for the foods
+            you actually eat — dal, roti, rice, paneer, curd and more.
+          </p>
+          <h2>What you&apos;ll find here</h2>
+          <ul>
+            <li>
+              <strong>Guides and articles</strong> on muscle building, weight
+              loss and nutrition, each starting with a quick answer and
+              going into the detail.
+            </li>
+            <li>
+              <strong>An Indian food database</strong> with calories, protein
+              and nutrients per 100 g and per serving, based on the Indian Food
+              Composition Tables (IFCT 2017).
+            </li>
+            <li>
+              <strong>An exercise library</strong> with step-by-step technique,
+              common mistakes and sets-and-reps guidance.
+            </li>
+            <li>
+              <strong>Free calculators</strong> for calories, protein, macros,
+              TDEE, water intake and more — each explaining what the result
+              means.
+            </li>
+            <li>
+              <strong>Programs and recipes</strong> that put the principles
+              into weekly plans and measured, high-protein meals.
+            </li>
+          </ul>
+          <h2>How we create content</h2>
+          <p>
+            Health and nutrition claims are checked against peer-reviewed
+            research and guidance from bodies such as the WHO, ICMR-NIN and
+            sports-science organisations, and sources are listed on each
+            article. Articles show who wrote them and, where applicable, who
+            reviewed them. We update pages when the evidence changes and
+            correct mistakes openly.
+          </p>
+          <p>
+            Our content is educational. It isn&apos;t medical advice, and we
+            don&apos;t make cure claims or recommend medication. If you have a
+            medical condition, are pregnant or take medication, talk to a
+            qualified professional before changing your diet or training.
+          </p>
+          <h2>How fitlives is funded</h2>
+          <p>
+            fitlives is free to read. We may show display advertising to cover
+            running costs, and advertisers never influence what we write or
+            recommend. We currently have no paid affiliate links; if that
+            changes, we will say so on our affiliate disclosure page.
+          </p>
+          <h2>Our principles</h2>
+          <ul>
+            <li>Answer the reader&apos;s question first, clearly and completely</li>
+            <li>Cite reputable sources for health and nutrition claims</li>
+            <li>Educate rather than make medical promises</li>
+            <li>Use Indian foods, portions and budgets in every example</li>
+            <li>Link guides to the tools and data you need to act on them</li>
+          </ul>
+        </div>
         <div className="mt-8 flex flex-wrap gap-4 text-sm font-semibold text-primary">
           <Link href="/editorial-policy" className="hover:underline">
             Editorial policy
@@ -186,6 +242,12 @@ export default function AboutPage() {
           </Link>
           <Link href="/blog" className="hover:underline">
             Latest articles
+          </Link>
+          <Link href="/corrections" className="hover:underline">
+            Corrections
+          </Link>
+          <Link href="/affiliate-disclosure" className="hover:underline">
+            Affiliate disclosure
           </Link>
           <Link href="/contact" className="hover:underline">
             Contact

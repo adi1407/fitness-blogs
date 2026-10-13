@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
+import { SUBCATEGORY_GUIDES } from "@/features/blog/content/subcategoryGuides";
 import { articleHref } from "@/features/home/utils/articleMedia";
 import { fetchPublishedArticles } from "@/lib/api/blog";
 import {
@@ -93,6 +94,7 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
   const articles = await listArticles(category.slug, subcategory.slug, 48);
   const path = `/blog/${category.slug}/${subcategory.slug}`;
   const intro = subcategoryIntro(category, subcategory);
+  const guide = SUBCATEGORY_GUIDES[`${category.slug}/${subcategory.slug}`];
 
   const listItems = articles.flatMap((a) => {
     const href = articleHref(a);
@@ -166,6 +168,33 @@ export default async function BlogSubcategoryPage({ params }: PageProps) {
           .
         </p>
       </section>
+
+      {guide ? (
+        <section className="article-body mt-14 max-w-3xl border-t border-border pt-10">
+          <h2>{guide.heading}</h2>
+          {guide.paragraphs.map((text) => (
+            <p key={text}>{text}</p>
+          ))}
+          <h3>Key points</h3>
+          <ul>
+            {guide.keyPoints.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+          <h3>Useful tools and guides</h3>
+          <ul>
+            {guide.links.map((link) => (
+              <li key={link.href}>
+                <Link href={link.href}>{link.label}</Link>
+              </li>
+            ))}
+          </ul>
+          <p className="text-sm text-muted-foreground">
+            Educational content only — not medical advice. Consult a qualified
+            professional for personal guidance.
+          </p>
+        </section>
+      ) : null}
     </main>
   );
 }
