@@ -78,6 +78,59 @@ export default async function RecipesPage() {
         </ul>
       )}
 
+      <section className="article-body mt-14 max-w-3xl">
+        <h2>How we calculate the macros</h2>
+        <p>
+          Every recipe lists its ingredients by weight, and the calories and
+          protein are calculated ingredient by ingredient from Indian Food
+          Composition Tables (IFCT 2017) values in our{" "}
+          <Link href="/foods/indian">Indian food database</Link>. Grains and
+          pulses are weighed raw, because cooked weights change with the amount
+          of water. Where a food isn&apos;t in IFCT — such as Greek yogurt —
+          we use typical label values and say so on the recipe.
+        </p>
+        <h2>How to use these recipes</h2>
+        <ul>
+          <li>
+            <strong>Start with your targets.</strong> Get a daily calorie and
+            protein number from the{" "}
+            <Link href="/macro-calculator">macro calculator</Link>, then pick
+            meals that fit it.
+          </li>
+          <li>
+            <strong>Adjust the carbs, not the protein.</strong> For fat loss,
+            reduce the rice or roti; for muscle gain, add more. Keep the protein
+            portion the same.
+          </li>
+          <li>
+            <strong>Measure oil and ghee.</strong> One tablespoon of oil is about
+            120 kcal — the easiest place for hidden calories to creep in.
+          </li>
+          <li>
+            <strong>Cook in batches.</strong> Dal, masalas, chilla batter and
+            sprouts all keep for 2–3 days in the fridge, so weekday meals take
+            minutes.
+          </li>
+        </ul>
+        <h2>Building a high-protein day</h2>
+        <p>
+          A simple day might be a{" "}
+          <Link href="/recipes/moong-chilla-stack">moong dal chilla</Link> or{" "}
+          <Link href="/recipes/greek-yogurt-fruit-bowl">Greek yogurt bowl</Link>{" "}
+          for breakfast, a{" "}
+          <Link href="/recipes/dal-rice-protein-plate">dal-rice plate</Link> for
+          lunch, a <Link href="/recipes/sprout-chaat-bowl">sprout chaat</Link>{" "}
+          snack, and{" "}
+          <Link href="/recipes/paneer-bhurji-high-protein">paneer bhurji</Link>{" "}
+          or a{" "}
+          <Link href="/recipes/chicken-stir-fry-veggies">chicken stir-fry</Link>{" "}
+          for dinner. Together that is roughly 105–120 g of protein. To see which
+          foods give the most protein per serving, use our{" "}
+          <Link href="/foods/indian/protein-ranking">protein ranking</Link> or
+          read the <Link href="/nutrition/protein">protein guide</Link>.
+        </p>
+      </section>
+
       <KnowledgeDisclaimer />
     </main>
   );
