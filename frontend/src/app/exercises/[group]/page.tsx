@@ -6,6 +6,7 @@ import {
   KnowledgeBreadcrumbs,
   KnowledgeDisclaimer,
 } from "@/features/knowledge/components/KnowledgeUi";
+import { MuscleGroupGuideSection } from "@/features/knowledge/components/MuscleGroupGuideSection";
 import {
   fetchExercises,
   isMuscleGroup,
@@ -117,6 +118,8 @@ export default async function ExerciseGroupPage({ params }: Props) {
           ))}
         </ul>
       )}
+
+      <MuscleGroupGuideSection group={group} label={label} />
 
       <KnowledgeDisclaimer />
     </main>
