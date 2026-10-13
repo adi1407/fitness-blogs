@@ -56,15 +56,6 @@ async function allocateArticleNumber(): Promise<number> {
   throw new Error("Failed to allocate unique article number");
 }
 
-/** Anchor: stagger ~2 articles/day going backward from "today" conceptually. */
-function publishedAtFor(dayOffset: number): Date {
-  const now = new Date();
-  const d = new Date(now);
-  d.setUTCHours(10, 0, 0, 0);
-  d.setUTCDate(d.getUTCDate() - (9 - dayOffset));
-  return d > now ? now : d;
-}
-
 async function resolveAuthorId(): Promise<string> {
   const res = await pool.query(
     `SELECT id FROM users WHERE email = $1 AND role = 'writer' LIMIT 1`,
@@ -119,9 +110,9 @@ async function insertIfMissing(
   );
   const articleNumber = await allocateArticleNumber();
   const readingTime = estimateReadingTime(def.body);
-  const publishedAt = publishedAtFor(def.dayOffset);
   const cover = coverForSlug(def.slug);
 
+  // New seeds wait in the CMS review queue; an editor's publish stamps the date.
   await pool.query(
     `INSERT INTO articles (
       article_number, title, slug, excerpt, body,
@@ -129,14 +120,14 @@ async function insertIfMissing(
       meta_title, meta_description, primary_keyword,
       quick_answer, tags, topics, faq, sources,
       featured_image, og_image, featured_image_alt, reading_time, author_id,
-      published_by, published_at, robots_index, views
+      robots_index, views
     ) VALUES (
       $1,$2,$3,$4,$5,
-      $6,$7,'published',
+      $6,$7,'submitted',
       $8,$9,$10,
       $11,$12,$13,$14::jsonb,$15::jsonb,
       $16,$16,$17,$18,$19,
-      $19,$20,TRUE,0
+      TRUE,0
     )`,
     [
       articleNumber,
@@ -158,7 +149,6 @@ async function insertIfMissing(
       def.featuredImageAlt,
       readingTime,
       authorId,
-      publishedAt,
     ],
   );
   return "inserted";
