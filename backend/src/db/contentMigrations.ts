@@ -630,6 +630,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-14-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-14-protein-ranking-links", run: insertRankingLinks },
   { id: "2026-10-15-exercise-guide-links", run: insertExerciseGuideLinks },
+  { id: "2026-10-16-article-rewrites", run: applyArticleRewrites },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
