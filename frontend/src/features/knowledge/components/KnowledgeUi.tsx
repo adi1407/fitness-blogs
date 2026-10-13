@@ -43,7 +43,7 @@ export function KnowledgeBreadcrumbs({ items }: { items: Crumb[] }) {
 export function ProseHtml({ html }: { html: string }) {
   return (
     <div
-      className="prose prose-neutral mt-6 max-w-none prose-p:leading-relaxed prose-a:text-primary"
+      className="article-body mt-6 max-w-3xl"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
