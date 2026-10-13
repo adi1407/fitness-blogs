@@ -1,7 +1,9 @@
 import type { MuscleGroup } from "../../constants/knowledgeContent";
 import { TRAINING_LINK, type ExerciseExpansion } from "./exerciseGuide";
+import { ARM_GUIDES } from "./exercisesArms";
 import { BACK_GUIDES } from "./exercisesBack";
 import { CHEST_GUIDES } from "./exercisesChest";
+import { LEG_GUIDES } from "./exercisesLegs";
 import { SHOULDER_GUIDES } from "./exercisesShoulders";
 
 const a = (href: string, text: string) => `<a href="${href}">${text}</a>`;
@@ -44,6 +46,8 @@ const GUIDES: Partial<Record<MuscleGroup, Record<string, ExerciseExpansion>>> = 
   chest: CHEST_GUIDES,
   back: BACK_GUIDES,
   shoulders: SHOULDER_GUIDES,
+  arms: ARM_GUIDES,
+  legs: LEG_GUIDES,
 };
 
 function withContext(group: MuscleGroup, guides: Record<string, ExerciseExpansion>) {
