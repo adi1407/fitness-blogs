@@ -69,6 +69,40 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | 9 Oct 2026 | Embeddable calculators `/embed/{calculator}` (noindex) with credit-link snippet on every calculator page; `frame-ancestors 'self'` everywhere else | calculators | Backlinks from gyms/bloggers; clickjacking protection | 4 Dec |
 | 9 Oct 2026 | Refreshed `protein-before-or-after-workout` (177 → ~850 words) and `how-long-does-it-take-to-build-muscle` (185 → ~750 words) via migration `2026-10-14-article-rewrites` | 2 articles | Leave "Crawled – not indexed"; rank for timing/timeline queries | 20 Nov |
 
+## AdSense review
+
+**11 Oct 2026 — "Needs attention: Low value content".** Technical setup was fine (`ads.txt` with `pub-1696625365436242`, adsbygoogle script in `<head>`, robots not blocking, trust pages present). The cause was the content mix: most sitemap URLs were 100–200-word database and hub pages.
+
+| Date | Change | PR |
+| --- | --- | --- |
+| 13 Oct 2026 | 4 thin articles rewritten (paneer weight loss, water intake, 2 eggs, best protein foods: 832–1,055 words) | [#128](https://github.com/adi1407/fitness-blogs/pull/128) |
+| 13 Oct 2026 | 50 exercise guides rebuilt (setup, steps, breathing, variations, sets/reps table, progression, safety, FAQ); unverifiable coaching claims removed | [#130](https://github.com/adi1407/fitness-blogs/pull/130), [#132](https://github.com/adi1407/fitness-blogs/pull/132), [#134](https://github.com/adi1407/fitness-blogs/pull/134), [#136](https://github.com/adi1407/fitness-blogs/pull/136) |
+| 13 Oct 2026 | 7 muscle-group pages: anatomy, weekly volume, sample session, tips, FAQ | [#138](https://github.com/adi1407/fitness-blogs/pull/138) |
+| 13 Oct 2026 | 8 recipes: gram ingredients, IFCT macro table (card macros corrected), tips, swaps, meal prep, FAQ; `/recipes` hub guide | [#140](https://github.com/adi1407/fitness-blogs/pull/140) |
+| 13 Oct 2026 | 4 programs with workout tables and 12-week progression; 3 criteria-based buying guides (no testing claims); both hubs | [#142](https://github.com/adi1407/fitness-blogs/pull/142) |
+| 13 Oct 2026 | Essentials guide on 17 indexed blog subcategory hubs; `/training` and `/about` expanded | [#144](https://github.com/adi1407/fitness-blogs/pull/144) |
+| 13 Oct 2026 | Editorial policy rewritten; `/exercises`, `/foods`, `/authors` guides; 2 FAQs per subcategory hub; SEO jargon ("thin blog", "doorway pages") removed from visible copy | [#146](https://github.com/adi1407/fitness-blogs/pull/146) |
+
+**Live audit, 13 Oct 2026** (words inside `<main>`, 209 sitemap URLs):
+
+| Section | Pages | Before (min–max) | After (min / median) |
+| --- | --- | --- | --- |
+| Exercises (incl. group hubs) | 58 | ~70–160 | 350 / 599 |
+| Recipes | 9 | 155–213 | 433 / 652 |
+| Programs | 5 | 110–180 | 451 / 887 |
+| Reviews | 4 | 127–147 | 398 / 881 |
+| Blog (hubs + articles) | 49 | 100–2,700 | 310 / 980 |
+| Foods | 53 | 168–760 | 414 / 669 |
+
+Still under 400 in `<main>`: contact, affiliate disclosure, corrections, nutrition and medical disclaimers (complete as they are), 12 subcategory hubs at 310–394 (article listings plus the guide), and `/exercises`, `/exercises/core` and `/reviews` (listing pages). Re-run with `node wordcount-audit.mjs 400` (in the scan scripts folder).
+
+**Re-apply checklist**
+
+1. Publish the articles waiting in the CMS review queue (status `submitted`) — unpublished articles also leave dead static links on calculator and hub pages.
+2. GSC → URL Inspection → *Request indexing* for `/`, `/exercises`, `/recipes`, `/programs`, `/reviews`, `/training`, `/about`, `/editorial-policy`; then Sitemaps → resubmit `sitemap.xml`.
+3. Wait about a week so Google recrawls the expanded pages.
+4. AdSense → Sites → fitlives.in → tick "I confirm I have fixed the issues" → **Request review**. Reviews typically take from a few days to a few weeks; don't re-request while one is pending.
+
 ## Content status
 
 16 seeded articles are not published (status changed in the CMS) and return 404 until republished. Their inbound links are hidden automatically and reappear when each one is published:
@@ -77,7 +111,7 @@ Until that export exists, titles were tuned for the pages with the highest comme
 - **Muscle building:** `how-to-gain-weight-for-skinny-guys`, `beginner-3-day-gym-workout-plan`, `how-many-sets-per-muscle-per-week`, `bulking-on-an-indian-diet`, `push-pull-legs-for-beginners`, `how-many-days-a-week-should-i-work-out`.
 - **Calories:** `how-many-calories-should-i-eat-per-day`, `what-is-a-calorie-deficit`, `1200-calorie-indian-diet-plan`, `2000-calorie-indian-diet-plan`, `calories-burned-walking-10000-steps`, `calories-in-indian-thali`.
 
-Other thin early articles to refresh next (body words): `is-paneer-good-for-weight-loss` (197), `how-much-water-should-you-drink` (207), `2-eggs-calories-and-protein` (226), `best-high-protein-indian-foods` (243).
+The thin early articles (`is-paneer-good-for-weight-loss`, `how-much-water-should-you-drink`, `2-eggs-calories-and-protein`, `best-high-protein-indian-foods`) were rewritten on 13 Oct 2026 — see the AdSense review section.
 
 ## Backlink assets
 
