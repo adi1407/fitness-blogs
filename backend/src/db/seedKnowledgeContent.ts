@@ -3,6 +3,8 @@ import type { MuscleGroup } from "../constants/knowledgeContent";
 import { KNOWLEDGE_HUB_SLUG } from "../constants/knowledgeContent";
 import { EXERCISE_GUIDES } from "./knowledge/exerciseGuides";
 import { RECIPE_GUIDES } from "./knowledge/recipeGuides";
+import { PROGRAM_BODIES } from "./knowledge/programGuides";
+import { REVIEW_BODIES } from "./knowledge/reviewGuides";
 
 type SeedExercise = {
   muscleGroup: MuscleGroup;
@@ -1780,7 +1782,7 @@ const KNOWLEDGE_PAGES: SeedPage[] = [
     slug: KNOWLEDGE_HUB_SLUG,
     title: "Training Programs",
     excerpt:
-      "Simple, progressive plans you can actually stick to—built like a coach who has seen busy calendars wreck perfect spreadsheets.",
+      "Free, progressive training programs with exact exercises, sets, reps and weekly progression — for the gym or home.",
     bodyHtml: p(
       "Programs here are templates, not commandments. Adjust volume for your recovery, sleep, and life stress. The best program is the one you'll train for the next 12 weeks.",
       "Educational only—not medical advice. If you have pain or a clinical condition, get cleared by a qualified professional before hard training.",
@@ -1846,7 +1848,7 @@ const KNOWLEDGE_PAGES: SeedPage[] = [
     slug: KNOWLEDGE_HUB_SLUG,
     title: "Buyer's Guides & Reviews",
     excerpt:
-      "How to judge fitness products without falling for label hype—evidence-oriented, coach-practical.",
+      "How to judge fitness products without falling for label hype — criteria, red flags and when you don't need them at all.",
     bodyHtml: p(
       "These pages teach you how to evaluate products. We focus on criteria, red flags, and tradeoffs—not hype cycles. Educational content only; we don't prescribe supplements as medicine.",
     ),
@@ -2037,6 +2039,16 @@ function withRecipeGuide(r: SeedRecipe): SeedRecipe {
   return guide ? { ...r, ...guide } : r;
 }
 
+const PAGE_BODIES: Record<SeedPage["section"], Record<string, string>> = {
+  programs: PROGRAM_BODIES,
+  reviews: REVIEW_BODIES,
+};
+
+function withPageBody(page: SeedPage): SeedPage {
+  const bodyHtml = PAGE_BODIES[page.section][page.slug];
+  return bodyHtml ? { ...page, bodyHtml } : page;
+}
+
 /** Idempotent seed of exercises, recipes, and knowledge pages. */
 export async function seedKnowledgeContent(): Promise<void> {
   for (const ex of EXERCISES) {
@@ -2046,7 +2058,7 @@ export async function seedKnowledgeContent(): Promise<void> {
     await upsertRecipe(withRecipeGuide(recipe));
   }
   for (const page of KNOWLEDGE_PAGES) {
-    await upsertKnowledgePage(page);
+    await upsertKnowledgePage(withPageBody(page));
   }
   console.log(
     `[db] knowledge seed: ${EXERCISES.length} exercises, ${RECIPES.length} recipes, ${KNOWLEDGE_PAGES.length} knowledge pages`,
