@@ -11,6 +11,8 @@ export type SubcategoryGuide = {
   links: { href: string; label: string }[];
 };
 
+export type SubcategoryFaq = { q: string; a: string };
+
 export const SUBCATEGORY_GUIDES: Record<string, SubcategoryGuide> = {
   "muscle-building/muscle-growth-hypertrophy": {
     heading: "How muscle growth works",
@@ -354,4 +356,75 @@ export const SUBCATEGORY_GUIDES: Record<string, SubcategoryGuide> = {
       { href: "/water-intake-calculator", label: "Water intake calculator" },
     ],
   },
+};
+
+export const SUBCATEGORY_FAQS: Record<string, SubcategoryFaq[]> = {
+  "muscle-building/muscle-growth-hypertrophy": [
+    { q: "How much muscle can a beginner gain?", a: "It varies widely, but many beginners gain noticeably in their first year when they train consistently and eat enough protein. The rate slows each year after that, which is normal." },
+    { q: "Do I need heavy weights to build muscle?", a: "No. Sets of roughly 6–30 reps all build muscle when taken close to failure. Heavier weights mainly build strength; moderate reps are often the most practical for muscle growth." },
+  ],
+  "muscle-building/muscle-building-nutrition": [
+    { q: "Can vegetarians build muscle on an Indian diet?", a: "Yes. Paneer, curd, dal, soya, milk and whey can cover protein needs. Planning a protein source at every meal is the key habit." },
+    { q: "Do I need a calorie surplus to build muscle?", a: "A small surplus makes it easier, especially for lean people. Beginners and people with more body fat can still build muscle at maintenance or in a small deficit." },
+  ],
+  "muscle-building/training-programs": [
+    { q: "How many days a week should I train?", a: "Three to four days suits most people. The best number is the one you can keep up every week, because consistency matters more than any single session." },
+    { q: "How long should a program last?", a: "Run a program for at least 8–12 weeks. Change it only when progress stalls for several weeks despite good sleep and food, or when your schedule changes." },
+  ],
+  "muscle-building/beginner-muscle-building": [
+    { q: "Should beginners use machines or free weights?", a: "Both work. Machines are easier to learn and safe to push hard; free weights build coordination. Most beginners do well with a mix of the two." },
+    { q: "How soon will I see results?", a: "Strength often improves within the first few weeks. Visible muscle changes usually take 2–3 months of consistent training and eating." },
+  ],
+  "weight-loss/fat-loss-basics": [
+    { q: "How fast can I safely lose fat?", a: "About 0.5–1% of your body weight per week is a sustainable rate for most people. Faster loss is harder to keep up and tends to cost more muscle." },
+    { q: "Do I need cardio to lose fat?", a: "No, but it helps. A calorie deficit drives fat loss; walking and cardio make that deficit easier to create and are good for your heart." },
+  ],
+  "weight-loss/calorie-deficit": [
+    { q: "Is a 1,200 calorie diet a good idea?", a: "For most adults it's too low to sustain and makes it hard to get enough protein and nutrients. Start with a moderate deficit from your own maintenance calories instead." },
+    { q: "Do I have to count calories forever?", a: "No. Tracking for a few weeks teaches you portion sizes. Many people then switch to measuring only a few key items, such as oil, rice and snacks." },
+  ],
+  "weight-loss/weight-loss-nutrition": [
+    { q: "Should I stop eating rice to lose weight?", a: "No. Rice fits a weight-loss diet when the portion is measured. Pair it with dal, vegetables and a protein source to make the meal more filling." },
+    { q: "Are fruit sugars bad for weight loss?", a: "Whole fruit is filling, rich in fibre and relatively low in calories. Fruit juice is a different matter — it is easy to drink a lot of calories quickly." },
+  ],
+  "weight-loss/diet-meal-planning": [
+    { q: "How many meals a day should I eat?", a: "Whatever suits your schedule. Two to four meals all work if total calories and protein are right — choose the pattern that keeps you least hungry." },
+    { q: "Can I eat out while following a meal plan?", a: "Yes. Choose dishes with a clear protein source, ask for less oil where possible, and go easy on extras such as naan, fried starters and sweet drinks." },
+  ],
+  "weight-loss/walking-daily-activity": [
+    { q: "Is 10,000 steps a day necessary?", a: "No. Health benefits rise steadily as steps increase, even well below 10,000. Aim to increase your own daily average gradually." },
+    { q: "Is walking better than running for weight loss?", a: "Running burns more per minute, but walking is easier to do daily and recover from. The best choice is the one you'll do most consistently." },
+  ],
+  "weight-loss/intermittent-fasting": [
+    { q: "Does fasting burn more fat than regular dieting?", a: "When total calories are the same, studies generally show similar fat loss. Fasting is a way to structure eating, not a shortcut." },
+    { q: "Can I train while fasting?", a: "Many people can, especially for light or moderate sessions. If you feel weak or dizzy, eat before training or move your eating window." },
+  ],
+  "weight-loss/weight-loss-plateaus": [
+    { q: "Why do I gain weight after one big meal?", a: "Mostly water. Extra salt and carbohydrates make your body hold more water for a day or two. It's not fat, and it passes quickly." },
+    { q: "Should I eat more to break a plateau?", a: "Eating at maintenance for a week or two can reduce diet fatigue, but it doesn't speed up your metabolism. Check tracking and activity first." },
+  ],
+  "weight-loss/weight-loss-myths": [
+    { q: "Does eating after 8 pm cause weight gain?", a: "Not by itself. Late eating can lead to extra snacking, but if total calories are the same, the clock doesn't change fat loss." },
+    { q: "Do fat-burner supplements work?", a: "Most have little or no evidence, and some contain stimulants that can be unsafe. A calorie deficit, protein and activity do the real work." },
+  ],
+  "nutrition/calories-energy": [
+    { q: "What's the difference between BMR and TDEE?", a: "BMR is the energy you burn at complete rest. TDEE adds digestion and all your movement, so it's the number to use for daily calorie targets." },
+    { q: "Are all calories the same?", a: "For energy balance, yes. But foods differ in how filling they are, their protein and their nutrients, which affects how easy it is to stick to a target." },
+  ],
+  "nutrition/protein": [
+    { q: "Is too much protein harmful?", a: "For healthy people, intakes up to about 2 g per kg of body weight are generally considered safe. People with kidney disease should follow their doctor's advice." },
+    { q: "Is plant protein as good as animal protein?", a: "Plant proteins can fully meet your needs when you eat a variety, such as dal with rice or roti, and enough in total." },
+  ],
+  "nutrition/dietary-fats": [
+    { q: "Is ghee healthy?", a: "Ghee is mostly saturated fat. Small amounts can fit a balanced diet, but using it freely adds many calories. Measure it with a spoon." },
+    { q: "Which cooking oil is best?", a: "No single oil is best. Rotating oils such as mustard, groundnut and rice-bran gives a mix of fatty acids. The amount used matters more than the type." },
+  ],
+  "nutrition/hydration": [
+    { q: "Do tea and coffee dehydrate you?", a: "Not in normal amounts. Tea and coffee count towards your daily fluid intake, although very large amounts of caffeine have other downsides." },
+    { q: "Do I need electrolyte drinks?", a: "Usually not for everyday exercise. They can help during long, hot or very sweaty sessions, or when you've lost fluid through illness." },
+  ],
+  "nutrition/sports-nutrition": [
+    { q: "Should I train on an empty stomach?", a: "Light sessions are fine for many people, but performance in harder sessions is often better with a meal or snack 1–3 hours before." },
+    { q: "What should I eat after a workout?", a: "A normal meal with protein and carbohydrates within a few hours — for example dal-rice with curd, eggs and roti, or a chicken and rice bowl." },
+  ],
 };
