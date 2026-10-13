@@ -542,8 +542,655 @@ const buildMuscleTimeline: ArticleRewrite = {
   ].join("\n"),
 };
 
+const FOOD_LINK = {
+  paneer100: "/blog/nutrition/protein/100g-paneer-calories-and-protein",
+  chicken100: "/blog/nutrition/protein/100g-chicken-breast-calories-and-protein",
+  eggs2: "/blog/nutrition/protein/2-eggs-calories-and-protein",
+  bestProtein: "/blog/nutrition/protein/best-high-protein-indian-foods",
+  paneerVsTofu: "/blog/nutrition/protein/paneer-vs-tofu",
+  dalVsChicken: "/blog/nutrition/protein/dal-vs-chicken-for-protein",
+  soya: "/blog/nutrition/protein/soya-chunks-protein",
+  eggetarian: "/blog/nutrition/protein/protein-sources-for-eggetarians",
+  vegProtein: "/blog/nutrition/protein/vegetarian-protein-sources-india",
+  kidneys: "/blog/nutrition/protein/is-too-much-protein-bad-for-kidneys",
+  breakfast: "/blog/weight-loss/diet-meal-planning/best-breakfast-for-weight-loss",
+  vegWl: "/blog/weight-loss/weight-loss-nutrition/how-to-lose-weight-on-a-vegetarian-diet",
+  bestIndianWl: "/blog/weight-loss/weight-loss-nutrition/best-indian-foods-for-weight-loss",
+  maintenance: "/blog/nutrition/calories-energy/maintenance-calories",
+  walking: "/blog/weight-loss/walking-daily-activity/does-walking-help-you-lose-weight",
+};
+
+const SRC_LEIDY: IntentSource = {
+  title: "Leidy et al. (2015) — The role of protein in weight loss and maintenance (Am J Clin Nutr)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/25926512/",
+  note: "Higher-protein diets improve fullness and help preserve lean mass during weight loss",
+};
+const SRC_WYCHERLEY: IntentSource = {
+  title: "Wycherley et al. (2012) — Effects of energy-restricted high-protein, low-fat compared with standard-protein, low-fat diets: a meta-analysis (Am J Clin Nutr)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/23097268/",
+  note: "Higher protein in a calorie deficit gave slightly more fat loss and less lean-mass loss",
+};
+
+const paneerWeightLoss: ArticleRewrite = {
+  originalOpening: "Paneer is not the enemy of fat loss.",
+  excerpt:
+    "Yes, paneer can help you lose weight — if you portion it. Calories and protein for 50–150 g, how paneer compares with tofu, eggs and chicken per calorie, low-fat paneer, and paneer meals that fit a calorie deficit.",
+  quickAnswer: `Yes. Paneer helps weight loss because its protein keeps you full and protects muscle in a calorie deficit. But it is calorie-dense: 100 g of full-fat paneer has about 258 kcal and 19 g protein, and over half of those calories come from fat. For fat loss, 50–100 g per meal (130–260 kcal) works for most people. Grill it, scramble it or add it to sabzi with measured oil rather than frying it, and pair it with vegetables and roti or rice. ${DISCLAIMER}`,
+  faq: [
+    {
+      question: "How much paneer can I eat per day to lose weight?",
+      answer:
+        "Most people losing weight do well with 50–100 g at a meal and up to about 150 g across the day, as long as it fits your calorie target. Get the rest of your protein from dal, curd, milk, soya or eggs rather than adding more paneer.",
+    },
+    {
+      question: "Is low-fat paneer better for weight loss?",
+      answer:
+        "It helps if your calories are tight. Low-fat paneer made from toned or skimmed milk often has roughly a quarter fewer calories for similar protein — check the label, as brands vary. Full-fat paneer is fine in smaller portions if you prefer the taste.",
+    },
+    {
+      question: "Can I eat paneer at night?",
+      answer:
+        "Yes. Eating paneer at dinner does not cause weight gain; your total calories across the day decide that. A paneer dinner with vegetables is a filling, protein-rich way to end the day.",
+    },
+    {
+      question: "Is raw paneer better than cooked paneer?",
+      answer:
+        "Calories and protein are the same raw or cooked. What changes the numbers is the oil, butter or cream added while cooking — a teaspoon of oil adds about 45 kcal, and a restaurant gravy can add 200 kcal or more.",
+    },
+    {
+      question: "Is paneer better than eggs or chicken for weight loss?",
+      answer:
+        "Not per calorie: chicken breast and egg whites give far more protein for the same calories. For vegetarians, paneer is still one of the most convenient protein sources; just pair it with lower-fat proteins like dal, hung curd, tofu or soya chunks.",
+    },
+  ],
+  sources: [SRC_IFCT_FOODS, SRC_LEIDY, SRC_WYCHERLEY, SRC.issnProtein, SRC.icmr],
+  body: [
+    p(
+      "Paneer is the default protein for most vegetarian Indians, so it is often the first food people question when they start a diet. It does not need to go. Paneer is high in protein, very filling and easy to cook in a dozen ways. The catch is that it is also high in fat, so the portion and the cooking decide whether it helps or hurts.",
+      `This guide gives you the numbers per portion, how paneer compares with other proteins, and meals that fit a calorie deficit. For the full nutrient breakdown, see <a href="${FOOD_LINK.paneer100}">100 g paneer calories and protein</a>.`,
+    ),
+
+    h2("Paneer calories and protein by portion"),
+    p(
+      "Values for full-fat paneer from the Indian Food Composition Tables (IFCT 2017). Four average cubes weigh about 50 g.",
+    ),
+    table(
+      ["Portion", "Calories", "Protein", "Fat"],
+      [
+        ["50 g (≈ 4 cubes)", "129 kcal", "9.4 g", "7.4 g"],
+        ["75 g", "194 kcal", "14.1 g", "11.1 g"],
+        ["100 g", "258 kcal", "18.9 g", "14.8 g"],
+        ["150 g", "387 kcal", "28.3 g", "22.2 g"],
+      ],
+    ),
+    p(
+      "About 52% of paneer's calories come from fat and 29% from protein. That fat is why paneer is so satisfying — and why an unmeasured 200 g serving can quietly add 500+ kcal. Use the serving calculator on our <a href=\"/foods/paneer\">paneer nutrition page</a> for your exact portion.",
+    ),
+
+    h2("Why paneer can help you lose weight"),
+    ul([
+      "<strong>Protein keeps you full.</strong> Higher-protein diets reduce hunger and help people stick to a calorie deficit.",
+      "<strong>It protects muscle.</strong> In a deficit, enough protein means more of the weight you lose is fat rather than muscle.",
+      "<strong>It is easy to cook and hard to get bored of.</strong> Bhurji, tikka, palak paneer and paneer sabzi all work.",
+      "<strong>It needs no special shopping.</strong> Paneer is available everywhere and is easy to make at home.",
+    ]),
+    p(
+      `Protein is the single most useful thing to get right in a vegetarian fat-loss diet. See <a href="${LINK.proteinWl}">how much protein you need for weight loss</a> and <a href="${FOOD_LINK.vegWl}">how to lose weight on a vegetarian diet</a>.`,
+    ),
+
+    h2("Paneer vs other proteins, per calorie"),
+    p("How many calories you eat to get 20 g of protein:"),
+    table(
+      ["Food", "Amount for 20 g protein", "Calories"],
+      [
+        ["Egg whites", "≈ 5–6 whites", "≈ 85 kcal"],
+        ["Soya chunks", "≈ 40 g dry", "≈ 140 kcal"],
+        ["Chicken breast", "≈ 92 g raw", "≈ 155 kcal"],
+        ["Firm tofu", "≈ 115 g", "≈ 165 kcal"],
+        ["Hung curd", "≈ 230 g", "≈ 230 kcal"],
+        ["Moong dal", "≈ 84 g dry", "≈ 273 kcal"],
+        ["Full-fat paneer", "≈ 106 g", "≈ 274 kcal"],
+      ],
+    ),
+    p(
+      `Paneer is not the leanest protein, which is why portion matters. Mixing it with leaner sources — tofu, soya chunks, hung curd or dal — lets you eat paneer every day and still hit your protein target. See the full comparison in <a href="${FOOD_LINK.paneerVsTofu}">paneer vs tofu</a>, or every food ranked on our <a href="/foods/indian/protein-ranking">protein ranking page</a>.`,
+    ),
+
+    h2("How much paneer to eat for weight loss"),
+    table(
+      ["Situation", "Paneer per meal", "Roughly"],
+      [
+        ["Smaller or less active", "50 g", "130 kcal, 9 g protein"],
+        ["Most people losing weight", "75–100 g", "195–260 kcal, 14–19 g protein"],
+        ["Taller, very active or training hard", "100–150 g", "260–390 kcal, 19–28 g protein"],
+      ],
+    ),
+    p(
+      "Weigh your paneer once or twice so you learn what 75 g or 100 g looks like. Make paneer one of your protein sources for the day, not the only one.",
+    ),
+
+    h2("Cooking: where paneer calories really come from"),
+    p("Rough estimates per serving; oil, butter and cream vary widely."),
+    table(
+      ["Dish", "Serving", "Calories", "Protein"],
+      [
+        ["Grilled paneer tikka", "100 g paneer, curd marinade, 1 tsp oil", "≈ 340 kcal", "≈ 20 g"],
+        ["Paneer bhurji", "100 g paneer, 1 tsp oil, onion and tomato", "≈ 330 kcal", "≈ 20 g"],
+        ["Home-style palak paneer", "1 katori (75 g paneer, 1 tsp oil)", "≈ 270 kcal", "≈ 17 g"],
+        ["Paneer pakora", "4 pieces (≈ 60 g paneer), deep-fried", "≈ 320 kcal", "≈ 15 g"],
+        ["Restaurant paneer butter masala", "1 katori", "≈ 400–550 kcal", "≈ 15–18 g"],
+      ],
+    ),
+    ul([
+      "Grill, air-fry, scramble or add paneer to sabzi with a measured teaspoon of oil.",
+      "Skip the pre-frying step many recipes use before adding paneer to gravy.",
+      "Use tomato, onion and curd gravies rather than cream, cashew paste or butter.",
+      "Treat paneer pakora and paneer butter masala as planned treats, not daily meals.",
+    ]),
+
+    h2("Paneer meals that fit a calorie deficit"),
+    table(
+      ["Meal", "What's on the plate", "Calories", "Protein"],
+      [
+        ["Bhurji and roti", "75 g paneer bhurji (1 tsp oil) + 2 roti + salad", "≈ 450 kcal", "≈ 21 g"],
+        ["Tikka salad", "100 g grilled paneer + large vegetable salad (1 tsp oil)", "≈ 340 kcal", "≈ 21 g"],
+        ["Palak paneer plate", "1 katori palak paneer + 1 roti + ½ katori curd", "≈ 410 kcal", "≈ 22 g"],
+        ["Lunch thali", "50 g paneer sabzi + 1 katori moong dal + 1 katori rice", "≈ 470 kcal", "≈ 22 g"],
+      ],
+    ),
+    p(
+      `Each plate lands around 20 g protein for 340–470 kcal. For more ideas, see the <a href="${LINK.dinner}">best dinners for weight loss</a>, and set your daily calorie target with the <a href="/calorie-calculator">calorie calculator</a>.`,
+    ),
+
+    h2("Low-fat or full-fat paneer?"),
+    p(
+      "Low-fat paneer, made from toned or skimmed milk, usually has around a quarter fewer calories for similar protein — check the label, as brands differ. It is firmer and can turn rubbery if overcooked, so it suits bhurji and gravies more than tikka. If you prefer full-fat paneer, just use a smaller portion; either fits a fat-loss diet.",
+    ),
+
+    h2("Common mistakes"),
+    ul([
+      "Eating paneer by the block because it is “healthy protein”, without weighing it.",
+      "Ordering paneer dishes out several times a week — restaurant gravies often double the calories.",
+      "Relying on paneer alone for protein, instead of mixing in dal, curd, soya or eggs.",
+      "Cutting paneer out completely, then struggling to eat enough protein as a vegetarian.",
+    ]),
+    toolCta("/protein-calculator", "protein calculator", "Find your daily protein target with the"),
+    p(
+      `<strong>Explore the guide:</strong> For the full plan, see the <a href="/weight-loss">weight loss guide</a> and the <a href="/nutrition/protein">protein guide</a>. Vegetarian and want more options? See <a href="${FOOD_LINK.vegProtein}">vegetarian protein sources in India</a>.`,
+    ),
+
+    takeaways([
+      "Paneer supports weight loss when portioned: 50–100 g per meal suits most people.",
+      "100 g of full-fat paneer has about 258 kcal and 19 g protein; over half the calories are fat.",
+      "Cooking method matters more than paneer itself — grill or scramble, don't fry.",
+      "Mix paneer with leaner proteins like tofu, soya chunks, hung curd and dal.",
+    ]),
+    p(DISCLAIMER),
+  ].join("\n"),
+};
+
+const SRC_NASEM_WATER: IntentSource = {
+  title: "National Academies (2005) — Dietary Reference Intakes for Water, Potassium, Sodium, Chloride, and Sulfate",
+  url: "https://nap.nationalacademies.org/catalog/10925",
+  note: "Adequate intake for total water; most needs are met by thirst and normal drinking",
+};
+const SRC_ACSM_FLUIDS: IntentSource = {
+  title: "Sawka et al. (2007) — ACSM position stand: exercise and fluid replacement (Med Sci Sports Exerc)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/17277604/",
+  note: "Drink 5–7 ml/kg about 4 hours before exercise; limit losses to under 2% of body weight",
+};
+const SRC_DENNIS: IntentSource = {
+  title: "Dennis et al. (2010) — Water consumption increases weight loss during a hypocaloric diet intervention (Obesity)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/19661958/",
+  note: "500 ml of water before meals led to about 2 kg extra loss over 12 weeks",
+};
+const SRC_KILLER: IntentSource = {
+  title: "Killer, Blannin & Jeukendrup (2014) — No evidence of dehydration with moderate daily coffee intake (PLoS One)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/24416202/",
+  note: "Moderate coffee hydrated habitual drinkers as well as water",
+};
+
+const waterIntake: ArticleRewrite = {
+  originalOpening: "Hydration advice online swings between",
+  excerpt:
+    "How much water you need per day by body weight, how much more for heat and workouts, what counts as water, how to tell if you're drinking enough, and whether water helps weight loss.",
+  quickAnswer: `Most healthy adults need about 33 ml of fluid per kg of body weight a day from drinks — around 2.3 litres (9 glasses) for a 70 kg adult. Add about 700 ml for every hour of sweaty exercise and about 500 ml on hot days. Tea, coffee, milk, chaas and dal all count. Pale-yellow urine and rarely feeling thirsty mean you're drinking enough. Water doesn't burn fat, but a glass before meals can help you eat less. ${DISCLAIMER}`,
+  faq: [
+    {
+      question: "Do tea and coffee count towards water intake?",
+      answer:
+        "Yes. Studies in regular coffee drinkers found moderate coffee (3–4 cups a day) hydrated them about as well as water. Chai, coffee, milk, chaas and coconut water all count. Very high caffeine intake can affect sleep, so keep it moderate.",
+    },
+    {
+      question: "Is clear urine all day a good sign?",
+      answer:
+        "Not necessarily. Pale straw-yellow urine is the target. Urine that is colourless all day usually means you're drinking more than you need, which is unnecessary and, in extreme amounts, unsafe.",
+    },
+    {
+      question: "Does drinking 4–5 litres of water help weight loss?",
+      answer:
+        "No. Extra water beyond your needs does not burn fat. What helps is drinking water instead of sugary drinks and, for some people, a glass or two before meals to feel fuller. Fat loss still depends on a calorie deficit.",
+    },
+    {
+      question: "Is warm water better than cold water for weight loss?",
+      answer:
+        "No meaningful difference. Warm water with lemon or jeera is fine if you enjoy it, but it does not melt fat. Drink whichever temperature helps you drink enough.",
+    },
+    {
+      question: "How much water should I drink during a workout?",
+      answer:
+        "For most gym sessions under an hour, sip to thirst — often 300–500 ml. For long or very sweaty sessions, aim to drink enough that you lose less than 2% of your body weight, and add some salt (ORS, nimbu pani or chaas) for sessions over 60–90 minutes in the heat.",
+    },
+  ],
+  sources: [SRC.hydration, SRC_NASEM_WATER, SRC_ACSM_FLUIDS, SRC_DENNIS, SRC_KILLER, SRC.icmr],
+  body: [
+    p(
+      "Hydration advice swings between “sip occasionally” and “carry a 4-litre bottle everywhere.” Neither is right for most people. Your needs depend on your body weight, the weather and how much you sweat, and your body gives you clear signals when you're short.",
+      "This guide gives you a starting number, tells you when to drink more, and shows how to check you're getting it right — including in an Indian summer.",
+    ),
+
+    h2("How much water you need per day"),
+    p(
+      "A practical starting point is about 33 ml of fluid from drinks per kg of body weight. Food — dal, curd, fruit, vegetables — supplies roughly a fifth of your total water on top of what you drink. European (EFSA) guidance sets total water from food and drinks at about 2.0 litres a day for women and 2.5 litres for men in a mild climate.",
+    ),
+    table(
+      ["Body weight", "Base (drinks)", "Glasses (250 ml)", "With 1 h training on a hot day"],
+      [
+        ["50 kg", "≈ 1.65 L", "≈ 7", "≈ 2.9 L"],
+        ["60 kg", "≈ 2.0 L", "≈ 8", "≈ 3.2 L"],
+        ["70 kg", "≈ 2.3 L", "≈ 9", "≈ 3.5 L"],
+        ["80 kg", "≈ 2.6 L", "≈ 11", "≈ 3.9 L"],
+        ["90 kg", "≈ 3.0 L", "≈ 12", "≈ 4.2 L"],
+      ],
+    ),
+    p(
+      "Get your own number, including exercise and climate, with the <a href=\"/water-intake-calculator\">water intake calculator</a>.",
+    ),
+
+    h2("When you need more water"),
+    table(
+      ["Situation", "Add roughly"],
+      [
+        ["Each hour of sweaty exercise", "≈ 700 ml"],
+        ["Hot day, outdoor work or no AC", "≈ 500 ml or more"],
+        ["Pregnancy", "≈ 300 ml"],
+        ["Breastfeeding", "≈ 700 ml"],
+        ["Fever, vomiting or diarrhoea", "Use ORS and see a doctor if it's severe or lasts"],
+      ],
+    ),
+    p(
+      "Older adults feel thirst less strongly, so drinking on a routine — a glass with each meal and one mid-morning and mid-afternoon — works better than waiting to feel thirsty.",
+    ),
+
+    h2("Water for workouts"),
+    ul([
+      "<strong>Before:</strong> about 5–7 ml per kg roughly 4 hours before training — around 350–500 ml for a 70 kg person — then a few sips just before you start.",
+      "<strong>During:</strong> for sessions under an hour, sip to thirst. For longer or very sweaty sessions, aim to lose less than 2% of your body weight.",
+      "<strong>After:</strong> weigh yourself before and after a hard session once. Drink about 1.25–1.5 litres for every kg lost, spread over the next few hours.",
+      "<strong>Salt for long sessions:</strong> for 60–90+ minutes in the heat, add sodium — ORS, nimbu pani with a pinch of salt, or chaas.",
+    ]),
+
+    h2("What counts as water"),
+    p(
+      "All drinks count, not just plain water. Chai, coffee, milk, chaas, nimbu pani, coconut water and soups all add to your total, and so do water-rich foods like dal, curd, watermelon, cucumber and oranges. In regular coffee drinkers, moderate coffee hydrates about as well as water. Sugary drinks count too, but a 300 ml soft drink adds around 120–140 kcal, so water, chaas and unsweetened chai are the better daily choices.",
+    ),
+
+    h2("How to tell if you're drinking enough"),
+    table(
+      ["Sign", "What it suggests"],
+      [
+        ["Pale straw-yellow urine, rarely thirsty", "You're on track"],
+        ["Dark yellow urine, headache, tiredness, dry mouth", "Drink more"],
+        ["Urine colourless all day, running to the toilet constantly", "You can ease off"],
+      ],
+    ),
+    p(
+      "Some multivitamins (especially B vitamins) turn urine bright yellow regardless of hydration, so use thirst and energy as checks too.",
+    ),
+
+    h2("Does drinking water help weight loss?"),
+    p(
+      "Water has no calories and does not burn fat, but it helps in two practical ways. First, replacing sugary drinks, packaged juices and sweet chai cuts calories without extra hunger. Second, in a 12-week trial, adults on a diet who drank 500 ml of water before each meal lost about 2 kg more than those who didn't, probably because they ate a little less.",
+      `Water can also mask fat loss on the scale for a week or two after a salty meal or a hard workout — here's <a href="${LINK.notLosing}">how to tell a real plateau from water</a>. For the food side, see the <a href="${FOOD_LINK.bestIndianWl}">best Indian foods for weight loss</a> and get a daily target from the <a href="/calorie-calculator">calorie calculator</a>.`,
+    ),
+
+    h2("Can you drink too much water?"),
+    p(
+      "Yes, though it's rare. Healthy kidneys can clear roughly 0.8–1 litre an hour; drinking far more than that for hours can dilute your blood sodium (hyponatraemia), which causes nausea, headache and confusion. The risk is highest in long endurance events and “water challenges”. People with kidney, heart or liver disease, or on diuretics, may have a fluid limit — follow your doctor's advice.",
+    ),
+
+    h2("Simple habits that work"),
+    ul([
+      "Keep a 1-litre bottle at your desk and aim to finish it twice a day.",
+      "Drink a glass of water with every meal and before each cup of chai or coffee.",
+      "Carry water when commuting in summer, and drink before you feel thirsty outdoors.",
+      "Swap one sugary drink a day for water, chaas or nimbu pani without sugar.",
+    ]),
+    toolCta("/water-intake-calculator", "water intake calculator", "Get your personal daily target with the"),
+    p(
+      `<strong>Explore the guide:</strong> Water is one part of your diet: see <a href="${FOOD_LINK.maintenance}">how to find your maintenance calories</a>, <a href="${FOOD_LINK.walking}">whether walking helps you lose weight</a>, and the full <a href="/nutrition">nutrition guide</a>.`,
+    ),
+
+    takeaways([
+      "Start at about 33 ml per kg from drinks — around 2.3 litres for a 70 kg adult.",
+      "Add about 700 ml per hour of sweaty exercise and 500 ml on hot days.",
+      "Tea, coffee, milk, chaas and water-rich foods all count.",
+      "Pale-yellow urine and rare thirst mean you're drinking enough.",
+      "Water doesn't burn fat, but swapping sugary drinks and drinking before meals helps.",
+    ]),
+    p(DISCLAIMER),
+  ].join("\n"),
+};
+
+const SRC_DROUIN: IntentSource = {
+  title: "Drouin-Chartier et al. (2020) — Egg consumption and risk of cardiovascular disease: three large prospective US cohort studies, systematic review, and updated meta-analysis (BMJ)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/32132002/",
+  note: "Up to one egg a day was not associated with higher cardiovascular risk",
+};
+const SRC_EVENEPOEL: IntentSource = {
+  title: "Evenepoel et al. (1998) — Digestibility of cooked and raw egg protein in humans (J Nutr)",
+  url: "https://pubmed.ncbi.nlm.nih.gov/9772161/",
+  note: "About 91% of cooked egg protein was absorbed vs about 51% of raw",
+};
+
+const twoEggs: ArticleRewrite = {
+  originalOpening: "Two eggs is the default Indian fitness breakfast for a reason",
+  excerpt:
+    "Calories and protein in 1, 2, 3 and 4 eggs, yolk vs white, how cooking changes the numbers, egg breakfasts with full macros, and how many eggs fit your daily protein target.",
+  quickAnswer: `Two boiled eggs (about 45 g each without the shell) have about 133 kcal, 12 g protein, 9.5 g fat and almost no carbohydrate (IFCT 2017). Two large eggs (about 50 g each) are closer to 148 kcal and 13.4 g protein. Cooking in a teaspoon of oil or ghee adds about 45 kcal. Two eggs cover roughly 11–14% of a typical 85–110 g daily protein target, so pair them with other protein foods. ${DISCLAIMER}`,
+  faq: [
+    {
+      question: "Are egg yolks unhealthy?",
+      answer:
+        "For most healthy people, no. Large studies found up to one egg a day was not linked to higher heart disease risk, and the yolk carries most of the egg's vitamins A, D and B12 and choline. If you have high LDL cholesterol, diabetes or heart disease, ask your doctor how many yolks suit you.",
+    },
+    {
+      question: "Boiled or bhurji — which is better?",
+      answer:
+        "Protein is the same. Bhurji and omelettes add the oil or ghee you cook them in — about 45 kcal per teaspoon. Measure the oil if you are counting calories, and add onion, tomato and spinach for volume.",
+    },
+    {
+      question: "How many eggs can I eat a day?",
+      answer:
+        "Many healthy people eat 1–3 whole eggs a day. If you want more protein without more fat, add egg whites rather than extra whole eggs.",
+    },
+    {
+      question: "Do raw eggs have more protein?",
+      answer:
+        "No. Your body absorbs cooked egg protein much better — around 91% versus about 51% for raw eggs in one study — and raw eggs carry a salmonella risk. Cook them.",
+    },
+    {
+      question: "Are two eggs enough protein for breakfast?",
+      answer:
+        "Two eggs give about 12 g. Many people feel fuller with 20–30 g at breakfast — add two egg whites, a glass of milk, or curd to get there.",
+    },
+  ],
+  sources: [SRC_IFCT_FOODS, SRC.usdaFdc, SRC_DROUIN, SRC_EVENEPOEL, SRC.issnProtein],
+  body: [
+    p(
+      "Two eggs is the default Indian fitness breakfast for good reason: cheap, quick and one of the highest-quality proteins you can buy. Knowing exactly what two eggs give you helps you decide whether to stop at two or add whites, milk or paneer to reach your protein target.",
+      `Values below are from the Indian Food Composition Tables (IFCT 2017) for whole boiled eggs without the shell. Get any number of eggs on our <a href="/foods/boiled-egg">boiled egg nutrition page</a>.`,
+    ),
+
+    h2("Calories and protein in eggs"),
+    table(
+      ["Eggs (≈ 45 g each)", "Calories", "Protein", "Fat"],
+      [
+        ["1 egg", "67 kcal", "6.0 g", "4.7 g"],
+        ["2 eggs", "133 kcal", "12.1 g", "9.5 g"],
+        ["3 eggs", "200 kcal", "18.1 g", "14.2 g"],
+        ["4 eggs", "266 kcal", "24.2 g", "19.0 g"],
+      ],
+    ),
+    p(
+      "Most eggs sold in India weigh 50–60 g in the shell, or about 45–52 g without it. Two large eggs (50 g each) come to about 148 kcal and 13.4 g protein. Eggs have almost no carbohydrate and no fibre.",
+    ),
+
+    h2("Yolk vs white"),
+    table(
+      ["Part (2 eggs)", "Calories", "Protein", "Fat"],
+      [
+        ["2 whites", "≈ 32 kcal", "≈ 7.4 g", "≈ 0.2 g"],
+        ["2 yolks", "≈ 101 kcal", "≈ 4.7 g", "≈ 9.3 g"],
+        ["2 whole eggs", "133 kcal", "12.1 g", "9.5 g"],
+      ],
+    ),
+    p(
+      `The white supplies most of the protein for very few calories; the yolk carries most of the fat along with vitamins A, D and B12 and choline. Whole eggs are a nutritious default. If you want more protein without more calories, add <a href="/foods/egg-white">egg whites</a> rather than extra whole eggs.`,
+    ),
+
+    h2("How cooking changes the numbers"),
+    table(
+      ["2 eggs, cooked as", "Calories", "Protein"],
+      [
+        ["Boiled or poached", "133 kcal", "12.1 g"],
+        ["Omelette with 1 tsp oil", "≈ 180 kcal", "≈ 12 g"],
+        ["Bhurji with 1 tsp oil, onion and tomato", "≈ 200 kcal", "≈ 12.5 g"],
+        ["Fried in 2 tsp ghee or butter", "≈ 205–220 kcal", "≈ 12 g"],
+        ["Egg curry, restaurant serving", "≈ 300–400 kcal", "≈ 13–14 g"],
+      ],
+    ),
+    p(
+      "Protein barely changes with cooking; calories change with the fat you add. A non-stick pan and a measured teaspoon of oil keep an omelette under 200 kcal. Always cook eggs fully — cooked egg protein is absorbed far better than raw, and raw eggs carry a salmonella risk.",
+    ),
+
+    h2("Egg breakfasts with full numbers"),
+    table(
+      ["Breakfast", "Calories", "Protein"],
+      [
+        ["2 boiled eggs + 1 banana", "≈ 240 kcal", "≈ 13 g"],
+        ["Egg poha: 1 plate poha (1 tsp oil) + 2 boiled eggs", "≈ 355 kcal", "≈ 16 g"],
+        ["2-egg bhurji (1 tsp oil) + 2 roti", "≈ 390 kcal", "≈ 19 g"],
+        ["2 eggs + 2 whites omelette (1 tsp oil) + 1 glass milk", "≈ 355 kcal", "≈ 26 g"],
+      ],
+    ),
+    p(
+      `Adding two whites and a glass of milk doubles the protein for about 180 extra kcal — useful on training days. More ideas are in the <a href="${FOOD_LINK.breakfast}">best breakfasts for weight loss</a>.`,
+    ),
+
+    h2("Where two eggs fit in your day"),
+    p(
+      `Most active adults do well with about 1.2–1.6 g of protein per kg of body weight — about 85–110 g a day at 70 kg. Two eggs cover roughly 11–14% of that, so they are a strong start, not the whole plan. See <a href="${MB_LINK.proteinPerDay}">how much protein you need per day</a>, or get your number from the <a href="/protein-calculator">protein calculator</a>.`,
+    ),
+    table(
+      ["Food", "Protein per 100 kcal"],
+      [
+        ["Egg whites", "23.3 g"],
+        ["Chicken breast", "13.0 g"],
+        ["Whole eggs", "9.1 g"],
+        ["Paneer", "7.3 g"],
+        ["Moong dal", "7.3 g"],
+      ],
+    ),
+    p(
+      `Whole eggs sit in the middle — leaner than paneer or dal, less lean than chicken or egg whites. For vegetarian swaps, compare <a href="${FOOD_LINK.paneer100}">100 g of paneer</a>; for meat, see <a href="${FOOD_LINK.chicken100}">100 g chicken breast</a>.`,
+    ),
+
+    h2("Eggs and cholesterol"),
+    p(
+      "One large egg has around 185 mg of cholesterol, almost all in the yolk. For most healthy people, dietary cholesterol has a smaller effect on blood cholesterol than once thought, and a large 2020 analysis found up to one egg a day was not linked to higher heart disease risk. If you have high LDL cholesterol, diabetes or heart disease, agree your egg intake with your doctor — and you can still use egg whites freely.",
+    ),
+
+    h2("Common mistakes"),
+    ul([
+      "Counting two eggs as a full protein breakfast when your target is 25–30 g.",
+      "Cooking in 2–3 teaspoons of oil or butter without counting it.",
+      "Throwing away every yolk — you lose most of the vitamins for a small calorie saving.",
+      "Drinking raw eggs for “more protein”.",
+    ]),
+    p(
+      `<strong>Explore the guide:</strong> See where eggs rank among the <a href="${FOOD_LINK.bestProtein}">best high-protein Indian foods</a>, build a full day with <a href="${FOOD_LINK.eggetarian}">protein sources for eggetarians</a>, or browse the full <a href="/nutrition/protein">protein guide</a>.`,
+    ),
+
+    takeaways([
+      "Two boiled eggs ≈ 133 kcal and 12 g protein; two large eggs ≈ 148 kcal and 13.4 g.",
+      "Whites give most of the protein; yolks give most of the fat and vitamins.",
+      "Each teaspoon of oil or ghee adds about 45 kcal.",
+      "Two eggs cover about 11–14% of a typical daily protein target — add whites, milk or curd.",
+    ]),
+    p(DISCLAIMER),
+  ].join("\n"),
+};
+
+const bestProteinFoods: ArticleRewrite = {
+  originalOpening: "You do not need a foreign grocery haul to eat high protein in India.",
+  excerpt:
+    "The best high-protein Indian foods ranked per serving and per calorie — chicken, fish, eggs, paneer, soya, tofu, hung curd, dals and more — with veg and non-veg sample days that reach 100 g protein.",
+  quickAnswer: `The best high-protein Indian foods per serving are chicken breast (≈ 22 g per 100 g raw), prawns (≈ 19 g), paneer (≈ 19 g per 100 g), firm tofu (≈ 17 g per 100 g), rohu fish (≈ 15 g per piece), soya chunks (≈ 15 g per 30 g dry), hung curd (≈ 13 g per 150 g) and eggs (≈ 12 g for two). Dals and chana give about 7–8 g per katori. For the most protein per calorie, choose egg whites, prawns, fish, soya chunks and chicken. Spread 3–4 of these across the day to reach about 1.2–1.6 g per kg. ${DISCLAIMER}`,
+  faq: [
+    {
+      question: "Is dal enough protein on its own?",
+      answer:
+        "Rarely. One katori of cooked dal has about 7 g protein, so you would need around 11 katoris to reach 80 g. Dal is a great base — add curd, paneer, soya, tofu, eggs, fish or chicken to reach higher targets.",
+    },
+    {
+      question: "Which Indian food has the most protein?",
+      answer:
+        "Per 100 g as bought, soya chunks lead (around 50 g per 100 g dry, by pack labels), followed by dry soybean (≈ 38 g). Per cooked serving, chicken breast, fish, prawns and paneer give the most — about 15–22 g each.",
+    },
+    {
+      question: "What are the best high-protein foods for vegetarians?",
+      answer:
+        "Paneer, soya chunks, tofu, hung curd and Greek yogurt, milk, and dals, rajma and chana. Combining dal with rice or roti also improves the overall protein quality of the meal.",
+    },
+    {
+      question: "Do I need whey protein?",
+      answer:
+        "No. Whey is a convenient, well-studied protein (about 22–25 g per scoop), useful if you struggle to hit your target from food. It is not required to build muscle or lose fat.",
+    },
+    {
+      question: "Is a high-protein diet bad for the kidneys?",
+      answer:
+        "In healthy people, protein intakes common in fitness diets have not been shown to harm the kidneys. If you have kidney disease, follow your doctor's protein limit.",
+    },
+  ],
+  sources: [SRC_IFCT_FOODS, SRC.icmr, SRC.issnProtein, SRC_MORTON_2018, SRC.usdaFdc, SRC.whoProtein],
+  body: [
+    p(
+      "You don't need imported supplements or a foreign grocery list to eat high protein in India. You need a short list of everyday foods you actually buy each week, and a rough idea of how much protein each serving gives.",
+      "Below, foods are ranked per typical serving and per calorie, using the Indian Food Composition Tables (IFCT 2017) for Indian staples and pack labels for soya chunks.",
+    ),
+
+    h2("How much protein you need"),
+    p(
+      `ICMR-NIN sets the minimum for healthy adults at about 0.83 g per kg of body weight a day. If you train or are losing weight, 1.2–1.6 g per kg is a better target — about 85–110 g a day at 70 kg. Gains in muscle level off around 1.6 g per kg. See <a href="${MB_LINK.proteinPerDay}">how much protein you need per day</a>, or get your number from the <a href="/protein-calculator">protein calculator</a>.`,
+    ),
+
+    h2("Non-vegetarian and egg proteins"),
+    table(
+      ["Food", "Serving", "Calories", "Protein", "Protein per 100 kcal"],
+      [
+        ["<a href=\"/foods/chicken-breast\">Chicken breast</a>", "100 g raw", "168 kcal", "21.8 g", "13.0 g"],
+        ["<a href=\"/foods/mutton\">Mutton</a>", "100 g raw", "188 kcal", "20.3 g", "10.8 g"],
+        ["<a href=\"/foods/prawns\">Prawns</a>", "100 g raw, shelled", "91 kcal", "19.2 g", "21.1 g"],
+        ["<a href=\"/foods/chicken-thigh\">Chicken thigh</a>", "100 g raw", "200 kcal", "18.2 g", "9.1 g"],
+        ["<a href=\"/foods/rohu\">Rohu fish</a>", "1 piece (75 g raw)", "77 kcal", "14.8 g", "19.3 g"],
+        ["<a href=\"/foods/egg-white\">Egg whites</a>", "4 whites", "64 kcal", "14.8 g", "23.3 g"],
+        ["<a href=\"/foods/boiled-egg\">Whole eggs</a>", "2 boiled", "133 kcal", "12.1 g", "9.1 g"],
+      ],
+    ),
+    p(
+      `Fish, prawns, egg whites and chicken breast give the most protein for the fewest calories, which makes them especially useful when losing weight. See <a href="${FOOD_LINK.chicken100}">100 g chicken breast calories and protein</a> and <a href="${FOOD_LINK.eggs2}">2 eggs calories and protein</a> for the full numbers.`,
+    ),
+
+    h2("Vegetarian proteins"),
+    table(
+      ["Food", "Serving", "Calories", "Protein", "Protein per 100 kcal"],
+      [
+        ["<a href=\"/foods/paneer\">Paneer</a>", "100 g", "258 kcal", "18.9 g", "7.3 g"],
+        ["Firm tofu", "100 g", "≈ 144 kcal", "≈ 17.3 g", "≈ 12.0 g"],
+        ["Soya chunks", "30 g dry", "≈ 105 kcal", "≈ 15 g", "≈ 14.3 g"],
+        ["Hung curd / Greek yogurt", "150 g", "≈ 150 kcal", "≈ 13 g", "≈ 8.7 g"],
+        ["<a href=\"/foods/soybean\">Soybean</a>", "1 katori cooked (30 g dry)", "113 kcal", "11.3 g", "10.0 g"],
+        ["<a href=\"/foods/rajma\">Rajma</a>", "1 katori cooked (40 g dry)", "120 kcal", "8.0 g", "6.7 g"],
+        ["<a href=\"/foods/kala-chana\">Kala chana</a>", "1 katori cooked (40 g dry)", "115 kcal", "7.5 g", "6.5 g"],
+        ["<a href=\"/foods/masoor-dal\">Masoor dal</a>", "1 katori cooked (30 g dry)", "97 kcal", "7.3 g", "7.6 g"],
+        ["<a href=\"/foods/moong-dal\">Moong dal</a>", "1 katori cooked (30 g dry)", "98 kcal", "7.2 g", "7.3 g"],
+        ["<a href=\"/foods/peanuts\">Peanuts</a>", "30 g", "156 kcal", "7.1 g", "4.5 g"],
+        ["<a href=\"/foods/cow-milk\">Milk</a>", "1 glass (200 ml)", "146 kcal", "6.5 g", "4.5 g"],
+        ["<a href=\"/foods/green-peas\">Green peas</a>", "1 katori (80 g)", "65 kcal", "5.8 g", "9.0 g"],
+        ["Curd", "1 katori (150 g)", "≈ 90 kcal", "≈ 4.7 g", "≈ 5.2 g"],
+      ],
+    ),
+    p(
+      `Soya chunks and tofu are the leanest vegetarian proteins; paneer gives a lot of protein per serving but also a lot of fat. Dals and chana are moderate on their own and work best alongside dairy or soya. For a vegetarian deep-dive, see <a href="${FOOD_LINK.vegProtein}">vegetarian protein sources in India</a> and <a href="${FOOD_LINK.soya}">soya chunks protein</a>.`,
+    ),
+
+    h2("A 100 g protein day: vegetarian"),
+    table(
+      ["Meal", "Foods", "Protein"],
+      [
+        ["Breakfast", "2 moong dal chillas (60 g dry dal) + mint chutney", "≈ 14 g"],
+        ["Mid-morning", "1 glass milk", "≈ 6.5 g"],
+        ["Lunch", "2 roti + 1 katori rajma + 1 katori curd", "≈ 19 g"],
+        ["Evening", "Soya chunk chaat (30 g dry)", "≈ 15 g"],
+        ["Dinner", "Paneer bhurji (100 g) + 1 katori moong dal + 1 roti", "≈ 29 g"],
+        ["Before bed", "150 g hung curd", "≈ 13 g"],
+        ["<strong>Total</strong>", "", "<strong>≈ 97 g</strong>"],
+      ],
+    ),
+
+    h2("A 100 g protein day: non-vegetarian"),
+    table(
+      ["Meal", "Foods", "Protein"],
+      [
+        ["Breakfast", "2 eggs + 2 whites omelette + 1 roti", "≈ 23 g"],
+        ["Lunch", "Chicken curry (100 g raw breast) + 1 katori rice + 1 katori masoor dal", "≈ 33 g"],
+        ["Evening", "1 glass milk + 30 g roasted peanuts", "≈ 14 g"],
+        ["Dinner", "Rohu fish curry (2 pieces) + 2 roti + sabzi", "≈ 38 g"],
+        ["<strong>Total</strong>", "", "<strong>≈ 107 g</strong>"],
+      ],
+    ),
+    p(
+      `The pattern is the same in both: a real protein source at every meal, 20–40 g at a time, rather than one huge serving at dinner. Building muscle? See <a href="${MB_LINK.proteinMuscle}">how much protein builds muscle</a>. Losing weight? See <a href="${LINK.proteinWl}">protein for weight loss</a>.`,
+    ),
+
+    h2("Tips for eating more protein the Indian way"),
+    ul([
+      "Make dal thicker and serve a bigger katori, with a little less rice or roti.",
+      "Add curd or raita to lunch and dinner — it's an easy 5 g each time.",
+      "Use besan or moong dal chillas instead of plain dosa or paratha at breakfast.",
+      "Toss soya chunks or chana into pulao, sabzi and salads.",
+      "Keep roasted chana, peanuts or hung curd as snacks instead of biscuits and namkeen.",
+      "Watch the oil: 2–3 tablespoons in a “high-protein” curry adds 250–400 kcal.",
+    ]),
+
+    h2("Common mistakes"),
+    ul([
+      "Assuming dal and roti alone cover your protein — usually they give 30–50 g a day.",
+      "Counting the protein in dry weight when you're eating a cooked portion.",
+      "Leaning on paneer and peanuts only, which adds a lot of fat along with the protein.",
+      "Buying protein bars and drinks before fixing the basics at each meal.",
+    ]),
+    p(
+      `Worried about eating more protein? See <a href="${FOOD_LINK.kidneys}">is too much protein bad for your kidneys</a> and, if you're considering supplements, <a href="${MB_LINK.whey}">is whey protein safe</a>.`,
+    ),
+    p(
+      `<strong>Compare protein foods:</strong> Head-to-head: <a href="${FOOD_LINK.paneerVsTofu}">paneer vs tofu</a>, <a href="${FOOD_LINK.dalVsChicken}">dal vs chicken</a> and <a href="${MB_LINK.curdVsMilk}">curd vs milk</a>.`,
+    ),
+    p(
+      `<strong>See the data:</strong> Every food in our database sorted per serving, per calorie and per 100 g: <a href="/foods/indian/protein-ranking">protein in Indian foods, ranked</a>, or filter the full <a href="/foods/indian">Indian food calories &amp; protein chart</a>.`,
+    ),
+    p(
+      `<strong>Explore the guide:</strong> Targets by goal and every protein article are collected in our <a href="/nutrition/protein">protein guide</a>.`,
+    ),
+
+    takeaways([
+      "Per serving, chicken, fish, prawns, paneer, tofu and soya chunks give the most protein.",
+      "Per calorie, egg whites, prawns, fish, soya chunks and chicken breast lead.",
+      "Dals and chana give about 7–8 g per katori — great with dairy or soya, not enough alone.",
+      "Put 20–40 g of protein at each meal to reach about 1.2–1.6 g per kg a day.",
+    ]),
+    p(DISCLAIMER),
+  ].join("\n"),
+};
+
 export const ARTICLE_REWRITES: Record<string, ArticleRewrite> = {
   "is-rice-good-for-weight-loss": rice,
   "protein-before-or-after-workout": proteinTiming,
   "how-long-does-it-take-to-build-muscle": buildMuscleTimeline,
+  "is-paneer-good-for-weight-loss": paneerWeightLoss,
+  "how-much-water-should-you-drink": waterIntake,
+  "2-eggs-calories-and-protein": twoEggs,
+  "best-high-protein-indian-foods": bestProteinFoods,
 };
