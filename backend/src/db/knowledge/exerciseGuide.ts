@@ -18,8 +18,9 @@ export type ExerciseGuide = {
   steps: string[];
   breathing: string;
   variations: ExerciseVariation[];
-  /** Rows of [goal, sets, reps, rest]. */
-  dosage: [string, string, string, string][];
+  /** Rows matching `dosageHeaders` (default: goal, sets, reps, rest). */
+  dosage: string[][];
+  dosageHeaders?: string[];
   progression: string;
   safety: string;
   faq: { q: string; a: string }[];
@@ -50,6 +51,8 @@ export const TRAINING_LINK = {
 
 const a = (href: string, text: string) => `<a href="${href}">${text}</a>`;
 
+const DEFAULT_DOSAGE_HEADERS = ["Goal", "Sets", "Reps", "Rest"];
+
 function variationItem(v: ExerciseVariation): string {
   const name = v.href ? a(v.href, v.name) : v.name;
   return `<li><strong>${name}</strong> — ${v.note}</li>`;
@@ -67,8 +70,8 @@ export function buildExerciseGuide(g: ExerciseGuide): ExerciseExpansion {
     `<p>${g.breathing}</p>`,
     `<h2>Variations and alternatives</h2>`,
     `<ul>${g.variations.map(variationItem).join("")}</ul>`,
-    `<h2>Sets, reps and rest</h2>`,
-    `<table><thead><tr><th>Goal</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>${g.dosage
+    `<h2>${g.dosageHeaders ? "How much and how often" : "Sets, reps and rest"}</h2>`,
+    `<table><thead><tr>${(g.dosageHeaders ?? DEFAULT_DOSAGE_HEADERS).map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${g.dosage
       .map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`)
       .join("")}</tbody></table>`,
     `<h2>How to progress</h2>`,
