@@ -3,7 +3,6 @@ import {
   ORG_REF,
   OG_DEFAULTS,
   absoluteUrl,
-  breadcrumbLd,
   pageTitle,
 } from "@/lib/seo";
 import Link from "next/link";
@@ -97,13 +96,6 @@ export default async function RecipeDetailPage({ params }: Props) {
   return (
     <main className="fk-page flex-1 py-16">
       {recipe.robotsIndex !== false ? <JsonLd data={recipeLd} /> : null}
-      <JsonLd
-        data={breadcrumbLd([
-          ["Home", "/"],
-          ["Recipes", "/recipes"],
-          [recipe.title, path],
-        ])}
-      />
       <KnowledgeBreadcrumbs
         items={[
           { href: "/", label: "Home" },

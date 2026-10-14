@@ -78,7 +78,7 @@ const SRC_REED: IntentSource = {
 };
 const SRC_EFSA_BG: IntentSource = {
   title: "EFSA (2011) — Scientific opinion on oat beta-glucan and blood cholesterol",
-  url: "https://www.efsa.europa.eu/en/efsajournal/pub/2207",
+  url: "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2207",
   note: "3 g a day of oat beta-glucan lowers LDL cholesterol",
 };
 

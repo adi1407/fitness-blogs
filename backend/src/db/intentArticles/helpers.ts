@@ -65,12 +65,12 @@ export function toolCta(href: string, label: string, blurb: string): string {
 export const SRC = {
   whoProtein: {
     title: "WHO — Protein and amino acid requirements",
-    url: "https://www.who.int/publications/i/item/9241209356",
+    url: "https://iris.who.int/handle/10665/43411",
     note: "Population reference intakes context",
   },
   issnProtein: {
     title: "ISSN position stand — protein and exercise",
-    url: "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8",
+    url: "https://link.springer.com/article/10.1186/s12970-017-0177-8",
     note: "Athlete and active adult protein ranges",
   },
   usdaFdc: {
@@ -85,7 +85,7 @@ export const SRC = {
   },
   acsm: {
     title: "ACSM — Quantity and quality of exercise",
-    url: "https://www.acsm.org/",
+    url: "https://acsm.org/",
     note: "Physical activity and training guidance",
   },
   icmr: {
@@ -95,7 +95,7 @@ export const SRC = {
   },
   hydration: {
     title: "EFSA — Dietary reference values for water",
-    url: "https://www.efsa.europa.eu/en/efsajournal/pub/1459",
+    url: "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1459",
     note: "Adequate intake ranges for water",
   },
 } as const;

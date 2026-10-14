@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
+import { KnowledgeBreadcrumbs } from "@/features/knowledge/components/KnowledgeUi";
 import { ExercisesHaloSection } from "@/features/exercises/components/ExercisesHaloSection";
 
 export const metadata: Metadata = {
@@ -29,17 +30,7 @@ const groups = [
 export default function ExercisesPage() {
   return (
     <main className="fk-page flex-1 py-16">
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Exercises</li>
-        </ol>
-      </nav>
+      <KnowledgeBreadcrumbs items={[{ href: "/", label: "Home" }, { label: "Exercises" }]} />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Exercise library

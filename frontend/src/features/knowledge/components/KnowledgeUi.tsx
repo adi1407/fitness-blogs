@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { absoluteUrl } from "@/lib/seo";
 
 export function KnowledgeDisclaimer() {
   return (
@@ -20,23 +22,37 @@ export function KnowledgeDisclaimer() {
 type Crumb = { href?: string; label: string };
 
 export function KnowledgeBreadcrumbs({ items }: { items: Crumb[] }) {
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.label,
+      ...(item.href ? { item: absoluteUrl(item.href) } : {}),
+    })),
+  };
+
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-      <ol className="flex flex-wrap gap-2">
-        {items.map((item, i) => (
-          <li key={`${item.label}-${i}`} className="flex items-center gap-2">
-            {i > 0 ? <span aria-hidden="true">/</span> : null}
-            {item.href ? (
-              <Link href={item.href} className="fk-link-muted">
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-foreground">{item.label}</span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <>
+      <JsonLd data={ld} />
+      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+        <ol className="flex flex-wrap gap-2">
+          {items.map((item, i) => (
+            <li key={`${item.label}-${i}`} className="flex items-center gap-2">
+              {i > 0 ? <span aria-hidden="true">/</span> : null}
+              {item.href ? (
+                <Link href={item.href} className="fk-link-muted">
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="text-foreground">{item.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </>
   );
 }
 

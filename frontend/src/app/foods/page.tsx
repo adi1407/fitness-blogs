@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
+import { KnowledgeBreadcrumbs } from "@/features/knowledge/components/KnowledgeUi";
 import { fetchFoodsSafe } from "@/features/foods/api/foods";
 import { forGrams, formatG, proteinPer100Kcal, shortName } from "@/features/foods/lib/nutrition";
 
@@ -48,17 +49,7 @@ export default async function FoodsPage() {
 
   return (
     <main className="fk-page flex-1 py-16">
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Foods</li>
-        </ol>
-      </nav>
+      <KnowledgeBreadcrumbs items={[{ href: "/", label: "Home" }, { label: "Foods" }]} />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Foods database</h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">

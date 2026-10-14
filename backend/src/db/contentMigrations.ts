@@ -607,6 +607,39 @@ async function restoreSplitTags(): Promise<void> {
   console.log(`[db] restored multi-word tags on ${restored} articles`);
 }
 
+/** Source links that moved or died; the new URL is where the old one now resolves. */
+const SOURCE_URL_FIXES: ReadonlyArray<[string, string]> = [
+  ["https://www.who.int/publications/i/item/9241209356", "https://iris.who.int/handle/10665/43411"],
+  [
+    "https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8",
+    "https://link.springer.com/article/10.1186/s12970-017-0177-8",
+  ],
+  ["https://www.acsm.org/", "https://acsm.org/"],
+  [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/1459",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2010.1459",
+  ],
+  [
+    "https://www.efsa.europa.eu/en/efsajournal/pub/2207",
+    "https://efsa.onlinelibrary.wiley.com/doi/10.2903/j.efsa.2011.2207",
+  ],
+];
+
+async function fixSourceUrls(): Promise<void> {
+  let updated = 0;
+  for (const [from, to] of SOURCE_URL_FIXES) {
+    const res = await pool.query(
+      `UPDATE articles
+          SET sources = replace(sources::text, $1, $2)::jsonb,
+              body = replace(body, $1, $2)
+        WHERE strpos(sources::text, $1) > 0 OR strpos(body, $1) > 0`,
+      [from, to],
+    );
+    updated += res.rowCount ?? 0;
+  }
+  console.log(`[db] fixed moved source URLs on ${updated} article rows`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -631,6 +664,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-14-protein-ranking-links", run: insertRankingLinks },
   { id: "2026-10-15-exercise-guide-links", run: insertExerciseGuideLinks },
   { id: "2026-10-16-article-rewrites", run: applyArticleRewrites },
+  { id: "2026-10-17-source-url-fixes", run: fixSourceUrls },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
