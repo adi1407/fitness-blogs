@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -98,7 +99,10 @@ const toc = [
   ["guides", "Calorie guides"],
 ] as const;
 
-export default function CaloriesHubPage() {
+export default async function CaloriesHubPage() {
+  const isPublished = await publishedFilter(["nutrition", "weight-loss"]);
+  const guides = weightLossGuides.filter(isPublished);
+
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd
@@ -198,11 +202,17 @@ export default function CaloriesHubPage() {
           <Link href={ARTICLES.maintenanceCalories.href} className="fk-link">
             maintenance calories
           </Link>
-          , the amount that keeps your weight stable. See{" "}
-          <Link href={ARTICLES.bmrVsTdee.href} className="fk-link">
-            BMR vs TDEE
-          </Link>{" "}
-          for a worked example.
+          , the amount that keeps your weight stable.
+          {isPublished(ARTICLES.bmrVsTdee) ? (
+            <>
+              {" "}
+              See{" "}
+              <Link href={ARTICLES.bmrVsTdee.href} className="fk-link">
+                BMR vs TDEE
+              </Link>{" "}
+              for a worked example.
+            </>
+          ) : null}
         </p>
         <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">
           For a rough population picture, ICMR-NIN (2020) estimates these daily
@@ -414,7 +424,7 @@ export default function CaloriesHubPage() {
           Weight-loss calorie guides
         </h2>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          {weightLossGuides.map((guide) => (
+          {guides.map((guide) => (
             <li key={guide.href}>
               <Link
                 href={guide.href}

@@ -5,6 +5,7 @@ import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ARTICLES } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { WeightLossSplitSection } from "@/features/weight-loss/components/WeightLossSplitSection";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
@@ -49,7 +50,7 @@ const faq = [
   },
 ];
 
-const steps = [
+const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean) => [
   {
     title: "Find your maintenance calories",
     body: (
@@ -97,11 +98,17 @@ const steps = [
         <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
           high-protein Indian foods
         </Link>
-        . Not lifting yet? See{" "}
-        <Link href={ARTICLES.proteinForWeightLoss.href} className="fk-link">
-          protein for weight loss
-        </Link>{" "}
-        for targets by body weight.
+        .
+        {isPublished(ARTICLES.proteinForWeightLoss) ? (
+          <>
+            {" "}
+            Not lifting yet? See{" "}
+            <Link href={ARTICLES.proteinForWeightLoss.href} className="fk-link">
+              protein for weight loss
+            </Link>{" "}
+            for targets by body weight.
+          </>
+        ) : null}
       </>
     ),
   },
@@ -162,7 +169,10 @@ const pillars = [
   },
 ];
 
-export default function WeightLossPage() {
+export default async function WeightLossPage() {
+  const isPublished = await publishedFilter(["weight-loss"]);
+  const steps = buildSteps(isPublished);
+
   return (
     <main className="flex w-full flex-1 flex-col">
       <JsonLd data={breadcrumbLd([["Home", "/"], ["Weight Loss", "/weight-loss"]])} />
@@ -256,12 +266,18 @@ export default function WeightLossPage() {
               less oil and ghee in cooking. To see it on a plate, follow our{" "}
               <Link href={ARTICLES.indianDietPlan.href} className="fk-link">
                 7-day Indian diet plan for weight loss
-              </Link>{" "}
-              or the{" "}
-              <Link href={ARTICLES.plan1500.href} className="fk-link">
-                1500 calorie Indian diet plan
-              </Link>{" "}
-              with gram weights.
+              </Link>
+              {isPublished(ARTICLES.plan1500) ? (
+                <>
+                  {" "}
+                  or the{" "}
+                  <Link href={ARTICLES.plan1500.href} className="fk-link">
+                    1500 calorie Indian diet plan
+                  </Link>{" "}
+                  with gram weights
+                </>
+              ) : null}
+              .
             </p>
             <p>
               The biggest hidden calories are usually fried snacks, sweets,
