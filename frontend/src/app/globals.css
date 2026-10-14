@@ -528,3 +528,23 @@
     transparent 100%
   );
 }
+
+/* Manual AdSense units: reserve the rectangle's height so loading ads don't shift content. */
+.ad-slot {
+  margin: 2.5rem auto;
+  max-width: 336px;
+  text-align: center;
+}
+.ad-slot__label {
+  margin: 0 0 0.375rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground, #737373);
+}
+.ad-slot__unit {
+  min-height: 280px;
+}
+.ad-slot:has(ins[data-ad-status="unfilled"]) {
+  display: none;
+}

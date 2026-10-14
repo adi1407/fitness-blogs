@@ -15,7 +15,9 @@ import { ArticleOpenBeacon } from "@/features/blog/components/ArticleOpenBeacon"
 import { ArticleReadingProgress } from "@/features/blog/components/ArticleReadingProgress";
 import { ArticleRelatedGrid } from "@/features/blog/components/ArticleRelatedGrid";
 import { BlogBreadcrumbs } from "@/features/blog/components/BlogBreadcrumbs";
-import { enhanceArticleHtml } from "@/features/blog/utils/articleHtml";
+import { enhanceArticleHtml, splitArticleHtml } from "@/features/blog/utils/articleHtml";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { adSlotFor } from "@/lib/ads/adsense";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import {
   calculatorCtaFor,
@@ -85,6 +87,8 @@ export function BlogArticleView({
   const subLabel = subcategoryLabel ?? article.subcategoryLabel ?? "Draft";
 
   const { html: bodyHtml, toc } = enhanceArticleHtml(article.body || "");
+  const showAds = !preview;
+  const bodySplit = showAds && adSlotFor("article_mid") ? splitArticleHtml(bodyHtml) : null;
   const canonicalPath =
     articleHref(article) ??
     (catSlug && subSlug && article.slug
@@ -390,9 +394,22 @@ export function BlogArticleView({
                 <ArticleToc items={toc} />
               </div>
 
-              {bodyHtml ? (
+              {bodySplit ? (
+                <article className="mt-8" data-article-body="">
+                  <div
+                    className="article-body"
+                    dangerouslySetInnerHTML={{ __html: bodySplit[0] }}
+                  />
+                  <AdSlot placement="article_mid" />
+                  <div
+                    className="article-body"
+                    dangerouslySetInnerHTML={{ __html: bodySplit[1] }}
+                  />
+                </article>
+              ) : bodyHtml ? (
                 <article
                   className="article-body mt-8"
+                  data-article-body=""
                   dangerouslySetInnerHTML={{ __html: bodyHtml }}
                 />
               ) : (
@@ -446,6 +463,8 @@ export function BlogArticleView({
                   </ol>
                 </section>
               ) : null}
+
+              {showAds ? <AdSlot placement="article_end" /> : null}
 
               <SubscribeForm
                 source="article_end"

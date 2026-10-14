@@ -16,6 +16,27 @@ export function isAdSenseConfigured(): boolean {
   return Boolean(ADSENSE_CLIENT);
 }
 
+export type AdPlacement = "article_mid" | "article_end" | "page_end";
+
+const validSlot = (v: string | undefined) => (v && /^\d{8,12}$/.test(v.trim()) ? v.trim() : "");
+
+/**
+ * Manual ad unit IDs (AdSense → Ads → By ad unit). Each placement falls back
+ * to NEXT_PUBLIC_ADSENSE_SLOT_DEFAULT. Env vars are referenced literally so
+ * Next.js inlines them into the client bundle.
+ */
+const DEFAULT_SLOT = validSlot(process.env.NEXT_PUBLIC_ADSENSE_SLOT_DEFAULT);
+const AD_SLOTS: Record<AdPlacement, string> = {
+  article_mid: validSlot(process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE_MID) || DEFAULT_SLOT,
+  article_end: validSlot(process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE_END) || DEFAULT_SLOT,
+  page_end: validSlot(process.env.NEXT_PUBLIC_ADSENSE_SLOT_PAGE_END) || DEFAULT_SLOT,
+};
+
+/** Empty string when ads are off or no unit is configured for the placement. */
+export function adSlotFor(placement: AdPlacement): string {
+  return ADSENSE_CLIENT ? AD_SLOTS[placement] : "";
+}
+
 /** `ads.txt` seller line; `pub-…` is the client ID without the `ca-` prefix. */
 export function adsTxtLine(): string {
   return `google.com, ${ADSENSE_CLIENT.replace(/^ca-/, "")}, DIRECT, f08c47fec0942fa0`;

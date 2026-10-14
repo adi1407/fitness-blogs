@@ -103,6 +103,15 @@ Still under 400 in `<main>`: contact, affiliate disclosure, corrections, nutriti
 3. Wait about a week so Google recrawls the expanded pages.
 4. AdSense → Sites → fitlives.in → tick "I confirm I have fixed the issues" → **Request review**. Reviews typically take from a few days to a few weeks; don't re-request while one is pending.
 
+**After approval: switch on manual ad units**
+
+The site has fixed ad slots with reserved height (no layout shift): mid-article and after sources on articles, and one at the end of exercise, recipe, program, review and food pages. They render nothing until unit IDs are set, so reviewers never see empty boxes.
+
+1. AdSense → Ads → By ad unit → create a **Display ad** (square/rectangle). Copy its `data-ad-slot` number.
+2. In Vercel (Production), set `NEXT_PUBLIC_ADSENSE_SLOT_DEFAULT` to that number. Optional per-placement units for separate reporting: `NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE_MID`, `NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE_END`, `NEXT_PUBLIC_ADSENSE_SLOT_PAGE_END`. Redeploy (they are build-time variables).
+3. AdSense → Ads → By site → fitlives.in: turn **off** Auto ads' in-page ads (they insert ads anywhere and shift content). Anchor ads are optional; avoid vignettes on mobile.
+4. A week later, check Core Web Vitals (CLS) in GSC and PageSpeed for an article page.
+
 ## Content status
 
 16 seeded articles are not published (status changed in the CMS) and return 404 until republished. Their inbound links are hidden automatically and reappear when each one is published:

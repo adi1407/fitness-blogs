@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AdSlot } from "@/components/ads/AdSlot";
 import {
   KnowledgeBreadcrumbs,
   KnowledgeDisclaimer,
@@ -212,6 +213,8 @@ export default async function RecipeDetailPage({ params }: Props) {
           </ul>
         </section>
       ) : null}
+
+      <AdSlot placement="page_end" />
 
       <KnowledgeDisclaimer />
     </main>
