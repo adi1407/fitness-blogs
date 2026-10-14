@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { fetchFood, fetchFoodsSafe } from "@/features/foods/api/foods";
 import { FoodViewBeacon } from "@/features/foods/components/FoodViewBeacon";
@@ -387,6 +388,8 @@ export default async function FoodPage({ params }: { params: Promise<Params> }) 
               .
             </p>
           </section>
+
+          <AdSlot placement="page_end" />
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">

@@ -42,7 +42,7 @@ export function ArticleOpenBeacon({
     };
 
     const onScroll = () => {
-      const body = document.querySelector(".article-body");
+      const body = document.querySelector("[data-article-body]");
       if (!body) return;
       const rect = body.getBoundingClientRect();
       const read = window.innerHeight - rect.top;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AdSlot } from "@/components/ads/AdSlot";
 import {
   KnowledgeBreadcrumbs,
   KnowledgeDisclaimer,
@@ -99,6 +100,8 @@ export default async function ReviewDetailPage({ params }: Props) {
           </ul>
         </section>
       ) : null}
+
+      <AdSlot placement="page_end" />
 
       <KnowledgeDisclaimer />
     </main>

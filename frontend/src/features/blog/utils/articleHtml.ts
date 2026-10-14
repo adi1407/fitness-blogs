@@ -46,3 +46,27 @@ export function enhanceArticleHtml(html: string): {
 
   return { html: next, toc };
 }
+
+/**
+ * Splits article HTML before the top-level `<h2>` closest to the middle, so an
+ * ad can sit between sections. Returns `null` for short articles (fewer than
+ * 4 top-level h2s) or when no safe split point exists.
+ */
+export function splitArticleHtml(html: string): [string, string] | null {
+  const starts: number[] = [];
+  let depth = 0;
+  const tokens = /<(\/?)(div|section|aside|details|table|blockquote|figure|ul|ol)\b[^>]*>|<h2\b/gi;
+  for (let m = tokens.exec(html); m; m = tokens.exec(html)) {
+    if (m[0].toLowerCase().startsWith("<h2")) {
+      if (depth === 0) starts.push(m.index);
+    } else if (!m[0].endsWith("/>")) {
+      depth = Math.max(0, depth + (m[1] ? -1 : 1));
+    }
+  }
+  if (starts.length < 4) return null;
+
+  const middle = html.length / 2;
+  const candidates = starts.slice(1, -1);
+  const at = candidates.reduce((best, i) => (Math.abs(i - middle) < Math.abs(best - middle) ? i : best));
+  return [html.slice(0, at), html.slice(at)];
+}
