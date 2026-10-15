@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 
 /** Marks that a visitor opened a calculator tool page. */
 export function CalcOpenBeacon({ tool }: { tool: string }) {

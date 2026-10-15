@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 
 type Props = {
   code: string;

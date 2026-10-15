@@ -30,7 +30,7 @@ NEXT_PUBLIC_SITE_URL=https://fitlives.in
 6. **Redeploy** Production (required for `NEXT_PUBLIC_*`).
 7. On the live site: **Accept cookies** → open a few pages → GA4 **Reports → Realtime** should show you.
 
-GA does **not** run if the visitor chooses Reject (same consent as OpenPanel).
+GA does **not** run if the visitor chooses Reject.
 
 ---
 
@@ -75,7 +75,6 @@ Domain property covers apex + www in one place.
 | Site URL | `NEXT_PUBLIC_SITE_URL=https://fitlives.in` on Vercel |
 | CORS | Render `CORS_ORIGINS` includes `https://fitlives.in` (+ www if needed) |
 | CMS | `VITE_PUBLIC_SITE_URL=https://fitlives.in` |
-| OpenPanel | Still optional product analytics — see `docs/ANALYTICS_OPENPANEL.md` |
 | Indexing | Search Console → URL Inspection → request indexing for homepage + key hubs |
 | Performance | Search Console → Core Web Vitals / Page experience (after data accumulates) |
 

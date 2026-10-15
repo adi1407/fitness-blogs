@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { JUST_SIGNED_IN_COOKIE, NEW_MEMBER_WINDOW_MS } from "@/lib/auth/signInMarker";
 
 export type Member = {

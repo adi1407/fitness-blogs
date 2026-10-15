@@ -55,9 +55,9 @@ Work through these three filters and write the findings into the week's note (te
 - [ ] Search Performance: same striking-distance check. Bing often ranks new pages sooner than Google, so it's an early signal.
 - [ ] Site Scan / Recommendations: fix anything marked high severity.
 
-### 4. OpenPanel (analytics) — 10 min
+### 4. Google Analytics (events) — 10 min
 
-Check these events for the last 7 days:
+In GA4 (Reports → Engagement → Events), check these events for the last 7 days:
 
 | Event | What it tells you |
 | --- | --- |
@@ -90,7 +90,7 @@ Every new food page or calculator is ready-made content. One page becomes one po
 3. One article-based myth/fact post
 4. Optional: a reshare of a follower's result card
 
-**Always tag links** so OpenPanel can attribute visits:
+**Always tag links** so Google Analytics can attribute visits:
 
 ```
 https://fitlives.in/foods/paneer?utm_source=instagram&utm_medium=social&utm_campaign=paneer-reel
@@ -126,7 +126,7 @@ Search Console (28 days vs previous)
 
 Bing: clicks ___, notable queries: ...
 
-OpenPanel (7 days)
+Google Analytics events (7 days)
 - Top calculators: ...
 - Top foods: ...
 - Zero-result searches: ...

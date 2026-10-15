@@ -6,7 +6,7 @@ import type { PublicBlogArticle } from "@/lib/api/blog";
 import { articleHref } from "@/features/home/utils/articleMedia";
 import { KeepAtmosphere } from "@/features/keep/components/KeepAtmosphere";
 import { KeepMasonry } from "@/features/keep/components/KeepMasonry";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { getApiBase } from "@/lib/api/client";
 

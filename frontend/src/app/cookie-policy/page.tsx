@@ -58,7 +58,7 @@ export default function CookiePolicyPage() {
         <li>
           <strong>Analytics / performance</strong> — which pages are read,
           where people drop off, which tools are used. This can be first-party
-          or a vendor (for us, OpenPanel and Google Analytics).
+          or a vendor (for us, Google Analytics).
         </li>
         <li>
           <strong>Functional extras</strong> — embedded video, maps, chat
@@ -109,7 +109,7 @@ export default function CookiePolicyPage() {
           after <strong>Accept cookies</strong>. Rejecting deletes them.
         </li>
         <li>
-          Cookieless measurement (OpenPanel and Google Analytics Consent Mode)
+          Cookieless measurement (Google Analytics Consent Mode)
           — runs for everyone without setting cookies. See section 5.
         </li>
         <li>
@@ -131,17 +131,17 @@ export default function CookiePolicyPage() {
         </li>
       </LegalUl>
 
-      <LegalH2 id="analytics">5. Analytics (OpenPanel + Google Analytics)</LegalH2>
+      <LegalH2 id="analytics">5. Analytics (Google Analytics)</LegalH2>
       <p>
         We send page views and product events (for example share, upvote,
-        calculator use) to OpenPanel and Google Analytics 4 so we can improve
+        calculator use) to Google Analytics 4 so we can improve
         guides and understand search traffic. This is for operating the Site,
         not for selling your identity to advertisers.
       </p>
       <LegalUl>
         <li>
-          <strong>Without consent</strong> — OpenPanel runs without cookies,
-          and Google Analytics runs in Consent Mode: it sends cookieless,
+          <strong>Without consent</strong> — Google Analytics runs in
+          Consent Mode: it sends cookieless,
           IP-anonymised pings that cannot recognise you across visits. No
           analytics cookies are written.
         </li>
@@ -152,15 +152,6 @@ export default function CookiePolicyPage() {
       </LegalUl>
       <p>
         See{" "}
-        <a
-          href="https://openpanel.dev"
-          className="fk-link"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          OpenPanel
-        </a>{" "}
-        and{" "}
         <a
           href="https://policies.google.com/technologies/partner-sites"
           className="fk-link"

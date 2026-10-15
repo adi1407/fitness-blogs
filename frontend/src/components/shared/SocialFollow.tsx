@@ -3,7 +3,7 @@
 import type { IconType } from "react-icons";
 import { FaFacebook, FaInstagram } from "react-icons/fa6";
 
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { BRAND_NAME } from "@/lib/brand";
 import { SOCIAL_PROFILES, type SocialNetwork } from "@/lib/social";
 import { cn } from "@/lib/utils";

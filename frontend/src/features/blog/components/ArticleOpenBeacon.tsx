@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 
 const READ_SCROLL_SHARE = 0.75;
 const READ_VISIBLE_MS = 45_000;
