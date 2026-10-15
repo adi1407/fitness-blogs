@@ -53,6 +53,7 @@ function listArticles(category: string, subcategory: string, limit: number) {
     category,
     subcategory,
     limit,
+    summary: true,
     revalidate,
   });
 }

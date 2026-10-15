@@ -5,10 +5,8 @@ import { apiBase, bearerFromRequest } from "@/lib/auth/memberCookie";
 export async function GET(req: NextRequest) {
   const auth = bearerFromRequest(req);
   if (!auth) {
-    return NextResponse.json(
-      { message: "Authentication required" },
-      { status: 401 },
-    );
+    // Signed-out is the common case on every page view; a 401 here logs a console error.
+    return NextResponse.json({ member: null });
   }
 
   try {

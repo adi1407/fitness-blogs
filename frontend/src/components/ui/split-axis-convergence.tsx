@@ -12,7 +12,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { WEIGHT_LOSS_IMAGES } from "@/lib/hubImages";
+import { WEIGHT_LOSS_IMAGES, hubThumb } from "@/lib/hubImages";
 
 const IMG = {
   angle1: WEIGHT_LOSS_IMAGES[0],
@@ -288,7 +288,15 @@ function Card({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={item.src}
+          srcSet={
+            item.src.startsWith("/images/hubs/")
+              ? `${hubThumb(item.src)} 480w, ${item.src} 1280w`
+              : undefined
+          }
+          sizes="(max-width: 768px) 45vw, 25vw"
           alt={item.alt ?? ""}
+          loading="lazy"
+          decoding="async"
           draggable={false}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-105"
         />

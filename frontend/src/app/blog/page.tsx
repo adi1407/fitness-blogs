@@ -58,7 +58,7 @@ function articlesForCategory(
 }
 
 export default async function BlogIndexPage() {
-  const articles = await fetchPublishedArticles({ limit: 36 });
+  const articles = await fetchPublishedArticles({ limit: 36, summary: true });
 
   const featured = pickFeatured(articles);
   const usedIds = new Set<string>();
