@@ -57,8 +57,25 @@ function articlesForCategory(
     .slice(0, limit);
 }
 
+/** Subcategories with at least one published article, grouped by pillar. */
+function topicIndex(articles: PublicBlogArticle[]) {
+  const live = new Set(
+    articles.map((a) => `${a.categorySlug}/${a.subcategorySlug}`),
+  );
+  return BLOG_TAXONOMY.map((cat) => ({
+    category: cat,
+    subcategories: cat.subcategories.filter((sub) =>
+      live.has(`${cat.slug}/${sub.slug}`),
+    ),
+  })).filter((group) => group.subcategories.length > 0);
+}
+
 export default async function BlogIndexPage() {
-  const articles = await fetchPublishedArticles({ limit: 36, summary: true });
+  const [articles, allArticles] = await Promise.all([
+    fetchPublishedArticles({ limit: 36, summary: true }),
+    fetchPublishedArticles({ limit: 500, summary: true }),
+  ]);
+  const topics = topicIndex(allArticles);
 
   const featured = pickFeatured(articles);
   const usedIds = new Set<string>();
@@ -191,6 +208,38 @@ export default async function BlogIndexPage() {
               <div className="mt-4 divide-y divide-border border-t border-border">
                 {latest.map((article) => (
                   <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {topics.length > 0 ? (
+            <section className="border-t border-border py-10">
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Browse by topic
+              </h2>
+              <div className="mt-6 grid gap-8 sm:grid-cols-3">
+                {topics.map(({ category, subcategories }) => (
+                  <div key={category.slug}>
+                    <Link
+                      href={`/${category.slug}`}
+                      className="fk-meta text-foreground hover:underline"
+                    >
+                      {category.label}
+                    </Link>
+                    <ul className="mt-3 space-y-2 text-sm">
+                      {subcategories.map((sub) => (
+                        <li key={sub.slug}>
+                          <Link
+                            href={`/blog/${category.slug}/${sub.slug}`}
+                            className="fk-link-muted"
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
               </div>
             </section>

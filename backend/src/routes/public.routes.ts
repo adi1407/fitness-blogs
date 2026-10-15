@@ -531,10 +531,17 @@ publicRouter.get("/recipes/:slug", async (req, res) => {
     res.status(404).json({ message: "Recipe not found" });
     return;
   }
+  // The next recipes in list order (wrapping), so every recipe is linked from its neighbours.
   const related = await pool.query(
-    `SELECT * FROM recipes
-     WHERE status = 'published' AND id <> $1
-     ORDER BY sort_order ASC, title ASC
+    `WITH ordered AS (
+       SELECT r.*, row_number() OVER (ORDER BY sort_order ASC, title ASC) AS pos,
+              count(*) OVER () AS total
+       FROM recipes r
+       WHERE status = 'published'
+     )
+     SELECT * FROM ordered
+     WHERE id <> $1
+     ORDER BY (pos - (SELECT pos FROM ordered WHERE id = $1) + total) % total
      LIMIT 4`,
     [result.rows[0].id],
   );

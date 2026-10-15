@@ -47,7 +47,6 @@ export const metadata: Metadata = {
     "fitlives",
   ],
   alternates: {
-    canonical: "/",
     types: { "application/rss+xml": [{ url: "/feed.xml", title: `${BRAND_NAME} guides` }] },
   },
   openGraph: {
