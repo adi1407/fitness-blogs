@@ -13,7 +13,11 @@ const explore = [
   { href: "/nutrition/calories", label: "Calories Guide" },
   { href: "/nutrition/protein", label: "Protein Guide" },
   { href: "/exercises", label: "Exercises" },
+  { href: "/foods", label: "Foods" },
   { href: "/foods/indian", label: "Indian Foods" },
+  { href: "/recipes", label: "Recipes" },
+  { href: "/programs", label: "Programs" },
+  { href: "/reviews", label: "Reviews" },
 ];
 
 const tools = [
