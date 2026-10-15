@@ -63,7 +63,7 @@ export const LEARN_ARTICLES: LearnArticle[] = [
     alt: "Colorful meal bowl",
     content: "Protein timing matters less than hitting your daily total.",
     linkHref: "/nutrition/protein",
-    linkText: "Read more",
+    linkText: "Protein guide",
   },
   {
     id: "protein-indian",
