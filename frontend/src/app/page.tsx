@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const articles = await fetchPublishedArticles({ limit: 48 });
+  const articles = await fetchPublishedArticles({ limit: 48, summary: true });
 
   return (
     <main className="flex w-full flex-1 flex-col">
