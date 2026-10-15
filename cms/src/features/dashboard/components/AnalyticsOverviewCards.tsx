@@ -1,8 +1,4 @@
 import { Link } from "react-router-dom";
-import {
-  isOpenPanelEnabled,
-  openPanelDashboardUrl,
-} from "@/lib/analytics/openpanel";
 
 type Props = {
   submitted: number;
@@ -18,8 +14,6 @@ export function AnalyticsOverviewCards({
   totalViews,
   role,
 }: Props) {
-  const dash = openPanelDashboardUrl();
-
   return (
     <section className="mt-8">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
@@ -33,18 +27,9 @@ export function AnalyticsOverviewCards({
           >
             Full analytics →
           </Link>
-        ) : dash ? (
-          <a
-            href={dash}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-semibold text-sky-700 hover:underline"
-          >
-            OpenPanel →
-          </a>
         ) : null}
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <Card
           label={role === "writer" ? "Your live articles" : "In review"}
           value={role === "writer" ? published : submitted}
@@ -54,15 +39,6 @@ export function AnalyticsOverviewCards({
           label={role === "writer" ? "Total views" : "Published"}
           value={role === "writer" ? totalViews : published}
           hint={role === "writer" ? "Across live pieces" : "Live library"}
-        />
-        <Card
-          label="Product traffic"
-          value={isOpenPanelEnabled() || dash ? "Ready" : "Setup"}
-          hint={
-            dash
-              ? "OpenPanel connected"
-              : "Configure VITE_OPENPANEL_* env"
-          }
         />
       </div>
     </section>

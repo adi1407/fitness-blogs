@@ -7,7 +7,7 @@ import {
   articleHref,
   articleImage,
 } from "@/features/home/utils/articleMedia";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 
 type Props = {
   article: PublicBlogArticle;

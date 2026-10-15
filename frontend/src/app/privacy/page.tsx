@@ -93,7 +93,7 @@ export default function PrivacyPage() {
         </li>
         <li>
           <strong>Analytics</strong>: page views and similar events via
-          OpenPanel (see{" "}
+          Google Analytics (see{" "}
           <Link href="/cookie-policy" className="fk-link">
             Cookie Policy
           </Link>
@@ -154,9 +154,6 @@ export default function PrivacyPage() {
           (API and database).
         </li>
         <li>
-          <strong>OpenPanel</strong> — product analytics (optional, consent).
-        </li>
-        <li>
           <strong>Google Analytics 4</strong> — traffic analytics (optional,
           consent).
         </li>
@@ -176,7 +173,7 @@ export default function PrivacyPage() {
         for essential vs analytics use. A consent banner lets you accept all,
         keep essential only, or customize. You can reopen{" "}
         <strong>Cookie settings</strong> from the footer at any time. Basic
-        analytics (OpenPanel and Google Analytics Consent Mode) runs without
+        analytics (Google Analytics Consent Mode) runs without
         cookies for everyone; analytics cookies and sign-in require Accept
         cookies. We show ads through Google AdSense; Google may use cookies
         to personalise them unless you reject optional cookies (in the EEA,
@@ -189,7 +186,7 @@ export default function PrivacyPage() {
         active and for a reasonable period after last login (or until you
         request deletion). Newsletter addresses are kept until you unsubscribe
         or ask us to delete them. Server logs are rotated on a typical hosting
-        schedule. Analytics data follows OpenPanel and Google Analytics
+        schedule. Analytics data follows Google Analytics
         retention for our properties. Backups may persist for a limited time
         after deletion requests complete.
       </p>
@@ -224,8 +221,7 @@ export default function PrivacyPage() {
 
       <LegalH2 id="transfers">12. Where data is processed</LegalH2>
       <p>
-        We operate from India. Processors (Google, Vercel, Render, OpenPanel /
-        Google Analytics)
+        We operate from India. Processors (Google, Vercel, Render)
         may store or process data in other countries. By using the Site you
         understand that data may be processed outside India subject to those
         providers’ safeguards.

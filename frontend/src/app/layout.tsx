@@ -4,7 +4,7 @@ import { Roboto_Slab } from "next/font/google";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import { ChromeGate } from "@/components/shared/ChromeGate";
-import { OpenPanelProvider } from "@/components/analytics/OpenPanelProvider";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { GoogleConsentInit } from "@/components/analytics/GoogleAnalytics";
 import { MemberAuthProvider } from "@/features/auth/MemberAuthContext";
 import { CookieConsentProvider } from "@/features/cookies/CookieConsentContext";
@@ -146,7 +146,7 @@ export default function RootLayout({
             </ChromeGate>
             <div className="flex min-h-full flex-1 flex-col pt-[var(--site-header-height)]">
               <Suspense fallback={null}>
-                <OpenPanelProvider />
+                <GoogleAnalytics />
               </Suspense>
               {children}
             </div>

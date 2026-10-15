@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { MacroSplitBar } from "@/features/foods/components/MacroSplitBar";
 import { forGrams, formatG } from "@/features/foods/lib/nutrition";
 import type { Food } from "@/features/foods/types";

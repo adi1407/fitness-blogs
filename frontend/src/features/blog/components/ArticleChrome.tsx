@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type MouseEvent } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
 import { toPublicShareUrl } from "@/lib/siteUrl";

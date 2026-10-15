@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Check, Loader2, Share2 } from "lucide-react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { ogImageUrl } from "@/lib/og/url";
 import { CALC_TOOLS, type CalcSavePayload } from "@/features/tools/types";
 

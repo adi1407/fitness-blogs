@@ -227,7 +227,7 @@ Run on the first working day of each month. Allow about 30 minutes. Use **Perfor
 
 ### GA4 key events
 
-Every `trackEvent()` call goes to both OpenPanel and GA4 (`frontend/src/lib/analytics/openpanel.ts`). New events show up in **GA4 Admin → Data display → Events** about 24 hours after they first fire. Mark these as key events with the star toggle:
+Every `trackEvent()` call is sent to GA4 (`frontend/src/lib/analytics/track.ts`). New events show up in **GA4 Admin → Data display → Events** about 24 hours after they first fire. Mark these as key events with the star toggle:
 
 | Event | Fires when | Mark as key event |
 |---|---|---|

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Bookmark, Loader2, ThumbsUp } from "lucide-react";
 import { useMemberAuth } from "@/features/auth/MemberAuthContext";
 import { SignInGateModal } from "@/features/auth/SignInGateModal";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 type EngagementState = {

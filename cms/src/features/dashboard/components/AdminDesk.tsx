@@ -2,10 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink } from "lucide-react";
 import { apiFetch, type Article, type StaffUser } from "@/lib/api/client";
-import {
-  isOpenPanelEnabled,
-  openPanelDashboardUrl,
-} from "@/lib/analytics/openpanel";
 import { AdminContentHealth } from "@/features/dashboard/components/AdminContentHealth";
 import { AdminEeatGaps } from "@/features/dashboard/components/AdminEeatGaps";
 import { AdminInactiveWriters } from "@/features/dashboard/components/AdminInactiveWriters";
@@ -56,9 +52,6 @@ export function AdminDesk({ userName }: Props) {
   const [summary, setSummary] = useState<ActivitySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const dash = openPanelDashboardUrl();
-  const opOn = isOpenPanelEnabled();
-
   useEffect(() => {
     void (async () => {
       setError("");
@@ -164,29 +157,18 @@ export function AdminDesk({ userName }: Props) {
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <h2 className="font-semibold text-slate-900">Product traffic</h2>
               <p className="mt-2 text-sm text-slate-600">
-                Funnels and page_view analytics live in OpenPanel.
-                {opOn
-                  ? " Tracking is enabled for this CMS."
-                  : " Configure VITE_OPENPANEL_* to enable."}
+                Page views, funnels and calculator events live in Google
+                Analytics.
               </p>
-              {dash ? (
-                <a
-                  href={dash}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700 hover:underline"
-                >
-                  Open OpenPanel
-                  <ExternalLink className="size-4" />
-                </a>
-              ) : (
-                <Link
-                  to="/admin/analytics"
-                  className="mt-4 inline-flex text-sm font-semibold text-sky-700 hover:underline"
-                >
-                  Analytics setup →
-                </Link>
-              )}
+              <a
+                href="https://analytics.google.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sky-700 hover:underline"
+              >
+                Open Google Analytics
+                <ExternalLink className="size-4" />
+              </a>
             </div>
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <h2 className="font-semibold text-slate-900">Editorial ops</h2>

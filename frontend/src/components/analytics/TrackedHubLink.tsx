@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 
 type Props = {
   href: string;
@@ -15,7 +15,7 @@ type Props = {
   placement?: string;
 } & Omit<ComponentProps<typeof Link>, "href" | "className" | "children">;
 
-/** Hub / CTA link that records a click event (OpenPanel and GA4). */
+/** Hub / CTA link that records a click event in GA4. */
 export function TrackedHubLink({
   href,
   label,

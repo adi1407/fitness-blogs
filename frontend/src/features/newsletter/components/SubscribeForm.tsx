@@ -3,7 +3,7 @@
 import { useId, useState, useSyncExternalStore, type FormEvent } from "react";
 import Link from "next/link";
 import { Check, Loader2, Mail } from "lucide-react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
 const SUBSCRIBED_KEY = "fk_subscribed";

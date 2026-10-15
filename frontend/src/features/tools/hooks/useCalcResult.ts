@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import type { CalcTool } from "@/features/tools/types";
 
 type Shown<T> = { value: T; run: number };

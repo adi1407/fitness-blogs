@@ -369,7 +369,7 @@ Cadence: **2–3 excellent pages per week**, not 20 thin ones.
 ## 15. Measurement — Search Console as the dashboard
 
 - **GSC:** weekly Performance review (queries, pages, CTR, position); Pages/indexing; Core Web Vitals; Enhancements (breadcrumbs, FAQ).
-- **GA4 / OpenPanel events:** `calc_view`, `calc_submit`, `calc_result_view`, `calc_next_tool_click`, `article_calc_cta_click`, `signup_from_calc`, `search_query`.
+- **GA4 events:** `calc_view`, `calc_submit`, `calc_result_view`, `calc_next_tool_click`, `article_calc_cta_click`, `signup_from_calc`, `search_query`.
 - **KPIs (targets to review quarterly):**
   - Calculator completion rate ≥ 60% of views
   - ≥ 25% of calculator users click a next step (tool/article)

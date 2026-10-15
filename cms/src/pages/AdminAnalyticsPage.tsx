@@ -2,23 +2,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ExternalLink, BarChart3 } from "lucide-react";
 import { apiFetch } from "@/lib/api/client";
-import {
-  isOpenPanelEnabled,
-  openPanelDashboardUrl,
-} from "@/lib/analytics/openpanel";
+
+const GA_URL = "https://analytics.google.com/";
 
 type Summary = {
   eventsAllTime: number;
   last24h: { logins: number; publishes: number; newUsers: number };
 };
 
-/** Admin product analytics hub — OpenPanel deep link + editorial audit summary. */
+/** Admin analytics hub — Google Analytics link + editorial audit summary. */
 export default function AdminAnalyticsPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [error, setError] = useState("");
-  const dashboardUrl = openPanelDashboardUrl();
-  const trackingOn = isOpenPanelEnabled();
-  const opReady = trackingOn || Boolean(dashboardUrl);
 
   useEffect(() => {
     void (async () => {
@@ -37,41 +32,20 @@ export default function AdminAnalyticsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-600">
-            Product traffic and funnels live in OpenPanel. Editorial ops
+            Site traffic and funnels live in Google Analytics. Editorial ops
             (publishes, logins) stay in the fitlives activity log.
           </p>
         </div>
-        {dashboardUrl ? (
-          <a
-            href={dashboardUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
-          >
-            Open OpenPanel
-            <ExternalLink className="size-4" />
-          </a>
-        ) : null}
+        <a
+          href={GA_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
+        >
+          Open Google Analytics
+          <ExternalLink className="size-4" />
+        </a>
       </div>
-
-      {!opReady ? (
-        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          OpenPanel is optional. To enable the dashboard link and tracking, add
-          to <code className="font-mono text-xs">cms/.env</code>:{" "}
-          <code className="font-mono text-xs">VITE_OPENPANEL_DASHBOARD_URL</code>{" "}
-          and{" "}
-          <code className="font-mono text-xs">VITE_OPENPANEL_CLIENT_ID</code>,
-          then restart the CMS. See{" "}
-          <span className="font-medium">docs/ANALYTICS_OPENPANEL.md</span>.
-        </div>
-      ) : !trackingOn ? (
-        <div className="mb-6 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-950">
-          Dashboard link is set. Add{" "}
-          <code className="font-mono text-xs">VITE_OPENPANEL_CLIENT_ID</code>{" "}
-          (from the OpenPanel project) to send CMS events. Restart Vite after
-          changing <code className="font-mono text-xs">cms/.env</code>.
-        </div>
-      ) : null}
 
       {error ? <p className="mb-4 text-sm text-red-600">{error}</p> : null}
 
@@ -120,7 +94,7 @@ export default function AdminAnalyticsPage() {
             </li>
           </ol>
           <p className="mt-4 text-xs text-slate-500">
-            Build this funnel inside OpenPanel after events start flowing.
+            Build this funnel in GA4 under Explore → Funnel exploration.
           </p>
         </div>
 

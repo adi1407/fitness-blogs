@@ -319,7 +319,7 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
         {
           to: "/admin/analytics",
           label: "Analytics",
-          description: "OpenPanel setup",
+          description: "Traffic and activity",
           icon: BarChart3,
           match: (p) => p === "/admin/analytics",
         },

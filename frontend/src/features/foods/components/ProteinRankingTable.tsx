@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
-import { trackEvent } from "@/lib/analytics/openpanel";
+import { trackEvent } from "@/lib/analytics/track";
 import { DIET_LABEL, type FoodDiet } from "@/features/foods/types";
 import { formatG, shortName } from "@/features/foods/lib/nutrition";
 import {

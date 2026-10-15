@@ -7,8 +7,8 @@ export type CookieConsent = {
   necessary: true;
   /**
    * “Accept cookies”: Google Analytics cookies plus the sign-in session.
-   * When false, analytics still runs cookieless (Consent Mode pings,
-   * OpenPanel) and sign-in is unavailable.
+   * When false, analytics still runs cookieless (Consent Mode pings)
+   * and sign-in is unavailable.
    */
   analytics: boolean;
   decidedAt: string;
