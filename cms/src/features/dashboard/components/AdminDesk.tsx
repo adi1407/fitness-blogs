@@ -6,6 +6,7 @@ import { AdminContentHealth } from "@/features/dashboard/components/AdminContent
 import { AdminEeatGaps } from "@/features/dashboard/components/AdminEeatGaps";
 import { AdminInactiveWriters } from "@/features/dashboard/components/AdminInactiveWriters";
 import { AdminTopViews } from "@/features/dashboard/components/AdminTopViews";
+import { QualityGapsCards } from "@/features/dashboard/components/QualityGapsCards";
 import { StaleContentQueue } from "@/features/dashboard/components/StaleContentQueue";
 import { publishedThisWeek } from "@/features/dashboard/utils/writerMetrics";
 import {
@@ -152,6 +153,8 @@ export function AdminDesk({ userName }: Props) {
               hint={`${activeWriters} active writers`}
             />
           </div>
+
+          <QualityGapsCards />
 
           <section className="grid gap-4 lg:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-white p-5">

@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Dumbbell,
   Search,
+  ShieldAlert,
   FilePenLine,
   FileText,
   LayoutDashboard,
@@ -205,6 +206,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/search-insights"),
           },
           {
+            to: "/quality",
+            label: "Quality queues",
+            description: "Published gate gaps",
+            icon: ShieldAlert,
+            match: (p) => p.startsWith("/quality"),
+          },
+          {
             to: "/exercises",
             label: "Exercises",
             description: "Muscle-group library",
@@ -345,6 +353,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "Zero-result queries",
           icon: Search,
           match: (p) => p.startsWith("/search-insights"),
+        },
+        {
+          to: "/quality",
+          label: "Quality queues",
+          description: "Published gate gaps",
+          icon: ShieldAlert,
+          match: (p) => p.startsWith("/quality"),
         },
         {
           to: "/admin/analytics",
