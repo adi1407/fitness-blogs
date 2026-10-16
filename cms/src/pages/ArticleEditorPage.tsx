@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
+import { CalculatorInsertHelper } from "@/components/CalculatorInsertHelper";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
 import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
 import { PublishGatesPanel } from "@/features/articles/components/PublishGatesPanel";
@@ -1222,6 +1223,12 @@ export default function ArticleEditorPage() {
             </label>
           ) : null}
         </section>
+
+      <CalculatorInsertHelper
+        body={form.body}
+        disabled={!canEditContent}
+        onInsert={(nextBody) => patch("body", nextBody)}
+      />
 
       <RelatedArticlesPanel
         linked={linkedArticles}

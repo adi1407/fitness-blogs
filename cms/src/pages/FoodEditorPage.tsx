@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { FoodRelatedSlugsPanel } from "@/components/FoodRelatedSlugsPanel";
 import { apiFetch, type CmsFood } from "@/lib/api/client";
 
 const FOOD_CATEGORIES = [
@@ -389,16 +390,13 @@ export default function FoodEditorPage() {
             className={field}
           />
         </label>
-        <label className="text-sm font-medium">
-          Related food slugs (one per line)
-          <textarea
-            rows={3}
-            value={form.relatedSlugs}
-            onChange={(e) => setForm({ ...form, relatedSlugs: e.target.value })}
-            className={`${field} font-mono`}
-            placeholder="paneer&#10;moong-dal"
-          />
-        </label>
+        <FoodRelatedSlugsPanel
+          relatedSlugs={linesToArray(form.relatedSlugs)}
+          excludeSlug={form.slug || undefined}
+          onChange={(slugs) =>
+            setForm({ ...form, relatedSlugs: slugs.join("\n") })
+          }
+        />
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="text-sm font-medium">
             Compare slug

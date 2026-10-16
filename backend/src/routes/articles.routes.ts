@@ -363,6 +363,48 @@ articlesRouter.get("/lookup-by-number/:articleNumber", async (req, res) => {
   res.json({ article: mapArticle(row) });
 });
 
+/** Title/slug search for related-article picker (CMS). */
+articlesRouter.get("/search", async (req, res) => {
+  const q = typeof req.query.q === "string" ? req.query.q.trim().slice(0, 80) : "";
+  if (q.length < 2) {
+    res.json({ articles: [] });
+    return;
+  }
+  const limit = Math.min(20, Math.max(1, Number(req.query.limit) || 10));
+  const params: unknown[] = [`%${q.replace(/[%_\\]/g, "\\$&")}%`];
+  const clauses = [
+    `(a.title ILIKE $1 OR a.slug ILIKE $1 OR CAST(a.article_number AS TEXT) ILIKE $1)`,
+  ];
+  if (req.user?.role === "writer") {
+    params.push(req.user.id);
+    clauses.push(
+      `(a.status = 'published' OR a.author_id = $${params.length})`,
+    );
+  }
+  params.push(limit);
+  const result = await pool.query(
+    `${ARTICLE_SELECT}
+     WHERE ${clauses.join(" AND ")}
+     ORDER BY
+       CASE WHEN a.status = 'published' THEN 0 ELSE 1 END,
+       a.updated_at DESC
+     LIMIT $${params.length}`,
+    params,
+  );
+  res.json({
+    articles: result.rows.map((row: Record<string, unknown>) => {
+      const mapped = mapArticle(row);
+      return {
+        articleNumber: mapped.articleNumber,
+        title: mapped.title,
+        path: mapped.path,
+        status: mapped.status,
+        slug: mapped.slug,
+      };
+    }),
+  });
+});
+
 articlesRouter.get("/", async (req, res) => {
   const status = typeof req.query.status === "string" ? req.query.status : null;
   const categoryId =
