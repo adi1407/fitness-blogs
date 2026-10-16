@@ -5,6 +5,7 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { CalculatorInsertHelper } from "@/components/CalculatorInsertHelper";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
+import { ShareCaptionPanel } from "@/components/ShareCaptionPanel";
 import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
 import { PublishGatesPanel } from "@/features/articles/components/PublishGatesPanel";
 import {
@@ -1233,6 +1234,14 @@ export default function ArticleEditorPage() {
             </label>
           ) : null}
         </section>
+
+      <ShareCaptionPanel
+        title={form.title}
+        path={publicPath}
+        slug={form.slug}
+        blurb={form.quickAnswer || form.excerpt}
+        disabled={!canEditContent && status !== "published"}
+      />
 
       <CalculatorInsertHelper
         body={form.body}

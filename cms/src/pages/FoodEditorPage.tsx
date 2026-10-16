@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FoodRelatedSlugsPanel } from "@/components/FoodRelatedSlugsPanel";
+import { ShareCaptionPanel } from "@/components/ShareCaptionPanel";
 import { apiFetch, type CmsFood } from "@/lib/api/client";
 
 const FOOD_CATEGORIES = [
@@ -396,6 +397,12 @@ export default function FoodEditorPage() {
           onChange={(slugs) =>
             setForm({ ...form, relatedSlugs: slugs.join("\n") })
           }
+        />
+        <ShareCaptionPanel
+          title={form.name}
+          path={form.slug ? `/foods/${form.slug}` : null}
+          slug={form.slug}
+          blurb={form.intro}
         />
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="text-sm font-medium">
