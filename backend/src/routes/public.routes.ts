@@ -31,10 +31,12 @@ import {
   resolveRelatedArticles,
 } from "./articles.routes";
 import { publicSubscribeRouter } from "./subscribers.routes";
+import { publicSearchLogRouter } from "./searchInsights.routes";
 
 export const publicRouter = Router();
 
 publicRouter.use(publicSubscribeRouter);
+publicRouter.use(publicSearchLogRouter);
 
 publicRouter.use("/auth", publicAuthRouter);
 publicRouter.use("/me/bookmarks", publicBookmarksRouter);

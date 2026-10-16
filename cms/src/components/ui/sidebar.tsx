@@ -9,6 +9,7 @@ import {
   BookOpen,
   ClipboardList,
   Dumbbell,
+  Search,
   FilePenLine,
   FileText,
   LayoutDashboard,
@@ -197,6 +198,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/subscribers"),
           },
           {
+            to: "/search-insights",
+            label: "Search insights",
+            description: "Zero-result queries",
+            icon: Search,
+            match: (p) => p.startsWith("/search-insights"),
+          },
+          {
             to: "/exercises",
             label: "Exercises",
             description: "Muscle-group library",
@@ -330,6 +338,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "Email list",
           icon: Mail,
           match: (p) => p.startsWith("/subscribers"),
+        },
+        {
+          to: "/search-insights",
+          label: "Search insights",
+          description: "Zero-result queries",
+          icon: Search,
+          match: (p) => p.startsWith("/search-insights"),
         },
         {
           to: "/admin/analytics",
