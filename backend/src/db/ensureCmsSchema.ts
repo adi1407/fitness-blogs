@@ -336,6 +336,8 @@ CREATE TABLE IF NOT EXISTS foods (
   compare_slug TEXT,
   published BOOLEAN NOT NULL DEFAULT FALSE,
   sort_order INT NOT NULL DEFAULT 0,
+  managed_by TEXT NOT NULL DEFAULT 'seed'
+    CHECK (managed_by IN ('seed', 'cms')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -419,7 +421,17 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS slug TEXT;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
     ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
+    ALTER TABLE foods ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
     CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL;
+  `);
+
+  await pool.query(`
+    DO $$ BEGIN
+      ALTER TABLE foods DROP CONSTRAINT IF EXISTS foods_managed_by_check;
+      ALTER TABLE foods ADD CONSTRAINT foods_managed_by_check
+        CHECK (managed_by IN ('seed', 'cms'));
+    EXCEPTION WHEN others THEN NULL;
+    END $$;
   `);
 
   // Allow changes_requested status on existing DBs

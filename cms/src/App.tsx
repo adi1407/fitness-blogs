@@ -18,6 +18,8 @@ import ExercisesListPage from "./pages/ExercisesListPage.tsx";
 import ExerciseEditorPage from "./pages/ExerciseEditorPage.tsx";
 import RecipesListPage from "./pages/RecipesListPage.tsx";
 import RecipeEditorPage from "./pages/RecipeEditorPage.tsx";
+import FoodsListPage from "./pages/FoodsListPage.tsx";
+import FoodEditorPage from "./pages/FoodEditorPage.tsx";
 import KnowledgePagesListPage from "./pages/KnowledgePagesListPage.tsx";
 import KnowledgePageEditorPage from "./pages/KnowledgePageEditorPage.tsx";
 
@@ -47,6 +49,9 @@ export default function App() {
                 <Route path="recipes" element={<RecipesListPage />} />
                 <Route path="recipes/new" element={<RecipeEditorPage />} />
                 <Route path="recipes/:id" element={<RecipeEditorPage />} />
+                <Route path="foods" element={<FoodsListPage />} />
+                <Route path="foods/new" element={<FoodEditorPage />} />
+                <Route path="foods/:id" element={<FoodEditorPage />} />
                 <Route
                   path="programs"
                   element={<KnowledgePagesListPage />}

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  Apple,
   BarChart3,
   Bell,
   BookOpen,
@@ -210,6 +211,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/recipes"),
           },
           {
+            to: "/foods",
+            label: "Foods",
+            description: "Calories and nutrition pages",
+            icon: Apple,
+            match: (p) => p.startsWith("/foods"),
+          },
+          {
             to: "/programs",
             label: "Programs",
             description: "Training plans",
@@ -281,6 +289,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "Meals and macros",
           icon: Soup,
           match: (p) => p.startsWith("/recipes"),
+        },
+        {
+          to: "/foods",
+          label: "Foods",
+          description: "Calories and nutrition pages",
+          icon: Apple,
+          match: (p) => p.startsWith("/foods"),
         },
         {
           to: "/programs",

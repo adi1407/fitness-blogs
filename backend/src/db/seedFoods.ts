@@ -58,7 +58,8 @@ export async function seedFoods(): Promise<void> {
           WHEN (foods.kcal, foods.protein_g, foods.carbs_g, foods.fat_g, foods.servings, foods.intro, foods.tips)
              IS DISTINCT FROM
                (EXCLUDED.kcal, EXCLUDED.protein_g, EXCLUDED.carbs_g, EXCLUDED.fat_g, EXCLUDED.servings, EXCLUDED.intro, EXCLUDED.tips)
-          THEN NOW() ELSE foods.updated_at END`,
+          THEN NOW() ELSE foods.updated_at END
+      WHERE foods.managed_by = 'seed'`,
       [
         f.slug,
         f.name,
