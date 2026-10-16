@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { CalculatorInsertHelper } from "@/components/CalculatorInsertHelper";
@@ -113,8 +113,18 @@ export default function ArticleEditorPage() {
   const { id } = useParams();
   const isNew = !id || id === "new";
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const [form, setForm] = useState<FormState>(emptyForm);
+  const titleSeed = (searchParams.get("title") ?? "").trim().slice(0, 200);
+  const [form, setForm] = useState<FormState>(() =>
+    isNew && titleSeed
+      ? {
+          ...emptyForm,
+          title: titleSeed.charAt(0).toUpperCase() + titleSeed.slice(1),
+          primaryKeyword: titleSeed.toLowerCase(),
+        }
+      : emptyForm,
+  );
   const [taxonomy, setTaxonomy] = useState<TaxonomyCategory[]>([]);
   const [status, setStatus] = useState<Article["status"]>("draft");
   const [editorNote, setEditorNote] = useState("");

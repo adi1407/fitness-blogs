@@ -14,6 +14,7 @@ import AssignmentsPage from "./pages/AssignmentsPage.tsx";
 import NotificationsPage from "./pages/NotificationsPage.tsx";
 import RedirectsPage from "./pages/RedirectsPage.tsx";
 import SubscribersPage from "./pages/SubscribersPage.tsx";
+import SearchInsightsPage from "./pages/SearchInsightsPage.tsx";
 import ExercisesListPage from "./pages/ExercisesListPage.tsx";
 import ExerciseEditorPage from "./pages/ExerciseEditorPage.tsx";
 import RecipesListPage from "./pages/RecipesListPage.tsx";
@@ -43,6 +44,7 @@ export default function App() {
                 <Route path="writers" element={<WritersPage />} />
                 <Route path="redirects" element={<RedirectsPage />} />
                 <Route path="subscribers" element={<SubscribersPage />} />
+                <Route path="search-insights" element={<SearchInsightsPage />} />
                 <Route path="exercises" element={<ExercisesListPage />} />
                 <Route path="exercises/new" element={<ExerciseEditorPage />} />
                 <Route path="exercises/:id" element={<ExerciseEditorPage />} />

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
   apiFetch,
@@ -24,6 +24,7 @@ function dueLabel(dueOn: string | null) {
 export default function AssignmentsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const isWriter = user?.role === "writer";
   const [briefs, setBriefs] = useState<AssignmentBrief[]>([]);
   const [writers, setWriters] = useState<StaffUser[]>([]);
@@ -32,14 +33,19 @@ export default function AssignmentsPage() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const seedQuery = (searchParams.get("q") ?? "").trim().slice(0, 200);
   const [form, setForm] = useState({
-    targetQuery: "",
-    workingTitle: "",
+    targetQuery: seedQuery,
+    workingTitle: seedQuery
+      ? seedQuery.charAt(0).toUpperCase() + seedQuery.slice(1)
+      : "",
     categoryId: "",
     subcategoryId: "",
     outline: "",
     requiredLinks: "",
-    notes: "",
+    notes: seedQuery
+      ? `From site search insights (zero-result / demand): “${seedQuery}”`
+      : "",
     dueOn: "",
     writerId: "",
   });

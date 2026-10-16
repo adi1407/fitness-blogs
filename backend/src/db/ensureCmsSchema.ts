@@ -364,6 +364,21 @@ CREATE TABLE IF NOT EXISTS subscribers (
 );
 
 CREATE INDEX IF NOT EXISTS idx_subscribers_created ON subscribers(created_at DESC);
+
+CREATE TABLE IF NOT EXISTS search_queries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  query_norm TEXT NOT NULL UNIQUE,
+  query_display TEXT NOT NULL,
+  hit_count INT NOT NULL DEFAULT 0,
+  zero_count INT NOT NULL DEFAULT 0,
+  last_results INT NOT NULL DEFAULT 0,
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_search_queries_zero
+  ON search_queries(zero_count DESC, last_seen_at DESC)
+  WHERE zero_count > 0;
 `;
 
 const SEED_USERS = [
