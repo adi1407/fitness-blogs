@@ -23,7 +23,8 @@ export type SeoCheck = {
   pass: boolean;
 };
 
-const MIN_BODY_CHARS = 400;
+/** Keep in sync with backend/src/services/publishGates.ts */
+const MIN_BODY_CHARS = 800;
 
 function stripHtml(html: string): string {
   return html
@@ -103,7 +104,7 @@ export function seoCompleteness(article: Article): {
   return { checks, passed, total, percent, missing };
 }
 
-/** Editor publish gates — SEO checklist plus sources & related links. */
+/** Editor publish gates — aligned with backend hard gates (+ tags advisory). */
 export function editorQuality(article: Article): {
   checks: SeoCheck[];
   passed: number;
@@ -141,10 +142,18 @@ export function editorQuality(article: Article): {
     byId.title &&
     byId.slug &&
     byId.taxonomy &&
+    byId.quickAnswer &&
     byId.body &&
-    byId.featuredImage
+    byId.featuredImage &&
+    byId.featuredImageAlt &&
+    byId.metaTitle &&
+    byId.metaDescription &&
+    byId.primaryKeyword &&
+    byId.faq &&
+    byId.sources &&
+    byId.related
   );
-  const ready = percent >= 85 && !criticalFail;
+  const ready = !criticalFail && Boolean(byId.tags);
 
   return { checks, passed, total, percent, missing, ready, criticalFail };
 }

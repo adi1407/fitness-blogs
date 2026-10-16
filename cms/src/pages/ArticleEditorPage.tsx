@@ -542,6 +542,23 @@ export default function ArticleEditorPage() {
         setError("Save the article before continuing");
         return;
       }
+      if (path === "publish" || path === "submit") {
+        const gatesData = await apiFetch<{
+          gates: { id: string; label: string; pass: boolean }[];
+          ok: boolean;
+        }>(`/articles/${currentId}/publish-gates`);
+        setGatesRefresh((n) => n + 1);
+        if (!gatesData.ok) {
+          const missing = gatesData.gates
+            .filter((g) => !g.pass)
+            .map((g) => g.label)
+            .slice(0, 8);
+          setError(
+            `Cannot ${path} until publish gates pass. Missing: ${missing.join(", ")}`,
+          );
+          return;
+        }
+      }
       const needsReason = path === "reject" || path === "request-changes";
       const customPublishedAt =
         path === "publish" && isAdmin

@@ -25,20 +25,16 @@ export async function runEditorTransition(
   return data.article;
 }
 
-/** Confirm before publish when quality gates warn. */
-export function confirmPublishIfNeeded(article: Article): boolean {
+/** Hard block — no "publish anyway" bypass. */
+export function assertPublishReady(article: Article): void {
   const q = editorQuality(article);
-  if (q.ready) return true;
-  const lines = [
-    q.criticalFail
-      ? "Critical fields are incomplete (title, slug, taxonomy, body, or cover)."
-      : `SEO/quality is ${q.percent}% (below 85%).`,
-    q.missing.length
-      ? `Missing: ${q.missing.slice(0, 6).join(", ")}`
-      : "",
-    "Publish anyway?",
-  ].filter(Boolean);
-  return window.confirm(lines.join("\n\n"));
+  if (q.ready) return;
+  const detail = q.missing.length
+    ? `Missing: ${q.missing.slice(0, 8).join(", ")}`
+    : "Publish gates incomplete.";
+  throw new Error(
+    `Cannot publish until quality gates pass. ${detail}`,
+  );
 }
 
 export type BulkResult = {
@@ -50,32 +46,15 @@ export async function runBulkEditorTransitions(
   articles: Article[],
   action: EditorAction,
   reason?: string,
-  opts?: { skipPublishConfirm?: boolean },
 ): Promise<BulkResult> {
   const ok: string[] = [];
   const failed: BulkResult["failed"] = [];
 
-  if (action === "publish" && !opts?.skipPublishConfirm) {
-    const weak = articles.filter((a) => !editorQuality(a).ready);
-    if (weak.length > 0) {
-      const okGo = window.confirm(
-        `${weak.length} of ${articles.length} selected piece(s) are below quality gates. Publish all selected anyway?`,
-      );
-      if (!okGo) {
-        return {
-          ok: [],
-          failed: articles.map((a) => ({
-            id: a.id,
-            title: a.title || "Untitled",
-            error: "Cancelled",
-          })),
-        };
-      }
-    }
-  }
-
   for (const article of articles) {
     try {
+      if (action === "publish") {
+        assertPublishReady(article);
+      }
       await runEditorTransition(article.id, action, reason);
       ok.push(article.id);
     } catch (err) {
