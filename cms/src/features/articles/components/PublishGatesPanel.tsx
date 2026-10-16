@@ -51,8 +51,8 @@ export function PublishGatesPanel({ articleId, refreshKey = 0 }: Props) {
         </span>
       </div>
       <p className="mt-1 text-sm text-slate-500">
-        Editors cannot publish until every gate passes (sources, disclaimer,
-        unique primary keyword, depth).
+        Editors cannot submit or publish until every gate passes (cover, FAQ,
+        related links, sources, disclaimer, unique primary keyword, depth).
       </p>
       <ul className="mt-4 space-y-2">
         {gates.map((g) => (

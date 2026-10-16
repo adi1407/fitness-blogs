@@ -9,7 +9,7 @@ import { StaleContentQueue } from "@/features/dashboard/components/StaleContentQ
 import { editorQuality } from "@/features/dashboard/utils/seoCompleteness";
 import { daysWaiting, publishedThisWeek } from "@/features/dashboard/utils/writerMetrics";
 import {
-  confirmPublishIfNeeded,
+  assertPublishReady,
   loadClaimedIds,
   runBulkEditorTransitions,
   runEditorTransition,
@@ -136,10 +136,9 @@ export function EditorDesk({ userId, userName, isAdmin }: Props) {
       setError("Add an editor note (or pick a template) before that action.");
       return;
     }
-    if (action === "publish" && !confirmPublishIfNeeded(article)) return;
-
     setBusyId(article.id);
     try {
+      if (action === "publish") assertPublishReady(article);
       await runEditorTransition(
         article.id,
         action,
@@ -178,7 +177,6 @@ export function EditorDesk({ userId, userName, isAdmin }: Props) {
         selectedArticles,
         action,
         action === "publish" ? undefined : note,
-        { skipPublishConfirm: false },
       );
       const parts: string[] = [];
       if (result.ok.length) parts.push(`${result.ok.length} succeeded`);
