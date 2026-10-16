@@ -496,6 +496,90 @@ articlesRouter.get("/", async (req, res) => {
   });
 });
 
+const QUALITY_KINDS = [
+  "missing-image",
+  "thin",
+  "no-faq",
+  "no-related",
+] as const;
+
+type QualityKind = (typeof QUALITY_KINDS)[number];
+
+/** Published articles that fail today's hard publish gates (cleanup queue). */
+articlesRouter.get("/quality-gaps", async (req, res) => {
+  if (req.user?.role !== "admin" && req.user?.role !== "editor") {
+    res.status(403).json({ message: "Insufficient permissions" });
+    return;
+  }
+
+  const kindRaw = typeof req.query.kind === "string" ? req.query.kind : "missing-image";
+  const kind = (QUALITY_KINDS as readonly string[]).includes(kindRaw)
+    ? (kindRaw as QualityKind)
+    : "missing-image";
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
+
+  const filters: Record<QualityKind, string> = {
+    "missing-image":
+      `(trim(COALESCE(a.featured_image, '')) = '' OR trim(COALESCE(a.featured_image_alt, '')) = '')`,
+    thin: `length(regexp_replace(COALESCE(a.body, ''), '<[^>]+>', ' ', 'g')) < 800`,
+    "no-faq":
+      `(a.faq IS NULL OR jsonb_typeof(a.faq) <> 'array' OR jsonb_array_length(a.faq) = 0
+        OR NOT EXISTS (
+          SELECT 1 FROM jsonb_array_elements(a.faq) AS f
+          WHERE trim(COALESCE(f->>'question', '')) <> ''
+            AND trim(COALESCE(f->>'answer', '')) <> ''
+        ))`,
+    "no-related":
+      `(a.related_article_numbers IS NULL OR cardinality(a.related_article_numbers) = 0)`,
+  };
+
+  const result = await pool.query(
+    `${ARTICLE_SELECT}
+     WHERE a.status = 'published'
+       AND ${filters[kind]}
+     ORDER BY a.updated_at DESC
+     LIMIT $1`,
+    [limit],
+  );
+
+  const counts = await pool.query(
+    `SELECT
+       COUNT(*) FILTER (
+         WHERE trim(COALESCE(featured_image, '')) = ''
+            OR trim(COALESCE(featured_image_alt, '')) = ''
+       )::int AS missing_image,
+       COUNT(*) FILTER (
+         WHERE length(regexp_replace(COALESCE(body, ''), '<[^>]+>', ' ', 'g')) < 800
+       )::int AS thin,
+       COUNT(*) FILTER (
+         WHERE faq IS NULL OR jsonb_typeof(faq) <> 'array' OR jsonb_array_length(faq) = 0
+           OR NOT EXISTS (
+             SELECT 1 FROM jsonb_array_elements(faq) AS f
+             WHERE trim(COALESCE(f->>'question', '')) <> ''
+               AND trim(COALESCE(f->>'answer', '')) <> ''
+           )
+       )::int AS no_faq,
+       COUNT(*) FILTER (
+         WHERE related_article_numbers IS NULL
+            OR cardinality(related_article_numbers) = 0
+       )::int AS no_related
+     FROM articles
+     WHERE status = 'published'`,
+  );
+
+  const c = counts.rows[0] ?? {};
+  res.json({
+    kind,
+    articles: result.rows.map(mapArticle),
+    counts: {
+      "missing-image": Number(c.missing_image ?? 0),
+      thin: Number(c.thin ?? 0),
+      "no-faq": Number(c.no_faq ?? 0),
+      "no-related": Number(c.no_related ?? 0),
+    },
+  });
+});
+
 /** Staff who may be credited as "Reviewed by" (active editors and admins). */
 articlesRouter.get("/reviewer-options", async (_req, res) => {
   const result = await pool.query(

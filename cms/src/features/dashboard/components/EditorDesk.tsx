@@ -5,6 +5,7 @@ import { EditorNoteTemplates } from "@/features/dashboard/components/EditorNoteT
 import { EditorReviewQueue } from "@/features/dashboard/components/EditorReviewQueue";
 import { EditorBulkBar } from "@/features/dashboard/components/EditorBulkBar";
 import { EditorWriterCoaching } from "@/features/dashboard/components/EditorWriterCoaching";
+import { QualityGapsCards } from "@/features/dashboard/components/QualityGapsCards";
 import { StaleContentQueue } from "@/features/dashboard/components/StaleContentQueue";
 import { editorQuality } from "@/features/dashboard/utils/seoCompleteness";
 import { daysWaiting, publishedThisWeek } from "@/features/dashboard/utils/writerMetrics";
@@ -266,6 +267,8 @@ export function EditorDesk({ userId, userName, isAdmin }: Props) {
               hint="All writers"
             />
           </div>
+
+          <QualityGapsCards />
 
           <EditorNoteTemplates note={note} onNoteChange={setNote} />
 
