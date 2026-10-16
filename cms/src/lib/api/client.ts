@@ -280,6 +280,41 @@ export type CmsRecipe = {
   updatedAt: string;
 };
 
+export type CmsFoodServing = { label: string; grams: number };
+
+export type CmsFood = {
+  id: string;
+  slug: string;
+  name: string;
+  hindiName: string;
+  category: string;
+  diet: "veg" | "egg" | "non-veg";
+  isVeg: boolean;
+  basisLabel: string;
+  kcal: number;
+  proteinG: number;
+  carbsG: number;
+  fatG: number;
+  fiberG: number;
+  calciumMg: number | null;
+  ironMg: number | null;
+  servings: CmsFoodServing[];
+  source: string;
+  sourceRef: string;
+  sourceName: string;
+  sourceNote: string;
+  intro: string;
+  tips: string[];
+  relatedSlugs: string[];
+  compareSlug: string | null;
+  published: boolean;
+  sortOrder: number;
+  managedBy: "seed" | "cms";
+  path: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CmsKnowledgePage = {
   id: string;
   section: "programs" | "reviews";

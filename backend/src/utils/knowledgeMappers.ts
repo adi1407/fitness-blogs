@@ -55,6 +55,44 @@ export function mapExercise(row: Record<string, unknown>) {
   };
 }
 
+export function mapCmsFood(row: Record<string, unknown>) {
+  const slug = String(row.slug ?? "");
+  const servings = parseJson(row.servings, []);
+  const tips = parseJson(row.tips, []);
+  return {
+    id: row.id,
+    slug,
+    name: row.name,
+    hindiName: row.hindi_name ?? "",
+    category: row.category,
+    diet: row.diet,
+    isVeg: row.is_veg !== false,
+    basisLabel: row.basis_label ?? "",
+    kcal: Number(row.kcal ?? 0),
+    proteinG: Number(row.protein_g ?? 0),
+    carbsG: Number(row.carbs_g ?? 0),
+    fatG: Number(row.fat_g ?? 0),
+    fiberG: Number(row.fiber_g ?? 0),
+    calciumMg: row.calcium_mg == null ? null : Number(row.calcium_mg),
+    ironMg: row.iron_mg == null ? null : Number(row.iron_mg),
+    servings: Array.isArray(servings) ? servings : [],
+    source: row.source ?? "",
+    sourceRef: row.source_ref ?? "",
+    sourceName: row.source_name ?? "",
+    sourceNote: row.source_note ?? "",
+    intro: row.intro ?? "",
+    tips: Array.isArray(tips) ? tips.map(String) : [],
+    relatedSlugs: asStringArray(row.related_slugs),
+    compareSlug: row.compare_slug ? String(row.compare_slug) : null,
+    published: row.published === true,
+    sortOrder: Number(row.sort_order ?? 0),
+    managedBy: row.managed_by === "cms" ? "cms" : "seed",
+    path: slug ? `/foods/${slug}` : null,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 export function mapRecipe(row: Record<string, unknown>) {
   const slug = String(row.slug ?? "");
   return {
