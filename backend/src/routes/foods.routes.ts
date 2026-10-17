@@ -40,6 +40,11 @@ const foodsBodySchema = z.object({
   tips: z.array(z.string().max(500)).max(20).optional().default([]),
   relatedSlugs: z.array(z.string().max(80)).max(12).optional().default([]),
   compareSlug: z.string().max(80).nullable().optional(),
+  imageUrl: z
+    .union([z.literal(""), z.string().trim().url().max(500).regex(/^https?:\/\//)])
+    .optional()
+    .default(""),
+  imageAlt: z.string().trim().max(200).optional().default(""),
   published: z.boolean().optional().default(false),
   sortOrder: z.number().int().min(0).max(10_000).optional().default(0),
 });
@@ -105,10 +110,11 @@ foodsRouter.post("/", async (req, res) => {
         slug, name, hindi_name, category, diet, is_veg, basis_label,
         kcal, protein_g, carbs_g, fat_g, fiber_g, calcium_mg, iron_mg,
         servings, source, source_ref, source_name, source_note,
-        intro, tips, related_slugs, compare_slug, published, sort_order, managed_by
+        intro, tips, related_slugs, compare_slug, published, sort_order, managed_by,
+        image_url, image_alt
       ) VALUES (
         $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,
-        $15::jsonb,$16,$17,$18,$19,$20,$21::jsonb,$22,$23,$24,$25,'cms'
+        $15::jsonb,$16,$17,$18,$19,$20,$21::jsonb,$22,$23,$24,$25,'cms',$26,$27
       ) RETURNING *`,
       [
         slug,
@@ -136,6 +142,8 @@ foodsRouter.post("/", async (req, res) => {
         data.compareSlug || null,
         data.published,
         data.sortOrder,
+        data.imageUrl,
+        data.imageAlt,
       ],
     );
     const food = mapCmsFood(result.rows[0]);
@@ -207,6 +215,8 @@ foodsRouter.patch("/:id", async (req, res) => {
         compare_slug = COALESCE($23, compare_slug),
         published = COALESCE($24, published),
         sort_order = COALESCE($25, sort_order),
+        image_url = COALESCE($27, image_url),
+        image_alt = COALESCE($28, image_alt),
         managed_by = 'cms',
         updated_at = NOW()
       WHERE id = $26
@@ -238,6 +248,8 @@ foodsRouter.patch("/:id", async (req, res) => {
         data.published,
         data.sortOrder,
         req.params.id,
+        data.imageUrl !== undefined ? data.imageUrl : null,
+        data.imageAlt !== undefined ? data.imageAlt : null,
       ],
     );
     const food = mapCmsFood(result.rows[0]);

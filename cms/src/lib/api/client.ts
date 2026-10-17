@@ -310,6 +310,8 @@ export type CmsFood = {
   published: boolean;
   sortOrder: number;
   managedBy: "seed" | "cms";
+  imageUrl: string;
+  imageAlt: string;
   path: string | null;
   createdAt: string;
   updatedAt: string;

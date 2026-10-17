@@ -46,6 +46,8 @@ function mapFood(row: Record<string, unknown>) {
     intro: row.intro,
     tips: row.tips,
     compareSlug: row.compare_slug,
+    imageUrl: String(row.image_url ?? ""),
+    imageAlt: String(row.image_alt ?? ""),
   };
 }
 
