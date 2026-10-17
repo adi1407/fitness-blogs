@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FoodRelatedSlugsPanel } from "@/components/FoodRelatedSlugsPanel";
+import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { ShareCaptionPanel } from "@/components/ShareCaptionPanel";
 import { apiFetch, type CmsFood } from "@/lib/api/client";
 
@@ -64,6 +65,8 @@ const empty = {
   tips: "",
   relatedSlugs: "",
   compareSlug: "",
+  imageUrl: "",
+  imageAlt: "",
   published: false,
   sortOrder: 0,
 };
@@ -110,6 +113,8 @@ export default function FoodEditorPage() {
           tips: (f.tips ?? []).join("\n"),
           relatedSlugs: (f.relatedSlugs ?? []).join("\n"),
           compareSlug: f.compareSlug ?? "",
+          imageUrl: f.imageUrl ?? "",
+          imageAlt: f.imageAlt ?? "",
           published: f.published,
           sortOrder: f.sortOrder,
         });
@@ -129,6 +134,10 @@ export default function FoodEditorPage() {
     const servings = parseServings(form.servings);
     if (servings.length === 0) {
       setError("Add at least one serving as label|grams (e.g. 1 katori|40)");
+      return;
+    }
+    if (form.imageUrl.trim() && !form.imageAlt.trim()) {
+      setError("Add alt text describing the photo (e.g. “A katori of cooked moong dal”).");
       return;
     }
     const payload = {
@@ -154,6 +163,8 @@ export default function FoodEditorPage() {
       tips: linesToArray(form.tips),
       relatedSlugs: linesToArray(form.relatedSlugs),
       compareSlug: form.compareSlug.trim() || null,
+      imageUrl: form.imageUrl.trim(),
+      imageAlt: form.imageAlt.trim(),
       published: form.published,
       sortOrder: Number(form.sortOrder) || 0,
     };
@@ -372,6 +383,23 @@ export default function FoodEditorPage() {
             />
           </label>
         </div>
+
+        <ImageUrlUploadField
+          label="Food photo"
+          value={form.imageUrl}
+          onChange={(url) => setForm({ ...form, imageUrl: url })}
+          hint="Real photo of the food as served, 1600×900 (16:9), JPEG/WebP under 5 MB."
+        />
+        <label className="text-sm font-medium">
+          Photo alt text
+          <input
+            value={form.imageAlt}
+            onChange={(e) => setForm({ ...form, imageAlt: e.target.value })}
+            className={field}
+            maxLength={200}
+            placeholder="A katori of cooked moong dal"
+          />
+        </label>
 
         <label className="text-sm font-medium">
           Intro

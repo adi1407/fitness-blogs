@@ -30,6 +30,8 @@ export type Food = FoodSummary & {
   intro: string;
   tips: string[];
   compareSlug: string | null;
+  imageUrl?: string;
+  imageAlt?: string;
 };
 
 export type FoodDetail = { food: Food; compare: Food | null; related: FoodSummary[] };

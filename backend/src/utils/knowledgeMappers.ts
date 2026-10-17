@@ -87,6 +87,8 @@ export function mapCmsFood(row: Record<string, unknown>) {
     published: row.published === true,
     sortOrder: Number(row.sort_order ?? 0),
     managedBy: row.managed_by === "cms" ? "cms" : "seed",
+    imageUrl: String(row.image_url ?? ""),
+    imageAlt: String(row.image_alt ?? ""),
     path: slug ? `/foods/${slug}` : null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

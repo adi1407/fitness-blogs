@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { CoverImage } from "@/components/shared/CoverImage";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { fetchFood, fetchFoodsSafe } from "@/features/foods/api/foods";
 import { FoodViewBeacon } from "@/features/foods/components/FoodViewBeacon";
@@ -288,6 +289,17 @@ export default async function FoodPage({ params }: { params: Promise<Params> }) 
       </section>
 
       {food.intro ? <p className="mt-6 max-w-3xl text-lg leading-relaxed text-foreground/80">{food.intro}</p> : null}
+
+      {food.imageUrl ? (
+        <figure className="mt-8 max-w-3xl overflow-hidden rounded-2xl border border-border bg-muted">
+          <CoverImage
+            src={food.imageUrl}
+            alt={food.imageAlt || food.name}
+            sizes="(min-width: 1024px) 768px, 100vw"
+            className="aspect-video h-auto w-full object-cover"
+          />
+        </figure>
+      ) : null}
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-12">

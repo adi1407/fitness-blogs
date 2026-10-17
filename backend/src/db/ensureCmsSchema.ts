@@ -338,6 +338,8 @@ CREATE TABLE IF NOT EXISTS foods (
   sort_order INT NOT NULL DEFAULT 0,
   managed_by TEXT NOT NULL DEFAULT 'seed'
     CHECK (managed_by IN ('seed', 'cms')),
+  image_url TEXT NOT NULL DEFAULT '',
+  image_alt TEXT NOT NULL DEFAULT '',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -437,6 +439,8 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
     ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
     ALTER TABLE foods ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
+    ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
+    ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_alt TEXT NOT NULL DEFAULT '';
     CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL;
   `);
 
