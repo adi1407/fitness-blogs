@@ -6,6 +6,13 @@ import { Cookie } from "lucide-react";
 import { useCookieConsent } from "@/features/cookies/CookieConsentContext";
 import { cn } from "@/lib/utils";
 
+const primaryBtn =
+  "inline-flex h-11 items-center justify-center rounded-full bg-[#0A0A0A] px-4 text-sm font-semibold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9800] focus-visible:ring-offset-2 sm:h-9";
+const secondaryBtn =
+  "inline-flex h-11 items-center justify-center rounded-full border border-border bg-white px-4 text-sm font-semibold text-foreground transition hover:border-[#0A0A0A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9800] focus-visible:ring-offset-2 sm:h-9";
+const textBtn =
+  "inline-flex h-11 items-center px-2 text-sm font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF9800] sm:h-9";
+
 export function CookieBanner() {
   const {
     consent,
@@ -23,44 +30,45 @@ export function CookieBanner() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1300] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1300] sm:p-4"
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-banner-title"
     >
-      <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl border border-border bg-white p-4 shadow-2xl shadow-black/15 sm:p-5">
+      {/* Mobile: full-width bottom sheet that scrolls inside itself; sm+: floating card. */}
+      <div className="pointer-events-auto mx-auto max-h-[85dvh] max-w-3xl overflow-y-auto overscroll-contain rounded-t-2xl border-t border-border bg-white px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] sm:max-h-none sm:overflow-visible sm:rounded-2xl sm:border sm:p-5 sm:shadow-2xl sm:shadow-black/15">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-white">
+          <span className="mt-0.5 hidden size-9 shrink-0 items-center justify-center rounded-full bg-[#0A0A0A] text-white sm:inline-flex">
             <Cookie className="size-4" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
             <h2
               id="cookie-banner-title"
-              className="text-sm font-semibold tracking-tight text-foreground"
+              className="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground sm:text-sm"
             >
+              <Cookie className="size-4 shrink-0 sm:hidden" aria-hidden />
               Cookies on fitlives
             </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-              We count page visits anonymously without cookies.{" "}
+            <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground sm:text-sm">
+              We count visits anonymously without cookies.{" "}
               <strong className="font-medium text-foreground">Accept</strong>{" "}
               also allows Google Analytics cookies and sign-in (upvotes,
               bookmarks, saved results).{" "}
               <strong className="font-medium text-foreground">Reject</strong>{" "}
-              keeps only cookieless measurement, turns off personalised ads,
-              and keeps sign-in off. Google AdSense shows ads to keep the site
-              free.{" "}
-              <Link href="/cookie-policy" className="fk-link text-sm">
+              keeps cookieless counts only, with non-personalised ads and no
+              sign-in. Ads keep the site free.{" "}
+              <Link href="/cookie-policy" className="fk-link">
                 Cookie Policy
               </Link>
             </p>
 
             {customize ? (
-              <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-muted/40 px-3 py-3">
+              <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-muted/40 px-3 py-3">
                 <input
                   type="checkbox"
                   checked={analytics}
                   onChange={(e) => setAnalytics(e.target.checked)}
-                  className="mt-1 size-4 rounded border-input accent-[#0A0A0A]"
+                  className="mt-0.5 size-5 shrink-0 rounded border-input accent-[#0A0A0A] sm:size-4"
                 />
                 <span>
                   <span className="block text-sm font-semibold text-foreground">
@@ -75,53 +83,58 @@ export function CookieBanner() {
               </label>
             ) : null}
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
               <button
                 type="button"
                 onClick={acceptAll}
-                className="inline-flex h-9 items-center rounded-full bg-[#0A0A0A] px-4 text-sm font-semibold text-white transition hover:opacity-90"
+                aria-label="Accept cookies"
+                className={primaryBtn}
               >
-                Accept cookies
+                <span className="sm:hidden">Accept</span>
+                <span className="hidden sm:inline">Accept cookies</span>
               </button>
               <button
                 type="button"
                 onClick={essentialOnly}
-                className="inline-flex h-9 items-center rounded-full border border-border bg-white px-4 text-sm font-semibold text-foreground transition hover:border-[#0A0A0A]"
+                aria-label="Reject optional cookies"
+                className={secondaryBtn}
               >
-                Reject optional cookies
+                <span className="sm:hidden">Reject optional</span>
+                <span className="hidden sm:inline">Reject optional cookies</span>
               </button>
-              {customize ? (
-                <button
-                  type="button"
-                  onClick={() => savePreferences(analytics)}
-                  className="inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold text-white transition hover:opacity-90"
-                  style={{ background: "#FF9800" }}
-                >
-                  Save choices
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAnalytics(consent?.analytics ?? false);
-                    setCustomize(true);
-                  }}
-                  className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-                >
-                  Customize
-                </button>
-              )}
-              {decided ? (
-                <button
-                  type="button"
-                  onClick={closeBanner}
-                  className={cn(
-                    "ml-auto inline-flex h-9 items-center px-2 text-sm text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  Close
-                </button>
-              ) : null}
+
+              <div className="col-span-2 flex items-center justify-between gap-2 sm:contents">
+                {customize ? (
+                  <button
+                    type="button"
+                    onClick={() => savePreferences(analytics)}
+                    className="inline-flex h-11 flex-1 items-center justify-center rounded-full px-4 text-sm font-semibold text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2 sm:h-9 sm:flex-none"
+                    style={{ background: "#FF9800" }}
+                  >
+                    Save choices
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAnalytics(consent?.analytics ?? false);
+                      setCustomize(true);
+                    }}
+                    className={cn(textBtn, "-ml-2 sm:ml-0")}
+                  >
+                    Customize
+                  </button>
+                )}
+                {decided ? (
+                  <button
+                    type="button"
+                    onClick={closeBanner}
+                    className={cn(textBtn, "sm:ml-auto")}
+                  >
+                    Close
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
