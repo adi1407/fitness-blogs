@@ -8,6 +8,7 @@ import { uploadsRouter } from "./uploads.routes";
 import { exercisesRouter } from "./exercises.routes";
 import { recipesRouter } from "./recipes.routes";
 import { foodsRouter } from "./foods.routes";
+import { productPicksRouter } from "./productPicks.routes";
 import { knowledgePagesRouter } from "./knowledgePages.routes";
 import {
   notificationsRouter,
@@ -43,6 +44,7 @@ apiRouter.use("/briefs", briefsRouter);
 apiRouter.use("/exercises", exercisesRouter);
 apiRouter.use("/recipes", recipesRouter);
 apiRouter.use("/foods", foodsRouter);
+apiRouter.use("/product-picks", productPicksRouter);
 apiRouter.use("/knowledge-pages", knowledgePagesRouter);
 apiRouter.use("/notifications", notificationsRouter);
 apiRouter.use("/redirects", redirectsRouter);

@@ -7,6 +7,7 @@ import { embedSnippet, isCalcTool } from "@/features/tools/embed/snippet";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { SubscribeForm } from "@/features/newsletter/components/SubscribeForm";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
+import { ProductPicksBox } from "@/features/product-picks/components/ProductPicksBox";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
 import type { LinkItem } from "@/features/tools/content/links";
 import { ORG_REF } from "@/lib/seo";
@@ -240,6 +241,8 @@ export function CalculatorPageShell({
               </div>
             ) : null}
           </section>
+
+          <ProductPicksBox target={`calc:/${slug}`} />
 
           {content.faq.length > 0 ? (
             <div id="faq" className="scroll-mt-28">

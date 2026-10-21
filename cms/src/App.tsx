@@ -22,6 +22,8 @@ import RecipesListPage from "./pages/RecipesListPage.tsx";
 import RecipeEditorPage from "./pages/RecipeEditorPage.tsx";
 import FoodsListPage from "./pages/FoodsListPage.tsx";
 import FoodEditorPage from "./pages/FoodEditorPage.tsx";
+import ProductPicksListPage from "./pages/ProductPicksListPage.tsx";
+import ProductPickEditorPage from "./pages/ProductPickEditorPage.tsx";
 import KnowledgePagesListPage from "./pages/KnowledgePagesListPage.tsx";
 import KnowledgePageEditorPage from "./pages/KnowledgePageEditorPage.tsx";
 
@@ -56,6 +58,9 @@ export default function App() {
                 <Route path="foods" element={<FoodsListPage />} />
                 <Route path="foods/new" element={<FoodEditorPage />} />
                 <Route path="foods/:id" element={<FoodEditorPage />} />
+                <Route path="product-picks" element={<ProductPicksListPage />} />
+                <Route path="product-picks/new" element={<ProductPickEditorPage />} />
+                <Route path="product-picks/:id" element={<ProductPickEditorPage />} />
                 <Route
                   path="programs"
                   element={<KnowledgePagesListPage />}

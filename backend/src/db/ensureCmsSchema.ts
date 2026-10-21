@@ -381,6 +381,34 @@ CREATE TABLE IF NOT EXISTS search_queries (
 CREATE INDEX IF NOT EXISTS idx_search_queries_zero
   ON search_queries(zero_count DESC, last_seen_at DESC)
   WHERE zero_count > 0;
+
+CREATE TABLE IF NOT EXISTS product_picks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  brand TEXT NOT NULL DEFAULT '',
+  category TEXT NOT NULL DEFAULT 'other'
+    CHECK (category IN ('protein','creatine','scale','tracker','equipment','hydration','other')),
+  url TEXT NOT NULL,
+  retailer TEXT NOT NULL DEFAULT '',
+  why_pick TEXT NOT NULL DEFAULT '',
+  not_for TEXT NOT NULL DEFAULT '',
+  price_range TEXT NOT NULL DEFAULT '',
+  is_affiliate BOOLEAN NOT NULL DEFAULT FALSE,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published')),
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS product_pick_placements (
+  pick_id UUID NOT NULL REFERENCES product_picks(id) ON DELETE CASCADE,
+  target TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (pick_id, target)
+);
+
+CREATE INDEX IF NOT EXISTS idx_product_pick_placements_target
+  ON product_pick_placements(target, sort_order);
 `;
 
 const SEED_USERS = [
