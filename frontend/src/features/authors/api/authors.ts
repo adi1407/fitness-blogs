@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, isApiNotFound } from "@/lib/api/client";
 import { articlesCache, type PublicBlogArticle } from "@/lib/api/blog";
 
 export type PublicAuthor = {
@@ -39,7 +39,8 @@ export async function fetchAuthor(
       `/public/authors/${encodeURIComponent(slug)}`,
       articlesCache(),
     );
-  } catch {
-    return null;
+  } catch (err) {
+    if (isApiNotFound(err)) return null;
+    throw err;
   }
 }

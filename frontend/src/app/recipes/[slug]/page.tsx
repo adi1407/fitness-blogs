@@ -14,15 +14,16 @@ import {
   KnowledgeDisclaimer,
   ProseHtml,
 } from "@/features/knowledge/components/KnowledgeUi";
-import { fetchRecipe, fetchRecipes } from "@/lib/api/knowledge";
+import { fetchRecipe, fetchRecipes, staticParamsOrEmpty } from "@/lib/api/knowledge";
 
 export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const recipes = await fetchRecipes();
-  return recipes.map((r) => ({ slug: r.slug }));
+  return staticParamsOrEmpty(async () =>
+    (await fetchRecipes()).map((r) => ({ slug: r.slug })),
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -3,6 +3,13 @@ import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { fetchPublishedArticleByNumber } from "@/lib/api/blog";
 
+export const revalidate = 300;
+
+/** Cached (ISR) on first visit instead of rendered per request. */
+export async function generateStaticParams() {
+  return [];
+}
+
 const CATEGORIES = new Set([
   "muscle-building",
   "weight-loss",

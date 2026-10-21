@@ -1,4 +1,7 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, isApiNotFound } from "@/lib/api/client";
+
+/** Same window as the knowledge pages' `revalidate`; cached fetches keep those pages static (ISR). */
+const KNOWLEDGE_CACHE = { next: { revalidate: 120, tags: ["knowledge"] } };
 
 export const MUSCLE_GROUPS = [
   "chest",
@@ -94,46 +97,51 @@ export type PublicKnowledgePage = {
   updatedAt?: string;
 };
 
+/*
+ * Lists throw and details return null only on a real 404. If an outage were
+ * treated as "empty" or "not found", ISR would cache that and replace the last
+ * good page with a 404 for crawlers; throwing keeps the stale page instead.
+ */
+
+async function fetchDetail<T>(path: string): Promise<T | null> {
+  try {
+    return await apiFetch<T>(path, KNOWLEDGE_CACHE);
+  } catch (err) {
+    if (isApiNotFound(err)) return null;
+    throw err;
+  }
+}
+
 export async function fetchExercises(group?: string): Promise<PublicExercise[]> {
   const qs = group ? `?group=${encodeURIComponent(group)}` : "";
-  try {
-    const data = await apiFetch<{ exercises: PublicExercise[] }>(
-      `/public/exercises${qs}`,
-    );
-    return data.exercises ?? [];
-  } catch {
-    return [];
-  }
+  const data = await apiFetch<{ exercises: PublicExercise[] }>(
+    `/public/exercises${qs}`,
+    KNOWLEDGE_CACHE,
+  );
+  return data.exercises ?? [];
 }
 
 export async function fetchExercise(
   group: string,
   slug: string,
 ): Promise<{ exercise: PublicExercise; related: PublicExercise[] } | null> {
-  try {
-    return await apiFetch(`/public/exercises/${group}/${slug}`);
-  } catch {
-    return null;
-  }
+  return fetchDetail(
+    `/public/exercises/${encodeURIComponent(group)}/${encodeURIComponent(slug)}`,
+  );
 }
 
 export async function fetchRecipes(): Promise<PublicRecipe[]> {
-  try {
-    const data = await apiFetch<{ recipes: PublicRecipe[] }>("/public/recipes");
-    return data.recipes ?? [];
-  } catch {
-    return [];
-  }
+  const data = await apiFetch<{ recipes: PublicRecipe[] }>(
+    "/public/recipes",
+    KNOWLEDGE_CACHE,
+  );
+  return data.recipes ?? [];
 }
 
 export async function fetchRecipe(
   slug: string,
 ): Promise<{ recipe: PublicRecipe; related: PublicRecipe[] } | null> {
-  try {
-    return await apiFetch(`/public/recipes/${slug}`);
-  } catch {
-    return null;
-  }
+  return fetchDetail(`/public/recipes/${encodeURIComponent(slug)}`);
 }
 
 export async function fetchKnowledgeSection(
@@ -142,11 +150,7 @@ export async function fetchKnowledgeSection(
   hub: PublicKnowledgePage | null;
   pages: PublicKnowledgePage[];
 }> {
-  try {
-    return await apiFetch(`/public/knowledge/${section}`);
-  } catch {
-    return { hub: null, pages: [] };
-  }
+  return apiFetch(`/public/knowledge/${section}`, KNOWLEDGE_CACHE);
 }
 
 export async function fetchKnowledgePage(
@@ -156,9 +160,15 @@ export async function fetchKnowledgePage(
   page: PublicKnowledgePage;
   related: PublicKnowledgePage[];
 } | null> {
+  return fetchDetail(`/public/knowledge/${section}/${encodeURIComponent(slug)}`);
+}
+
+/** For `generateStaticParams`: an API outage at build time must not fail the deploy. */
+export async function staticParamsOrEmpty<T>(load: () => Promise<T[]>): Promise<T[]> {
   try {
-    return await apiFetch(`/public/knowledge/${section}/${slug}`);
-  } catch {
-    return null;
+    return await load();
+  } catch (err) {
+    console.warn("[knowledge] generateStaticParams skipped; pages render on first visit", err);
+    return [];
   }
 }

@@ -21,6 +21,11 @@ import { OG_DEFAULTS, breadcrumbLd, collectionPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
 
+/** Cached (ISR) on first visit instead of rendered per request. */
+export async function generateStaticParams() {
+  return [];
+}
+
 type PageProps = {
   params: Promise<{ category: string; subcategory: string }>;
 };

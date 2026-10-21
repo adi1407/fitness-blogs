@@ -4,8 +4,26 @@ const API_BASE = (
   "http://localhost:4000/api/v1"
 ).replace(/\/$/, "");
 
+/** A dead API must fail fast: a hung request stalls page renders and whole builds. */
+const API_TIMEOUT_MS = 15_000;
+
 export function getApiBase(): string {
   return API_BASE;
+}
+
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    path: string,
+  ) {
+    super(`API ${status}: ${path}`);
+    this.name = "ApiError";
+  }
+}
+
+/** True only when the API answered "not found" — not when it was unreachable. */
+export function isApiNotFound(err: unknown): boolean {
+  return err instanceof ApiError && err.status === 404;
 }
 
 export type ApiFetchInit = RequestInit & {
@@ -19,6 +37,7 @@ export async function apiFetch<T>(
   const url = `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
 
   const response = await fetch(url, {
+    signal: AbortSignal.timeout(API_TIMEOUT_MS),
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +49,7 @@ export async function apiFetch<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`API ${response.status}: ${path}`);
+    throw new ApiError(response.status, path);
   }
 
   return response.json() as Promise<T>;

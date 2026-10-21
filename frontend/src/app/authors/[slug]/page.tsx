@@ -8,6 +8,11 @@ import { ORG_REF, OG_DEFAULTS, absoluteUrl, breadcrumbLd } from "@/lib/seo";
 
 export const revalidate = 300;
 
+/** Cached (ISR) on first visit instead of rendered per request. */
+export async function generateStaticParams() {
+  return [];
+}
+
 type PageProps = { params: Promise<{ slug: string }> };
 
 function describe(name: string, bio: string): string {

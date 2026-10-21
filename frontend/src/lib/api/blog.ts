@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, isApiNotFound } from "@/lib/api/client";
 import {
   BLOG_TAXONOMY,
   BLOG_TOPICS,
@@ -164,8 +164,10 @@ export async function fetchPublishedArticleBySlug(
       },
       related: data.related ?? [],
     };
-  } catch {
-    return null;
+  } catch (err) {
+    // Outages throw so ISR keeps the last good page instead of caching a 404.
+    if (isApiNotFound(err)) return null;
+    throw err;
   }
 }
 
@@ -202,8 +204,9 @@ export async function fetchPublishedArticleByNumber(
       articlesCache(),
     );
     return data.article ?? null;
-  } catch {
-    return null;
+  } catch (err) {
+    if (isApiNotFound(err)) return null;
+    throw err;
   }
 }
 
