@@ -12,6 +12,11 @@ import {
 
 export const revalidate = 300;
 
+/** Empty list = no build-time renders, but each article is cached (ISR) on first visit instead of rendered per request. */
+export async function generateStaticParams() {
+  return [];
+}
+
 type PageProps = {
   params: Promise<{
     category: string;

@@ -8,6 +8,11 @@ import {
 
 export const revalidate = 300;
 
+/** Cache each redirect on first visit instead of hitting the API per request. */
+export async function generateStaticParams() {
+  return [];
+}
+
 type PageProps = {
   params: Promise<{
     category: string;

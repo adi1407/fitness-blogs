@@ -12,6 +12,7 @@ import {
 import {
   fetchKnowledgePage,
   fetchKnowledgeSection,
+  staticParamsOrEmpty,
 } from "@/lib/api/knowledge";
 
 export const revalidate = 120;
@@ -19,8 +20,9 @@ export const revalidate = 120;
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const { pages } = await fetchKnowledgeSection("reviews");
-  return pages.map((p) => ({ slug: p.slug }));
+  return staticParamsOrEmpty(async () =>
+    (await fetchKnowledgeSection("reviews")).pages.map((p) => ({ slug: p.slug })),
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -14,6 +14,7 @@ import {
   isMuscleGroup,
   MUSCLE_GROUP_LABELS,
   MUSCLE_GROUPS,
+  staticParamsOrEmpty,
 } from "@/lib/api/knowledge";
 
 export const revalidate = 120;
@@ -21,14 +22,16 @@ export const revalidate = 120;
 type Props = { params: Promise<{ group: string; slug: string }> };
 
 export async function generateStaticParams() {
-  const params: { group: string; slug: string }[] = [];
-  for (const group of MUSCLE_GROUPS) {
-    const list = await fetchExercises(group);
-    for (const ex of list) {
-      params.push({ group, slug: ex.slug });
+  return staticParamsOrEmpty(async () => {
+    const params: { group: string; slug: string }[] = [];
+    for (const group of MUSCLE_GROUPS) {
+      const list = await fetchExercises(group);
+      for (const ex of list) {
+        params.push({ group, slug: ex.slug });
+      }
     }
-  }
-  return params;
+    return params;
+  });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
