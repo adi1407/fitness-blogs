@@ -108,6 +108,37 @@ Use lowercase, hyphenated campaign names and keep `utm_source` to one of `instag
 
 ---
 
+## Product picks ("What we'd use" boxes)
+
+CMS → **Product picks** stores product recommendations and attaches them to articles, calculators and review pages. Each page shows at most 3 published picks.
+
+**Hidden until switched on.** The boxes don't appear on the live site until `NEXT_PUBLIC_PRODUCT_PICKS=on` is set on Vercel (Production) and the site is redeployed. Article previews from the CMS always show them, with a "Hidden on live site" badge, so you can check them first.
+
+**Adding a pick**
+
+1. CMS → Product picks → New pick. Fill in name, brand, link (https), shop label, why you'd pick it, who it's not for, and a price range ("about ₹2,000–3,000 per kg", since exact prices go stale).
+2. Under "Where this pick appears", add articles, calculators or review pages. Set the order if a page has more than one pick.
+3. Set status to published and save.
+
+**Rules**
+
+- No product photos copied from brands or shops; they're copyrighted. The box is text-only.
+- No health claims ("treats", "cures", "burns fat"). Recommend on quality signals: third-party testing, protein per scoop, ingredients.
+- Always fill "Not for" on supplements (kidney disease, pregnancy, under 18, allergies).
+- Skip picks on sensitive pages (kidney health, medical conditions).
+
+**Going affiliate later**
+
+The picks are non-affiliate now: the box says "We don't earn from these links" and links use `rel="nofollow"`. To switch a pick to an affiliate link:
+
+1. Join a program (for example Amazon Associates India) and swap in its link.
+2. Rewrite `/affiliate-disclosure` first. It currently says fitlives has no affiliate links.
+3. Tick **Affiliate link** on that pick. The site then labels it, switches to `rel="sponsored"`, and adds the commission disclosure to the box. Amazon also requires its own sentence ("As an Amazon Associate, fitlives earns from qualifying purchases"), so add that to the disclosure page.
+
+Clicks are tracked in GA4 as `product_pick_click` (`pick`, `target`, `affiliate`).
+
+---
+
 ## Weekly note template
 
 Copy this into your notes each Monday and send the "For the developer" section along when you want pages improved.

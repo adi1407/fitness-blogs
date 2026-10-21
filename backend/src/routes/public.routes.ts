@@ -32,6 +32,7 @@ import {
 } from "./articles.routes";
 import { publicSubscribeRouter } from "./subscribers.routes";
 import { publicSearchLogRouter } from "./searchInsights.routes";
+import { publicProductPicksRouter } from "./productPicks.routes";
 
 export const publicRouter = Router();
 
@@ -45,6 +46,7 @@ publicRouter.use("/me/calc-profile", publicCalcProfileRouter);
 publicRouter.use("/me/calc-results", publicCalcResultsRouter);
 publicRouter.use("/articles/:articleId/engagement", publicEngagementRouter);
 publicRouter.use("/foods", publicFoodsRouter);
+publicRouter.use("/product-picks", publicProductPicksRouter);
 
 const ARTICLE_SELECT = `
   SELECT a.*,

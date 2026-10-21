@@ -3,6 +3,7 @@ import { OG_DEFAULTS, pageTitle } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { ProductPicksBox } from "@/features/product-picks/components/ProductPicksBox";
 import {
   KnowledgeBreadcrumbs,
   KnowledgeDisclaimer,
@@ -67,6 +68,8 @@ export default async function ReviewDetailPage({ params }: Props) {
       </p>
 
       <ProseHtml html={page.bodyHtml} />
+
+      <ProductPicksBox target={`review:${page.slug}`} className="mt-10 max-w-4xl" />
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link

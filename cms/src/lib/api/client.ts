@@ -280,6 +280,35 @@ export type CmsRecipe = {
   updatedAt: string;
 };
 
+export type ProductPickCategory =
+  | "protein"
+  | "creatine"
+  | "scale"
+  | "tracker"
+  | "equipment"
+  | "hydration"
+  | "other";
+
+export type ProductPickPlacement = { target: string; sortOrder: number };
+
+export type CmsProductPick = {
+  id: string;
+  name: string;
+  brand: string;
+  category: ProductPickCategory;
+  url: string;
+  retailer: string;
+  whyPick: string;
+  notFor: string;
+  priceRange: string;
+  isAffiliate: boolean;
+  status: "draft" | "published";
+  sortOrder: number;
+  placements: ProductPickPlacement[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CmsFoodServing = { label: string; grams: number };
 
 export type CmsFood = {

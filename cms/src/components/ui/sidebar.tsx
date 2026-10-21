@@ -11,6 +11,7 @@ import {
   Dumbbell,
   Search,
   ShieldAlert,
+  ShoppingBag,
   FilePenLine,
   FileText,
   LayoutDashboard,
@@ -234,6 +235,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/foods"),
           },
           {
+            to: "/product-picks",
+            label: "Product picks",
+            description: "What we'd use boxes",
+            icon: ShoppingBag,
+            match: (p) => p.startsWith("/product-picks"),
+          },
+          {
             to: "/programs",
             label: "Programs",
             description: "Training plans",
@@ -312,6 +320,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "Calories and nutrition pages",
           icon: Apple,
           match: (p) => p.startsWith("/foods"),
+        },
+        {
+          to: "/product-picks",
+          label: "Product picks",
+          description: "What we'd use boxes",
+          icon: ShoppingBag,
+          match: (p) => p.startsWith("/product-picks"),
         },
         {
           to: "/programs",

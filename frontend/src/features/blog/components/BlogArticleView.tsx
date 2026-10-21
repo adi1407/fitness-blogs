@@ -19,6 +19,7 @@ import { enhanceArticleHtml, splitArticleHtml } from "@/features/blog/utils/arti
 import { AdSlot } from "@/components/ads/AdSlot";
 import { adSlotFor } from "@/lib/ads/adsense";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
+import { ProductPicksBox } from "@/features/product-picks/components/ProductPicksBox";
 import {
   calculatorCtaFor,
   type PublicBlogArticle,
@@ -426,6 +427,14 @@ export function BlogArticleView({
                     accentRail
                   />
                 </div>
+              ) : null}
+
+              {article.articleNumber ? (
+                <ProductPicksBox
+                  target={`article:${article.articleNumber}`}
+                  preview={preview}
+                  className="mt-10"
+                />
               ) : null}
 
               <FaqAccordion
