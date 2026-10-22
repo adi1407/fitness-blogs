@@ -3,6 +3,12 @@ import { z } from "zod";
 import { pool } from "../db/pool";
 import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
+import { revalidateSite } from "../services/revalidateSite";
+
+/** Picks sit on many pages; the tag refreshes every page that fetched them. */
+function refreshPickPages() {
+  revalidateSite([], ["product-picks"]);
+}
 
 export const PRODUCT_PICK_CATEGORIES = [
   "protein",
@@ -210,6 +216,7 @@ productPicksRouter.post("/", async (req, res) => {
     entityId: String(row.id),
     summary: `Created product pick ${row.name}`,
   });
+  refreshPickPages();
   await respondWithPick(res, row, 201);
 });
 
@@ -247,6 +254,7 @@ productPicksRouter.patch("/:id", async (req, res) => {
     entityId: String(row.id),
     summary: `Updated product pick ${row.name}`,
   });
+  refreshPickPages();
   await respondWithPick(res, row);
 });
 
@@ -265,6 +273,7 @@ productPicksRouter.delete("/:id", async (req, res) => {
     entityId: String(result.rows[0].id),
     summary: `Deleted product pick ${result.rows[0].name}`,
   });
+  refreshPickPages();
   res.status(204).send();
 });
 

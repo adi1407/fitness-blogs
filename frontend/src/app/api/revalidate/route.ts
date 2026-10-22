@@ -3,7 +3,8 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { ARTICLES_TAG } from "@/lib/api/blog";
 
-const ALLOWED_TAGS = new Set([ARTICLES_TAG]);
+/** Must match `SiteCacheTag` in backend/src/services/revalidateSite.ts and the tags on each fetch. */
+const ALLOWED_TAGS = new Set([ARTICLES_TAG, "knowledge", "foods", "product-picks"]);
 const MAX_PATHS = 20;
 
 function authorized(req: NextRequest): boolean {

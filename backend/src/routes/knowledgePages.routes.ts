@@ -8,6 +8,14 @@ import {
   KNOWLEDGE_SECTIONS,
 } from "../constants/knowledgeContent";
 import { mapKnowledgePage } from "../utils/knowledgeMappers";
+import { revalidateSite } from "../services/revalidateSite";
+
+function refreshKnowledgePages(...pages: { section: string; path: string | null }[]) {
+  revalidateSite(
+    pages.flatMap((p) => [p.path, `/${p.section}`]),
+    ["knowledge"],
+  );
+}
 import {
   normalizeSlugInput,
   slugFromTitle,
@@ -112,6 +120,7 @@ knowledgePagesRouter.post("/", async (req, res) => {
       entityId: String(page.id),
       summary: `Created ${page.section} page ${page.title}`,
     });
+    refreshKnowledgePages(page);
     res.status(201).json({ page });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -194,6 +203,7 @@ knowledgePagesRouter.patch("/:id", async (req, res) => {
       entityId: String(page.id),
       summary: `Updated ${page.section} page ${page.title}`,
     });
+    refreshKnowledgePages(mapKnowledgePage(row), page);
     res.json({ page });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -207,7 +217,7 @@ knowledgePagesRouter.patch("/:id", async (req, res) => {
 
 knowledgePagesRouter.delete("/:id", async (req, res) => {
   const result = await pool.query(
-    `DELETE FROM knowledge_pages WHERE id = $1 RETURNING id, title, section`,
+    `DELETE FROM knowledge_pages WHERE id = $1 RETURNING *`,
     [req.params.id],
   );
   if (!result.rows[0]) {
@@ -220,5 +230,6 @@ knowledgePagesRouter.delete("/:id", async (req, res) => {
     entityId: String(result.rows[0].id),
     summary: `Deleted ${result.rows[0].section} page ${result.rows[0].title}`,
   });
+  refreshKnowledgePages(mapKnowledgePage(result.rows[0]));
   res.status(204).send();
 });

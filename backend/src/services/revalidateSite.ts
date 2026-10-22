@@ -2,12 +2,18 @@ import { env } from "../config/env";
 
 const TIMEOUT_MS = 8_000;
 
+/** Cache tags the site's /api/revalidate route accepts (must match its allow-list). */
+export type SiteCacheTag = "articles" | "knowledge" | "foods" | "product-picks";
+
 /**
- * Ask the Next.js site to drop cached article pages so a publish/edit shows up
+ * Ask the Next.js site to drop cached pages so a publish/edit shows up
  * immediately instead of after the ISR window. Fire-and-forget; never throws.
  * No-op until REVALIDATE_SECRET is set on both the API and the site.
  */
-export function revalidateSite(paths: Array<string | null | undefined>): void {
+export function revalidateSite(
+  paths: Array<string | null | undefined>,
+  tags: SiteCacheTag[] = ["articles"],
+): void {
   if (!env.revalidateSecret) return;
   let endpoint: string;
   try {
@@ -23,7 +29,7 @@ export function revalidateSite(paths: Array<string | null | undefined>): void {
       "Content-Type": "application/json",
       Authorization: `Bearer ${env.revalidateSecret}`,
     },
-    body: JSON.stringify({ tags: ["articles"], paths: unique }),
+    body: JSON.stringify({ tags, paths: unique }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   })
     .then((res) => {
