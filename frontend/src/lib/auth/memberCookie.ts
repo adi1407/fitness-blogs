@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { resolveApiBase } from "@/lib/api/client";
 import { COOKIE_CONSENT_KEY, cookiesAcceptedFromRaw } from "@/lib/cookies/consent";
 
 export const MEMBER_COOKIE = "fk_member";
@@ -16,16 +17,7 @@ export function memberCookieOptions() {
 }
 
 export function apiBase() {
-  const fromEnv = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL) {
-    return "https://fitness-blogs-xkec.onrender.com/api/v1";
-  }
-  return "http://localhost:4000/api/v1";
+  return resolveApiBase();
 }
 
 export function bearerFromRequest(req: NextRequest): string | null {

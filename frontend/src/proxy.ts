@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { resolveApiBase } from "@/lib/api/client";
 import { hasCookieConsent, MEMBER_COOKIE } from "@/lib/auth/memberCookie";
 
-const API_BASE = (
-  process.env.API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:4000/api/v1"
-).replace(/\/$/, "");
+const API_BASE = resolveApiBase();
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

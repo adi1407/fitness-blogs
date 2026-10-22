@@ -1,18 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hasCookieConsent } from "@/lib/auth/memberCookie";
-
-function apiBase() {
-  const fromEnv = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL) {
-    return "https://fitness-blogs-xkec.onrender.com/api/v1";
-  }
-  return "http://localhost:4000/api/v1";
-}
+import { apiBase, hasCookieConsent } from "@/lib/auth/memberCookie";
 
 /**
  * Same-origin Google OAuth start — avoids browser CORS / Failed to fetch

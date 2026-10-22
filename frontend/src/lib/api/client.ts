@@ -1,8 +1,20 @@
-const API_BASE = (
-  process.env.API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:4000/api/v1"
-).replace(/\/$/, "");
+const PRODUCTION_API = "https://fitness-blogs-xkec.onrender.com/api/v1";
+
+/**
+ * API origin for every server-side caller. On Vercel without `API_URL` (e.g.
+ * preview builds) this falls back to the production API instead of localhost,
+ * which doesn't exist there and would fail the build.
+ */
+export function resolveApiBase(): string {
+  const fromEnv = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(
+    /\/$/,
+    "",
+  );
+  if (fromEnv) return fromEnv;
+  return process.env.VERCEL ? PRODUCTION_API : "http://localhost:4000/api/v1";
+}
+
+const API_BASE = resolveApiBase();
 
 /** A dead API must fail fast: a hung request stalls page renders and whole builds. */
 const API_TIMEOUT_MS = 15_000;
