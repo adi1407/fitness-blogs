@@ -4,6 +4,11 @@ import { pool } from "../db/pool";
 import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { mapRecipe } from "../utils/knowledgeMappers";
+import { revalidateSite } from "../services/revalidateSite";
+
+function refreshRecipePages(...recipes: { path: string | null }[]) {
+  revalidateSite(["/recipes", ...recipes.map((r) => r.path)], ["knowledge"]);
+}
 import {
   normalizeSlugInput,
   slugFromTitle,
@@ -110,6 +115,7 @@ recipesRouter.post("/", async (req, res) => {
       entityId: String(recipe.id),
       summary: `Created recipe ${recipe.title}`,
     });
+    refreshRecipePages(recipe);
     res.status(201).json({ recipe });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -204,6 +210,7 @@ recipesRouter.patch("/:id", async (req, res) => {
       entityId: String(recipe.id),
       summary: `Updated recipe ${recipe.title}`,
     });
+    refreshRecipePages(mapRecipe(row), recipe);
     res.json({ recipe });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -217,7 +224,7 @@ recipesRouter.patch("/:id", async (req, res) => {
 
 recipesRouter.delete("/:id", async (req, res) => {
   const result = await pool.query(
-    `DELETE FROM recipes WHERE id = $1 RETURNING id, title`,
+    `DELETE FROM recipes WHERE id = $1 RETURNING *`,
     [req.params.id],
   );
   if (!result.rows[0]) {
@@ -230,5 +237,6 @@ recipesRouter.delete("/:id", async (req, res) => {
     entityId: String(result.rows[0].id),
     summary: `Deleted recipe ${result.rows[0].title}`,
   });
+  refreshRecipePages(mapRecipe(result.rows[0]));
   res.status(204).send();
 });

@@ -1,0 +1,34 @@
+name: Keep API warm
+
+# Render's free web service sleeps after 15 minutes without traffic and takes
+# about a minute to wake. Pinging every 10 minutes keeps the CMS, newsletter
+# signups and first-visit page renders fast. A failed run (API down) emails the
+# repo owner, so this doubles as a free uptime alert.
+#
+# GitHub may delay scheduled runs at busy times, and it pauses schedules in a
+# public repo after 60 days without commits; re-enable from the Actions tab.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: keep-api-warm
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Ping API
+        run: |
+          curl --fail --silent --show-error \
+            --retry 4 --retry-delay 20 --retry-all-errors \
+            --max-time 90 \
+            --output /dev/null \
+            --write-out "API answered %{http_code} in %{time_total}s\n" \
+            https://fitness-blogs-xkec.onrender.com/api/v1/

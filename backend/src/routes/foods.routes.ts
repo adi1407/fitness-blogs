@@ -5,6 +5,14 @@ import { FOOD_CATEGORIES } from "../db/foods/types";
 import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { mapCmsFood } from "../utils/knowledgeMappers";
+import { revalidateSite } from "../services/revalidateSite";
+
+function refreshFoodPages(...slugs: string[]) {
+  revalidateSite(
+    ["/foods", "/foods/indian", "/foods/indian/protein-ranking", ...slugs.map((s) => `/foods/${s}`)],
+    ["foods"],
+  );
+}
 import {
   normalizeSlugInput,
   slugFromTitle,
@@ -153,6 +161,7 @@ foodsRouter.post("/", async (req, res) => {
       entityId: String(food.id),
       summary: `Created food ${food.name}`,
     });
+    refreshFoodPages(food.slug);
     res.status(201).json({ food });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -259,6 +268,7 @@ foodsRouter.patch("/:id", async (req, res) => {
       entityId: String(food.id),
       summary: `Updated food ${food.name}`,
     });
+    refreshFoodPages(String(row.slug), food.slug);
     res.json({ food });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -272,7 +282,7 @@ foodsRouter.patch("/:id", async (req, res) => {
 
 foodsRouter.delete("/:id", async (req, res) => {
   const result = await pool.query(
-    `DELETE FROM foods WHERE id = $1 RETURNING id, name`,
+    `DELETE FROM foods WHERE id = $1 RETURNING id, name, slug`,
     [req.params.id],
   );
   if (!result.rows[0]) {
@@ -285,5 +295,6 @@ foodsRouter.delete("/:id", async (req, res) => {
     entityId: String(result.rows[0].id),
     summary: `Deleted food ${result.rows[0].name}`,
   });
+  refreshFoodPages(String(result.rows[0].slug));
   res.status(204).send();
 });

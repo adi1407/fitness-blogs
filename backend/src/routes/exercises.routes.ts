@@ -8,6 +8,14 @@ import {
   MUSCLE_GROUPS,
 } from "../constants/knowledgeContent";
 import { mapExercise } from "../utils/knowledgeMappers";
+import { revalidateSite } from "../services/revalidateSite";
+
+function refreshExercisePages(...exercises: { muscleGroup: string; path: string | null }[]) {
+  revalidateSite(
+    ["/exercises", ...exercises.flatMap((e) => [e.path, `/exercises/${e.muscleGroup}`])],
+    ["knowledge"],
+  );
+}
 import {
   normalizeSlugInput,
   slugFromTitle,
@@ -126,6 +134,7 @@ exercisesRouter.post("/", async (req, res) => {
       entityId: String(exercise.id),
       summary: `Created exercise ${exercise.title}`,
     });
+    refreshExercisePages(exercise);
     res.status(201).json({ exercise });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -220,6 +229,7 @@ exercisesRouter.patch("/:id", async (req, res) => {
       entityId: String(exercise.id),
       summary: `Updated exercise ${exercise.title}`,
     });
+    refreshExercisePages(mapExercise(row), exercise);
     res.json({ exercise });
   } catch (err: unknown) {
     const code = (err as { code?: string })?.code;
@@ -233,7 +243,7 @@ exercisesRouter.patch("/:id", async (req, res) => {
 
 exercisesRouter.delete("/:id", async (req, res) => {
   const result = await pool.query(
-    `DELETE FROM exercises WHERE id = $1 RETURNING id, title`,
+    `DELETE FROM exercises WHERE id = $1 RETURNING *`,
     [req.params.id],
   );
   if (!result.rows[0]) {
@@ -246,5 +256,6 @@ exercisesRouter.delete("/:id", async (req, res) => {
     entityId: String(result.rows[0].id),
     summary: `Deleted exercise ${result.rows[0].title}`,
   });
+  refreshExercisePages(mapExercise(result.rows[0]));
   res.status(204).send();
 });
