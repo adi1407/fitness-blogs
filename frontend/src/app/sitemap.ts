@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { CALCULATOR_CONTENT } from "@/features/tools/content/registry";
+import { resolveApiBase } from "@/lib/api/client";
 import { MUSCLE_GROUPS } from "@/lib/api/knowledge";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
@@ -86,12 +87,7 @@ function safeDate(value?: string | null): Date | undefined {
 }
 
 async function fetchApi<T>(path: string): Promise<T | null> {
-  const base = (
-    process.env.API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    ""
-  ).replace(/\/$/, "");
-  if (!base) return null;
+  const base = resolveApiBase();
 
   try {
     const res = await fetch(`${base}${path}`, {
