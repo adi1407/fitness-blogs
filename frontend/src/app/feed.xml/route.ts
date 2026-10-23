@@ -21,7 +21,7 @@ function absolute(siteUrl: string, src: string): string {
 
 async function fetchArticles(): Promise<PublicBlogArticle[]> {
   try {
-    const res = await fetch(`${getApiBase()}/public/articles?limit=50`, {
+    const res = await fetch(`${getApiBase()}/public/articles?limit=50&fields=summary`, {
       headers: { Accept: "application/json" },
       signal: AbortSignal.timeout(15_000),
       next: { revalidate },
