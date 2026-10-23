@@ -28,7 +28,6 @@ import {
 } from "./publicMemberCalc.routes";
 import {
   mapPublicArticle,
-  resolveRelatedArticles,
 } from "./articles.routes";
 import { publicSubscribeRouter } from "./subscribers.routes";
 import { publicSearchLogRouter } from "./searchInsights.routes";
@@ -67,6 +66,32 @@ const ARTICLE_SELECT = `
 
 function mapPublic(row: Record<string, unknown>) {
   return mapPublicArticle(row);
+}
+
+/** Related lists render cards only: no bodies, and never staff-only fields. */
+function toRelatedCard(row: Record<string, unknown>) {
+  const { body: _body, faq: _faq, sources: _sources, ...card } = mapPublic(row);
+  return card;
+}
+
+type RelatedCard = ReturnType<typeof toRelatedCard>;
+
+/** Editor-picked related articles, in the order the editor linked them. */
+async function fetchCuratedRelated(
+  numbers: number[] | undefined,
+  excludeId: string,
+): Promise<RelatedCard[]> {
+  if (!numbers?.length) return [];
+  const result = await pool.query(
+    `${ARTICLE_SELECT}
+     WHERE a.article_number = ANY($1::int[])
+       AND a.status = 'published'
+       AND a.slug IS NOT NULL
+       AND a.id <> $2
+     ORDER BY array_position($1::int[], a.article_number)`,
+    [numbers, excludeId],
+  );
+  return result.rows.map(toRelatedCard);
 }
 
 /** Full article for reading: links to unpublished articles are unwrapped. */
@@ -211,7 +236,7 @@ publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
   }
 
   const article = await mapPublicWithBody(row);
-  const curated = await resolveRelatedArticles(
+  const curated = await fetchCuratedRelated(
     article.relatedArticleNumbers as number[],
     String(article.id),
   );
@@ -245,7 +270,7 @@ const RELATED_TARGET = 10;
 
 /** Curated → same subcategory → same category, unique, up to RELATED_TARGET. */
 async function fillRelatedArticles(
-  curated: ReturnType<typeof mapPublic>[],
+  curated: RelatedCard[],
   article: {
     id: string;
     categorySlug: string | null;
@@ -258,7 +283,7 @@ async function fillRelatedArticles(
   async function appendFromQuery(sql: string, params: unknown[]) {
     if (relatedList.length >= RELATED_TARGET) return;
     const fill = await pool.query(sql, params);
-    for (const r of fill.rows.map(mapPublic)) {
+    for (const r of fill.rows.map(toRelatedCard)) {
       if (seen.has(r.id)) continue;
       relatedList.push(r);
       seen.add(r.id);
@@ -328,8 +353,8 @@ publicRouter.get("/articles/preview/:token", async (req, res) => {
   }
 
   const article = mapPublic(row);
-  const curated = await resolveRelatedArticles(
-    (article.relatedArticleNumbers as number[]) ?? [],
+  const curated = await fetchCuratedRelated(
+    article.relatedArticleNumbers as number[],
     String(article.id),
   );
   const relatedList = await fillRelatedArticles(curated, {
@@ -455,7 +480,7 @@ publicRouter.get("/articles/:slug", async (req, res) => {
   }
 
   const article = await mapPublicWithBody(row);
-  const curated = await resolveRelatedArticles(
+  const curated = await fetchCuratedRelated(
     article.relatedArticleNumbers as number[],
     String(article.id),
   );

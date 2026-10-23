@@ -249,6 +249,7 @@ CREATE TABLE IF NOT EXISTS exercises (
     CHECK (status IN ('draft','published')),
   robots_index BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order INT NOT NULL DEFAULT 0,
+  managed_by TEXT NOT NULL DEFAULT 'seed',
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -280,6 +281,7 @@ CREATE TABLE IF NOT EXISTS recipes (
     CHECK (status IN ('draft','published')),
   robots_index BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order INT NOT NULL DEFAULT 0,
+  managed_by TEXT NOT NULL DEFAULT 'seed',
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -300,6 +302,7 @@ CREATE TABLE IF NOT EXISTS knowledge_pages (
     CHECK (status IN ('draft','published')),
   robots_index BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order INT NOT NULL DEFAULT 0,
+  managed_by TEXT NOT NULL DEFAULT 'seed',
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -467,6 +470,9 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
     ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
     ALTER TABLE foods ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
+    ALTER TABLE exercises ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
+    ALTER TABLE recipes ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
+    ALTER TABLE knowledge_pages ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
     ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_alt TEXT NOT NULL DEFAULT '';
     CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL;
@@ -495,14 +501,23 @@ async function migrateLegacySchema(): Promise<void> {
 async function seedTaxonomy(): Promise<void> {
   for (let ci = 0; ci < BLOG_TAXONOMY.length; ci++) {
     const cat = BLOG_TAXONOMY[ci];
+    // Unchanged rows are skipped (no rewrite each boot), so fall back to a plain lookup for the id.
     const catRes = await pool.query(
-      `INSERT INTO categories (slug, label, description, sort_order)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (slug) DO UPDATE SET
-         label = EXCLUDED.label,
-         description = EXCLUDED.description,
-         sort_order = EXCLUDED.sort_order
-       RETURNING id`,
+      `WITH upserted AS (
+         INSERT INTO categories (slug, label, description, sort_order)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (slug) DO UPDATE SET
+           label = EXCLUDED.label,
+           description = EXCLUDED.description,
+           sort_order = EXCLUDED.sort_order
+         WHERE (categories.label, categories.description, categories.sort_order)
+           IS DISTINCT FROM (EXCLUDED.label, EXCLUDED.description, EXCLUDED.sort_order)
+         RETURNING id
+       )
+       SELECT id FROM upserted
+       UNION ALL
+       SELECT id FROM categories WHERE slug = $1
+       LIMIT 1`,
       [cat.slug, cat.label, cat.description, ci],
     );
     const categoryId = catRes.rows[0].id as string;
@@ -514,7 +529,9 @@ async function seedTaxonomy(): Promise<void> {
          VALUES ($1, $2, $3, $4)
          ON CONFLICT (category_id, slug) DO UPDATE SET
            label = EXCLUDED.label,
-           sort_order = EXCLUDED.sort_order`,
+           sort_order = EXCLUDED.sort_order
+         WHERE (subcategories.label, subcategories.sort_order)
+           IS DISTINCT FROM (EXCLUDED.label, EXCLUDED.sort_order)`,
         [categoryId, sub.slug, sub.label, si],
       );
     }

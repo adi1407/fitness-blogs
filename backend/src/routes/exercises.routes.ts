@@ -101,9 +101,9 @@ exercisesRouter.post("/", async (req, res) => {
         muscle_group, slug, title, excerpt, quick_answer, body_html,
         form_cues, common_mistakes, programming_notes, equipment, difficulty,
         primary_muscles, secondary_muscles, meta_title, meta_description,
-        status, robots_index, sort_order, published_at
+        status, robots_index, sort_order, published_at, managed_by
       ) VALUES (
-        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'cms'
       ) RETURNING *`,
       [
         data.muscleGroup,
@@ -196,6 +196,7 @@ exercisesRouter.patch("/:id", async (req, res) => {
         robots_index = COALESCE($17, robots_index),
         sort_order = COALESCE($18, sort_order),
         published_at = $19,
+        managed_by = 'cms',
         updated_at = NOW()
       WHERE id = $20
       RETURNING *`,

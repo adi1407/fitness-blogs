@@ -59,7 +59,18 @@ export async function seedFoods(): Promise<void> {
              IS DISTINCT FROM
                (EXCLUDED.kcal, EXCLUDED.protein_g, EXCLUDED.carbs_g, EXCLUDED.fat_g, EXCLUDED.servings, EXCLUDED.intro, EXCLUDED.tips)
           THEN NOW() ELSE foods.updated_at END
-      WHERE foods.managed_by = 'seed'`,
+      WHERE foods.managed_by = 'seed'
+        AND (foods.name, foods.hindi_name, foods.category, foods.diet, foods.basis_label,
+             foods.kcal, foods.protein_g, foods.carbs_g, foods.fat_g, foods.fiber_g,
+             foods.calcium_mg, foods.iron_mg, foods.servings, foods.source, foods.source_ref,
+             foods.source_name, foods.source_note, foods.intro, foods.tips,
+             foods.related_slugs, foods.compare_slug, foods.sort_order)
+        IS DISTINCT FROM
+            (EXCLUDED.name, EXCLUDED.hindi_name, EXCLUDED.category, EXCLUDED.diet, EXCLUDED.basis_label,
+             EXCLUDED.kcal, EXCLUDED.protein_g, EXCLUDED.carbs_g, EXCLUDED.fat_g, EXCLUDED.fiber_g,
+             EXCLUDED.calcium_mg, EXCLUDED.iron_mg, EXCLUDED.servings, EXCLUDED.source, EXCLUDED.source_ref,
+             EXCLUDED.source_name, EXCLUDED.source_note, EXCLUDED.intro, EXCLUDED.tips,
+             EXCLUDED.related_slugs, EXCLUDED.compare_slug, EXCLUDED.sort_order)`,
       [
         f.slug,
         f.name,

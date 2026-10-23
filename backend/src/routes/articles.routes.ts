@@ -233,23 +233,6 @@ export function mapPublicArticle(row: Record<string, unknown>) {
   return rest;
 }
 
-export async function resolveRelatedArticles(
-  numbers: number[],
-  excludeId?: string,
-) {
-  if (!numbers.length) return [];
-  const result = await pool.query(
-    `${ARTICLE_SELECT}
-     WHERE a.article_number = ANY($1::int[])
-       AND a.status = 'published'
-       AND a.slug IS NOT NULL
-       ${excludeId ? "AND a.id <> $2" : ""}
-     ORDER BY array_position($1::int[], a.article_number)`,
-    excludeId ? [numbers, excludeId] : [numbers],
-  );
-  return result.rows.map(mapArticle);
-}
-
 async function uniqueSlug(
   base: string,
   excludeId?: string,

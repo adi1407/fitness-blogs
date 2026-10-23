@@ -96,8 +96,8 @@ knowledgePagesRouter.post("/", async (req, res) => {
     const result = await pool.query(
       `INSERT INTO knowledge_pages (
         section, slug, title, excerpt, body_html,
-        meta_title, meta_description, status, robots_index, sort_order, published_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        meta_title, meta_description, status, robots_index, sort_order, published_at, managed_by
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'cms')
       RETURNING *`,
       [
         data.section,
@@ -178,6 +178,7 @@ knowledgePagesRouter.patch("/:id", async (req, res) => {
         robots_index = COALESCE($9, robots_index),
         sort_order = COALESCE($10, sort_order),
         published_at = $11,
+        managed_by = 'cms',
         updated_at = NOW()
       WHERE id = $12
       RETURNING *`,
