@@ -112,10 +112,19 @@ async function fetchDetail<T>(path: string): Promise<T | null> {
   }
 }
 
-export async function fetchExercises(group?: string): Promise<PublicExercise[]> {
-  const qs = group ? `?group=${encodeURIComponent(group)}` : "";
-  const data = await apiFetch<{ exercises: PublicExercise[] }>(
-    `/public/exercises${qs}`,
+/** List and related-link shapes: the API leaves out bodies (`?fields=summary`). */
+export type ExerciseCard = Omit<
+  PublicExercise,
+  "bodyHtml" | "formCues" | "commonMistakes" | "programmingNotes"
+>;
+export type RecipeCard = Omit<PublicRecipe, "bodyHtml" | "ingredients" | "steps">;
+export type KnowledgeCard = Omit<PublicKnowledgePage, "bodyHtml">;
+
+export async function fetchExercises(group?: string): Promise<ExerciseCard[]> {
+  const qs = new URLSearchParams({ fields: "summary" });
+  if (group) qs.set("group", group);
+  const data = await apiFetch<{ exercises: ExerciseCard[] }>(
+    `/public/exercises?${qs}`,
     KNOWLEDGE_CACHE,
   );
   return data.exercises ?? [];
@@ -124,15 +133,15 @@ export async function fetchExercises(group?: string): Promise<PublicExercise[]> 
 export async function fetchExercise(
   group: string,
   slug: string,
-): Promise<{ exercise: PublicExercise; related: PublicExercise[] } | null> {
+): Promise<{ exercise: PublicExercise; related: ExerciseCard[] } | null> {
   return fetchDetail(
     `/public/exercises/${encodeURIComponent(group)}/${encodeURIComponent(slug)}`,
   );
 }
 
-export async function fetchRecipes(): Promise<PublicRecipe[]> {
-  const data = await apiFetch<{ recipes: PublicRecipe[] }>(
-    "/public/recipes",
+export async function fetchRecipes(): Promise<RecipeCard[]> {
+  const data = await apiFetch<{ recipes: RecipeCard[] }>(
+    "/public/recipes?fields=summary",
     KNOWLEDGE_CACHE,
   );
   return data.recipes ?? [];
@@ -140,17 +149,18 @@ export async function fetchRecipes(): Promise<PublicRecipe[]> {
 
 export async function fetchRecipe(
   slug: string,
-): Promise<{ recipe: PublicRecipe; related: PublicRecipe[] } | null> {
+): Promise<{ recipe: PublicRecipe; related: RecipeCard[] } | null> {
   return fetchDetail(`/public/recipes/${encodeURIComponent(slug)}`);
 }
 
+/** Hub page in full; the page list as cards. */
 export async function fetchKnowledgeSection(
   section: "programs" | "reviews",
 ): Promise<{
   hub: PublicKnowledgePage | null;
-  pages: PublicKnowledgePage[];
+  pages: KnowledgeCard[];
 }> {
-  return apiFetch(`/public/knowledge/${section}`, KNOWLEDGE_CACHE);
+  return apiFetch(`/public/knowledge/${section}?fields=summary`, KNOWLEDGE_CACHE);
 }
 
 export async function fetchKnowledgePage(
@@ -158,7 +168,7 @@ export async function fetchKnowledgePage(
   slug: string,
 ): Promise<{
   page: PublicKnowledgePage;
-  related: PublicKnowledgePage[];
+  related: KnowledgeCard[];
 } | null> {
   return fetchDetail(`/public/knowledge/${section}/${encodeURIComponent(slug)}`);
 }

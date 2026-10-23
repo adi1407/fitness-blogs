@@ -64,34 +64,129 @@ const ARTICLE_SELECT = `
   LEFT JOIN users rev ON rev.id = a.reviewer_id
 `;
 
+/** Same joins as ARTICLE_SELECT without body, FAQ and sources: lists and cards never need them. */
+const ARTICLE_CARD_SELECT = `
+  SELECT a.id, a.article_number, a.title, a.slug, a.excerpt, a.category_id,
+    a.subcategory_id, a.status, a.meta_title, a.meta_description, a.meta_keywords,
+    a.primary_keyword, a.og_image, a.featured_image, a.featured_image_alt,
+    a.featured_image_caption, a.quick_answer, a.tags, a.topics,
+    a.related_article_numbers, a.views, a.reading_time, a.author_id, a.reviewer_id,
+    a.published_at, a.created_at, a.updated_at, a.robots_index, a.last_reviewed_at,
+    c.slug AS category_slug,
+    c.label AS category_label,
+    s.slug AS subcategory_slug,
+    s.label AS subcategory_label,
+    u.name AS author_name,
+    u.slug AS author_slug,
+    rev.name AS reviewer_name,
+    rev.slug AS reviewer_slug
+  FROM articles a
+  LEFT JOIN categories c ON c.id = a.category_id
+  LEFT JOIN subcategories s ON s.id = a.subcategory_id
+  LEFT JOIN users u ON u.id = a.author_id
+  LEFT JOIN users rev ON rev.id = a.reviewer_id
+`;
+
 function mapPublic(row: Record<string, unknown>) {
   return mapPublicArticle(row);
 }
 
-/** Related lists render cards only: no bodies, and never staff-only fields. */
-function toRelatedCard(row: Record<string, unknown>) {
+/** Cards: no bodies, and never staff-only fields. */
+function toArticleCard(row: Record<string, unknown>) {
   const { body: _body, faq: _faq, sources: _sources, ...card } = mapPublic(row);
   return card;
 }
 
-type RelatedCard = ReturnType<typeof toRelatedCard>;
+type ArticleCard = ReturnType<typeof toArticleCard>;
 
-/** Editor-picked related articles, in the order the editor linked them. */
-async function fetchCuratedRelated(
-  numbers: number[] | undefined,
-  excludeId: string,
-): Promise<RelatedCard[]> {
-  if (!numbers?.length) return [];
-  const result = await pool.query(
-    `${ARTICLE_SELECT}
-     WHERE a.article_number = ANY($1::int[])
-       AND a.status = 'published'
-       AND a.slug IS NOT NULL
-       AND a.id <> $2
-     ORDER BY array_position($1::int[], a.article_number)`,
-    [numbers, excludeId],
-  );
-  return result.rows.map(toRelatedCard);
+function relatedNumbersOf(row: Record<string, unknown>): number[] {
+  const raw = row.related_article_numbers;
+  return Array.isArray(raw)
+    ? raw.map(Number).filter((n) => Number.isInteger(n))
+    : [];
+}
+
+const RELATED_TARGET = 10;
+
+/**
+ * Related cards: editor picks (in their order), then the newest articles from the
+ * same subcategory, then the same category. Both lookups run in parallel and the
+ * fallback over-fetches by the number of picks so de-duplication never runs short.
+ */
+async function fetchRelatedCards(row: Record<string, unknown>): Promise<ArticleCard[]> {
+  const id = String(row.id);
+  const numbers = relatedNumbersOf(row);
+  const categorySlug = typeof row.category_slug === "string" ? row.category_slug : null;
+  const subcategorySlug =
+    typeof row.subcategory_slug === "string" ? row.subcategory_slug : null;
+
+  const [curated, fallback] = await Promise.all([
+    numbers.length
+      ? pool.query(
+          `${ARTICLE_CARD_SELECT}
+           WHERE a.article_number = ANY($1::int[])
+             AND a.status = 'published' AND a.slug IS NOT NULL AND a.id <> $2
+           ORDER BY array_position($1::int[], a.article_number)`,
+          [numbers, id],
+        )
+      : null,
+    categorySlug
+      ? pool.query(
+          `${ARTICLE_CARD_SELECT}
+           WHERE a.status = 'published' AND a.slug IS NOT NULL
+             AND c.slug = $1 AND a.id <> $2
+           ORDER BY (s.slug IS NOT DISTINCT FROM $3) DESC, a.published_at DESC NULLS LAST, a.id
+           LIMIT $4`,
+          [categorySlug, id, subcategorySlug, RELATED_TARGET + numbers.length],
+        )
+      : null,
+  ]);
+
+  const related: ArticleCard[] = [];
+  const seen = new Set<unknown>();
+  for (const r of [...(curated?.rows ?? []), ...(fallback?.rows ?? [])]) {
+    if (seen.has(r.id)) continue;
+    seen.add(r.id);
+    related.push(toArticleCard(r));
+    if (related.length >= RELATED_TARGET) break;
+  }
+  return related;
+}
+
+/** Article for reading plus its related cards, in two parallel round trips. */
+async function articleWithRelated(row: Record<string, unknown>) {
+  const [article, related] = await Promise.all([
+    mapPublicWithBody(row),
+    fetchRelatedCards(row),
+  ]);
+  return { article, related };
+}
+
+function omit<T extends Record<string, unknown>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const copy = { ...obj };
+  for (const k of keys) delete copy[k];
+  return copy;
+}
+
+/** Card-only columns for knowledge lists (`?fields=summary`) and related links. */
+const EXERCISE_CARD_COLUMNS = `id, muscle_group, slug, title, excerpt, quick_answer, equipment,
+  difficulty, primary_muscles, secondary_muscles, meta_title, meta_description, status,
+  robots_index, sort_order, published_at, created_at, updated_at`;
+const RECIPE_CARD_COLUMNS = `id, slug, title, excerpt, quick_answer, calories, protein_g,
+  carbs_g, fat_g, cuisine_tags, meal_type, meta_title, meta_description, status,
+  robots_index, sort_order, published_at, created_at, updated_at`;
+const KNOWLEDGE_CARD_COLUMNS = `id, section, slug, title, excerpt, meta_title,
+  meta_description, status, robots_index, sort_order, published_at, created_at, updated_at`;
+
+const exerciseCard = (row: Record<string, unknown>) =>
+  omit(mapExercise(row), ["bodyHtml", "formCues", "commonMistakes", "programmingNotes"]);
+const recipeCard = (row: Record<string, unknown>) =>
+  omit(mapRecipe(row), ["bodyHtml", "ingredients", "steps"]);
+const knowledgeCard = (row: Record<string, unknown>) =>
+  omit(mapKnowledgePage(row), ["bodyHtml"]);
+
+function wantsSummary(query: Record<string, unknown>): boolean {
+  return query.fields === "summary";
 }
 
 /** Full article for reading: links to unpublished articles are unwrapped. */
@@ -134,14 +229,16 @@ publicRouter.get("/redirects/resolve", async (req, res) => {
 });
 
 publicRouter.get("/taxonomy", async (_req, res) => {
-  const cats = await pool.query(
-    `SELECT id, slug, label, description, sort_order
-     FROM categories ORDER BY sort_order ASC, label ASC`,
-  );
-  const subs = await pool.query(
-    `SELECT id, category_id, slug, label, sort_order
-     FROM subcategories ORDER BY sort_order ASC, label ASC`,
-  );
+  const [cats, subs] = await Promise.all([
+    pool.query(
+      `SELECT id, slug, label, description, sort_order
+       FROM categories ORDER BY sort_order ASC, label ASC`,
+    ),
+    pool.query(
+      `SELECT id, category_id, slug, label, sort_order
+       FROM subcategories ORDER BY sort_order ASC, label ASC`,
+    ),
+  ]);
 
   const categories = cats.rows.map((c) => ({
     id: c.id,
@@ -200,21 +297,14 @@ publicRouter.get("/articles", async (req, res) => {
 
   params.push(limit);
   const result = await pool.query(
-    `${ARTICLE_SELECT}
+    `${summary ? ARTICLE_CARD_SELECT : ARTICLE_SELECT}
      WHERE ${clauses.join(" AND ")}
      ORDER BY a.published_at DESC NULLS LAST, a.updated_at DESC
      LIMIT $${params.length}`,
     params,
   );
 
-  const articles = result.rows.map(mapPublic);
-  if (summary) {
-    res.json({
-      articles: articles.map(({ body: _body, faq: _faq, sources: _sources, ...rest }) => rest),
-    });
-    return;
-  }
-  res.json({ articles });
+  res.json({ articles: result.rows.map(summary ? toArticleCard : mapPublic) });
 });
 
 publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
@@ -235,17 +325,7 @@ publicRouter.get("/articles/by-number/:articleNumber", async (req, res) => {
     return;
   }
 
-  const article = await mapPublicWithBody(row);
-  const curated = await fetchCuratedRelated(
-    article.relatedArticleNumbers as number[],
-    String(article.id),
-  );
-  const related = await fillRelatedArticles(curated, {
-    id: String(article.id),
-    categorySlug: (article.categorySlug as string | null) ?? null,
-    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
-  });
-  res.json({ article, related });
+  res.json(await articleWithRelated(row));
 });
 
 publicRouter.get("/articles/lookup/:articleNumber", async (req, res) => {
@@ -265,65 +345,6 @@ publicRouter.get("/articles/lookup/:articleNumber", async (req, res) => {
   }
   res.json({ article: mapPublic(result.rows[0]) });
 });
-
-const RELATED_TARGET = 10;
-
-/** Curated → same subcategory → same category, unique, up to RELATED_TARGET. */
-async function fillRelatedArticles(
-  curated: RelatedCard[],
-  article: {
-    id: string;
-    categorySlug: string | null;
-    subcategorySlug: string | null;
-  },
-) {
-  const relatedList = [...curated];
-  const seen = new Set(relatedList.map((a) => a.id));
-
-  async function appendFromQuery(sql: string, params: unknown[]) {
-    if (relatedList.length >= RELATED_TARGET) return;
-    const fill = await pool.query(sql, params);
-    for (const r of fill.rows.map(toRelatedCard)) {
-      if (seen.has(r.id)) continue;
-      relatedList.push(r);
-      seen.add(r.id);
-      if (relatedList.length >= RELATED_TARGET) break;
-    }
-  }
-
-  if (article.categorySlug && article.subcategorySlug) {
-    await appendFromQuery(
-      `${ARTICLE_SELECT}
-       WHERE a.status = 'published' AND a.slug IS NOT NULL
-         AND c.slug = $1 AND s.slug = $2 AND a.id <> $3
-       ORDER BY a.published_at DESC NULLS LAST
-       LIMIT $4`,
-      [
-        article.categorySlug,
-        article.subcategorySlug,
-        article.id,
-        RELATED_TARGET - relatedList.length,
-      ],
-    );
-  }
-
-  if (relatedList.length < RELATED_TARGET && article.categorySlug) {
-    await appendFromQuery(
-      `${ARTICLE_SELECT}
-       WHERE a.status = 'published' AND a.slug IS NOT NULL
-         AND c.slug = $1 AND a.id <> $2
-       ORDER BY a.published_at DESC NULLS LAST
-       LIMIT $3`,
-      [
-        article.categorySlug,
-        article.id,
-        RELATED_TARGET - relatedList.length,
-      ],
-    );
-  }
-
-  return relatedList;
-}
 
 /** Staff preview — any status, no view increment, requires signed token. */
 publicRouter.get("/articles/preview/:token", async (req, res) => {
@@ -352,18 +373,8 @@ publicRouter.get("/articles/preview/:token", async (req, res) => {
     return;
   }
 
-  const article = mapPublic(row);
-  const curated = await fetchCuratedRelated(
-    article.relatedArticleNumbers as number[],
-    String(article.id),
-  );
-  const relatedList = await fillRelatedArticles(curated, {
-    id: String(article.id),
-    categorySlug: (article.categorySlug as string | null) ?? null,
-    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
-  });
-
-  res.json({ article, related: relatedList, preview: true });
+  // Previews keep links to unpublished drafts, so the body is not unlinked.
+  res.json({ article: mapPublic(row), related: await fetchRelatedCards(row), preview: true });
 });
 
 /**
@@ -444,26 +455,22 @@ publicRouter.get("/authors/:slug", async (req, res) => {
   }
   const [written, reviewed] = await Promise.all([
     pool.query(
-      `${ARTICLE_SELECT}
+      `${ARTICLE_CARD_SELECT}
        WHERE a.author_id = $1 AND a.status = 'published' AND a.slug IS NOT NULL
        ORDER BY a.published_at DESC NULLS LAST LIMIT 100`,
       [row.id],
     ),
     pool.query(
-      `${ARTICLE_SELECT}
+      `${ARTICLE_CARD_SELECT}
        WHERE a.reviewer_id = $1 AND a.status = 'published' AND a.slug IS NOT NULL
        ORDER BY a.published_at DESC NULLS LAST LIMIT 100`,
       [row.id],
     ),
   ]);
-  const summarize = (r: Record<string, unknown>) => {
-    const { body: _b, faq: _f, sources: _s, ...rest } = mapPublic(r);
-    return rest;
-  };
   res.json({
     author: mapAuthor(row),
-    written: written.rows.map(summarize),
-    reviewed: reviewed.rows.map(summarize),
+    written: written.rows.map(toArticleCard),
+    reviewed: reviewed.rows.map(toArticleCard),
   });
 });
 
@@ -479,19 +486,7 @@ publicRouter.get("/articles/:slug", async (req, res) => {
     return;
   }
 
-  const article = await mapPublicWithBody(row);
-  const curated = await fetchCuratedRelated(
-    article.relatedArticleNumbers as number[],
-    String(article.id),
-  );
-
-  const relatedList = await fillRelatedArticles(curated, {
-    id: String(article.id),
-    categorySlug: (article.categorySlug as string | null) ?? null,
-    subcategorySlug: (article.subcategorySlug as string | null) ?? null,
-  });
-
-  res.json({ article, related: relatedList });
+  res.json(await articleWithRelated(row));
 });
 
 publicRouter.get("/exercises", async (req, res) => {
@@ -503,12 +498,13 @@ publicRouter.get("/exercises", async (req, res) => {
     params.push(group);
     where += ` AND muscle_group = $${params.length}`;
   }
+  const summary = wantsSummary(req.query);
   const result = await pool.query(
-    `SELECT * FROM exercises ${where}
+    `SELECT ${summary ? EXERCISE_CARD_COLUMNS : "*"} FROM exercises ${where}
      ORDER BY muscle_group ASC, sort_order ASC, title ASC`,
     params,
   );
-  res.json({ exercises: result.rows.map(mapExercise) });
+  res.json({ exercises: result.rows.map(summary ? exerciseCard : mapExercise) });
 });
 
 publicRouter.get("/exercises/:group/:slug", async (req, res) => {
@@ -517,66 +513,72 @@ publicRouter.get("/exercises/:group/:slug", async (req, res) => {
     res.status(404).json({ message: "Exercise group not found" });
     return;
   }
-  const result = await pool.query(
-    `SELECT * FROM exercises
-     WHERE muscle_group = $1 AND slug = $2 AND status = 'published'
-     LIMIT 1`,
-    [group, slug],
-  );
+  const [result, related] = await Promise.all([
+    pool.query(
+      `SELECT * FROM exercises
+       WHERE muscle_group = $1 AND slug = $2 AND status = 'published'
+       LIMIT 1`,
+      [group, slug],
+    ),
+    pool.query(
+      `SELECT ${EXERCISE_CARD_COLUMNS} FROM exercises
+       WHERE muscle_group = $1 AND status = 'published' AND slug <> $2
+       ORDER BY sort_order ASC, title ASC
+       LIMIT 6`,
+      [group, slug],
+    ),
+  ]);
   if (!result.rows[0]) {
     res.status(404).json({ message: "Exercise not found" });
     return;
   }
-  const related = await pool.query(
-    `SELECT * FROM exercises
-     WHERE muscle_group = $1 AND status = 'published' AND id <> $2
-     ORDER BY sort_order ASC, title ASC
-     LIMIT 6`,
-    [group, result.rows[0].id],
-  );
   res.json({
     exercise: mapExercise(result.rows[0]),
-    related: related.rows.map(mapExercise),
+    related: related.rows.map(exerciseCard),
   });
 });
 
-publicRouter.get("/recipes", async (_req, res) => {
+publicRouter.get("/recipes", async (req, res) => {
+  const summary = wantsSummary(req.query);
   const result = await pool.query(
-    `SELECT * FROM recipes
+    `SELECT ${summary ? RECIPE_CARD_COLUMNS : "*"} FROM recipes
      WHERE status = 'published' AND robots_index = TRUE
      ORDER BY sort_order ASC, title ASC`,
   );
-  res.json({ recipes: result.rows.map(mapRecipe) });
+  res.json({ recipes: result.rows.map(summary ? recipeCard : mapRecipe) });
 });
 
 publicRouter.get("/recipes/:slug", async (req, res) => {
-  const result = await pool.query(
-    `SELECT * FROM recipes
-     WHERE slug = $1 AND status = 'published'
-     LIMIT 1`,
-    [req.params.slug],
-  );
+  const [result, related] = await Promise.all([
+    pool.query(
+      `SELECT * FROM recipes
+       WHERE slug = $1 AND status = 'published'
+       LIMIT 1`,
+      [req.params.slug],
+    ),
+    // The next recipes in list order (wrapping), so every recipe is linked from its neighbours.
+    pool.query(
+      `WITH ordered AS (
+         SELECT ${RECIPE_CARD_COLUMNS},
+                row_number() OVER (ORDER BY sort_order ASC, title ASC) AS pos,
+                count(*) OVER () AS total
+         FROM recipes
+         WHERE status = 'published'
+       )
+       SELECT * FROM ordered
+       WHERE slug <> $1
+       ORDER BY (pos - (SELECT pos FROM ordered WHERE slug = $1) + total) % total
+       LIMIT 4`,
+      [req.params.slug],
+    ),
+  ]);
   if (!result.rows[0]) {
     res.status(404).json({ message: "Recipe not found" });
     return;
   }
-  // The next recipes in list order (wrapping), so every recipe is linked from its neighbours.
-  const related = await pool.query(
-    `WITH ordered AS (
-       SELECT r.*, row_number() OVER (ORDER BY sort_order ASC, title ASC) AS pos,
-              count(*) OVER () AS total
-       FROM recipes r
-       WHERE status = 'published'
-     )
-     SELECT * FROM ordered
-     WHERE id <> $1
-     ORDER BY (pos - (SELECT pos FROM ordered WHERE id = $1) + total) % total
-     LIMIT 4`,
-    [result.rows[0].id],
-  );
   res.json({
     recipe: mapRecipe(result.rows[0]),
-    related: related.rows.map(mapRecipe),
+    related: related.rows.map(recipeCard),
   });
 });
 
@@ -586,22 +588,25 @@ publicRouter.get("/knowledge/:section", async (req, res) => {
     res.status(404).json({ message: "Section not found" });
     return;
   }
-  const hub = await pool.query(
-    `SELECT * FROM knowledge_pages
-     WHERE section = $1 AND slug = $2 AND status = 'published'
-     LIMIT 1`,
-    [section, KNOWLEDGE_HUB_SLUG],
-  );
-  const pages = await pool.query(
-    `SELECT * FROM knowledge_pages
-     WHERE section = $1 AND status = 'published' AND slug <> $2
-       AND robots_index = TRUE
-     ORDER BY sort_order ASC, title ASC`,
-    [section, KNOWLEDGE_HUB_SLUG],
-  );
+  const summary = wantsSummary(req.query);
+  const [hub, pages] = await Promise.all([
+    pool.query(
+      `SELECT * FROM knowledge_pages
+       WHERE section = $1 AND slug = $2 AND status = 'published'
+       LIMIT 1`,
+      [section, KNOWLEDGE_HUB_SLUG],
+    ),
+    pool.query(
+      `SELECT ${summary ? KNOWLEDGE_CARD_COLUMNS : "*"} FROM knowledge_pages
+       WHERE section = $1 AND status = 'published' AND slug <> $2
+         AND robots_index = TRUE
+       ORDER BY sort_order ASC, title ASC`,
+      [section, KNOWLEDGE_HUB_SLUG],
+    ),
+  ]);
   res.json({
     hub: hub.rows[0] ? mapKnowledgePage(hub.rows[0]) : null,
-    pages: pages.rows.map(mapKnowledgePage),
+    pages: pages.rows.map(summary ? knowledgeCard : mapKnowledgePage),
   });
 });
 
@@ -611,26 +616,28 @@ publicRouter.get("/knowledge/:section/:slug", async (req, res) => {
     res.status(404).json({ message: "Page not found" });
     return;
   }
-  const result = await pool.query(
-    `SELECT * FROM knowledge_pages
-     WHERE section = $1 AND slug = $2 AND status = 'published'
-     LIMIT 1`,
-    [section, slug],
-  );
+  const [result, related] = await Promise.all([
+    pool.query(
+      `SELECT * FROM knowledge_pages
+       WHERE section = $1 AND slug = $2 AND status = 'published'
+       LIMIT 1`,
+      [section, slug],
+    ),
+    pool.query(
+      `SELECT ${KNOWLEDGE_CARD_COLUMNS} FROM knowledge_pages
+       WHERE section = $1 AND status = 'published'
+         AND slug <> $2 AND slug <> $3
+       ORDER BY sort_order ASC, title ASC
+       LIMIT 4`,
+      [section, slug, KNOWLEDGE_HUB_SLUG],
+    ),
+  ]);
   if (!result.rows[0]) {
     res.status(404).json({ message: "Page not found" });
     return;
   }
-  const related = await pool.query(
-    `SELECT * FROM knowledge_pages
-     WHERE section = $1 AND status = 'published'
-       AND slug <> $2 AND slug <> $3
-     ORDER BY sort_order ASC, title ASC
-     LIMIT 4`,
-    [section, slug, KNOWLEDGE_HUB_SLUG],
-  );
   res.json({
     page: mapKnowledgePage(result.rows[0]),
-    related: related.rows.map(mapKnowledgePage),
+    related: related.rows.map(knowledgeCard),
   });
 });

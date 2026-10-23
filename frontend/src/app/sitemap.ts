@@ -141,10 +141,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [articles, exercises, recipes, programs, reviews, foods, authors] = await Promise.all([
     fetchApi<{ articles?: ArticleItem[] }>("/public/articles?limit=500&fields=summary"),
-    fetchApi<{ exercises?: PathItem[] }>("/public/exercises"),
-    fetchApi<{ recipes?: PathItem[] }>("/public/recipes"),
-    fetchApi<{ pages?: PathItem[] }>("/public/knowledge/programs"),
-    fetchApi<{ pages?: PathItem[] }>("/public/knowledge/reviews"),
+    fetchApi<{ exercises?: PathItem[] }>("/public/exercises?fields=summary"),
+    fetchApi<{ recipes?: PathItem[] }>("/public/recipes?fields=summary"),
+    fetchApi<{ pages?: PathItem[] }>("/public/knowledge/programs?fields=summary"),
+    fetchApi<{ pages?: PathItem[] }>("/public/knowledge/reviews?fields=summary"),
     fetchApi<{ foods?: { slug: string; updatedAt?: string | null }[] }>("/public/foods"),
     fetchApi<{ authors?: { slug: string }[] }>("/public/authors"),
   ]);
