@@ -1894,6 +1894,32 @@ const KNOWLEDGE_PAGES: SeedPage[] = [
   },
 ];
 
+/*
+ * Seeds may only refresh rows nobody has edited in the CMS (`managed_by = 'seed'`),
+ * and only when the seeded copy actually changed. Status and indexing are never
+ * touched on update, and `updated_at` (the sitemap's lastmod) only moves on a
+ * real change.
+ */
+const EXERCISE_SEED_COLUMNS = [
+  "title", "excerpt", "quick_answer", "body_html", "form_cues", "common_mistakes",
+  "programming_notes", "equipment", "difficulty", "primary_muscles",
+  "secondary_muscles", "meta_title", "meta_description", "sort_order",
+];
+const RECIPE_SEED_COLUMNS = [
+  "title", "excerpt", "quick_answer", "body_html", "ingredients", "steps", "calories",
+  "protein_g", "carbs_g", "fat_g", "cuisine_tags", "meal_type", "meta_title",
+  "meta_description", "sort_order",
+];
+const PAGE_SEED_COLUMNS = [
+  "title", "excerpt", "body_html", "meta_title", "meta_description", "sort_order",
+];
+
+function seedOwnedAndChanged(table: string, columns: string[]): string {
+  const current = columns.map((c) => `${table}.${c}`).join(", ");
+  const seeded = columns.map((c) => `EXCLUDED.${c}`).join(", ");
+  return `WHERE ${table}.managed_by = 'seed' AND (${current}) IS DISTINCT FROM (${seeded})`;
+}
+
 async function upsertExercise(ex: SeedExercise): Promise<void> {
   await pool.query(
     `INSERT INTO exercises (
@@ -1919,11 +1945,9 @@ async function upsertExercise(ex: SeedExercise): Promise<void> {
       secondary_muscles = EXCLUDED.secondary_muscles,
       meta_title = EXCLUDED.meta_title,
       meta_description = EXCLUDED.meta_description,
-      status = 'published',
-      robots_index = TRUE,
       sort_order = EXCLUDED.sort_order,
-      published_at = COALESCE(exercises.published_at, NOW()),
-      updated_at = NOW()`,
+      updated_at = NOW()
+    ${seedOwnedAndChanged("exercises", EXERCISE_SEED_COLUMNS)}`,
     [
       ex.muscleGroup,
       ex.slug,
@@ -1970,11 +1994,9 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       meal_type = EXCLUDED.meal_type,
       meta_title = EXCLUDED.meta_title,
       meta_description = EXCLUDED.meta_description,
-      status = 'published',
-      robots_index = TRUE,
       sort_order = EXCLUDED.sort_order,
-      published_at = COALESCE(recipes.published_at, NOW()),
-      updated_at = NOW()`,
+      updated_at = NOW()
+    ${seedOwnedAndChanged("recipes", RECIPE_SEED_COLUMNS)}`,
     [
       r.slug,
       r.title,
@@ -2010,11 +2032,9 @@ async function upsertKnowledgePage(page: SeedPage): Promise<void> {
       body_html = EXCLUDED.body_html,
       meta_title = EXCLUDED.meta_title,
       meta_description = EXCLUDED.meta_description,
-      status = 'published',
-      robots_index = TRUE,
       sort_order = EXCLUDED.sort_order,
-      published_at = COALESCE(knowledge_pages.published_at, NOW()),
-      updated_at = NOW()`,
+      updated_at = NOW()
+    ${seedOwnedAndChanged("knowledge_pages", PAGE_SEED_COLUMNS)}`,
     [
       page.section,
       page.slug,

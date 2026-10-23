@@ -82,9 +82,9 @@ recipesRouter.post("/", async (req, res) => {
       `INSERT INTO recipes (
         slug, title, excerpt, quick_answer, body_html, ingredients, steps,
         calories, protein_g, carbs_g, fat_g, cuisine_tags, meal_type,
-        meta_title, meta_description, status, robots_index, sort_order, published_at
+        meta_title, meta_description, status, robots_index, sort_order, published_at, managed_by
       ) VALUES (
-        $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19
+        $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'cms'
       ) RETURNING *`,
       [
         slug,
@@ -175,6 +175,7 @@ recipesRouter.patch("/:id", async (req, res) => {
         robots_index = COALESCE($17, robots_index),
         sort_order = COALESCE($18, sort_order),
         published_at = $19,
+        managed_by = 'cms',
         updated_at = NOW()
       WHERE id = $20
       RETURNING *`,

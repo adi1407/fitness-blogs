@@ -1,8 +1,16 @@
 import "dotenv/config";
+// Must load before any router is created: it wraps route handlers as they're
+// registered so a rejected async handler reaches errorHandler instead of
+// becoming an unhandled rejection that kills the process (Express 4).
+import "express-async-errors";
 import { createApp } from "./app";
 import { env } from "./config/env";
 import { ensureCmsSchema } from "./db/ensureCmsSchema";
 import { migrateImagesToCloudinary } from "./services/migrateImagesToCloudinary";
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[backend] unhandled rejection", reason);
+});
 
 async function main() {
   await ensureCmsSchema();
