@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { env } from "../config/env";
 import { pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { seedKnowledgeContent } from "./seedKnowledgeContent";
@@ -17,6 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL DEFAULT '',
   role TEXT NOT NULL CHECK (role IN ('admin', 'editor', 'writer')),
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  password_changed_at TIMESTAMPTZ,
+  password_version INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -414,7 +417,11 @@ CREATE INDEX IF NOT EXISTS idx_product_pick_placements_target
   ON product_pick_placements(target, sort_order);
 `;
 
-const SEED_USERS = [
+/**
+ * Local-development logins only. These passwords are public (this repo is public),
+ * so production never creates them and warns at boot while any still work.
+ */
+export const SEED_USERS = [
   {
     email: "admin@fitknowledge.local",
     password: "ChangeMeAdmin123!",
@@ -440,6 +447,22 @@ const SEED_USERS = [
     role: "writer",
   },
 ] as const;
+
+/** Loud boot warning for any active account that still accepts its public default password. */
+async function warnDefaultPasswords(): Promise<void> {
+  const rows = await pool.query<{ email: string; password_hash: string }>(
+    `SELECT email, password_hash FROM users WHERE is_active = TRUE AND email = ANY($1::text[])`,
+    [SEED_USERS.map((u) => u.email)],
+  );
+  for (const row of rows.rows) {
+    const seed = SEED_USERS.find((u) => u.email === row.email);
+    if (seed && (await bcrypt.compare(seed.password, row.password_hash))) {
+      console.error(
+        `[security] ${row.email} still uses its public default password. Change it in the CMS (Change password).`,
+      );
+    }
+  }
+}
 
 async function migrateLegacySchema(): Promise<void> {
   await pool.query(`
@@ -469,6 +492,8 @@ async function migrateLegacySchema(): Promise<void> {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS slug TEXT;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
     ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS password_changed_at TIMESTAMPTZ;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS password_version INT NOT NULL DEFAULT 0;
     ALTER TABLE foods ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
     ALTER TABLE exercises ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
     ALTER TABLE recipes ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
@@ -664,22 +689,26 @@ export async function ensureCmsSchema(): Promise<void> {
      WHERE email = 'author@fitknowledge.local'`,
   );
 
-  for (const user of SEED_USERS) {
-    const existing = await pool.query(
-      `SELECT id FROM users WHERE email = $1 LIMIT 1`,
-      [user.email],
-    );
-    if (existing.rowCount && existing.rowCount > 0) continue;
+  if (env.nodeEnv === "production") {
+    await warnDefaultPasswords();
+  } else {
+    for (const user of SEED_USERS) {
+      const existing = await pool.query(
+        `SELECT id FROM users WHERE email = $1 LIMIT 1`,
+        [user.email],
+      );
+      if (existing.rowCount && existing.rowCount > 0) continue;
 
-    const hash = await bcrypt.hash(user.password, 10);
-    await pool.query(
-      `INSERT INTO users (email, password_hash, name, role)
-       VALUES ($1, $2, $3, $4)`,
-      [user.email, hash, user.name, user.role],
-    );
-    console.log(
-      `[db] seeded ${user.email} / ${user.password} — change after first login`,
-    );
+      const hash = await bcrypt.hash(user.password, 10);
+      await pool.query(
+        `INSERT INTO users (email, password_hash, name, role)
+         VALUES ($1, $2, $3, $4)`,
+        [user.email, hash, user.name, user.role],
+      );
+      console.log(
+        `[db] seeded ${user.email} / ${user.password} — change after first login`,
+      );
+    }
   }
   await ensureUserSlugs();
 

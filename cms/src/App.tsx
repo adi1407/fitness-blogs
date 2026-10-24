@@ -16,6 +16,7 @@ import RedirectsPage from "./pages/RedirectsPage.tsx";
 import SubscribersPage from "./pages/SubscribersPage.tsx";
 import SearchInsightsPage from "./pages/SearchInsightsPage.tsx";
 import QualityGapsPage from "./pages/QualityGapsPage.tsx";
+import ChangePasswordPage from "./pages/ChangePasswordPage.tsx";
 import ExercisesListPage from "./pages/ExercisesListPage.tsx";
 import ExerciseEditorPage from "./pages/ExerciseEditorPage.tsx";
 import RecipesListPage from "./pages/RecipesListPage.tsx";
@@ -41,6 +42,7 @@ export default function App() {
               <Route path="articles/:id" element={<ArticleEditorPage />} />
               <Route path="assignments" element={<AssignmentsPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="account/password" element={<ChangePasswordPage />} />
               <Route
                 element={<ProtectedRoute roles={["editor", "admin"]} />}
               >

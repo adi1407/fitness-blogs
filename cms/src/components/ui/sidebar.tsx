@@ -9,6 +9,7 @@ import {
   BookOpen,
   ClipboardList,
   Dumbbell,
+  KeyRound,
   Search,
   ShieldAlert,
   ShoppingBag,
@@ -581,6 +582,12 @@ function DesktopRail({
                 <p className="text-xs text-slate-500">{userEmail}</p>
               </div>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/account/password">
+                  <KeyRound className="size-4" />
+                  Change password
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-700"
                 onSelect={() => onLogout()}
@@ -819,6 +826,14 @@ function MobileNav({
                     </div>
                   </div>
                   <Separator className="my-3" />
+                  <Link
+                    to="/account/password"
+                    onClick={() => setOpen(false)}
+                    className="mb-2 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50"
+                  >
+                    <KeyRound className="size-4" />
+                    Change password
+                  </Link>
                   <button
                     type="button"
                     onClick={() => {
