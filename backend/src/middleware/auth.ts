@@ -5,7 +5,8 @@ import { env } from "../config/env";
 import type { StaffRole } from "../types/auth";
 import type { AuthUser } from "../types/auth";
 
-type JwtPayload = { id: string; role: string };
+/** `pv` = the account's password version when the token was issued (absent on older tokens). */
+type JwtPayload = { id: string; role: string; pv?: number };
 
 export async function authenticate(
   req: Request,
@@ -22,12 +23,17 @@ export async function authenticate(
     const token = header.slice(7);
     const decoded = jwt.verify(token, env.jwtSecret) as JwtPayload;
     const result = await pool.query(
-      `SELECT id, email, name, role, is_active FROM users WHERE id = $1`,
+      `SELECT id, email, name, role, is_active, password_version FROM users WHERE id = $1`,
       [decoded.id],
     );
     const row = result.rows[0];
     if (!row || !row.is_active) {
       res.status(401).json({ message: "Invalid or inactive account" });
+      return;
+    }
+    // A password change bumps the version, ending every session issued before it.
+    if ((decoded.pv ?? 0) !== Number(row.password_version ?? 0)) {
+      res.status(401).json({ message: "Session expired. Please sign in again." });
       return;
     }
     req.user = {

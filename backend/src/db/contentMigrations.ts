@@ -1,3 +1,6 @@
+import { randomBytes } from "node:crypto";
+import bcrypt from "bcryptjs";
+import { env } from "../config/env";
 import { pool } from "./pool";
 import { estimateReadingTime } from "../utils/articleSlug";
 import { ARTICLE_REWRITES } from "./intentArticles/rewrites";
@@ -640,6 +643,33 @@ async function fixSourceUrls(): Promise<void> {
   console.log(`[db] fixed moved source URLs on ${updated} article rows`);
 }
 
+/**
+ * The seeded staff accounts used passwords that are public in this repo. Lock the
+ * ones nobody signs in with: a random password nobody knows, and a password-version
+ * bump so any session issued before now stops working. The author account stays
+ * active because it is the public byline on live articles. The admin account is
+ * left for its owner to change in the CMS.
+ */
+async function lockDefaultStaffAccounts(): Promise<void> {
+  if (env.nodeEnv !== "production") return;
+  const lock = ["editor@fitknowledge.local", "writer@fitknowledge.local", "aditya@fitknowledge.local"];
+  const deactivate = ["editor@fitknowledge.local", "writer@fitknowledge.local"];
+  for (const email of lock) {
+    const hash = await bcrypt.hash(randomBytes(32).toString("base64url"), 10);
+    await pool.query(
+      `UPDATE users
+          SET password_hash = $2,
+              password_version = password_version + 1,
+              password_changed_at = NOW(),
+              is_active = CASE WHEN email = ANY($3::text[]) THEN FALSE ELSE is_active END,
+              updated_at = NOW()
+        WHERE email = $1`,
+      [email, hash, deactivate],
+    );
+  }
+  console.log("[security] locked default staff accounts (editor, writer, author byline)");
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -665,6 +695,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-15-exercise-guide-links", run: insertExerciseGuideLinks },
   { id: "2026-10-16-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-17-source-url-fixes", run: fixSourceUrls },
+  { id: "2026-10-24-lock-default-staff-accounts", run: lockDefaultStaffAccounts },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
