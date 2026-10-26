@@ -8,12 +8,14 @@ import { recordAudit } from "../services/auditLog";
 import { STAFF_ROLES } from "../utils/roles";
 import { adminSubscribersRouter } from "./subscribers.routes";
 import { adminSearchInsightsRouter } from "./searchInsights.routes";
+import { adminSeoRouter } from "./seoPerformance.routes";
 
 export const adminRouter = Router();
 
 adminRouter.use(authenticate);
 adminRouter.use("/subscribers", adminSubscribersRouter);
 adminRouter.use("/search-insights", adminSearchInsightsRouter);
+adminRouter.use("/seo", adminSeoRouter);
 
 const createUserSchema = z.object({
   email: z.string().email().max(200),

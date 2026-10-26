@@ -59,6 +59,12 @@ const envSchema = z.object({
   CLOUDINARY_URL: z.string().default(""),
   /** Shared secret for the site's on-demand revalidation endpoint. Empty = disabled. */
   REVALIDATE_SECRET: z.string().default(""),
+  /** Google service account key (the JSON file, raw or base64) with read access to Search Console. Empty = sync off. */
+  GSC_SERVICE_ACCOUNT_JSON: z.string().default(""),
+  /** Search Console property, e.g. `sc-domain:fitlives.in`. Empty = auto-detect from the account's properties. */
+  GSC_SITE_URL: z.string().default(""),
+  /** Comma-separated terms that make a query "brand" search. */
+  GSC_BRAND_TERMS: z.string().default("fitlives,fit lives,fitlive,fit-lives"),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -115,4 +121,11 @@ export const env = {
   allowExpoGoAuth: parsed.data.ALLOW_EXPO_GO_AUTH,
   cloudinary: resolveCloudinary(parsed.data),
   revalidateSecret: parsed.data.REVALIDATE_SECRET.trim(),
+  gsc: {
+    serviceAccountJson: parsed.data.GSC_SERVICE_ACCOUNT_JSON.trim(),
+    siteUrl: parsed.data.GSC_SITE_URL.trim(),
+    brandTerms: parsed.data.GSC_BRAND_TERMS.split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean),
+  },
 };

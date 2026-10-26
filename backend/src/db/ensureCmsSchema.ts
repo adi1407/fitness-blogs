@@ -417,6 +417,54 @@ CREATE TABLE IF NOT EXISTS product_pick_placements (
 CREATE INDEX IF NOT EXISTS idx_product_pick_placements_target
   ON product_pick_placements(target, sort_order);
 
+CREATE TABLE IF NOT EXISTS gsc_site_daily (
+  date DATE PRIMARY KEY,
+  clicks INT NOT NULL,
+  impressions INT NOT NULL,
+  position REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS gsc_query_daily (
+  date DATE NOT NULL,
+  query TEXT NOT NULL,
+  clicks INT NOT NULL,
+  impressions INT NOT NULL,
+  position REAL NOT NULL,
+  PRIMARY KEY (date, query)
+);
+
+CREATE TABLE IF NOT EXISTS gsc_page_daily (
+  date DATE NOT NULL,
+  page TEXT NOT NULL,
+  clicks INT NOT NULL,
+  impressions INT NOT NULL,
+  position REAL NOT NULL,
+  PRIMARY KEY (date, page)
+);
+
+CREATE TABLE IF NOT EXISTS gsc_page_query_daily (
+  date DATE NOT NULL,
+  page TEXT NOT NULL,
+  query TEXT NOT NULL,
+  clicks INT NOT NULL,
+  impressions INT NOT NULL,
+  position REAL NOT NULL,
+  PRIMARY KEY (date, page, query)
+);
+
+CREATE TABLE IF NOT EXISTS gsc_sync_runs (
+  id BIGSERIAL PRIMARY KEY,
+  status TEXT NOT NULL DEFAULT 'running' CHECK (status IN ('running', 'success', 'error')),
+  trigger TEXT NOT NULL DEFAULT 'schedule',
+  site_url TEXT NOT NULL DEFAULT '',
+  range_start DATE,
+  range_end DATE,
+  row_count INT NOT NULL DEFAULT 0,
+  error TEXT NOT NULL DEFAULT '',
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  finished_at TIMESTAMPTZ
+);
+
 CREATE TABLE IF NOT EXISTS seed_state (
   name TEXT PRIMARY KEY,
   fingerprint TEXT NOT NULL,
