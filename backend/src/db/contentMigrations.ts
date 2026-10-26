@@ -705,9 +705,10 @@ export async function applyContentMigrations(): Promise<void> {
       applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `);
+  const applied = await pool.query<{ id: string }>(`SELECT id FROM content_migrations`);
+  const done = new Set(applied.rows.map((r) => r.id));
   for (const m of MIGRATIONS) {
-    const done = await pool.query(`SELECT 1 FROM content_migrations WHERE id = $1`, [m.id]);
-    if (done.rowCount) continue;
+    if (done.has(m.id)) continue;
     await m.run();
     await pool.query(
       `INSERT INTO content_migrations (id) VALUES ($1) ON CONFLICT (id) DO NOTHING`,

@@ -1,4 +1,5 @@
 import { pool } from "./pool";
+import { runSeedIfChanged } from "./seedState";
 import { foodsBatch1 } from "./foods/batch1";
 import { foodsBatch2 } from "./foods/batch2";
 import { foodsBatch3 } from "./foods/batch3";
@@ -17,9 +18,15 @@ const FOODS: FoodSeed[] = [
 /** Upsert seeded foods by slug so corrections in the seed files reach production on deploy. */
 export async function seedFoods(): Promise<void> {
   const slugs = new Set<string>();
-  for (const [i, f] of FOODS.entries()) {
+  for (const f of FOODS) {
     if (slugs.has(f.slug)) throw new Error(`[foods] duplicate slug ${f.slug}`);
     slugs.add(f.slug);
+  }
+  await runSeedIfChanged("foods", [FOODS, upsertFoods], upsertFoods);
+}
+
+async function upsertFoods(): Promise<void> {
+  for (const [i, f] of FOODS.entries()) {
     await pool.query(
       `INSERT INTO foods (
         slug, name, hindi_name, category, diet, is_veg, basis_label,

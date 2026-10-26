@@ -16,17 +16,18 @@ type Target = {
   article_number: number;
 };
 
-async function lookupTargets(slugs: string[]): Promise<Map<string, Target>> {
-  if (!slugs.length) return new Map();
+/** Published, numbered articles by slug; all of them when `slugs` is omitted. */
+async function lookupTargets(slugs?: string[]): Promise<Map<string, Target>> {
+  if (slugs && !slugs.length) return new Map();
   const res = await pool.query<Target & { slug: string }>(
     `SELECT a.slug, c.slug AS category_slug, s.slug AS subcategory_slug, a.article_number
      FROM articles a
      JOIN categories c ON c.id = a.category_id
      JOIN subcategories s ON s.id = a.subcategory_id
-     WHERE a.slug = ANY($1::text[])
+     WHERE ($1::text[] IS NULL OR a.slug = ANY($1::text[]))
        AND a.status = 'published'
        AND a.article_number IS NOT NULL`,
-    [slugs],
+    [slugs ?? null],
   );
   return new Map(res.rows.map((r) => [r.slug, r]));
 }
@@ -43,9 +44,11 @@ export async function normalizeArticleLinks(html: string): Promise<string> {
       [...html.matchAll(UNNUMBERED_ARTICLE_HREF)].map((m) => m[1].toLowerCase()),
     ),
   ];
-  const targets = await lookupTargets(slugs);
-  if (!targets.size) return html;
+  return rewriteUnnumberedLinks(html, await lookupTargets(slugs));
+}
 
+function rewriteUnnumberedLinks(html: string, targets: Map<string, Target>): string {
+  if (!targets.size) return html;
   return html.replace(UNNUMBERED_ARTICLE_HREF, (full, slug: string, hash?: string) => {
     const t = targets.get(slug.toLowerCase());
     if (!t) return full;
@@ -92,12 +95,15 @@ export async function unlinkUnpublishedArticles(html: string): Promise<string> {
 
 /** Boot-time pass over every article body. Idempotent; leaves `updated_at` alone. */
 export async function normalizeAllArticleLinks(): Promise<void> {
-  const res = await pool.query<{ id: string; body: string }>(
-    `SELECT id, body FROM articles WHERE body LIKE '%/blog/%'`,
-  );
+  const [res, targets] = await Promise.all([
+    pool.query<{ id: string; body: string }>(
+      `SELECT id, body FROM articles WHERE body LIKE '%/blog/%'`,
+    ),
+    lookupTargets(),
+  ]);
   let updated = 0;
   for (const row of res.rows) {
-    const next = await normalizeArticleLinks(row.body);
+    const next = rewriteUnnumberedLinks(row.body, targets);
     if (next === row.body) continue;
     await pool.query(`UPDATE articles SET body = $1 WHERE id = $2`, [next, row.id]);
     updated++;

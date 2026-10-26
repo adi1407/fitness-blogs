@@ -1,4 +1,5 @@
 import { pool } from "./pool";
+import { runSeedIfChanged } from "./seedState";
 import type { MuscleGroup } from "../constants/knowledgeContent";
 import { KNOWLEDGE_HUB_SLUG } from "../constants/knowledgeContent";
 import { EXERCISE_GUIDES } from "./knowledge/exerciseGuides";
@@ -2071,16 +2072,20 @@ function withPageBody(page: SeedPage): SeedPage {
 
 /** Idempotent seed of exercises, recipes, and knowledge pages. */
 export async function seedKnowledgeContent(): Promise<void> {
-  for (const ex of EXERCISES) {
-    await upsertExercise(withGuide(ex));
-  }
-  for (const recipe of RECIPES) {
-    await upsertRecipe(withRecipeGuide(recipe));
-  }
-  for (const page of KNOWLEDGE_PAGES) {
-    await upsertKnowledgePage(withPageBody(page));
-  }
-  console.log(
-    `[db] knowledge seed: ${EXERCISES.length} exercises, ${RECIPES.length} recipes, ${KNOWLEDGE_PAGES.length} knowledge pages`,
+  const exercises = EXERCISES.map(withGuide);
+  const recipes = RECIPES.map(withRecipeGuide);
+  const pages = KNOWLEDGE_PAGES.map(withPageBody);
+  await runSeedIfChanged(
+    "knowledge",
+    [exercises, recipes, pages, upsertExercise, upsertRecipe, upsertKnowledgePage, seedOwnedAndChanged,
+      EXERCISE_SEED_COLUMNS, RECIPE_SEED_COLUMNS, PAGE_SEED_COLUMNS],
+    async () => {
+      for (const ex of exercises) await upsertExercise(ex);
+      for (const recipe of recipes) await upsertRecipe(recipe);
+      for (const page of pages) await upsertKnowledgePage(page);
+      console.log(
+        `[db] knowledge seed: ${exercises.length} exercises, ${recipes.length} recipes, ${pages.length} knowledge pages`,
+      );
+    },
   );
 }
