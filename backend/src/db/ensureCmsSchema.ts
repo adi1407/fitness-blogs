@@ -7,6 +7,7 @@ import { seedIntentArticles } from "./seedIntentArticles";
 import { seedFoods } from "./seedFoods";
 import { applyContentMigrations } from "./contentMigrations";
 import { normalizeAllArticleLinks } from "../services/internalLinks";
+import { runSeedIfChanged } from "./seedState";
 
 const SCHEMA_SQL = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -415,6 +416,12 @@ CREATE TABLE IF NOT EXISTS product_pick_placements (
 
 CREATE INDEX IF NOT EXISTS idx_product_pick_placements_target
   ON product_pick_placements(target, sort_order);
+
+CREATE TABLE IF NOT EXISTS seed_state (
+  name TEXT PRIMARY KEY,
+  fingerprint TEXT NOT NULL,
+  applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 `;
 
 /**
@@ -448,10 +455,15 @@ export const SEED_USERS = [
   },
 ] as const;
 
-/** Loud boot warning for any active account that still accepts its public default password. */
+/**
+ * Loud boot warning for any active account that still accepts its public default password.
+ * Accounts with a recorded password change are skipped: change-password refuses the
+ * defaults, so only never-changed accounts need the (slow) bcrypt check.
+ */
 async function warnDefaultPasswords(): Promise<void> {
   const rows = await pool.query<{ email: string; password_hash: string }>(
-    `SELECT email, password_hash FROM users WHERE is_active = TRUE AND email = ANY($1::text[])`,
+    `SELECT email, password_hash FROM users
+     WHERE is_active = TRUE AND password_changed_at IS NULL AND email = ANY($1::text[])`,
     [SEED_USERS.map((u) => u.email)],
   );
   for (const row of rows.rows) {
@@ -464,66 +476,105 @@ async function warnDefaultPasswords(): Promise<void> {
   }
 }
 
+/** Columns added after a table first shipped: [table, column, definition]. */
+const ADDED_COLUMNS: [string, string, string][] = [
+  ["articles", "article_number", "INT"],
+  ["articles", "category_id", "UUID"],
+  ["articles", "subcategory_id", "UUID"],
+  ["articles", "tags", "TEXT[] DEFAULT '{}'"],
+  ["articles", "topics", "TEXT[] DEFAULT '{}'"],
+  ["articles", "views", "INT NOT NULL DEFAULT 0"],
+  ["articles", "featured_image_alt", "TEXT NOT NULL DEFAULT ''"],
+  ["articles", "featured_image_caption", "TEXT NOT NULL DEFAULT ''"],
+  ["articles", "related_article_numbers", "INT[] NOT NULL DEFAULT '{}'"],
+  ["articles", "faq", "JSONB NOT NULL DEFAULT '[]'::jsonb"],
+  ["articles", "sources", "JSONB NOT NULL DEFAULT '[]'::jsonb"],
+  ["articles", "robots_index", "BOOLEAN NOT NULL DEFAULT TRUE"],
+  ["articles", "last_reviewed_at", "TIMESTAMPTZ"],
+  ["users", "slug", "TEXT"],
+  ["users", "bio", "TEXT NOT NULL DEFAULT ''"],
+  ["users", "credentials", "TEXT NOT NULL DEFAULT ''"],
+  ["users", "password_changed_at", "TIMESTAMPTZ"],
+  ["users", "password_version", "INT NOT NULL DEFAULT 0"],
+  ["foods", "managed_by", "TEXT NOT NULL DEFAULT 'seed'"],
+  ["exercises", "managed_by", "TEXT NOT NULL DEFAULT 'seed'"],
+  ["recipes", "managed_by", "TEXT NOT NULL DEFAULT 'seed'"],
+  ["knowledge_pages", "managed_by", "TEXT NOT NULL DEFAULT 'seed'"],
+  ["foods", "image_url", "TEXT NOT NULL DEFAULT ''"],
+  ["foods", "image_alt", "TEXT NOT NULL DEFAULT ''"],
+];
+
+/** Value-list CHECKs whose allowed values changed after the table first shipped. */
+const VALUE_CHECKS: { table: string; name: string; column: string; values: string[] }[] = [
+  { table: "users", name: "users_role_check", column: "role", values: ["admin", "editor", "writer"] },
+  { table: "foods", name: "foods_managed_by_check", column: "managed_by", values: ["seed", "cms"] },
+  {
+    table: "articles",
+    name: "articles_status_check",
+    column: "status",
+    values: ["draft", "submitted", "published", "rejected", "changes_requested"],
+  },
+];
+
+function quotedValues(constraintDef: string): string {
+  return [...constraintDef.matchAll(/'((?:[^']|'')*)'/g)].map((m) => m[1]).sort().join(",");
+}
+
+/**
+ * ALTER TABLE takes an exclusive lock that blocks reads even when the change is a
+ * no-op, and a deploy boots while the previous instance is still serving. So read
+ * the catalog first and only alter what is actually missing or different.
+ */
 async function migrateLegacySchema(): Promise<void> {
-  await pool.query(`
-    DO $$ BEGIN
-      ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
-      ALTER TABLE users ADD CONSTRAINT users_role_check
-        CHECK (role IN ('admin', 'editor', 'writer'));
-    EXCEPTION WHEN others THEN NULL;
-    END $$;
-  `);
   await pool.query(`UPDATE users SET role = 'writer' WHERE role = 'author'`);
 
-  await pool.query(`
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS article_number INT;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS category_id UUID;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS subcategory_id UUID;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS topics TEXT[] DEFAULT '{}';
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS views INT NOT NULL DEFAULT 0;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS featured_image_alt TEXT NOT NULL DEFAULT '';
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS featured_image_caption TEXT NOT NULL DEFAULT '';
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS related_article_numbers INT[] NOT NULL DEFAULT '{}';
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]'::jsonb;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS sources JSONB NOT NULL DEFAULT '[]'::jsonb;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS robots_index BOOLEAN NOT NULL DEFAULT TRUE;
-    ALTER TABLE articles ADD COLUMN IF NOT EXISTS last_reviewed_at TIMESTAMPTZ;
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS slug TEXT;
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT NOT NULL DEFAULT '';
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS credentials TEXT NOT NULL DEFAULT '';
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS password_changed_at TIMESTAMPTZ;
-    ALTER TABLE users ADD COLUMN IF NOT EXISTS password_version INT NOT NULL DEFAULT 0;
-    ALTER TABLE foods ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
-    ALTER TABLE exercises ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
-    ALTER TABLE recipes ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
-    ALTER TABLE knowledge_pages ADD COLUMN IF NOT EXISTS managed_by TEXT NOT NULL DEFAULT 'seed';
-    ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
-    ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_alt TEXT NOT NULL DEFAULT '';
-    CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL;
-  `);
+  const [columns, checks] = await Promise.all([
+    pool.query<{ table_name: string; column_name: string }>(
+      `SELECT table_name, column_name FROM information_schema.columns
+       WHERE table_schema = current_schema() AND table_name = ANY($1::text[])`,
+      [[...new Set(ADDED_COLUMNS.map(([table]) => table))]],
+    ),
+    pool.query<{ table_name: string; conname: string; def: string }>(
+      `SELECT rel.relname AS table_name, con.conname, pg_get_constraintdef(con.oid) AS def
+       FROM pg_constraint con
+       JOIN pg_class rel ON rel.oid = con.conrelid
+       WHERE con.contype = 'c' AND con.conname = ANY($1::text[])`,
+      [VALUE_CHECKS.map((c) => c.name)],
+    ),
+  ]);
 
-  await pool.query(`
-    DO $$ BEGIN
-      ALTER TABLE foods DROP CONSTRAINT IF EXISTS foods_managed_by_check;
-      ALTER TABLE foods ADD CONSTRAINT foods_managed_by_check
-        CHECK (managed_by IN ('seed', 'cms'));
-    EXCEPTION WHEN others THEN NULL;
-    END $$;
-  `);
+  const present = new Set(columns.rows.map((r) => `${r.table_name}.${r.column_name}`));
+  const missing = ADDED_COLUMNS.filter(([table, column]) => !present.has(`${table}.${column}`));
+  if (missing.length) {
+    await pool.query(
+      missing
+        .map(([table, column, def]) => `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${column} ${def};`)
+        .join("\n"),
+    );
+  }
+  await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS uq_users_slug ON users(slug) WHERE slug IS NOT NULL`);
 
-  // Allow changes_requested status on existing DBs
-  await pool.query(`
-    DO $$ BEGIN
-      ALTER TABLE articles DROP CONSTRAINT IF EXISTS articles_status_check;
-      ALTER TABLE articles ADD CONSTRAINT articles_status_check
-        CHECK (status IN ('draft', 'submitted', 'published', 'rejected', 'changes_requested'));
-    EXCEPTION WHEN others THEN NULL;
-    END $$;
-  `);
+  for (const check of VALUE_CHECKS) {
+    const current = checks.rows.find((r) => r.table_name === check.table && r.conname === check.name);
+    if (current && quotedValues(current.def) === [...check.values].sort().join(",")) continue;
+    // Existing rows outside the new list make ADD fail; the block then rolls back and keeps the old check.
+    await pool.query(`
+      DO $$ BEGIN
+        ALTER TABLE ${check.table} DROP CONSTRAINT IF EXISTS ${check.name};
+        ALTER TABLE ${check.table} ADD CONSTRAINT ${check.name}
+          CHECK (${check.column} IN (${check.values.map((v) => `'${v}'`).join(", ")}));
+      EXCEPTION WHEN others THEN NULL;
+      END $$;
+    `);
+    console.log(`[db] check constraint ${check.name} updated`);
+  }
 }
 
 async function seedTaxonomy(): Promise<void> {
+  await runSeedIfChanged("taxonomy", [BLOG_TAXONOMY, upsertTaxonomy], upsertTaxonomy);
+}
+
+async function upsertTaxonomy(): Promise<void> {
   for (let ci = 0; ci < BLOG_TAXONOMY.length; ci++) {
     const cat = BLOG_TAXONOMY[ci];
     // Unchanged rows are skipped (no rewrite each boot), so fall back to a plain lookup for the id.
@@ -667,8 +718,7 @@ async function removeSeededArticles(): Promise<void> {
   }
 }
 
-/** Apply CMS schema and seed staff + taxonomy. */
-export async function ensureCmsSchema(): Promise<void> {
+async function ensureSchema(): Promise<void> {
   await pool.query(SCHEMA_SQL);
   await migrateLegacySchema();
   await seedTaxonomy();
@@ -683,7 +733,9 @@ export async function ensureCmsSchema(): Promise<void> {
   }
 
   await ensureArticleNumbers();
+}
 
+async function ensureStaffUsers(): Promise<void> {
   await pool.query(
     `UPDATE users SET email = 'writer@fitknowledge.local', name = 'FitKnowledge Writer', role = 'writer'
      WHERE email = 'author@fitknowledge.local'`,
@@ -711,11 +763,30 @@ export async function ensureCmsSchema(): Promise<void> {
     }
   }
   await ensureUserSlugs();
+}
 
+async function seedContent(): Promise<void> {
   await removeSeededArticles();
   await seedKnowledgeContent();
   await seedIntentArticles();
   await seedFoods();
-  await applyContentMigrations();
-  await normalizeAllArticleLinks();
+}
+
+/** Apply CMS schema, staff accounts, seeds and content migrations; logs per-step timings. */
+export async function ensureCmsSchema(): Promise<void> {
+  const started = Date.now();
+  const timings: string[] = [];
+  const steps: [string, () => Promise<void>][] = [
+    ["schema", ensureSchema],
+    ["users", ensureStaffUsers],
+    ["seeds", seedContent],
+    ["migrations", applyContentMigrations],
+    ["links", normalizeAllArticleLinks],
+  ];
+  for (const [name, run] of steps) {
+    const stepStart = Date.now();
+    await run();
+    timings.push(`${name} ${Date.now() - stepStart}ms`);
+  }
+  console.log(`[db] ready in ${Date.now() - started}ms (${timings.join(", ")})`);
 }

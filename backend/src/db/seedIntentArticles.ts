@@ -1,4 +1,5 @@
 import { pool } from "./pool";
+import { runSeedIfChanged } from "./seedState";
 import { estimateReadingTime } from "../utils/articleSlug";
 import { batch1 } from "./intentArticles/batch1";
 import { batch2 } from "./intentArticles/batch2";
@@ -222,6 +223,15 @@ async function linkRelatedArticles(): Promise<void> {
 
 /** Insert-if-missing seed of the high-intent articles by Aditya Choudhary. */
 export async function seedIntentArticles(): Promise<void> {
+  await runSeedIfChanged(
+    "intent-articles",
+    [ARTICLES, SEO_META, ARTICLES.map((a) => coverForSlug(a.slug)), insertIfMissing, resolveTaxonomy,
+      linkRelatedArticles, syncIntentCovers, estimateReadingTime],
+    insertIntentArticles,
+  );
+}
+
+async function insertIntentArticles(): Promise<void> {
   const authorId = await resolveAuthorId();
   let inserted = 0;
   let skipped = 0;
