@@ -7,6 +7,7 @@ import { createApp } from "./app";
 import { env } from "./config/env";
 import { ensureCmsSchema } from "./db/ensureCmsSchema";
 import { migrateImagesToCloudinary } from "./services/migrateImagesToCloudinary";
+import { startSearchConsoleSchedule } from "./services/searchConsole";
 
 process.on("unhandledRejection", (reason) => {
   console.error("[backend] unhandled rejection", reason);
@@ -20,6 +21,7 @@ async function main() {
     migrateImagesToCloudinary().catch((err) => {
       console.error("[cloudinary-migrate] failed", err);
     });
+    startSearchConsoleSchedule();
   });
 }
 

@@ -23,6 +23,7 @@ import {
   Menu,
   PenLine,
   Soup,
+  TrendingUp,
   Users,
   X,
 } from "lucide-react";
@@ -201,6 +202,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/subscribers"),
           },
           {
+            to: "/seo",
+            label: "SEO performance",
+            description: "Google Search Console",
+            icon: TrendingUp,
+            match: (p) => p.startsWith("/seo"),
+          },
+          {
             to: "/search-insights",
             label: "Search insights",
             description: "Zero-result queries",
@@ -349,6 +357,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
       id: "site",
       label: "Site & SEO",
       items: [
+        {
+          to: "/seo",
+          label: "SEO performance",
+          description: "Google Search Console",
+          icon: TrendingUp,
+          match: (p) => p.startsWith("/seo"),
+        },
         {
           to: "/redirects",
           label: "Redirects",
