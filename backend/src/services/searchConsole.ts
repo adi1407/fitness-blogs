@@ -17,7 +17,7 @@ const SYNC_EVERY_MS = 12 * 60 * 60 * 1000;
 const CHECK_EVERY_MS = 60 * 60 * 1000;
 const INSERT_CHUNK = 5_000;
 
-type ServiceAccount = { clientEmail: string; privateKey: string };
+export type ServiceAccount = { clientEmail: string; privateKey: string };
 type Dimension = "date" | "query" | "page";
 type ApiRow = { keys: string[]; clicks: number; impressions: number; position: number };
 
@@ -70,7 +70,14 @@ async function accessToken(sa: ServiceAccount): Promise<string> {
     iat: now,
     exp: now + 3600,
   })}`;
-  const signature = createSign("RSA-SHA256").update(unsigned).sign(sa.privateKey).toString("base64url");
+  let signature: string;
+  try {
+    signature = createSign("RSA-SHA256").update(unsigned).sign(sa.privateKey).toString("base64url");
+  } catch {
+    throw new Error(
+      "The service account key could not be read. Paste the whole downloaded JSON key file into GSC_SERVICE_ACCOUNT_JSON.",
+    );
+  }
   const res = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -93,9 +100,10 @@ async function accessToken(sa: ServiceAccount): Promise<string> {
   return token.value;
 }
 
-async function googleApi<T>(sa: ServiceAccount, path: string, body?: object): Promise<T> {
+/** `path` is relative to the Webmasters v3 API unless it is an absolute https URL. */
+export async function googleApi<T>(sa: ServiceAccount, path: string, body?: object): Promise<T> {
   for (let attempt = 0; ; attempt++) {
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetch(path.startsWith("https://") ? path : `${API_BASE}${path}`, {
       method: body ? "POST" : "GET",
       headers: {
         Authorization: `Bearer ${await accessToken(sa)}`,
@@ -115,13 +123,17 @@ async function googleApi<T>(sa: ServiceAccount, path: string, body?: object): Pr
   }
 }
 
-function siteHost(): string {
+/** The live site, even in local development (dev talks to production Google data). */
+export function publicSiteOrigin(): string {
   const site = env.publicSiteUrl;
-  const origin = /localhost|127\.0\.0\.1/.test(site) ? "https://fitlives.in" : site;
-  return new URL(origin).hostname.replace(/^www\./, "");
+  return /localhost|127\.0\.0\.1/.test(site) ? "https://fitlives.in" : site.replace(/\/$/, "");
 }
 
-async function resolveSiteUrl(sa: ServiceAccount): Promise<string> {
+function siteHost(): string {
+  return new URL(publicSiteOrigin()).hostname.replace(/^www\./, "");
+}
+
+export async function resolveSiteUrl(sa: ServiceAccount): Promise<string> {
   if (env.gsc.siteUrl) return env.gsc.siteUrl;
   const data = await googleApi<{ siteEntry?: { siteUrl: string; permissionLevel: string }[] }>(sa, "/sites");
   const owned = new Set(

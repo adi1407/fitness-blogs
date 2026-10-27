@@ -16,6 +16,7 @@ import RedirectsPage from "./pages/RedirectsPage.tsx";
 import SubscribersPage from "./pages/SubscribersPage.tsx";
 import SearchInsightsPage from "./pages/SearchInsightsPage.tsx";
 import SeoPerformancePage from "./pages/SeoPerformancePage.tsx";
+import SeoIndexingPage from "./pages/SeoIndexingPage.tsx";
 import QualityGapsPage from "./pages/QualityGapsPage.tsx";
 import ChangePasswordPage from "./pages/ChangePasswordPage.tsx";
 import ExercisesListPage from "./pages/ExercisesListPage.tsx";
@@ -52,6 +53,7 @@ export default function App() {
                 <Route path="subscribers" element={<SubscribersPage />} />
                 <Route path="search-insights" element={<SearchInsightsPage />} />
                 <Route path="seo" element={<SeoPerformancePage />} />
+                <Route path="seo/indexing" element={<SeoIndexingPage />} />
                 <Route path="quality" element={<QualityGapsPage />} />
                 <Route path="exercises" element={<ExercisesListPage />} />
                 <Route path="exercises/new" element={<ExerciseEditorPage />} />
