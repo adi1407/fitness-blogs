@@ -465,6 +465,45 @@ CREATE TABLE IF NOT EXISTS gsc_sync_runs (
   finished_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS site_audit_runs (
+  id BIGSERIAL PRIMARY KEY,
+  status TEXT NOT NULL DEFAULT 'running' CHECK (status IN ('running', 'success', 'error')),
+  trigger TEXT NOT NULL DEFAULT 'schedule',
+  pages INT NOT NULL DEFAULT 0,
+  broken_links JSONB NOT NULL DEFAULT '[]'::jsonb,
+  error TEXT NOT NULL DEFAULT '',
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  finished_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS site_audit_pages (
+  url TEXT PRIMARY KEY,
+  path TEXT NOT NULL,
+  status INT NOT NULL,
+  redirect_to TEXT NOT NULL DEFAULT '',
+  title TEXT NOT NULL DEFAULT '',
+  canonical TEXT NOT NULL DEFAULT '',
+  noindex BOOLEAN NOT NULL DEFAULT FALSE,
+  inlinks INT NOT NULL DEFAULT 0,
+  content_inlinks INT NOT NULL DEFAULT 0,
+  linked_from TEXT[] NOT NULL DEFAULT '{}',
+  checked_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS gsc_url_inspections (
+  url TEXT PRIMARY KEY,
+  verdict TEXT NOT NULL DEFAULT '',
+  coverage_state TEXT NOT NULL DEFAULT '',
+  indexing_state TEXT NOT NULL DEFAULT '',
+  robots_txt_state TEXT NOT NULL DEFAULT '',
+  page_fetch_state TEXT NOT NULL DEFAULT '',
+  google_canonical TEXT NOT NULL DEFAULT '',
+  user_canonical TEXT NOT NULL DEFAULT '',
+  last_crawl_time TIMESTAMPTZ,
+  error TEXT NOT NULL DEFAULT '',
+  inspected_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS seed_state (
   name TEXT PRIMARY KEY,
   fingerprint TEXT NOT NULL,
