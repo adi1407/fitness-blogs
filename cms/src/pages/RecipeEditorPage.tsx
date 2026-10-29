@@ -2,6 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiFetch, type CmsRecipe } from "@/lib/api/client";
 import RichTextEditor from "@/components/RichTextEditor";
+import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
+import { recipeReadiness } from "@/features/recipes/recipeReadiness";
 
 function linesToArray(value: string): string[] {
   return value
@@ -29,7 +31,17 @@ const empty = {
   status: "draft" as CmsRecipe["status"],
   robotsIndex: true,
   sortOrder: 0,
+  imageUrl: "",
+  imageAlt: "",
+  prepMinutes: "",
+  cookMinutes: "",
+  totalMinutes: "",
+  timeNote: "",
+  servings: "",
 };
+
+const num = (v: string) => (v.trim() === "" ? null : Number(v));
+const field = "mt-1 w-full rounded-lg border border-slate-200 px-3 py-2";
 
 export default function RecipeEditorPage() {
   const { id } = useParams();
@@ -64,6 +76,13 @@ export default function RecipeEditorPage() {
           status: r.status,
           robotsIndex: r.robotsIndex,
           sortOrder: r.sortOrder,
+          imageUrl: r.imageUrl ?? "",
+          imageAlt: r.imageAlt ?? "",
+          prepMinutes: r.prepMinutes != null ? String(r.prepMinutes) : "",
+          cookMinutes: r.cookMinutes != null ? String(r.cookMinutes) : "",
+          totalMinutes: r.totalMinutes != null ? String(r.totalMinutes) : "",
+          timeNote: r.timeNote ?? "",
+          servings: r.servings != null ? String(r.servings) : "",
         });
       })
       .catch((err) =>
@@ -76,7 +95,10 @@ export default function RecipeEditorPage() {
     e.preventDefault();
     setError("");
     setMessage("");
-    const num = (v: string) => (v.trim() === "" ? null : Number(v));
+    if (form.status === "published" && !ready) {
+      setError("Finish the Google recipe checklist below before publishing, or save as draft.");
+      return;
+    }
     const payload = {
       title: form.title,
       slug: form.slug || null,
@@ -96,6 +118,13 @@ export default function RecipeEditorPage() {
       status: form.status,
       robotsIndex: form.robotsIndex,
       sortOrder: Number(form.sortOrder) || 0,
+      imageUrl: form.imageUrl.trim(),
+      imageAlt: form.imageAlt.trim(),
+      prepMinutes: num(form.prepMinutes),
+      cookMinutes: num(form.cookMinutes),
+      totalMinutes: num(form.totalMinutes),
+      timeNote: form.timeNote.trim(),
+      servings: num(form.servings),
     };
     try {
       if (isNew) {
@@ -123,6 +152,24 @@ export default function RecipeEditorPage() {
     await apiFetch(`/recipes/${id}`, { method: "DELETE" });
     navigate("/recipes");
   }
+
+  const checks = recipeReadiness({
+    imageUrl: form.imageUrl.trim(),
+    imageAlt: form.imageAlt,
+    prepMinutes: num(form.prepMinutes),
+    cookMinutes: num(form.cookMinutes),
+    totalMinutes: num(form.totalMinutes),
+    servings: num(form.servings),
+    calories: num(form.calories),
+    proteinG: num(form.proteinG),
+    carbsG: num(form.carbsG),
+    fatG: num(form.fatG),
+    ingredients: linesToArray(form.ingredients),
+    steps: linesToArray(form.steps),
+    excerpt: form.excerpt,
+    metaDescription: form.metaDescription,
+  });
+  const ready = checks.every((c) => c.ok);
 
   if (loading) return <p className="text-slate-600">Loading…</p>;
 
@@ -271,6 +318,59 @@ export default function RecipeEditorPage() {
           ))}
         </div>
 
+        <section className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4">
+          <h2 className="text-sm font-semibold text-slate-900">Photo, time and servings</h2>
+          <ImageUrlUploadField
+            label="Recipe photo"
+            value={form.imageUrl}
+            onChange={(url) => setForm({ ...form, imageUrl: url })}
+            hint="Real photo of this dish as served, at least 1200 px wide (16:9 works best). Google needs it for the recipe card."
+          />
+          <label className="text-sm font-medium">
+            Photo alt text
+            <input
+              value={form.imageAlt}
+              onChange={(e) => setForm({ ...form, imageAlt: e.target.value })}
+              className={field}
+              maxLength={200}
+              placeholder="Paneer bhurji in a steel bowl with two rotis"
+            />
+          </label>
+          <div className="grid gap-3 sm:grid-cols-4">
+            {(
+              [
+                ["prepMinutes", "Prep (min)", "Hands-on prep"],
+                ["cookMinutes", "Cook (min)", "0 if no cooking"],
+                ["totalMinutes", "Total (min)", "Only if there is waiting time"],
+                ["servings", "Servings", "Nutrition is per serving"],
+              ] as const
+            ).map(([key, label, placeholder]) => (
+              <label key={key} className="text-sm font-medium">
+                {label}
+                <input
+                  type="number"
+                  min={key === "servings" ? 1 : 0}
+                  inputMode="numeric"
+                  value={form[key]}
+                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                  placeholder={placeholder}
+                  className={field}
+                />
+              </label>
+            ))}
+          </div>
+          <label className="text-sm font-medium">
+            Time note (optional)
+            <input
+              value={form.timeNote}
+              onChange={(e) => setForm({ ...form, timeNote: e.target.value })}
+              className={field}
+              maxLength={300}
+              placeholder="Total includes soaking the dal for 3–4 hours."
+            />
+          </label>
+        </section>
+
         <label className="text-sm font-medium">
           Cuisine tags (one per line)
           <textarea
@@ -312,6 +412,23 @@ export default function RecipeEditorPage() {
           />
           Allow search indexing when published
         </label>
+
+        <section
+          className={`rounded-xl border p-4 ${ready ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}
+          aria-live="polite"
+        >
+          <h2 className="text-sm font-semibold text-slate-900">
+            {ready ? "Ready for Google recipe results" : "Needed before publishing"}
+          </h2>
+          <ul className="mt-2 grid gap-1 text-sm sm:grid-cols-2">
+            {checks.map((c) => (
+              <li key={c.label} className={c.ok ? "text-emerald-800" : "text-amber-900"}>
+                <span aria-hidden>{c.ok ? "✓" : "○"}</span> {c.label}
+                <span className="sr-only">{c.ok ? " (done)" : " (missing)"}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <button
           type="submit"

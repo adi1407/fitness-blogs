@@ -14,11 +14,38 @@ import {
   KnowledgeDisclaimer,
   ProseHtml,
 } from "@/features/knowledge/components/KnowledgeUi";
-import { fetchRecipe, fetchRecipes, staticParamsOrEmpty } from "@/lib/api/knowledge";
+import { CoverImage } from "@/components/shared/CoverImage";
+import {
+  fetchRecipe,
+  fetchRecipes,
+  staticParamsOrEmpty,
+  type PublicRecipe,
+} from "@/lib/api/knowledge";
+import { structuredDataImages } from "@/lib/imageVariants";
 
 export const revalidate = 120;
 
 type Props = { params: Promise<{ slug: string }> };
+
+function totalMinutes(r: PublicRecipe): number | null {
+  if (r.totalMinutes != null) return r.totalMinutes;
+  if (r.prepMinutes == null && r.cookMinutes == null) return null;
+  return (r.prepMinutes ?? 0) + (r.cookMinutes ?? 0);
+}
+
+/** ISO 8601 duration for schema.org, e.g. 200 → "PT3H20M". */
+function isoDuration(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `PT${h ? `${h}H` : ""}${m || !h ? `${m}M` : ""}`;
+}
+
+function formatMinutes(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (!h) return `${m} min`;
+  return m ? `${h} h ${m} min` : `${h} h`;
+}
 
 export async function generateStaticParams() {
   return staticParamsOrEmpty(async () =>
@@ -43,6 +70,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | fitlives`,
       description,
       url: `/recipes/${slug}`,
+      ...(recipe.imageUrl
+        ? { images: [{ url: recipe.imageUrl, alt: recipe.imageAlt || recipe.title }] }
+        : {}),
     },
   };
 }
@@ -64,12 +94,26 @@ export default async function RecipeDetailPage({ params }: Props) {
     ...(recipe.fatG != null ? { fatContent: `${recipe.fatG} g` } : {}),
   };
 
+  const total = totalMinutes(recipe);
+  const servings = recipe.servings ?? null;
+  const timeFacts = [
+    recipe.prepMinutes != null ? ["Prep", formatMinutes(recipe.prepMinutes)] : null,
+    recipe.cookMinutes ? ["Cook", formatMinutes(recipe.cookMinutes)] : null,
+    total != null ? ["Total", formatMinutes(total)] : null,
+    servings != null ? ["Serves", String(servings)] : null,
+  ].filter((f): f is [string, string] => f !== null);
+
   const recipeLd = {
     "@context": "https://schema.org",
     "@type": "Recipe",
     name: recipe.title,
     description: recipe.metaDescription || recipe.excerpt,
     url: absoluteUrl(path),
+    ...(recipe.imageUrl ? { image: structuredDataImages(recipe.imageUrl) } : {}),
+    ...(recipe.prepMinutes != null ? { prepTime: isoDuration(recipe.prepMinutes) } : {}),
+    ...(recipe.cookMinutes ? { cookTime: isoDuration(recipe.cookMinutes) } : {}),
+    ...(total != null ? { totalTime: isoDuration(total) } : {}),
+    ...(servings != null ? { recipeYield: `${servings} serving${servings === 1 ? "" : "s"}` } : {}),
     author: ORG_REF,
     publisher: ORG_REF,
     inLanguage: "en-IN",
@@ -96,7 +140,8 @@ export default async function RecipeDetailPage({ params }: Props) {
 
   return (
     <main className="fk-page flex-1 py-16">
-      {recipe.robotsIndex !== false ? <JsonLd data={recipeLd} /> : null}
+      {/* Google requires an image for Recipe results; without one the markup is an invalid item. */}
+      {recipe.robotsIndex !== false && recipe.imageUrl ? <JsonLd data={recipeLd} /> : null}
       <KnowledgeBreadcrumbs
         items={[
           { href: "/", label: "Home" },
@@ -112,9 +157,40 @@ export default async function RecipeDetailPage({ params }: Props) {
         {recipe.excerpt}
       </p>
 
+      {recipe.imageUrl ? (
+        <CoverImage
+          src={recipe.imageUrl}
+          alt={recipe.imageAlt || recipe.title}
+          sizes="(min-width: 1024px) 960px, 100vw"
+          priority
+          className="mt-6 aspect-video w-full max-w-4xl rounded-xl object-cover"
+        />
+      ) : null}
+
+      {timeFacts.length ? (
+        <div className="mt-6 max-w-4xl">
+          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {timeFacts.map(([label, value]) => (
+              <div key={label} className="rounded-xl border border-border px-4 py-3">
+                <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {label}
+                </dt>
+                <dd className="mt-1 text-lg font-semibold">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          {recipe.timeNote ? (
+            <p className="mt-2 text-sm text-muted-foreground">{recipe.timeNote}</p>
+          ) : null}
+        </div>
+      ) : null}
+
       {(recipe.calories != null || recipe.proteinG != null) && (
         <div className="mt-6 overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-[280px] text-left text-sm">
+            <caption className="px-4 pt-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Per serving
+            </caption>
             <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
               <tr>
                 <th className="px-4 py-3">Calories</th>

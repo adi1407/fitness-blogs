@@ -174,7 +174,8 @@ const EXERCISE_CARD_COLUMNS = `id, muscle_group, slug, title, excerpt, quick_ans
   robots_index, sort_order, published_at, created_at, updated_at`;
 const RECIPE_CARD_COLUMNS = `id, slug, title, excerpt, quick_answer, calories, protein_g,
   carbs_g, fat_g, cuisine_tags, meal_type, meta_title, meta_description, status,
-  robots_index, sort_order, published_at, created_at, updated_at`;
+  robots_index, sort_order, image_url, image_alt, prep_minutes, cook_minutes, total_minutes,
+  time_note, servings, published_at, created_at, updated_at`;
 const KNOWLEDGE_CARD_COLUMNS = `id, section, slug, title, excerpt, meta_title,
   meta_description, status, robots_index, sort_order, published_at, created_at, updated_at`;
 
