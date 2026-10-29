@@ -286,6 +286,13 @@ CREATE TABLE IF NOT EXISTS recipes (
   robots_index BOOLEAN NOT NULL DEFAULT TRUE,
   sort_order INT NOT NULL DEFAULT 0,
   managed_by TEXT NOT NULL DEFAULT 'seed',
+  image_url TEXT NOT NULL DEFAULT '',
+  image_alt TEXT NOT NULL DEFAULT '',
+  prep_minutes INT,
+  cook_minutes INT,
+  total_minutes INT,
+  time_note TEXT NOT NULL DEFAULT '',
+  servings INT,
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -589,6 +596,13 @@ const ADDED_COLUMNS: [string, string, string][] = [
   ["knowledge_pages", "managed_by", "TEXT NOT NULL DEFAULT 'seed'"],
   ["foods", "image_url", "TEXT NOT NULL DEFAULT ''"],
   ["foods", "image_alt", "TEXT NOT NULL DEFAULT ''"],
+  ["recipes", "image_url", "TEXT NOT NULL DEFAULT ''"],
+  ["recipes", "image_alt", "TEXT NOT NULL DEFAULT ''"],
+  ["recipes", "prep_minutes", "INT"],
+  ["recipes", "cook_minutes", "INT"],
+  ["recipes", "total_minutes", "INT"],
+  ["recipes", "time_note", "TEXT NOT NULL DEFAULT ''"],
+  ["recipes", "servings", "INT"],
 ];
 
 /** Value-list CHECKs whose allowed values changed after the table first shipped. */

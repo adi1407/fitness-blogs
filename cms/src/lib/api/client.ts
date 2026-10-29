@@ -274,6 +274,13 @@ export type CmsRecipe = {
   status: "draft" | "published";
   robotsIndex: boolean;
   sortOrder: number;
+  imageUrl: string;
+  imageAlt: string;
+  prepMinutes: number | null;
+  cookMinutes: number | null;
+  totalMinutes: number | null;
+  timeNote: string;
+  servings: number | null;
   path: string | null;
   publishedAt: string | null;
   createdAt: string;

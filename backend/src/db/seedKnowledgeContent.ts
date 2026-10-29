@@ -4,6 +4,7 @@ import type { MuscleGroup } from "../constants/knowledgeContent";
 import { KNOWLEDGE_HUB_SLUG } from "../constants/knowledgeContent";
 import { EXERCISE_GUIDES } from "./knowledge/exerciseGuides";
 import { RECIPE_GUIDES } from "./knowledge/recipeGuides";
+import { RECIPE_TIMES, type RecipeTiming } from "./knowledge/recipeTimes";
 import { PROGRAM_BODIES } from "./knowledge/programGuides";
 import { REVIEW_BODIES } from "./knowledge/reviewGuides";
 
@@ -39,7 +40,7 @@ type SeedRecipe = {
   cuisineTags: string[];
   mealType: string;
   sortOrder: number;
-};
+} & Partial<RecipeTiming>;
 
 type SeedPage = {
   section: "programs" | "reviews";
@@ -1909,7 +1910,8 @@ const EXERCISE_SEED_COLUMNS = [
 const RECIPE_SEED_COLUMNS = [
   "title", "excerpt", "quick_answer", "body_html", "ingredients", "steps", "calories",
   "protein_g", "carbs_g", "fat_g", "cuisine_tags", "meal_type", "meta_title",
-  "meta_description", "sort_order",
+  "meta_description", "sort_order", "prep_minutes", "cook_minutes", "total_minutes",
+  "time_note", "servings",
 ];
 const PAGE_SEED_COLUMNS = [
   "title", "excerpt", "body_html", "meta_title", "meta_description", "sort_order",
@@ -1975,10 +1977,11 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
     `INSERT INTO recipes (
       slug, title, excerpt, quick_answer, body_html, ingredients, steps,
       calories, protein_g, carbs_g, fat_g, cuisine_tags, meal_type,
-      meta_title, meta_description, status, robots_index, sort_order, published_at
+      meta_title, meta_description, status, robots_index, sort_order, published_at,
+      prep_minutes, cook_minutes, total_minutes, time_note, servings
     ) VALUES (
       $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,
-      'published', TRUE, $16, NOW()
+      'published', TRUE, $16, NOW(), $17, $18, $19, $20, $21
     )
     ON CONFLICT (slug) DO UPDATE SET
       title = EXCLUDED.title,
@@ -1996,6 +1999,11 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       meta_title = EXCLUDED.meta_title,
       meta_description = EXCLUDED.meta_description,
       sort_order = EXCLUDED.sort_order,
+      prep_minutes = EXCLUDED.prep_minutes,
+      cook_minutes = EXCLUDED.cook_minutes,
+      total_minutes = EXCLUDED.total_minutes,
+      time_note = EXCLUDED.time_note,
+      servings = EXCLUDED.servings,
       updated_at = NOW()
     ${seedOwnedAndChanged("recipes", RECIPE_SEED_COLUMNS)}`,
     [
@@ -2015,6 +2023,11 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       `${r.title} | fitlives Recipes`,
       r.excerpt,
       r.sortOrder,
+      r.prepMinutes ?? null,
+      r.cookMinutes ?? null,
+      r.totalMinutes ?? null,
+      r.timeNote ?? "",
+      r.servings ?? null,
     ],
   );
 }
@@ -2057,7 +2070,7 @@ function withGuide(ex: SeedExercise): SeedExercise {
 
 function withRecipeGuide(r: SeedRecipe): SeedRecipe {
   const guide = RECIPE_GUIDES[r.slug];
-  return guide ? { ...r, ...guide } : r;
+  return { ...r, ...guide, ...RECIPE_TIMES[r.slug] };
 }
 
 const PAGE_BODIES: Record<SeedPage["section"], Record<string, string>> = {

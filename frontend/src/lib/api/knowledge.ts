@@ -74,6 +74,14 @@ export type PublicRecipe = {
   status: string;
   robotsIndex: boolean;
   sortOrder: number;
+  imageUrl?: string;
+  imageAlt?: string;
+  prepMinutes?: number | null;
+  cookMinutes?: number | null;
+  /** Set only when there is waiting time on top of prep + cook. */
+  totalMinutes?: number | null;
+  timeNote?: string;
+  servings?: number | null;
   path: string | null;
   publishedAt: string | null;
   updatedAt?: string;

@@ -5,6 +5,7 @@ import { authenticate, authorize } from "../middleware/auth";
 import { recordAudit } from "../services/auditLog";
 import { mapRecipe } from "../utils/knowledgeMappers";
 import { revalidateSite } from "../services/revalidateSite";
+import { recipePublishGaps } from "../services/recipeGates";
 
 function refreshRecipePages(...recipes: { path: string | null }[]) {
   revalidateSite(["/recipes", ...recipes.map((r) => r.path)], ["knowledge"]);
@@ -35,7 +36,24 @@ const recipesBodySchema = z.object({
   status: z.enum(["draft", "published"]).optional().default("draft"),
   robotsIndex: z.boolean().optional().default(true),
   sortOrder: z.number().int().min(0).max(10_000).optional().default(0),
+  imageUrl: z.union([z.literal(""), z.string().url().startsWith("https://").max(2000)]).optional().default(""),
+  imageAlt: z.string().max(200).optional().default(""),
+  prepMinutes: z.number().int().min(0).max(10_000).nullable().optional(),
+  cookMinutes: z.number().int().min(0).max(10_000).nullable().optional(),
+  totalMinutes: z.number().int().min(0).max(20_000).nullable().optional(),
+  timeNote: z.string().max(300).optional().default(""),
+  servings: z.number().int().min(1).max(100).nullable().optional(),
 });
+
+/** 422 with the missing items when a published recipe isn't complete enough for Google's recipe card. */
+function publishGateResponse(row: Record<string, unknown>) {
+  const recipe = mapRecipe(row);
+  if (recipe.status !== "published") return null;
+  const gaps = recipePublishGaps(recipe);
+  return gaps.length
+    ? { message: `Can't publish yet: ${gaps.join("; ")}.`, gaps }
+    : null;
+}
 
 recipesRouter.use(authenticate, authorize("admin", "editor"));
 
@@ -77,14 +95,18 @@ recipesRouter.post("/", async (req, res) => {
     normalizeSlugInput(data.slug) || slugFromTitle(data.title) || "recipe";
   const publishedAt = data.status === "published" ? new Date() : null;
 
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+    const result = await client.query(
       `INSERT INTO recipes (
         slug, title, excerpt, quick_answer, body_html, ingredients, steps,
         calories, protein_g, carbs_g, fat_g, cuisine_tags, meal_type,
-        meta_title, meta_description, status, robots_index, sort_order, published_at, managed_by
+        meta_title, meta_description, status, robots_index, sort_order, published_at,
+        image_url, image_alt, prep_minutes, cook_minutes, total_minutes, time_note, servings, managed_by
       ) VALUES (
-        $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,'cms'
+        $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,
+        $20,$21,$22,$23,$24,$25,$26,'cms'
       ) RETURNING *`,
       [
         slug,
@@ -106,8 +128,22 @@ recipesRouter.post("/", async (req, res) => {
         data.robotsIndex,
         data.sortOrder,
         publishedAt,
+        data.imageUrl,
+        data.imageAlt.trim(),
+        data.prepMinutes ?? null,
+        data.cookMinutes ?? null,
+        data.totalMinutes ?? null,
+        data.timeNote.trim(),
+        data.servings ?? null,
       ],
     );
+    const blocked = publishGateResponse(result.rows[0]);
+    if (blocked) {
+      await client.query("ROLLBACK");
+      res.status(422).json(blocked);
+      return;
+    }
+    await client.query("COMMIT");
     const recipe = mapRecipe(result.rows[0]);
     await recordAudit(req, {
       action: "recipe.create",
@@ -118,12 +154,15 @@ recipesRouter.post("/", async (req, res) => {
     refreshRecipePages(recipe);
     res.status(201).json({ recipe });
   } catch (err: unknown) {
+    await client.query("ROLLBACK").catch(() => undefined);
     const code = (err as { code?: string })?.code;
     if (code === "23505") {
       res.status(409).json({ message: "Recipe slug already exists" });
       return;
     }
     throw err;
+  } finally {
+    client.release();
   }
 });
 
@@ -153,8 +192,10 @@ recipesRouter.patch("/:id", async (req, res) => {
   if (status === "published" && !publishedAt) publishedAt = new Date();
   if (status === "draft") publishedAt = null;
 
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+    const result = await client.query(
       `UPDATE recipes SET
         slug = $1,
         title = $2,
@@ -175,6 +216,13 @@ recipesRouter.patch("/:id", async (req, res) => {
         robots_index = COALESCE($17, robots_index),
         sort_order = COALESCE($18, sort_order),
         published_at = $19,
+        image_url = COALESCE($21, image_url),
+        image_alt = COALESCE($22, image_alt),
+        prep_minutes = CASE WHEN $23::boolean THEN $24::int ELSE prep_minutes END,
+        cook_minutes = CASE WHEN $25::boolean THEN $26::int ELSE cook_minutes END,
+        total_minutes = CASE WHEN $27::boolean THEN $28::int ELSE total_minutes END,
+        time_note = COALESCE($29, time_note),
+        servings = CASE WHEN $30::boolean THEN $31::int ELSE servings END,
         managed_by = 'cms',
         updated_at = NOW()
       WHERE id = $20
@@ -202,8 +250,26 @@ recipesRouter.patch("/:id", async (req, res) => {
         data.sortOrder,
         publishedAt,
         req.params.id,
+        data.imageUrl,
+        data.imageAlt?.trim(),
+        data.prepMinutes !== undefined,
+        data.prepMinutes ?? null,
+        data.cookMinutes !== undefined,
+        data.cookMinutes ?? null,
+        data.totalMinutes !== undefined,
+        data.totalMinutes ?? null,
+        data.timeNote?.trim(),
+        data.servings !== undefined,
+        data.servings ?? null,
       ],
     );
+    const blocked = publishGateResponse(result.rows[0]);
+    if (blocked) {
+      await client.query("ROLLBACK");
+      res.status(422).json(blocked);
+      return;
+    }
+    await client.query("COMMIT");
     const recipe = mapRecipe(result.rows[0]);
     await recordAudit(req, {
       action: "recipe.update",
@@ -214,12 +280,15 @@ recipesRouter.patch("/:id", async (req, res) => {
     refreshRecipePages(mapRecipe(row), recipe);
     res.json({ recipe });
   } catch (err: unknown) {
+    await client.query("ROLLBACK").catch(() => undefined);
     const code = (err as { code?: string })?.code;
     if (code === "23505") {
       res.status(409).json({ message: "Recipe slug already exists" });
       return;
     }
     throw err;
+  } finally {
+    client.release();
   }
 });
 

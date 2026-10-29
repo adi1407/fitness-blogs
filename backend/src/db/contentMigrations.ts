@@ -6,6 +6,7 @@ import { estimateReadingTime } from "../utils/articleSlug";
 import { ARTICLE_REWRITES } from "./intentArticles/rewrites";
 import { SEO_META, SEO_META_REWRITES } from "./intentArticles/seoMeta";
 import { INTENT_ARTICLES } from "./seedIntentArticles";
+import { RECIPE_TIMES } from "./knowledge/recipeTimes";
 
 /**
  * One-off editorial changes to live article bodies. Each migration runs once
@@ -670,6 +671,22 @@ async function lockDefaultStaffAccounts(): Promise<void> {
   console.log("[security] locked default staff accounts (editor, writer, author byline)");
 }
 
+/** CMS-edited recipes don't get seed updates, so fill in the timings where they are still blank. */
+async function backfillRecipeTimes(): Promise<void> {
+  let updated = 0;
+  for (const [slug, t] of Object.entries(RECIPE_TIMES)) {
+    const res = await pool.query(
+      `UPDATE recipes
+          SET prep_minutes = $2, cook_minutes = $3, total_minutes = $4,
+              time_note = CASE WHEN time_note = '' THEN $5 ELSE time_note END, servings = $6
+        WHERE slug = $1 AND prep_minutes IS NULL AND cook_minutes IS NULL AND servings IS NULL`,
+      [slug, t.prepMinutes, t.cookMinutes, t.totalMinutes ?? null, t.timeNote ?? "", t.servings],
+    );
+    updated += res.rowCount ?? 0;
+  }
+  console.log(`[db] recipe timings filled on ${updated} recipe(s)`);
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -696,6 +713,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-16-article-rewrites", run: applyArticleRewrites },
   { id: "2026-10-17-source-url-fixes", run: fixSourceUrls },
   { id: "2026-10-24-lock-default-staff-accounts", run: lockDefaultStaffAccounts },
+  { id: "2026-10-29-recipe-times", run: backfillRecipeTimes },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
