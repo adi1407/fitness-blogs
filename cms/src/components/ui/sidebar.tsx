@@ -22,6 +22,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  Network,
   PenLine,
   Soup,
   TrendingUp,
@@ -217,6 +218,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
             match: (p) => p.startsWith("/seo/indexing"),
           },
           {
+            to: "/seo/clusters",
+            label: "Topic clusters",
+            description: "Coverage + internal links",
+            icon: Network,
+            match: (p) => p.startsWith("/seo/clusters"),
+          },
+          {
             to: "/search-insights",
             label: "Search insights",
             description: "Zero-result queries",
@@ -378,6 +386,13 @@ function navGroupsForRole(role: StaffRole): NavGroup[] {
           description: "Google index + internal links",
           icon: ScanSearch,
           match: (p) => p.startsWith("/seo/indexing"),
+        },
+        {
+          to: "/seo/clusters",
+          label: "Topic clusters",
+          description: "Coverage + internal links",
+          icon: Network,
+          match: (p) => p.startsWith("/seo/clusters"),
         },
         {
           to: "/redirects",

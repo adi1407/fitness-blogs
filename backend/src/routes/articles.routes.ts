@@ -20,6 +20,7 @@ import {
 } from "../services/publishGates";
 import { upsertRedirect } from "../services/urlRedirects";
 import { normalizeArticleLinks } from "../services/internalLinks";
+import { buildLinkIndex, clusterMap, inboundSuggestions } from "../services/internalLinking";
 import { pingIndexNow } from "../services/indexNow";
 import { revalidateSite } from "../services/revalidateSite";
 import { blogArticlePath } from "../constants/blogTaxonomy";
@@ -346,6 +347,16 @@ articlesRouter.get("/lookup-by-number/:articleNumber", async (req, res) => {
   res.json({ article: mapArticle(row) });
 });
 
+/** Published pages and their anchor phrases, for in-editor link suggestions. */
+articlesRouter.get("/link-index", async (_req, res) => {
+  res.json({ targets: await buildLinkIndex() });
+});
+
+/** Taxonomy view of published internal links (body + related picks). */
+articlesRouter.get("/cluster-map", async (_req, res) => {
+  res.json({ categories: await clusterMap() });
+});
+
 /** Title/slug search for related-article picker (CMS). */
 articlesRouter.get("/search", async (req, res) => {
   const q = typeof req.query.q === "string" ? req.query.q.trim().slice(0, 80) : "";
@@ -609,6 +620,15 @@ async function assertArticleAccess(
   }
   return row;
 }
+
+/** Published articles that mention this article's topic without linking to it. */
+articlesRouter.get("/:id/inbound-suggestions", async (req, res) => {
+  if (!/^[0-9a-f-]{36}$/i.test(req.params.id)) {
+    res.status(400).json({ message: "Invalid article id" });
+    return;
+  }
+  res.json({ suggestions: await inboundSuggestions(req.params.id) });
+});
 
 articlesRouter.get("/:id/revisions", async (req, res) => {
   const row = await assertArticleAccess(req, req.params.id);
