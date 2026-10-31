@@ -5,6 +5,7 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { ImageUrlUploadField } from "@/components/ImageUrlUploadField";
 import { CalculatorInsertHelper } from "@/components/CalculatorInsertHelper";
 import { RelatedArticlesPanel } from "@/components/RelatedArticlesPanel";
+import { LinkSuggestionsPanel } from "@/features/linking/components/LinkSuggestionsPanel";
 import { ShareCaptionPanel } from "@/components/ShareCaptionPanel";
 import { ArticleRevisionsPanel } from "@/features/articles/components/ArticleRevisionsPanel";
 import { PublishGatesPanel } from "@/features/articles/components/PublishGatesPanel";
@@ -1241,6 +1242,17 @@ export default function ArticleEditorPage() {
         slug={form.slug}
         blurb={form.quickAnswer || form.excerpt}
         disabled={!canEditContent && status !== "published"}
+      />
+
+      <LinkSuggestionsPanel
+        body={form.body}
+        articleId={articleId}
+        categorySlug={taxonomy.find((c) => c.id === form.categoryId)?.slug}
+        subcategorySlug={subcategories.find((s) => s.id === form.subcategoryId)?.slug}
+        currentPath={publicPath}
+        isPublished={status === "published"}
+        disabled={!canEditContent}
+        onInsert={(nextBody) => patch("body", nextBody)}
       />
 
       <CalculatorInsertHelper
