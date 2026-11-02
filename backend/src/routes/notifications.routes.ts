@@ -3,7 +3,8 @@ import { z } from "zod";
 import { pool } from "../db/pool";
 import { authenticate } from "../middleware/auth";
 import { canPublish } from "../utils/roles";
-import { normalizePath, upsertRedirect } from "../services/urlRedirects";
+import { normalizePath, redirectHealth, upsertRedirect } from "../services/urlRedirects";
+import { listNotFound } from "../services/notFoundLog";
 import { recordAudit } from "../services/auditLog";
 
 export const notificationsRouter = Router();
@@ -69,12 +70,15 @@ redirectsRouter.get("/", async (req, res) => {
     res.status(403).json({ message: "Forbidden" });
     return;
   }
-  const result = await pool.query(
-    `SELECT id, from_path, to_path, article_id, is_active, created_at, updated_at
-     FROM url_redirects
-     ORDER BY updated_at DESC
-     LIMIT 200`,
-  );
+  const [result, health] = await Promise.all([
+    pool.query(
+      `SELECT id, from_path, to_path, article_id, is_active, hit_count, last_hit_at, created_at, updated_at
+       FROM url_redirects
+       ORDER BY is_active DESC, hit_count DESC, updated_at DESC
+       LIMIT 500`,
+    ),
+    redirectHealth(),
+  ]);
   res.json({
     redirects: result.rows.map((r) => ({
       id: r.id,
@@ -82,10 +86,57 @@ redirectsRouter.get("/", async (req, res) => {
       toPath: r.to_path,
       articleId: r.article_id,
       isActive: r.is_active,
+      hitCount: Number(r.hit_count ?? 0),
+      lastHitAt: r.last_hit_at,
+      health: r.is_active ? (health.get(normalizePath(r.from_path)) ?? null) : null,
       createdAt: r.created_at,
       updatedAt: r.updated_at,
     })),
   });
+});
+
+/** Unresolved 404s from the site, with a suggested redirect target. */
+redirectsRouter.get("/not-found", async (req, res) => {
+  if (!canPublish(req.user!.role)) {
+    res.status(403).json({ message: "Forbidden" });
+    return;
+  }
+  res.json({ notFound: await listNotFound() });
+});
+
+redirectsRouter.post("/not-found/ignore", async (req, res) => {
+  if (!canPublish(req.user!.role)) {
+    res.status(403).json({ message: "Forbidden" });
+    return;
+  }
+  const path = typeof req.body?.path === "string" ? req.body.path : "";
+  await pool.query(`UPDATE not_found_hits SET ignored = TRUE WHERE path = $1`, [path]);
+  res.json({ ok: true });
+});
+
+/** Point a chained redirect straight at its final destination. */
+redirectsRouter.patch("/:id/flatten", async (req, res) => {
+  if (req.user!.role !== "admin") {
+    res.status(403).json({ message: "Only admins can change redirects" });
+    return;
+  }
+  const row = (await pool.query(`SELECT from_path FROM url_redirects WHERE id = $1`, [req.params.id])).rows[0];
+  if (!row) {
+    res.status(404).json({ message: "Redirect not found" });
+    return;
+  }
+  const finalTo = (await redirectHealth()).get(normalizePath(row.from_path))?.finalTo;
+  if (!finalTo) {
+    res.status(409).json({ message: "This redirect is part of a loop. Deactivate one side instead." });
+    return;
+  }
+  await pool.query(`UPDATE url_redirects SET to_path = $2, updated_at = NOW() WHERE id = $1`, [req.params.id, finalTo]);
+  await recordAudit(req, {
+    action: "redirect.flattened",
+    entityType: "redirect",
+    summary: `${row.from_path} → ${finalTo}`,
+  });
+  res.json({ ok: true, toPath: finalTo });
 });
 
 const redirectSchema = z.object({

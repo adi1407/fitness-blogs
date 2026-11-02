@@ -9,7 +9,10 @@ import {
 } from "../constants/knowledgeContent";
 import { env } from "../config/env";
 import { unlinkUnpublishedArticles } from "../services/internalLinks";
-import { resolveRedirect } from "../services/urlRedirects";
+import { activeRedirectMap, normalizePath, resolveRedirect } from "../services/urlRedirects";
+import { cleanNotFoundPath, recordNotFound } from "../services/notFoundLog";
+import { clientIp, rateLimit } from "../middleware/rateLimit";
+import { timingSafeEqual } from "node:crypto";
 import {
   mapExercise,
   mapKnowledgePage,
@@ -228,6 +231,49 @@ publicRouter.get("/redirects/resolve", async (req, res) => {
   }
   res.json({ from: path, to });
 });
+
+/** Full active redirect map, chains flattened; the site caches it in memory. */
+publicRouter.get("/redirects", async (_req, res) => {
+  res.set("Cache-Control", "public, max-age=30");
+  res.json({ redirects: await activeRedirectMap() });
+});
+
+function hasSiteSecret(header: string | undefined): boolean {
+  const secret = env.revalidateSecret;
+  if (!secret || !header?.startsWith("Bearer ")) return false;
+  const given = Buffer.from(header.slice(7));
+  const expected = Buffer.from(secret);
+  return given.length === expected.length && timingSafeEqual(given, expected);
+}
+
+/** Called by the site when it serves a redirect (site secret required, so counts can't be inflated). */
+publicRouter.post("/redirects/hit", async (req, res) => {
+  if (!hasSiteSecret(req.get("authorization"))) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+  const path = normalizePath(typeof req.body?.path === "string" ? req.body.path.slice(0, 500) : "");
+  if (path) {
+    await pool.query(
+      `UPDATE url_redirects SET hit_count = hit_count + 1, last_hit_at = NOW()
+       WHERE from_path = $1 AND is_active = TRUE`,
+      [path],
+    );
+  }
+  res.json({ ok: true });
+});
+
+publicRouter.post(
+  "/not-found-log",
+  rateLimit({ windowMs: 10 * 60 * 1000, max: 20, key: (req) => `404:${clientIp(req)}` }),
+  rateLimit({ windowMs: 10 * 60 * 1000, max: 300, key: (req) => `404-host:${req.ip}` }),
+  async (req, res) => {
+    const path = cleanNotFoundPath(typeof req.body?.path === "string" ? req.body.path : "");
+    const referrer = typeof req.body?.referrer === "string" ? req.body.referrer : "";
+    if (path) await recordNotFound(path, referrer);
+    res.json({ ok: true });
+  },
+);
 
 publicRouter.get("/taxonomy", async (_req, res) => {
   const [cats, subs] = await Promise.all([

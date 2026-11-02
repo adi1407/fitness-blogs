@@ -210,8 +210,26 @@ export type UrlRedirect = {
   toPath: string;
   articleId: string | null;
   isActive: boolean;
+  hitCount: number;
+  lastHitAt: string | null;
+  health: {
+    finalTo: string | null;
+    isChain: boolean;
+    isLoop: boolean;
+    target: "live" | "broken" | "unknown";
+  } | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type NotFoundEntry = {
+  path: string;
+  hits: number;
+  lastReferrer: string;
+  internalReferrer: string;
+  firstSeenAt: string;
+  lastSeenAt: string;
+  suggestion: string | null;
 };
 
 export type PublishGate = {
