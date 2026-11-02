@@ -162,6 +162,16 @@ CREATE TABLE IF NOT EXISTS url_redirects (
 CREATE INDEX IF NOT EXISTS idx_url_redirects_active
   ON url_redirects(from_path) WHERE is_active = TRUE;
 
+CREATE TABLE IF NOT EXISTS not_found_hits (
+  path TEXT PRIMARY KEY,
+  hit_count INT NOT NULL DEFAULT 1,
+  last_referrer TEXT NOT NULL DEFAULT '',
+  internal_referrer TEXT NOT NULL DEFAULT '',
+  ignored BOOLEAN NOT NULL DEFAULT FALSE,
+  first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS staff_notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -603,6 +613,8 @@ const ADDED_COLUMNS: [string, string, string][] = [
   ["recipes", "total_minutes", "INT"],
   ["recipes", "time_note", "TEXT NOT NULL DEFAULT ''"],
   ["recipes", "servings", "INT"],
+  ["url_redirects", "hit_count", "INT NOT NULL DEFAULT 0"],
+  ["url_redirects", "last_hit_at", "TIMESTAMPTZ"],
 ];
 
 /** Value-list CHECKs whose allowed values changed after the table first shipped. */

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CALCULATORS } from "@/features/tools/content/links";
+import { NotFoundBeacon } from "@/components/shared/NotFoundBeacon";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -22,6 +23,7 @@ const GUIDE_HUBS = [
 export default function NotFound() {
   return (
     <main className="fk-page fk-page--content flex-1 py-16">
+      <NotFoundBeacon />
       <p className="fk-meta-accent">404</p>
       <h1 className="mt-2 text-4xl font-semibold tracking-tight">
         We couldn&apos;t find that page
