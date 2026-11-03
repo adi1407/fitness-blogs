@@ -10,6 +10,7 @@ import { adminSubscribersRouter } from "./subscribers.routes";
 import { adminSearchInsightsRouter } from "./searchInsights.routes";
 import { adminSeoRouter } from "./seoPerformance.routes";
 import { adminSeoIndexingRouter } from "./seoIndexing.routes";
+import { dbHealth } from "../services/dbHealth";
 
 export const adminRouter = Router();
 
@@ -18,6 +19,10 @@ adminRouter.use("/subscribers", adminSubscribersRouter);
 adminRouter.use("/search-insights", adminSearchInsightsRouter);
 adminRouter.use("/seo/indexing", adminSeoIndexingRouter);
 adminRouter.use("/seo", adminSeoRouter);
+
+adminRouter.get("/db-health", authorize("admin"), async (_req, res) => {
+  res.json(await dbHealth());
+});
 
 const createUserSchema = z.object({
   email: z.string().email().max(200),
