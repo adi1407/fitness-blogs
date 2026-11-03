@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { env } from "../config/env";
-import { pool } from "./pool";
+import { NO_SLOW_LOG, pool } from "./pool";
 import { BLOG_TAXONOMY } from "../constants/blogTaxonomy";
 import { seedKnowledgeContent } from "./seedKnowledgeContent";
 import { seedIntentArticles } from "./seedIntentArticles";
@@ -44,8 +44,6 @@ CREATE TABLE IF NOT EXISTS subcategories (
   UNIQUE (category_id, slug)
 );
 
-CREATE INDEX IF NOT EXISTS idx_subcategories_category ON subcategories(category_id);
-
 CREATE TABLE IF NOT EXISTS articles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   article_number INT UNIQUE,
@@ -85,11 +83,11 @@ CREATE TABLE IF NOT EXISTS articles (
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
 CREATE INDEX IF NOT EXISTS idx_articles_category_id ON articles(category_id);
 CREATE INDEX IF NOT EXISTS idx_articles_subcategory_id ON articles(subcategory_id);
-CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
 CREATE INDEX IF NOT EXISTS idx_articles_author ON articles(author_id);
-CREATE INDEX IF NOT EXISTS idx_articles_number ON articles(article_number);
-CREATE UNIQUE INDEX IF NOT EXISTS uq_articles_article_number
-  ON articles(article_number) WHERE article_number IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_articles_reviewer ON articles(reviewer_id) WHERE reviewer_id IS NOT NULL;
+-- Public listings, sitemap and feed: newest published first.
+CREATE INDEX IF NOT EXISTS idx_articles_published_at
+  ON articles(published_at DESC) WHERE status = 'published';
 
 CREATE TABLE IF NOT EXISTS audit_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -131,8 +129,6 @@ CREATE TABLE IF NOT EXISTS article_briefs (
 
 CREATE INDEX IF NOT EXISTS idx_article_briefs_writer ON article_briefs(writer_id);
 CREATE INDEX IF NOT EXISTS idx_article_briefs_status ON article_briefs(status);
-CREATE INDEX IF NOT EXISTS idx_article_briefs_article ON article_briefs(article_id);
-
 CREATE TABLE IF NOT EXISTS article_revisions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   article_id UUID NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
@@ -145,8 +141,6 @@ CREATE TABLE IF NOT EXISTS article_revisions (
   UNIQUE (article_id, revision_number)
 );
 
-CREATE INDEX IF NOT EXISTS idx_article_revisions_article
-  ON article_revisions(article_id, revision_number DESC);
 
 CREATE TABLE IF NOT EXISTS url_redirects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -199,8 +193,8 @@ CREATE TABLE IF NOT EXISTS members (
   last_login_at TIMESTAMPTZ
 );
 
-CREATE INDEX IF NOT EXISTS idx_members_google_sub ON members(google_sub);
-CREATE INDEX IF NOT EXISTS idx_members_email ON members(email);
+-- Google sign-in matches members by lower(email).
+CREATE INDEX IF NOT EXISTS idx_members_email_lower ON members(lower(email));
 
 CREATE TABLE IF NOT EXISTS member_article_upvotes (
   member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
@@ -831,9 +825,62 @@ async function removeSeededArticles(): Promise<void> {
   }
 }
 
+/** Plain indexes that duplicate a unique constraint's index (older schema versions created both). */
+const REDUNDANT_INDEXES = [
+  "idx_subcategories_category",
+  "idx_articles_slug",
+  "idx_articles_number",
+  "uq_articles_article_number",
+  "idx_article_briefs_article",
+  "idx_article_revisions_article",
+  "idx_members_google_sub",
+  "idx_members_email",
+];
+
+/**
+ * Drop a listed index only when the same table has a full (non-partial) unique
+ * index whose leading columns match it, so uniqueness and lookups are unchanged.
+ */
+async function dropRedundantIndexes(): Promise<void> {
+  const res = await pool.query<{ idx: string }>(
+    `WITH ix AS (
+       SELECT x.indexrelid, x.indrelid, x.indisunique, x.indpred IS NULL AS full_index, i.relname AS idx,
+              ARRAY(SELECT x.indkey[k] FROM generate_subscripts(x.indkey, 1) AS k ORDER BY k)::int[] AS cols
+       FROM pg_index x
+       JOIN pg_class i ON i.oid = x.indexrelid
+       JOIN pg_namespace n ON n.oid = i.relnamespace AND n.nspname = current_schema()
+     )
+     SELECT c.idx FROM ix c
+     WHERE c.idx = ANY($1::text[])
+       AND EXISTS (
+         SELECT 1 FROM ix o
+         WHERE o.indrelid = c.indrelid AND o.indexrelid <> c.indexrelid
+           AND o.indisunique AND o.full_index
+           AND o.cols[1:cardinality(c.cols)] = c.cols
+           AND (NOT c.indisunique OR o.cols = c.cols)
+       )`,
+    [REDUNDANT_INDEXES],
+  );
+  for (const { idx } of res.rows) {
+    await pool.query(`DROP INDEX IF EXISTS ${idx}`);
+    console.log(`[db] dropped redundant index ${idx}`);
+  }
+}
+
+/** Per-query statistics for the CMS database page; optional, so failure only logs. */
+async function enableQueryStats(): Promise<void> {
+  try {
+    await pool.query(`CREATE EXTENSION IF NOT EXISTS pg_stat_statements`);
+  } catch (err) {
+    console.warn("[db] pg_stat_statements unavailable:", err instanceof Error ? err.message : err);
+  }
+}
+
 async function ensureSchema(): Promise<void> {
-  await pool.query(SCHEMA_SQL);
+  await pool.query(`${NO_SLOW_LOG}\n${SCHEMA_SQL}`);
   await migrateLegacySchema();
+  await dropRedundantIndexes();
+  await enableQueryStats();
   await seedTaxonomy();
 
   const hasLegacy = await pool.query(`
