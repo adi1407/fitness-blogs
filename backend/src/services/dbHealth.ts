@@ -7,6 +7,8 @@ async function topQueries() {
               round(mean_exec_time::numeric, 2) AS mean_ms, rows
        FROM pg_stat_statements
        WHERE dbid = (SELECT oid FROM pg_database WHERE datname = current_database())
+         -- Other roles (the host's monitoring) show as "<insufficient privilege>"; only our own are actionable.
+         AND userid = (SELECT oid FROM pg_roles WHERE rolname = current_user)
          AND query NOT ILIKE '%pg_stat_statements%'
        ORDER BY total_exec_time DESC
        LIMIT 15`,
