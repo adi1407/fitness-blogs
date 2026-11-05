@@ -6,6 +6,7 @@ import "express-async-errors";
 import { createApp } from "./app";
 import { env } from "./config/env";
 import { ensureCmsSchema } from "./db/ensureCmsSchema";
+import { pool } from "./db/pool";
 import { migrateImagesToCloudinary } from "./services/migrateImagesToCloudinary";
 import { startSearchConsoleSchedule } from "./services/searchConsole";
 import { startSiteAuditSchedule } from "./services/siteAudit";
@@ -14,10 +15,12 @@ process.on("unhandledRejection", (reason) => {
   console.error("[backend] unhandled rejection", reason);
 });
 
+const SHUTDOWN_GRACE_MS = 10_000;
+
 async function main() {
   await ensureCmsSchema();
   const app = createApp();
-  app.listen(env.port, () => {
+  const server = app.listen(env.port, () => {
     console.log(`[backend] listening on :${env.port} (${env.nodeEnv})`);
     migrateImagesToCloudinary().catch((err) => {
       console.error("[cloudinary-migrate] failed", err);
@@ -25,6 +28,27 @@ async function main() {
     startSearchConsoleSchedule();
     startSiteAuditSchedule();
   });
+
+  // Render sends SIGTERM on every deploy: finish in-flight requests, then close the pool.
+  let shuttingDown = false;
+  const shutdown = (signal: string) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    console.log(`[backend] ${signal}: closing`);
+    setTimeout(() => {
+      console.error("[backend] shutdown timed out; exiting");
+      process.exit(1);
+    }, SHUTDOWN_GRACE_MS).unref();
+    server.close(() => {
+      pool
+        .end()
+        .catch(() => undefined)
+        .finally(() => process.exit(0));
+    });
+    server.closeIdleConnections();
+  };
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 main().catch((err) => {
