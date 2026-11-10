@@ -38,6 +38,18 @@ Plan: 12-week SEO traffic plan (Oct–Dec 2026). Rules: `SEO_PLAYBOOK.md`, roadm
 | Duplicate without user-selected canonical | 7 | Numbered article URLs. The live pages now all have a self-canonical. | Search Console → "Validate fix". |
 | Duplicate, Google chose different canonical | 1 | `is-rice-good-for-weight-loss` treated as a duplicate of `rice-vs-roti-for-weight-loss` — both short and covering the same advice. | Rewrite the rice article around a distinct intent (rice types, portions by goal, cooking). |
 
+## Indexing snapshot (GSC Pages export, 10 Nov 2026)
+
+Raw exports: `docs/seo/gsc-exports/2026-11-10/`.
+
+| Reason (not indexed) | Pages | Notes |
+| --- | --- | --- |
+| Page with redirect | 32 | Up from 21 — still expected (`www` / `http` / old article URLs). |
+| Discovered – currently not indexed | 23 | Up from 19 — keep internal links on exercises/new articles. |
+| Excluded by `noindex` | 18 | Unchanged — intentional utility/auth URLs. |
+| Blocked by robots.txt | 4 | Expected for `/login`, `/account`, `/auth/`, `/preview/`. |
+| Duplicate, Google chose different canonical | 1 | Same as baseline — rice article intent rewrite. |
+
 ## Performance baseline (needs your export)
 
 The Queries/Pages export was not in Downloads. Export **Performance → last 3 months → Queries and Pages** to fill:
@@ -52,6 +64,7 @@ Until that export exists, titles were tuned for the pages with the highest comme
 
 | Date | Change | Pages | Expected effect | Check on |
 | --- | --- | --- | --- | --- |
+| 10 Nov 2026 | Filed GSC CSV exports under `docs/seo/gsc-exports/` (not `frontend/public/`); recorded Nov indexing snapshot | — | Keeps audit dumps out of the crawlable web root | — |
 | 9 Oct 2026 | Sign-in links `rel="nofollow"` | site-wide header | Fewer `/login` URLs discovered | 6 Nov |
 | 9 Oct 2026 | Baseline recorded | — | — | — |
 | 9 Oct 2026 | Calculator titles matched to query wording ("how many calories per day", "how much protein per day", "litres per day", "calories burned", "at rest") | calorie, protein, water-intake, steps-to-calories, BMR calculators | Higher CTR once indexed | 6 Nov |
