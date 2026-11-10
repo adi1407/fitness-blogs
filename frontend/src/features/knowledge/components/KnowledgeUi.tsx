@@ -1,4 +1,8 @@
 import Link from "next/link";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/shared/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -19,7 +23,7 @@ export function KnowledgeDisclaimer() {
   );
 }
 
-type Crumb = { href?: string; label: string };
+type Crumb = BreadcrumbItem;
 
 export function KnowledgeBreadcrumbs({ items }: { items: Crumb[] }) {
   const ld = {
@@ -36,22 +40,7 @@ export function KnowledgeBreadcrumbs({ items }: { items: Crumb[] }) {
   return (
     <>
       <JsonLd data={ld} />
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          {items.map((item, i) => (
-            <li key={`${item.label}-${i}`} className="flex items-center gap-2">
-              {i > 0 ? <span aria-hidden="true">/</span> : null}
-              {item.href ? (
-                <Link href={item.href} className="fk-link-muted">
-                  {item.label}
-                </Link>
-              ) : (
-                <span className="text-foreground">{item.label}</span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <Breadcrumbs items={items} linkClassName="fk-link-muted" />
     </>
   );
 }
