@@ -56,7 +56,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await fetchRecipe(slug);
-  if (!data) return { title: "Recipe" };
+  if (!data) return { title: "Recipe", robots: { index: false } };
   const { recipe } = data;
   const title = pageTitle(recipe.metaTitle || recipe.title);
   const description = recipe.metaDescription || recipe.excerpt;

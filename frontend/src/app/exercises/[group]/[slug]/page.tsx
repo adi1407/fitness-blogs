@@ -36,9 +36,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { group, slug } = await params;
-  if (!isMuscleGroup(group)) return { title: "Exercise" };
+  if (!isMuscleGroup(group)) return { title: "Exercise", robots: { index: false } };
   const data = await fetchExercise(group, slug);
-  if (!data) return { title: "Exercise" };
+  if (!data) return { title: "Exercise", robots: { index: false } };
   const { exercise } = data;
   const title = pageTitle(exercise.metaTitle || exercise.title);
   const description = exercise.metaDescription || exercise.excerpt;
