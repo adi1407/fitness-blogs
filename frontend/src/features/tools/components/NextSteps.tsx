@@ -2,6 +2,8 @@
 
 import { ArrowRight, BookOpen, Calculator, Utensils } from "lucide-react";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
+import { useLiveArticleSlugs } from "@/features/tools/components/LiveArticleSlugs";
+import { articleSlugFromHref } from "@/features/tools/content/liveArticles";
 import { nextStepsFor, type NextStep } from "@/features/tools/content/journeys";
 import type { CalcSavePayload } from "@/features/tools/types";
 import { cn } from "@/lib/utils";
@@ -14,7 +16,12 @@ const ICONS: Record<NextStep["kind"], typeof Calculator> = {
 
 /** Guided "what to do with this number" links under a calculator result. */
 export function NextSteps({ payload }: { payload: CalcSavePayload }) {
-  const steps = nextStepsFor(payload);
+  const liveSlugs = useLiveArticleSlugs();
+  const steps = nextStepsFor(payload).filter((step) => {
+    if (step.kind !== "article" || !liveSlugs) return true;
+    const slug = articleSlugFromHref(step.href);
+    return !slug || liveSlugs.has(slug);
+  });
   if (steps.length === 0) return null;
   const placement = `next_steps_${payload.tool.replace(/-calculator$/, "")}`;
 
