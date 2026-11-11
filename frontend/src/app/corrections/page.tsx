@@ -10,12 +10,22 @@ import {
   LEGAL_CONTACT_MAILTO,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Corrections Policy";
+const DESCRIPTION =
+  "How to request a factual correction on fitlives. We do not provide clinical second opinions.";
 
 export const metadata: Metadata = {
-  title: "Corrections Policy",
-  description:
-    "How to request a factual correction on fitlives. We do not provide clinical second opinions.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/corrections" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/corrections",
+  },
 };
 
 const toc = [

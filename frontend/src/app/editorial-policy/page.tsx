@@ -1,11 +1,21 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Editorial Policy";
+const DESCRIPTION =
+  "How fitlives researches, reviews, updates, and corrects fitness and nutrition content.";
 
 export const metadata: Metadata = {
-  title: "Editorial Policy",
-  description:
-    "How fitlives researches, reviews, updates, and corrects fitness and nutrition content.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/editorial-policy" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/editorial-policy",
+  },
 };
 
 const EXTERNAL = "fk-link font-semibold";

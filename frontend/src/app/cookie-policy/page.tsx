@@ -6,12 +6,22 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Cookie Policy";
+const DESCRIPTION =
+  "How fitlives uses cookieless analytics, optional Google Analytics cookies, Google AdSense advertising cookies, the sign-in session cookie, and how you can change your choices.";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy",
-  description:
-    "How fitlives uses cookieless analytics, optional Google Analytics cookies, Google AdSense advertising cookies, the sign-in session cookie, and how you can change your choices.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/cookie-policy" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/cookie-policy",
+  },
 };
 
 const toc = [

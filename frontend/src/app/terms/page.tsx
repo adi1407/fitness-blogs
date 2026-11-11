@@ -12,12 +12,22 @@ import {
   LEGAL_OPERATOR_NOTE,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Terms of Use";
+const DESCRIPTION =
+  "Terms of Use for fitlives — educational fitness content, calculators, and Google member accounts. Not medical advice.";
 
 export const metadata: Metadata = {
-  title: "Terms of Use",
-  description:
-    "Terms of Use for fitlives — educational fitness content, calculators, and Google member accounts. Not medical advice.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/terms" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/terms",
+  },
 };
 
 const toc = [
