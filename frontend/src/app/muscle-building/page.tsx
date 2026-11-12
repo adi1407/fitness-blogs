@@ -5,7 +5,9 @@ import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { MuscleBuildingVisuals } from "@/features/muscle-building/components/MuscleBuildingVisuals";
+import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { ARTICLES } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -49,7 +51,9 @@ const faq = [
   },
 ];
 
-const steps = [
+const buildSteps = (
+  isPublished: (a: { slug: string; href: string }) => boolean,
+) => [
   {
     title: "Train each muscle hard, twice a week",
     body: (
@@ -72,9 +76,13 @@ const steps = [
         Over weeks, do a little more: an extra rep, a small jump in weight, or
         an extra set. This is the single most important habit in any program;
         our guide on{" "}
-        <Link href={ARTICLES.progressiveOverload.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.progressiveOverload}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           what progressive overload is
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         shows how to apply it safely, and the{" "}
         <Link href="/one-rep-max-calculator" className="fk-link">
           one rep max calculator
@@ -94,9 +102,13 @@ const steps = [
           protein calculator
         </Link>{" "}
         and read{" "}
-        <Link href={ARTICLES.proteinMuscle.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.proteinMuscle}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           how much protein to build muscle
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         for the evidence.
       </>
     ),
@@ -122,16 +134,23 @@ const steps = [
         Muscle is built between sessions. Aim for 7–9 hours of sleep and avoid
         training the same muscle hard on consecutive days. Progress is slow but
         steady; see{" "}
-        <Link href={ARTICLES.buildMuscleTime.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.buildMuscleTime}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           how long it takes to build muscle
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         for realistic timelines.
       </>
     ),
   },
 ];
 
-export default function MuscleBuildingPage() {
+export default async function MuscleBuildingPage() {
+  const isPublished = await publishedFilter(["muscle-building", "nutrition"]);
+  const steps = buildSteps(isPublished);
+
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd
@@ -228,18 +247,30 @@ export default function MuscleBuildingPage() {
           <p>
             A simple pattern is three main meals and one or two protein-rich
             snacks, each with roughly a quarter of your daily protein. Our{" "}
-            <Link href={ARTICLES.beginnerGymDiet.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.beginnerGymDiet}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               beginner gym diet plan
-            </Link>{" "}
+            </MaybeArticleLink>{" "}
             lays this out with Indian meals, and{" "}
-            <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.indianProteinFoods}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               the best high-protein Indian foods
-            </Link>{" "}
+            </MaybeArticleLink>{" "}
             compares sources by protein per serving. Supplements are optional;
             creatine monohydrate has the strongest evidence, covered in{" "}
-            <Link href={ARTICLES.creatineSafe.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.creatineSafe}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               is creatine safe
-            </Link>
+            </MaybeArticleLink>
             .
           </p>
         </div>
