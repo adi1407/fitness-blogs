@@ -3,18 +3,28 @@ import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { KnowledgeBreadcrumbs } from "@/features/knowledge/components/KnowledgeUi";
 import { ExercisesHaloSection } from "@/features/exercises/components/ExercisesHaloSection";
+import { ogImageUrl } from "@/lib/og/url";
+
+const TITLE = "Exercise Library — Chest, Back, Legs, Arms, Core & Cardio";
+const DESCRIPTION =
+  "Browse exercises by muscle group with form-focused guidance. Connect training to muscle building, programs, and recovery.";
+const OG_IMAGE = ogImageUrl({
+  title: "Exercise library",
+  eyebrow: "Form · Muscle groups · Programming",
+});
 
 export const metadata: Metadata = {
-  title: "Exercise Library — Chest, Back, Legs, Arms, Core & Cardio",
-  description:
-    "Browse exercises by muscle group with form-focused guidance. Connect training to muscle building, programs, and recovery.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/exercises" },
   openGraph: {
     ...OG_DEFAULTS,
     title: "Exercise Library | fitlives",
     description: "Muscle-group hubs for technique and programming pathways.",
     url: "/exercises",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives exercise library" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const groups = [
