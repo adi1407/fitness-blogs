@@ -9,7 +9,17 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // `/og` stays crawlable: social crawlers (e.g. Twitterbot) honour robots.txt for share images.
-      disallow: ["/account", "/login", "/auth/", "/api/", "/preview/", "/search?"],
+      disallow: [
+        "/account",
+        "/login",
+        "/auth/",
+        "/api/",
+        "/preview/",
+        "/search",
+        "/unsubscribe",
+        "/embed/",
+        "/start",
+      ],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
