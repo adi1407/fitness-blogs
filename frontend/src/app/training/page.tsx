@@ -3,18 +3,28 @@ import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { KnowledgeBreadcrumbs } from "@/features/knowledge/components/KnowledgeUi";
 import { TrainingScrollMorph } from "@/features/training/components/TrainingScrollMorph";
+import { ogImageUrl } from "@/lib/og/url";
+
+const TITLE = "Training Guides — Programming, Volume, Recovery & Workouts";
+const DESCRIPTION =
+  "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.";
+const OG_IMAGE = ogImageUrl({
+  title: "Training fundamentals",
+  eyebrow: "Volume · Recovery · Progress",
+});
 
 export const metadata: Metadata = {
-  title: "Training Guides — Programming, Volume, Recovery & Workouts",
-  description:
-    "Learn training fundamentals: progressive overload, volume, recovery, and how to use the exercise library inside a program.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/training" },
   openGraph: {
     ...OG_DEFAULTS,
     title: "Training Guides | fitlives",
     description: "Programming principles that connect to exercises and goals.",
     url: "/training",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives training guides" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default function TrainingPage() {
