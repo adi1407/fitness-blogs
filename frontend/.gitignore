@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# Keep Search Console / audit CSV dumps out of the public web root
+/public/*.csv
+
 # debug
 npm-debug.log*
 yarn-debug.log*
