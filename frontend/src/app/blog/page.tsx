@@ -12,16 +12,24 @@ import type { PublicBlogArticle } from "@/lib/api/blog";
 import { getApiBase } from "@/lib/api/client";
 import { BLOG_TAXONOMY } from "@/lib/blogTaxonomy";
 import { articleHref } from "@/features/home/utils/articleMedia";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 300;
 
 const siteUrl = SITE_URL;
 const RAIL_SIZE = 4;
 
+const TITLE = "Latest — Muscle Building, Weight Loss & Nutrition Guides";
+const DESCRIPTION =
+  "Latest fitlives articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.";
+const OG_IMAGE = ogImageUrl({
+  title: "Latest fitness guides",
+  eyebrow: "Muscle · Weight loss · Nutrition",
+});
+
 export const metadata: Metadata = {
-  title: "Latest — Muscle Building, Weight Loss & Nutrition Guides",
-  description:
-    "Latest fitlives articles across muscle building, weight loss, and nutrition. Educational guides with clear answers — not medical advice.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/blog" },
   openGraph: {
     ...OG_DEFAULTS,
@@ -29,7 +37,9 @@ export const metadata: Metadata = {
     description:
       "Recent fitness articles across three pillars: muscle building, weight loss, and nutrition.",
     url: "/blog",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives latest guides" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 function pickFeatured(articles: PublicBlogArticle[]): PublicBlogArticle | null {

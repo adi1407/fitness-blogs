@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
 import { ARTICLES, FOODS } from "@/features/tools/content/links";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -13,6 +14,10 @@ export const revalidate = 600;
 const TITLE = "Protein Guide: Best Protein Foods in India";
 const DESCRIPTION =
   "A protein guide for Indian diets: what protein does, how much you need by goal, and the best veg and non-veg protein foods in India, with a free calculator.";
+const OG_IMAGE = ogImageUrl({
+  title: "Protein foods in India",
+  eyebrow: "Targets · Foods · Calculator",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -23,7 +28,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/nutrition/protein",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives protein guide" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const faq = [

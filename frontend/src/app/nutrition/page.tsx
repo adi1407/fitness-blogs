@@ -6,6 +6,7 @@ import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { NutritionFocusCards } from "@/features/nutrition/components/NutritionFocusCards";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { ARTICLES } from "@/features/tools/content/links";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -13,6 +14,10 @@ export const revalidate = 600;
 const TITLE = "Nutrition Guide: Healthy Eating for Indians";
 const DESCRIPTION =
   "A practical nutrition guide for Indian diets: calories, protein, carbs, fats, water and meal planning, with free calculators and an Indian food database.";
+const OG_IMAGE = ogImageUrl({
+  title: "Nutrition for Indian diets",
+  eyebrow: "Calories · Protein · Meals",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -23,7 +28,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/nutrition",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives nutrition guide" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const faq = [

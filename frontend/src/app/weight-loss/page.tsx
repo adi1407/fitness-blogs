@@ -7,6 +7,7 @@ import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ARTICLES } from "@/features/tools/content/links";
 import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { WeightLossSplitSection } from "@/features/weight-loss/components/WeightLossSplitSection";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -14,6 +15,10 @@ export const revalidate = 600;
 const TITLE = "Weight Loss Guide: How to Lose Weight Safely";
 const DESCRIPTION =
   "How to lose weight safely: find your maintenance calories, set a moderate deficit, eat enough protein, lift and walk. Indian diet tips and free calculators.";
+const OG_IMAGE = ogImageUrl({
+  title: "Lose weight safely",
+  eyebrow: "Deficit · Protein · Walking",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -24,7 +29,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/weight-loss",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives weight loss guide" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const faq = [
