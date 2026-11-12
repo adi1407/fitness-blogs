@@ -9,7 +9,14 @@ import { SubscribeForm } from "@/features/newsletter/components/SubscribeForm";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { ProductPicksBox } from "@/features/product-picks/components/ProductPicksBox";
 import { CalcOpenBeacon } from "@/features/tools/components/CalcOpenBeacon";
+import { LiveArticleSlugsProvider } from "@/features/tools/components/LiveArticleSlugs";
 import type { LinkItem } from "@/features/tools/content/links";
+import { ARTICLES } from "@/features/tools/content/links";
+import {
+  CALC_ARTICLE_CATEGORIES,
+  articleSlugFromHref,
+  publishedFilter,
+} from "@/features/tools/content/liveArticles";
 import { ORG_REF } from "@/lib/seo";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
 
@@ -93,7 +100,7 @@ function LinkCards({ items }: { items: LinkItem[] }) {
   );
 }
 
-export function CalculatorPageShell({
+export async function CalculatorPageShell({
   slug,
   title,
   intro,
@@ -101,6 +108,16 @@ export function CalculatorPageShell({
   form,
   content,
 }: Props) {
+  const isPublished = await publishedFilter([...CALC_ARTICLE_CATEGORIES]);
+  const relatedArticles = content.related.articles.filter((item) => {
+    const withSlug = item as LinkItem & { slug?: string };
+    const slugKey = withSlug.slug ?? articleSlugFromHref(item.href);
+    return slugKey ? isPublished({ slug: slugKey, href: item.href }) : true;
+  });
+  const liveSlugs = Object.values(ARTICLES)
+    .filter((article) => isPublished(article))
+    .map((article) => article.slug);
+
   const path = `/${slug}`;
   const url = `${siteUrl}${path}`;
   const appLd = {
@@ -148,6 +165,7 @@ export function CalculatorPageShell({
   ];
 
   return (
+    <LiveArticleSlugsProvider slugs={liveSlugs}>
     <main className="fk-page fk-page--content flex-1 py-10 sm:py-16">
       <CalcOpenBeacon tool={slug} />
       <JsonLd data={appLd} />
@@ -267,13 +285,13 @@ export function CalculatorPageShell({
             </div>
           </section>
 
-          {content.related.articles.length > 0 ? (
+          {relatedArticles.length > 0 ? (
             <section aria-labelledby="related-guides">
               <h2 id="related-guides" className="text-xl font-semibold tracking-tight">
                 Guides to read next
               </h2>
               <div className="mt-4">
-                <LinkCards items={content.related.articles} />
+                <LinkCards items={relatedArticles} />
               </div>
             </section>
           ) : null}
@@ -335,5 +353,6 @@ export function CalculatorPageShell({
         </aside>
       </div>
     </main>
+    </LiveArticleSlugsProvider>
   );
 }

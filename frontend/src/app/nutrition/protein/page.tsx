@@ -5,7 +5,9 @@ import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
+import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { ARTICLES, FOODS } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
@@ -65,7 +67,9 @@ const foods: ReadonlyArray<[string, string, string]> = [
   ["Curd", "200 g", "6–8 g"],
 ];
 
-export default function ProteinHubPage() {
+export default async function ProteinHubPage() {
+  const isPublished = await publishedFilter(["nutrition", "muscle-building", "weight-loss"]);
+
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd
@@ -181,9 +185,13 @@ export default function ProteinHubPage() {
                     0.8–1.2 g/kg a day
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={ARTICLES.proteinPerDay.href} className="text-primary">
+                    <MaybeArticleLink
+                      article={ARTICLES.proteinPerDay}
+                      isPublished={isPublished}
+                      className="text-primary"
+                    >
                       Protein per day
-                    </Link>
+                    </MaybeArticleLink>
                   </td>
                 </tr>
                 <tr className="border-t border-border">
@@ -192,9 +200,13 @@ export default function ProteinHubPage() {
                     1.6–2.2 g/kg with progressive training
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={ARTICLES.proteinMuscle.href} className="text-primary">
+                    <MaybeArticleLink
+                      article={ARTICLES.proteinMuscle}
+                      isPublished={isPublished}
+                      className="text-primary"
+                    >
                       Protein for muscle
-                    </Link>
+                    </MaybeArticleLink>
                   </td>
                 </tr>
                 <tr className="border-t border-border">
@@ -213,9 +225,13 @@ export default function ProteinHubPage() {
           </div>
           <p className="mt-4 leading-relaxed text-muted-foreground">
             For the full evidence, read{" "}
-            <Link href={ARTICLES.proteinPerDay.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.proteinPerDay}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               how much protein you need per day
-            </Link>
+            </MaybeArticleLink>
             , or get a personal number from the{" "}
             <Link href="/protein-calculator" className="fk-link">
               protein calculator
@@ -280,9 +296,13 @@ export default function ProteinHubPage() {
               moong dal
             </Link>
             , or our ranked list of{" "}
-            <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.indianProteinFoods}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               the best high-protein Indian foods
-            </Link>
+            </MaybeArticleLink>
             .
           </p>
         </section>
@@ -308,13 +328,21 @@ export default function ProteinHubPage() {
             </li>
             <li>
               Protein powder is optional; if you use whey, read{" "}
-              <Link href={ARTICLES.wheySafe.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.wheySafe}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 is whey protein safe
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               first. For training days, see{" "}
-              <Link href={ARTICLES.proteinTiming.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.proteinTiming}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 protein before or after a workout
-              </Link>
+              </MaybeArticleLink>
               .
             </li>
           </ul>

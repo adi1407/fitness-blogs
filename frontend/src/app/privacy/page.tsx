@@ -11,12 +11,22 @@ import {
   LEGAL_OPERATOR_NOTE,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Privacy Policy";
+const DESCRIPTION =
+  "How fitlives collects and uses personal data for Google sign-in, member features, hosting, and analytics. India-operated educational site.";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description:
-    "How fitlives collects and uses personal data for Google sign-in, member features, hosting, and analytics. India-operated educational site.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/privacy" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/privacy",
+  },
 };
 
 const toc = [

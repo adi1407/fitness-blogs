@@ -21,6 +21,7 @@ import {
 } from "@/features/foods/lib/nutrition";
 import { DIET_LABEL, FOOD_CATEGORY_LABEL, type Food, type FoodSummary } from "@/features/foods/types";
 import { ARTICLES, CALCULATORS, type LinkItem } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { BRAND_NAME } from "@/lib/brand";
 import { ogImageUrl } from "@/lib/og/url";
 import { getPublicSiteUrl } from "@/lib/siteUrl";
@@ -196,7 +197,17 @@ export default async function FoodPage({ params }: { params: Promise<Params> }) 
   const notes = goalNotes(food);
   const faq = faqFor(food);
   const highProtein = isHighProtein(food);
-  const articles = CATEGORY_ARTICLES[food.category] ?? [];
+  const isPublished = await publishedFilter([
+    "nutrition",
+    "weight-loss",
+    "muscle-building",
+  ]);
+  const articles = (CATEGORY_ARTICLES[food.category] ?? []).filter((item) => {
+    const withSlug = item as LinkItem & { slug?: string };
+    return withSlug.slug
+      ? isPublished({ slug: withSlug.slug, href: item.href })
+      : true;
+  });
   const calculators = highProtein
     ? [CALCULATORS.protein, CALCULATORS.macro, CALCULATORS.calorie]
     : [CALCULATORS.calorie, CALCULATORS.deficit, CALCULATORS.macro];

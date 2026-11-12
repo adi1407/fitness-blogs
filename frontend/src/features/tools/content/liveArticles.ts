@@ -3,6 +3,13 @@ import { fetchPublishedArticles } from "@/lib/api/blog";
 
 type LinkedArticle = { slug: string; href: string };
 
+/** `/blog/{category}/{subcategory}/{slug}/{number}` → slug */
+export function articleSlugFromHref(href: string): string | null {
+  const parts = href.split("/").filter(Boolean);
+  if (parts[0] !== "blog" || parts.length < 4) return null;
+  return parts[parts.length - 2] ?? null;
+}
+
 /**
  * Returns a predicate for hub pages that hard-link cluster articles: true when the
  * article is published, so queued drafts don't ship as 404 links. Uses the same
@@ -26,3 +33,10 @@ export async function publishedFilter(
   const live = new Set(lists.flat().map((a) => a.slug));
   return (article) => live.has(article.slug);
 }
+
+/** Categories covering every calculator CTA article cluster. */
+export const CALC_ARTICLE_CATEGORIES = [
+  "nutrition",
+  "weight-loss",
+  "muscle-building",
+] as const;

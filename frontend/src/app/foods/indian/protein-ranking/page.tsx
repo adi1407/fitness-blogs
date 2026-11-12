@@ -8,6 +8,7 @@ import { ProteinRankingTable } from "@/features/foods/components/ProteinRankingT
 import { formatG, shortName } from "@/features/foods/lib/nutrition";
 import { rankBy, toRankedFoods, type RankedFood } from "@/features/foods/lib/proteinRanking";
 import { ARTICLES } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, SITE_URL } from "@/lib/seo";
 
@@ -51,6 +52,7 @@ function names(list: RankedFood[], n: number, value: (f: RankedFood) => number) 
 }
 
 export default async function ProteinRankingPage() {
+  const isPublished = await publishedFilter(["nutrition", "weight-loss"]);
   const foods = await fetchFoodsSafe();
   const ranked = toRankedFoods(foods);
   const perServing = rankBy([...ranked], "serving");
@@ -243,11 +245,17 @@ export default async function ProteinRankingPage() {
           </p>
           <p>
             Plant proteins are lower in some essential amino acids than animal proteins; combining dal or rajma with
-            grains, and adding dairy or soya, covers the gap over a day. See{" "}
-            <Link href={ARTICLES.indianProteinFoods.href} className="underline">
-              the best high-protein Indian foods
-            </Link>{" "}
-            for meal ideas.
+            grains, and adding dairy or soya, covers the gap over a day.
+            {isPublished(ARTICLES.indianProteinFoods) ? (
+              <>
+                {" "}
+                See{" "}
+                <Link href={ARTICLES.indianProteinFoods.href} className="underline">
+                  the best high-protein Indian foods
+                </Link>{" "}
+                for meal ideas.
+              </>
+            ) : null}
           </p>
         </div>
       </section>
@@ -282,9 +290,11 @@ export default async function ProteinRankingPage() {
           <Link href="/protein-calculator" className={btnDark}>
             Protein calculator
           </Link>
-          <Link href={ARTICLES.proteinPerDay.href} className={btnLight}>
-            How much protein per day?
-          </Link>
+          {isPublished(ARTICLES.proteinPerDay) ? (
+            <Link href={ARTICLES.proteinPerDay.href} className={btnLight}>
+              How much protein per day?
+            </Link>
+          ) : null}
           <Link href="/nutrition/protein" className={btnLight}>
             Protein guide
           </Link>

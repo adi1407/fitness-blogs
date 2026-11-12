@@ -5,7 +5,9 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { NutritionFocusCards } from "@/features/nutrition/components/NutritionFocusCards";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
+import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { ARTICLES } from "@/features/tools/content/links";
+import { publishedFilter } from "@/features/tools/content/liveArticles";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
@@ -52,7 +54,9 @@ const faq = [
   },
 ];
 
-const basics = [
+const buildBasics = (
+  isPublished: (a: { slug: string; href: string }) => boolean,
+) => [
   {
     title: "Calories set the direction",
     body: (
@@ -77,9 +81,13 @@ const basics = [
         The Indian RDA for sedentary adults is about 0.8 g of protein per kg of
         body weight; active people and lifters benefit from more, roughly
         1.2–2.2 g/kg. Read{" "}
-        <Link href={ARTICLES.proteinPerDay.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.proteinPerDay}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           how much protein you need per day
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         or go straight to the{" "}
         <Link href="/protein-calculator" className="fk-link">
           protein calculator
@@ -98,9 +106,13 @@ const basics = [
           macro calculator
         </Link>{" "}
         does the maths. Cooking fats count too: our guide asks{" "}
-        <Link href={ARTICLES.gheeGood.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.gheeGood}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           is ghee good for you
-        </Link>
+        </MaybeArticleLink>
         .
       </>
     ),
@@ -112,9 +124,13 @@ const basics = [
         Vegetables, fruit, pulses and whole grains supply fibre, vitamins and
         minerals that calorie counts miss. Hydration needs vary with heat and
         activity; see{" "}
-        <Link href={ARTICLES.waterPerDay.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.waterPerDay}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           how much water you should drink a day
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         or use the{" "}
         <Link href="/water-intake-calculator" className="fk-link">
           water intake calculator
@@ -148,7 +164,10 @@ const topics = [
   },
 ];
 
-export default function NutritionPage() {
+export default async function NutritionPage() {
+  const isPublished = await publishedFilter(["nutrition", "weight-loss"]);
+  const basics = buildBasics(isPublished);
+
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd data={breadcrumbLd([["Home", "/"], ["Nutrition", "/nutrition"]])} />
@@ -252,13 +271,21 @@ export default function NutritionPage() {
               Indian food calorie database
             </Link>
             , or compare common staples in{" "}
-            <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.indianProteinFoods}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               best high-protein Indian foods
-            </Link>
+            </MaybeArticleLink>
             . If you train, our guide on{" "}
-            <Link href={ARTICLES.proteinTiming.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.proteinTiming}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               protein before or after a workout
-            </Link>{" "}
+            </MaybeArticleLink>{" "}
             covers meal timing.
           </p>
         </div>

@@ -10,12 +10,17 @@ import TailwindImageAccordion, {
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { HUB } from "@/lib/hubImages";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "About fitlives — Fitness Knowledge Platform";
+const DESCRIPTION =
+  "Why fitlives exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.";
 
 export const metadata: Metadata = {
-  title: "About fitlives — Fitness Knowledge Platform",
-  description:
-    "Why fitlives exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/about" },
+  openGraph: { ...OG_DEFAULTS, title: TITLE, description: DESCRIPTION, url: "/about" },
 };
 
 const PILLAR_ACCORDION: AccordionItem[] = [

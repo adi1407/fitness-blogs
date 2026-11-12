@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${CALC_TOOLS[calculator]} (embed)`,
     alternates: { canonical: `/${calculator}` },
+    robots: { index: false, follow: true },
   };
 }
 

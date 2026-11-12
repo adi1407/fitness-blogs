@@ -7,7 +7,7 @@ Ship in this order. Do not jump to accounts/community before content engines exi
 - [x] Brand color + Roboto Slab
 - [x] Product vision docs + Cursor rules
 - [ ] IA route shells (noindex)
-- [ ] Shared layout: nav, footer, breadcrumb primitives
+- [ ] Shared layout: nav, footer, breadcrumb primitives (Breadcrumbs component shipped; migrate remaining inline crumbs next)
 
 ## Phase 1 — Publishable articles
 - [x] Postgres schema: categories, subcategories, articles (article_number, tags, topics, views)
