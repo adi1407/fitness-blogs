@@ -52,8 +52,6 @@ const STATIC_PATHS = [
   "/foods/indian",
   "/foods/indian/protein-ranking",
   "/recipes",
-  "/programs",
-  "/reviews",
 ];
 
 const TRUST_PATHS = [
@@ -171,6 +169,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   addItems(recipes?.recipes, 0.7);
   addItems(programs?.pages, 0.7);
   addItems(reviews?.pages, 0.7);
+  const indexablePrograms = (programs?.pages ?? []).filter((p) => p.robotsIndex !== false && p.path);
+  if (indexablePrograms.length) add("/programs", 0.7, "weekly");
+  const indexableReviews = (reviews?.pages ?? []).filter((p) => p.robotsIndex !== false && p.path);
+  if (indexableReviews.length) add("/reviews", 0.7, "weekly");
   for (const f of foods?.foods ?? []) {
     add(`/foods/${f.slug}`, 0.75, "weekly", safeDate(f.updatedAt));
   }

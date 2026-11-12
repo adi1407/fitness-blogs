@@ -11,7 +11,7 @@ import { fetchKnowledgeSection } from "@/lib/api/knowledge";
 export const revalidate = 120;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { hub } = await fetchKnowledgeSection("reviews");
+  const { hub, pages } = await fetchKnowledgeSection("reviews");
   const title = hub?.metaTitle || hub?.title || "Buyer's Guides & Reviews";
   const description =
     hub?.metaDescription ||
@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: "/reviews" },
+    robots: pages.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: "/reviews" },
   };
 }
