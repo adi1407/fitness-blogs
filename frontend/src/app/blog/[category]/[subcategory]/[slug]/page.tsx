@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { fetchPublishedArticleBySlug } from "@/lib/api/blog";
 import {
@@ -20,6 +21,11 @@ type PageProps = {
     slug: string;
   }>;
 };
+
+/** Redirect-only URL — keep it out of the index like `/blog/{articleNumber}`. */
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: "Article", robots: { index: false, follow: true } };
+}
 
 /** Legacy URL without article id — 308 to canonical …/slug/{articleNumber}. */
 export default async function BlogArticleSlugRedirectPage({
