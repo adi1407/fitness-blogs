@@ -8,6 +8,7 @@ import { MuscleBuildingVisuals } from "@/features/muscle-building/components/Mus
 import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { ARTICLES } from "@/features/tools/content/links";
 import { publishedFilter } from "@/features/tools/content/liveArticles";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -15,6 +16,10 @@ export const revalidate = 600;
 const TITLE = "How to Build Muscle: A Beginner's Guide";
 const DESCRIPTION =
   "How to build muscle: progressive overload, enough protein and calories, sleep and patience. A muscle building guide with Indian diet tips and free tools.";
+const OG_IMAGE = ogImageUrl({
+  title: "How to build muscle",
+  eyebrow: "Training · Protein · Recovery",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -25,7 +30,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/muscle-building",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives muscle building guide" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const faq = [
