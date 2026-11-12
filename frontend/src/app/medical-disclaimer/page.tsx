@@ -6,12 +6,22 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Medical Disclaimer";
+const DESCRIPTION =
+  "fitlives provides educational fitness and nutrition information only — not medical advice, diagnosis, treatment, or emergency care.";
 
 export const metadata: Metadata = {
-  title: "Medical Disclaimer",
-  description:
-    "fitlives provides educational fitness and nutrition information only — not medical advice, diagnosis, treatment, or emergency care.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/medical-disclaimer" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/medical-disclaimer",
+  },
 };
 
 const toc = [

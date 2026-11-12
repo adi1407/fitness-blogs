@@ -6,12 +6,22 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Affiliate Disclosure";
+const DESCRIPTION =
+  "fitlives currently has no paid affiliate links. If that changes, we will disclose it here.";
 
 export const metadata: Metadata = {
-  title: "Affiliate Disclosure",
-  description:
-    "fitlives currently has no paid affiliate links. If that changes, we will disclose it here.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/affiliate-disclosure" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/affiliate-disclosure",
+  },
 };
 
 const toc = [

@@ -8,12 +8,17 @@ import {
   LEGAL_CONTACT_MAILTO,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Contact fitlives";
+const DESCRIPTION =
+  "Contact fitlives for corrections, privacy requests, partnerships, and support. Not for medical emergencies.";
 
 export const metadata: Metadata = {
-  title: "Contact fitlives",
-  description:
-    "Contact fitlives for corrections, privacy requests, partnerships, and support. Not for medical emergencies.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/contact" },
+  openGraph: { ...OG_DEFAULTS, title: TITLE, description: DESCRIPTION, url: "/contact" },
 };
 
 export default function ContactPage() {

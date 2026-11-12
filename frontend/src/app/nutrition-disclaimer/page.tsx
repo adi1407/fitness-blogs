@@ -6,12 +6,22 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Nutrition Disclaimer";
+const DESCRIPTION =
+  "Food data, macros, and Indian food listings on fitlives are educational estimates — not dietetic care or allergen-certified labels.";
 
 export const metadata: Metadata = {
-  title: "Nutrition Disclaimer",
-  description:
-    "Food data, macros, and Indian food listings on fitlives are educational estimates — not dietetic care or allergen-certified labels.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/nutrition-disclaimer" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/nutrition-disclaimer",
+  },
 };
 
 const toc = [
