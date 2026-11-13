@@ -7,6 +7,7 @@ import {
   ProseHtml,
 } from "@/features/knowledge/components/KnowledgeUi";
 import { fetchKnowledgeSection } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -17,12 +18,23 @@ export async function generateMetadata(): Promise<Metadata> {
     hub?.metaDescription ||
     hub?.excerpt ||
     "How to evaluate fitness products without falling for hype.";
+  const ogImage = ogImageUrl({
+    title: "Buyer's guides & reviews",
+    eyebrow: "Criteria over hype",
+  });
   return {
     title,
     description,
     alternates: { canonical: "/reviews" },
     robots: pages.length === 0 ? { index: false, follow: true } : undefined,
-    openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: "/reviews" },
+    openGraph: {
+      ...OG_DEFAULTS,
+      title: `${title} | fitlives`,
+      description,
+      url: "/reviews",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: "fitlives reviews" }],
+    },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 

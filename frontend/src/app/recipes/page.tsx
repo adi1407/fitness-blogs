@@ -6,20 +6,30 @@ import {
   KnowledgeDisclaimer,
 } from "@/features/knowledge/components/KnowledgeUi";
 import { fetchRecipes } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
+const TITLE = "High-Protein Recipes — Indian-Friendly Meal Ideas";
+const DESCRIPTION =
+  "Calorie-aware, high-protein recipes with macros — paneer, dal, eggs, chicken, and more.";
+const OG_IMAGE = ogImageUrl({
+  title: "High-protein recipes",
+  eyebrow: "Indian-friendly meals",
+});
+
 export const metadata: Metadata = {
-  title: "High-Protein Recipes — Indian-Friendly Meal Ideas",
-  description:
-    "Calorie-aware, high-protein recipes with macros — paneer, dal, eggs, chicken, and more.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/recipes" },
   openGraph: {
     ...OG_DEFAULTS,
     title: "Recipes | fitlives",
     description: "Practical high-protein meals with honest macros.",
     url: "/recipes",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives recipes" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default async function RecipesPage() {

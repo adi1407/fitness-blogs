@@ -4,20 +4,30 @@ import Link from "next/link";
 import { KnowledgeBreadcrumbs } from "@/features/knowledge/components/KnowledgeUi";
 import { fetchFoodsSafe } from "@/features/foods/api/foods";
 import { forGrams, formatG, proteinPer100Kcal, shortName } from "@/features/foods/lib/nutrition";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 3600;
 
+const TITLE = "Food Calories & Macros Database — Indian Foods";
+const DESCRIPTION =
+  "Look up calories, protein, carbs and fat for Indian foods per serving and per 100 g, with values from IFCT 2017. Find high-protein and low-calorie foods fast.";
+const OG_IMAGE = ogImageUrl({
+  title: "Food calories & macros",
+  eyebrow: "Indian food database",
+});
+
 export const metadata: Metadata = {
-  title: "Food Calories & Macros Database — Indian Foods",
-  description:
-    "Look up calories, protein, carbs and fat for Indian foods per serving and per 100 g, with values from IFCT 2017. Find high-protein and low-calorie foods fast.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/foods" },
   openGraph: {
     ...OG_DEFAULTS,
     title: "Food Calories & Macros Database | fitlives",
     description: "Calories and macros for Indian foods per katori, roti and 100 g.",
     url: "/foods",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives food database" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const collections = [

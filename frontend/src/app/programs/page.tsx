@@ -7,6 +7,7 @@ import {
   ProseHtml,
 } from "@/features/knowledge/components/KnowledgeUi";
 import { fetchKnowledgeSection } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -17,12 +18,23 @@ export async function generateMetadata(): Promise<Metadata> {
     hub?.metaDescription ||
     hub?.excerpt ||
     "Simple progressive training programs you can stick to.";
+  const ogImage = ogImageUrl({
+    title: "Training programs",
+    eyebrow: "Progressive plans",
+  });
   return {
     title,
     description,
     alternates: { canonical: "/programs" },
     robots: pages.length === 0 ? { index: false, follow: true } : undefined,
-    openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: "/programs" },
+    openGraph: {
+      ...OG_DEFAULTS,
+      title: `${title} | fitlives`,
+      description,
+      url: "/programs",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: "fitlives training programs" }],
+    },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
