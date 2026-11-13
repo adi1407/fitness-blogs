@@ -4,8 +4,10 @@ import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
+import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { ARTICLES, CALCULATORS, FOODS } from "@/features/tools/content/links";
 import { publishedFilter } from "@/features/tools/content/liveArticles";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, faqPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -14,6 +16,10 @@ const PATH = "/nutrition/calories";
 const TITLE = "Calories Guide: How Many Calories Do You Need?";
 const DESCRIPTION =
   "How many calories you need a day, explained for Indian diets: BMR, TDEE and maintenance, calorie targets to lose or gain weight, and calories in everyday Indian food.";
+const OG_IMAGE = ogImageUrl({
+  title: "How many calories do you need?",
+  eyebrow: "BMR · TDEE · Indian food",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -24,7 +30,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: PATH,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives calories guide" }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const faq = [
@@ -199,17 +207,25 @@ export default async function CaloriesHubPage() {
           burns at complete rest, keeping you alive. <strong>TDEE</strong>{" "}
           (total daily energy expenditure) adds everything else: walking, work,
           training and digesting food. TDEE is your{" "}
-          <Link href={ARTICLES.maintenanceCalories.href} className="fk-link">
+          <MaybeArticleLink
+            article={ARTICLES.maintenanceCalories}
+            isPublished={isPublished}
+            className="fk-link"
+          >
             maintenance calories
-          </Link>
+          </MaybeArticleLink>
           , the amount that keeps your weight stable.
           {isPublished(ARTICLES.bmrVsTdee) ? (
             <>
               {" "}
               See{" "}
-              <Link href={ARTICLES.bmrVsTdee.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.bmrVsTdee}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 BMR vs TDEE
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               for a worked example.
             </>
           ) : null}
@@ -296,13 +312,21 @@ export default async function CaloriesHubPage() {
         </div>
         <p className="mt-4 max-w-3xl leading-relaxed text-muted-foreground">
           Losing weight? Start with{" "}
-          <Link href={ARTICLES.caloriesToLoseWeight.href} className="fk-link">
+          <MaybeArticleLink
+            article={ARTICLES.caloriesToLoseWeight}
+            isPublished={isPublished}
+            className="fk-link"
+          >
             how many calories to eat to lose weight
-          </Link>{" "}
+          </MaybeArticleLink>{" "}
           and{" "}
-          <Link href={ARTICLES.calorieDeficit.href} className="fk-link">
+          <MaybeArticleLink
+            article={ARTICLES.calorieDeficit}
+            isPublished={isPublished}
+            className="fk-link"
+          >
             how to calculate your calorie deficit
-          </Link>
+          </MaybeArticleLink>
           . Keep protein high in a deficit (see{" "}
           <Link href="/nutrition/protein" className="fk-link">
             the protein guide
@@ -357,9 +381,13 @@ export default async function CaloriesHubPage() {
             Indian food calories and protein chart
           </Link>
           , and see{" "}
-          <Link href={ARTICLES.riceVsRoti.href} className="fk-link">
+          <MaybeArticleLink
+            article={ARTICLES.riceVsRoti}
+            isPublished={isPublished}
+            className="fk-link"
+          >
             rice vs roti for weight loss
-          </Link>{" "}
+          </MaybeArticleLink>{" "}
           for the most common swap question.
         </p>
       </section>
@@ -382,9 +410,13 @@ export default async function CaloriesHubPage() {
           <li>
             If the weekly average has not moved in three weeks, reduce by
             100–200 kcal or add 2,000–3,000 daily steps. See{" "}
-            <Link href={ARTICLES.notLosingWeight.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.notLosingWeight}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               why you might not be losing weight
-            </Link>
+            </MaybeArticleLink>
             .
           </li>
           <li>
@@ -393,9 +425,13 @@ export default async function CaloriesHubPage() {
               steps to calories calculator
             </Link>{" "}
             to see what your steps are worth, and read{" "}
-            <Link href={ARTICLES.walking.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.walking}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               whether walking helps you lose weight
-            </Link>
+            </MaybeArticleLink>
             .
           </li>
         </ul>
