@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ARTICLES } from "@/features/tools/content/links";
 import { publishedFilter } from "@/features/tools/content/liveArticles";
@@ -84,9 +85,13 @@ const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean)
           calorie deficit calculator
         </Link>{" "}
         turns your goal into a daily target, and our guide on{" "}
-        <Link href={ARTICLES.caloriesToLoseWeight.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.caloriesToLoseWeight}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           how many calories to eat to lose weight
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         explains the trade-offs.
       </>
     ),
@@ -102,17 +107,25 @@ const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean)
           protein calculator
         </Link>
         , then build meals from{" "}
-        <Link href={ARTICLES.indianProteinFoods.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.indianProteinFoods}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           high-protein Indian foods
-        </Link>
+        </MaybeArticleLink>
         .
         {isPublished(ARTICLES.proteinForWeightLoss) ? (
           <>
             {" "}
             Not lifting yet? See{" "}
-            <Link href={ARTICLES.proteinForWeightLoss.href} className="fk-link">
+            <MaybeArticleLink
+              article={ARTICLES.proteinForWeightLoss}
+              isPublished={isPublished}
+              className="fk-link"
+            >
               protein for weight loss
-            </Link>{" "}
+            </MaybeArticleLink>{" "}
             for targets by body weight.
           </>
         ) : null}
@@ -126,9 +139,13 @@ const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean)
         Lifting two to four times a week tells your body to keep muscle, so
         more of what you lose is fat. Daily steps add a steady calorie burn that
         is easy to recover from; see{" "}
-        <Link href={ARTICLES.walking.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.walking}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           does walking help you lose weight
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         and estimate the burn with the{" "}
         <Link href="/steps-to-calories-calculator" className="fk-link">
           steps to calories calculator
@@ -144,9 +161,13 @@ const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean)
         Weigh yourself a few times a week and compare weekly averages, not
         single days. If the average has not moved for two to three weeks,
         recheck portions and activity before cutting further. Our guide to{" "}
-        <Link href={ARTICLES.notLosingWeight.href} className="fk-link">
+        <MaybeArticleLink
+          article={ARTICLES.notLosingWeight}
+          isPublished={isPublished}
+          className="fk-link"
+        >
           why you might not be losing weight
-        </Link>{" "}
+        </MaybeArticleLink>{" "}
         covers the common causes.
       </>
     ),
@@ -271,16 +292,24 @@ export default async function WeightLossPage() {
               vegetables. Weight loss comes from adjusting the proportions: a
               bigger protein and vegetable share, a measured carb portion, and
               less oil and ghee in cooking. To see it on a plate, follow our{" "}
-              <Link href={ARTICLES.indianDietPlan.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.indianDietPlan}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 7-day Indian diet plan for weight loss
-              </Link>
+              </MaybeArticleLink>
               {isPublished(ARTICLES.plan1500) ? (
                 <>
                   {" "}
                   or the{" "}
-                  <Link href={ARTICLES.plan1500.href} className="fk-link">
+                  <MaybeArticleLink
+                    article={ARTICLES.plan1500}
+                    isPublished={isPublished}
+                    className="fk-link"
+                  >
                     1500 calorie Indian diet plan
-                  </Link>{" "}
+                  </MaybeArticleLink>{" "}
                   with gram weights
                 </>
               ) : null}
@@ -290,13 +319,21 @@ export default async function WeightLossPage() {
               The biggest hidden calories are usually fried snacks, sweets,
               sugary tea and coffee, and generous tadka. Rice is not the
               problem on its own; see{" "}
-              <Link href={ARTICLES.riceVsRoti.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.riceVsRoti}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 rice vs roti for weight loss
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               for a side-by-side comparison, and{" "}
-              <Link href={ARTICLES.indianWeightLossFoods.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.indianWeightLossFoods}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 the best Indian foods for weight loss
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               for filling, lower-calorie swaps. Look up exact numbers in our{" "}
               <Link href="/foods/indian" className="fk-link">
                 Indian food calorie database
@@ -306,13 +343,21 @@ export default async function WeightLossPage() {
             <p>
               Belly fat goes when overall body fat goes; no food or exercise
               burns it from one spot. Our guide on{" "}
-              <Link href={ARTICLES.bellyFat.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.bellyFat}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 how to lose belly fat
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               explains what actually works, and{" "}
-              <Link href={ARTICLES.intermittentFasting.href} className="fk-link">
+              <MaybeArticleLink
+                article={ARTICLES.intermittentFasting}
+                isPublished={isPublished}
+                className="fk-link"
+              >
                 does intermittent fasting work
-              </Link>{" "}
+              </MaybeArticleLink>{" "}
               covers whether eating windows help.
             </p>
           </div>
