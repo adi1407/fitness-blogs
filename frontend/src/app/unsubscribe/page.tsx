@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { UnsubscribeConfirm } from "@/features/newsletter/components/UnsubscribeConfirm";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Unsubscribe";
+const DESCRIPTION = "Stop receiving fitlives email updates. You can subscribe again anytime.";
 
 export const metadata: Metadata = {
-  title: "Unsubscribe",
+  title: TITLE,
+  description: DESCRIPTION,
   robots: { index: false, follow: false },
   alternates: { canonical: "/unsubscribe" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/unsubscribe",
+  },
 };
 
 type Props = { searchParams: Promise<{ token?: string | string[] }> };

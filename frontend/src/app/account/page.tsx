@@ -3,11 +3,23 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AccountHub } from "@/features/account/AccountHub";
 import { MEMBER_COOKIE } from "@/lib/auth/memberCookie";
+import { OG_DEFAULTS } from "@/lib/seo";
+
+const TITLE = "Your account";
+const DESCRIPTION =
+  "Saved calculator results, guides, upvotes, and fitlives member settings.";
 
 export const metadata: Metadata = {
-  title: "Your account",
-  description: "Saved calculator results, guides, upvotes, and fitlives member settings.",
+  title: TITLE,
+  description: DESCRIPTION,
   robots: { index: false, follow: false },
+  alternates: { canonical: "/account" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: `${TITLE} | fitlives`,
+    description: DESCRIPTION,
+    url: "/account",
+  },
 };
 
 export default async function AccountPage() {
