@@ -14,6 +14,7 @@ import {
   MUSCLE_GROUPS,
   type MuscleGroup,
 } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -42,11 +43,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const label = MUSCLE_GROUP_LABELS[group];
   const title = `${label} Exercises — Form, Cues & Programming`;
   const description = GROUP_INTRO[group];
+  const ogImage = ogImageUrl({
+    title: `${label} exercises`,
+    eyebrow: "Form · Cues · Programming",
+  });
   return {
     title,
     description,
     alternates: { canonical: `/exercises/${group}` },
-    openGraph: { ...OG_DEFAULTS, title: `${title} | fitlives`, description, url: `/exercises/${group}` },
+    openGraph: {
+      ...OG_DEFAULTS,
+      title: `${title} | fitlives`,
+      description,
+      url: `/exercises/${group}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${label} exercises on fitlives` }],
+    },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 

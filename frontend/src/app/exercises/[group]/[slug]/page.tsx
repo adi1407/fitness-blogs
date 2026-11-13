@@ -16,6 +16,7 @@ import {
   MUSCLE_GROUPS,
   staticParamsOrEmpty,
 } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -42,6 +43,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { exercise } = data;
   const title = pageTitle(exercise.metaTitle || exercise.title);
   const description = exercise.metaDescription || exercise.excerpt;
+  const groupLabel = MUSCLE_GROUP_LABELS[group];
+  const ogImage = ogImageUrl({
+    title: exercise.title,
+    eyebrow: `${groupLabel} exercise`,
+  });
   return {
     title,
     description,
@@ -52,7 +58,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | fitlives`,
       description,
       url: `/exercises/${group}/${slug}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${exercise.title} — fitlives` }],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
