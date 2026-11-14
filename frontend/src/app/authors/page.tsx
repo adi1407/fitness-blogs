@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchAuthors } from "@/features/authors/api/authors";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -9,6 +10,10 @@ export const revalidate = 300;
 const TITLE = "Our Authors & Reviewers";
 const DESCRIPTION =
   "Meet the people who write and review fitlives guides on nutrition, weight loss and muscle building, and see every article they have published.";
+const OG_IMAGE = ogImageUrl({
+  title: "Authors & reviewers",
+  eyebrow: "Who writes fitlives",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const authors = await fetchAuthors();
@@ -22,7 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${TITLE} | fitlives`,
       description: DESCRIPTION,
       url: "/authors",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives authors" }],
     },
+    twitter: { card: "summary_large_image", images: [OG_IMAGE] },
   };
 }
 
