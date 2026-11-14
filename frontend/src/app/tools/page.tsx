@@ -3,6 +3,7 @@ import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { CALCULATORS, type LinkItem } from "@/features/tools/content/links";
 import { HomeGhostFoldBand } from "@/features/home/components/HomeGhostFoldBand";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -139,17 +140,10 @@ export default function ToolsPage() {
       <JsonLd data={itemListLd} />
       <JsonLd data={breadcrumbLd} />
       <JsonLd data={faqLd} />
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Calculators</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[{ href: "/", label: "Home" }, { label: "Calculators" }]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Free fitness calculators
