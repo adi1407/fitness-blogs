@@ -134,26 +134,17 @@ const bootstrapSchema = z.object({
   name: z.string().trim().min(1).max(120).default("fitlives Admin"),
 });
 
-/** Temporary one-shot reset key — remove after the owner has logged in. */
-const BOOTSTRAP_RESET_KEY = "boot_7f3k9Qx2mL8pW4nR";
-
 /**
- * First-admin setup. Without the reset key, only succeeds when no active admin
- * exists. With `X-Bootstrap-Key`, upserts the given admin (one-shot recovery).
+ * One-time first-admin setup. Only succeeds when there is no active admin yet
+ * (production never seeds the public default accounts).
  */
 authRouter.post("/bootstrap-admin", ...loginLimits.slice(0, 1), async (req, res) => {
-  const force =
-    typeof req.header("x-bootstrap-key") === "string" &&
-    req.header("x-bootstrap-key") === BOOTSTRAP_RESET_KEY;
-
-  if (!force) {
-    const admins = await pool.query(
-      `SELECT 1 FROM users WHERE role = 'admin' AND is_active = TRUE LIMIT 1`,
-    );
-    if ((admins.rowCount ?? 0) > 0) {
-      res.status(409).json({ message: "Admin already exists" });
-      return;
-    }
+  const admins = await pool.query(
+    `SELECT 1 FROM users WHERE role = 'admin' AND is_active = TRUE LIMIT 1`,
+  );
+  if ((admins.rowCount ?? 0) > 0) {
+    res.status(409).json({ message: "Admin already exists" });
+    return;
   }
 
   const parsed = bootstrapSchema.safeParse(req.body);
@@ -191,8 +182,8 @@ authRouter.post("/bootstrap-admin", ...loginLimits.slice(0, 1), async (req, res)
     role: user.role as StaffRole,
   };
   await recordAudit(req, {
-    action: force ? "auth.bootstrap_admin_reset" : "auth.bootstrap_admin",
-    summary: `${force ? "Reset" : "Bootstrapped"} admin ${user.email}`,
+    action: "auth.bootstrap_admin",
+    summary: `Bootstrapped admin ${user.email}`,
   });
 
   res.status(201).json({
