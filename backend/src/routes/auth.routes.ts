@@ -124,6 +124,74 @@ authRouter.get("/me", authenticate, async (req, res) => {
   res.json({ user: req.user });
 });
 
+const bootstrapSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(12, "Use at least 12 characters")
+    .max(200)
+    .refine((p) => !PUBLIC_DEFAULT_PASSWORDS.has(p), "Choose a password that isn't a published default"),
+  name: z.string().trim().min(1).max(120).default("fitlives Admin"),
+});
+
+/**
+ * One-time first-admin setup. Only succeeds when there is no active admin yet
+ * (production never seeds the public default accounts).
+ */
+authRouter.post("/bootstrap-admin", ...loginLimits.slice(0, 1), async (req, res) => {
+  const admins = await pool.query(
+    `SELECT 1 FROM users WHERE role = 'admin' AND is_active = TRUE LIMIT 1`,
+  );
+  if ((admins.rowCount ?? 0) > 0) {
+    res.status(409).json({ message: "Admin already exists" });
+    return;
+  }
+
+  const parsed = bootstrapSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ message: parsed.error.issues[0]?.message ?? "Invalid payload" });
+    return;
+  }
+
+  const email = parsed.data.email.toLowerCase().trim();
+  const hash = await bcrypt.hash(parsed.data.password, 10);
+  const inserted = await pool.query(
+    `INSERT INTO users (email, password_hash, name, role, password_changed_at)
+     VALUES ($1, $2, $3, 'admin', NOW())
+     ON CONFLICT (email) DO UPDATE
+       SET password_hash = EXCLUDED.password_hash,
+           name = EXCLUDED.name,
+           role = 'admin',
+           is_active = TRUE,
+           password_version = users.password_version + 1,
+           password_changed_at = NOW(),
+           updated_at = NOW()
+     RETURNING id, email, name, role, password_version`,
+    [email, hash, parsed.data.name],
+  );
+  const user = inserted.rows[0];
+  if (!user) {
+    res.status(500).json({ message: "Could not create admin" });
+    return;
+  }
+
+  req.user = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role as StaffRole,
+  };
+  await recordAudit(req, {
+    action: "auth.bootstrap_admin",
+    summary: `Bootstrapped admin ${user.email}`,
+  });
+
+  res.status(201).json({
+    token: signToken(user),
+    user: { id: user.id, email: user.email, name: user.name, role: user.role },
+  });
+});
+
 authRouter.post("/change-password", authenticate, ...loginLimits.slice(0, 1), async (req, res) => {
   const parsed = changePasswordSchema.safeParse(req.body);
   if (!parsed.success) {
