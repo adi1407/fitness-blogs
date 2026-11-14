@@ -903,6 +903,27 @@ async function ensureStaffUsers(): Promise<void> {
 
   if (env.nodeEnv === "production") {
     await warnDefaultPasswords();
+    // Optional one-shot reset from Render env (remove after first successful login).
+    const bootstrapEmail = process.env.BOOTSTRAP_ADMIN_EMAIL?.trim().toLowerCase();
+    const bootstrapPassword = process.env.BOOTSTRAP_ADMIN_PASSWORD?.trim();
+    if (bootstrapEmail && bootstrapPassword && bootstrapPassword.length >= 12) {
+      const hash = await bcrypt.hash(bootstrapPassword, 10);
+      await pool.query(
+        `INSERT INTO users (email, password_hash, name, role, password_changed_at)
+         VALUES ($1, $2, 'fitlives Admin', 'admin', NOW())
+         ON CONFLICT (email) DO UPDATE
+           SET password_hash = EXCLUDED.password_hash,
+               role = 'admin',
+               is_active = TRUE,
+               password_version = users.password_version + 1,
+               password_changed_at = NOW(),
+               updated_at = NOW()`,
+        [bootstrapEmail, hash],
+      );
+      console.warn(
+        `[security] bootstrapped admin ${bootstrapEmail} from BOOTSTRAP_ADMIN_* env — remove those vars after login`,
+      );
+    }
   } else {
     for (const user of SEED_USERS) {
       const existing = await pool.query(
