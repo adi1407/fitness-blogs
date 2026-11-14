@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { OG_DEFAULTS, SITE_URL } from "@/lib/seo";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { FoodIndex } from "@/features/foods/components/FoodIndex";
 import { fetchFoodsSafe } from "@/features/foods/api/foods";
 import { shortName } from "@/features/foods/lib/nutrition";
@@ -66,23 +67,14 @@ export default async function IndianFoodsPage() {
       <JsonLd data={breadcrumbLd} />
       {itemListLd && <JsonLd data={itemListLd} />}
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/foods" className="fk-link-muted">
-              Foods
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Indian</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/foods", label: "Foods" },
+          { label: "Indian" },
+        ]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Indian food calories &amp; protein

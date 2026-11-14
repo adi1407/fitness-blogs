@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { CoverImage } from "@/components/shared/CoverImage";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { fetchFood, fetchFoodsSafe } from "@/features/foods/api/foods";
@@ -249,29 +250,15 @@ export default async function FoodPage({ params }: { params: Promise<Params> }) 
       <JsonLd data={faqLd} />
       <FoodViewBeacon slug={food.slug} category={food.category} />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/foods" className="fk-link-muted">
-              Foods
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/foods/indian" className="fk-link-muted">
-              Indian foods
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">{food.name}</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/foods", label: "Foods" },
+          { href: "/foods/indian", label: "Indian foods" },
+          { label: food.name },
+        ]}
+      />
 
       <div className="mt-4 max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-wide text-[#FF9800]">
