@@ -51,7 +51,6 @@ const STATIC_PATHS = [
   "/foods",
   "/foods/indian",
   "/foods/indian/protein-ranking",
-  "/recipes",
 ];
 
 const TRUST_PATHS = [
@@ -135,7 +134,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     add(path, PRIORITY_PATHS.has(path) ? 0.9 : 0.7, "weekly", safeDate(calc?.updated));
   }
   TRUST_PATHS.forEach((path) => add(path, 0.3, "monthly"));
-  MUSCLE_GROUPS.forEach((g) => add(`/exercises/${g}`, 0.7, "weekly"));
 
   const [articles, exercises, recipes, programs, reviews, foods, authors] = await Promise.all([
     fetchApi<{ articles?: ArticleItem[] }>("/public/articles?limit=500&fields=summary"),
@@ -169,6 +167,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   addItems(recipes?.recipes, 0.7);
   addItems(programs?.pages, 0.7);
   addItems(reviews?.pages, 0.7);
+
+  const groupsWithExercises = new Set<string>();
+  for (const item of exercises?.exercises ?? []) {
+    if (item.robotsIndex === false || !item.path) continue;
+    const group = item.path.split("/")[2];
+    if (group && (MUSCLE_GROUPS as readonly string[]).includes(group)) {
+      groupsWithExercises.add(group);
+    }
+  }
+  for (const g of MUSCLE_GROUPS) {
+    if (groupsWithExercises.has(g)) add(`/exercises/${g}`, 0.7, "weekly");
+  }
+
+  const indexableRecipes = (recipes?.recipes ?? []).filter(
+    (r) => r.robotsIndex !== false && r.path,
+  );
+  if (indexableRecipes.length) add("/recipes", 0.7, "weekly");
+
   const indexablePrograms = (programs?.pages ?? []).filter((p) => p.robotsIndex !== false && p.path);
   if (indexablePrograms.length) add("/programs", 0.7, "weekly");
   const indexableReviews = (reviews?.pages ?? []).filter((p) => p.robotsIndex !== false && p.path);
