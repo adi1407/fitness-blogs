@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { CopySnippet } from "@/components/shared/CopySnippet";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchFoodsSafe } from "@/features/foods/api/foods";
@@ -111,29 +112,15 @@ export default async function ProteinRankingPage() {
       {datasetLd && <JsonLd data={datasetLd} />}
       {itemListLd && <JsonLd data={itemListLd} />}
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/foods" className="fk-link-muted">
-              Foods
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/foods/indian" className="fk-link-muted">
-              Indian
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Protein ranking</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/foods", label: "Foods" },
+          { href: "/foods/indian", label: "Indian" },
+          { label: "Protein ranking" },
+        ]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Protein in {count || 50} Indian foods, ranked
