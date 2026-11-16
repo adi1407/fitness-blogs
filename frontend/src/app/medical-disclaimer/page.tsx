@@ -6,11 +6,13 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Medical Disclaimer";
 const DESCRIPTION =
   "fitlives provides educational fitness and nutrition information only — not medical advice, diagnosis, treatment, or emergency care.";
+const OG_IMAGE = ogImageUrl({ title: "Medical Disclaimer", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -21,7 +23,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/medical-disclaimer",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [

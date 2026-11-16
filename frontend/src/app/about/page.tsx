@@ -10,17 +10,26 @@ import TailwindImageAccordion, {
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { HUB } from "@/lib/hubImages";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "About fitlives — Fitness Knowledge Platform";
 const DESCRIPTION =
   "Why fitlives exists: evidence-informed fitness and nutrition content, calculators, Indian foods, exercises, and transparent editorial standards.";
+const OG_IMAGE = ogImageUrl({ title: "About fitlives", eyebrow: "Our story" });
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "/about" },
-  openGraph: { ...OG_DEFAULTS, title: TITLE, description: DESCRIPTION, url: "/about" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/about",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "About fitlives" }],
+  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const PILLAR_ACCORDION: AccordionItem[] = [

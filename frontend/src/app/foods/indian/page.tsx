@@ -15,6 +15,10 @@ const siteUrl = SITE_URL;
 const title = "Indian Food Calories & Protein Chart — Dal, Roti, Paneer & More";
 const description =
   "Calories, protein, carbs and fat for everyday Indian foods per katori, roti and 100 g. Filter veg, egg or non-veg and high-protein foods. Values from IFCT 2017 (NIN).";
+const OG_IMAGE = ogImageUrl({
+  title: "Indian food calories & protein",
+  eyebrow: "Food database",
+});
 
 export const metadata: Metadata = {
   title,
@@ -27,12 +31,14 @@ export const metadata: Metadata = {
     url: "/foods/indian",
     images: [
       {
-        url: ogImageUrl({ title: "Indian food calories & protein", eyebrow: "Food database" }),
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
+        alt: "Indian food calories & protein",
       },
     ],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default async function IndianFoodsPage() {

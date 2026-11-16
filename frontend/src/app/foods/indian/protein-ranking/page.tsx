@@ -20,6 +20,10 @@ const INFOGRAPHIC_PATH = `${PATH}/infographic.png`;
 const TITLE = "Indian Foods Ranked by Protein (Per Serving)";
 const DESCRIPTION =
   "Protein in 50 Indian foods ranked per serving, per 100 kcal and per 100 g — dals, paneer, eggs, chicken, fish and more. IFCT 2017 data plus a free infographic.";
+const OG_IMAGE = ogImageUrl({
+  title: "Protein in Indian foods, ranked",
+  eyebrow: "Food data",
+});
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -32,12 +36,14 @@ export const metadata: Metadata = {
     url: PATH,
     images: [
       {
-        url: ogImageUrl({ title: "Protein in Indian foods, ranked", eyebrow: "Food data" }),
+        url: OG_IMAGE,
         width: 1200,
         height: 630,
+        alt: "Protein in Indian foods, ranked",
       },
     ],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const btn =
