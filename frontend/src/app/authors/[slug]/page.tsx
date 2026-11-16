@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { fetchAuthor } from "@/features/authors/api/authors";
+import { ogImageUrl } from "@/lib/og/url";
 import { ORG_REF, OG_DEFAULTS, absoluteUrl, breadcrumbLd } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -29,6 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { author } = profile;
   const title = `${author.name}, fitlives Author`;
   const description = describe(author.name, author.bio);
+  const ogImage = ogImageUrl({
+    title: author.name,
+    eyebrow: "fitlives author",
+  });
   return {
     title,
     description,
@@ -39,7 +44,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${title} | fitlives`,
       description,
       url: `/authors/${author.slug}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: author.name }],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
