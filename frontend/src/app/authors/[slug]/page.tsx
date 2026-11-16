@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { ArticleCard } from "@/features/blog/components/ArticleCard";
 import { fetchAuthor } from "@/features/authors/api/authors";
 import { ogImageUrl } from "@/lib/og/url";
@@ -86,23 +87,14 @@ export default async function AuthorPage({ params }: PageProps) {
         ])}
       />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/authors" className="fk-link-muted">
-              Authors
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">{author.name}</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/authors", label: "Authors" },
+          { label: author.name },
+        ]}
+      />
 
       <header className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
         <span

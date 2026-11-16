@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ProteinTracingBeam } from "@/features/nutrition/components/ProteinTracingBeam";
 import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
@@ -81,23 +82,14 @@ export default async function ProteinHubPage() {
       />
       <JsonLd data={faqPageLd(faq)} />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/nutrition" className="fk-link-muted">
-              Nutrition
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Protein</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/nutrition", label: "Nutrition" },
+          { label: "Protein" },
+        ]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Protein guide: best protein foods in India

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
@@ -122,23 +123,14 @@ export default async function CaloriesHubPage() {
       />
       <JsonLd data={faqPageLd(faq)} />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/nutrition" className="fk-link-muted">
-              Nutrition
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Calories</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/nutrition", label: "Nutrition" },
+          { label: "Calories" },
+        ]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Calories guide: how many calories do you need?

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { MaybeArticleLink } from "@/features/blog/components/MaybeArticleLink";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { ARTICLES } from "@/features/tools/content/links";
@@ -207,17 +208,10 @@ export default async function WeightLossPage() {
       <JsonLd data={faqPageLd(faq)} />
 
       <div className="fk-page pt-16">
-        <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-          <ol className="flex flex-wrap gap-2">
-            <li>
-              <Link href="/" className="fk-link-muted">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li className="text-foreground">Weight Loss</li>
-          </ol>
-        </nav>
+        <Breadcrumbs
+          linkClassName="fk-link-muted"
+          items={[{ href: "/", label: "Home" }, { label: "Weight Loss" }]}
+        />
 
         <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
           Weight loss guide: how to lose weight safely
