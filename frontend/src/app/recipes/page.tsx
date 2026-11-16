@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { OG_DEFAULTS } from "@/lib/seo";
 import Link from "next/link";
 import {
@@ -32,8 +33,22 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
+function RecipeLink({
+  slug,
+  live,
+  children,
+}: {
+  slug: string;
+  live: Set<string>;
+  children: ReactNode;
+}) {
+  if (!live.has(slug)) return <span>{children}</span>;
+  return <Link href={`/recipes/${slug}`}>{children}</Link>;
+}
+
 export default async function RecipesPage() {
   const recipes = await fetchRecipes();
+  const live = new Set(recipes.map((r) => r.slug));
 
   return (
     <main className="fk-page flex-1 py-16">
@@ -125,15 +140,29 @@ export default async function RecipesPage() {
         <h2>Building a high-protein day</h2>
         <p>
           A simple day might be a{" "}
-          <Link href="/recipes/moong-chilla-stack">moong dal chilla</Link> or{" "}
-          <Link href="/recipes/greek-yogurt-fruit-bowl">Greek yogurt bowl</Link>{" "}
+          <RecipeLink slug="moong-chilla-stack" live={live}>
+            moong dal chilla
+          </RecipeLink>{" "}
+          or{" "}
+          <RecipeLink slug="greek-yogurt-fruit-bowl" live={live}>
+            Greek yogurt bowl
+          </RecipeLink>{" "}
           for breakfast, a{" "}
-          <Link href="/recipes/dal-rice-protein-plate">dal-rice plate</Link> for
-          lunch, a <Link href="/recipes/sprout-chaat-bowl">sprout chaat</Link>{" "}
+          <RecipeLink slug="dal-rice-protein-plate" live={live}>
+            dal-rice plate
+          </RecipeLink>{" "}
+          for lunch, a{" "}
+          <RecipeLink slug="sprout-chaat-bowl" live={live}>
+            sprout chaat
+          </RecipeLink>{" "}
           snack, and{" "}
-          <Link href="/recipes/paneer-bhurji-high-protein">paneer bhurji</Link>{" "}
+          <RecipeLink slug="paneer-bhurji-high-protein" live={live}>
+            paneer bhurji
+          </RecipeLink>{" "}
           or a{" "}
-          <Link href="/recipes/chicken-stir-fry-veggies">chicken stir-fry</Link>{" "}
+          <RecipeLink slug="chicken-stir-fry-veggies" live={live}>
+            chicken stir-fry
+          </RecipeLink>{" "}
           for dinner. Together that is roughly 105–120 g of protein. To see which
           foods give the most protein per serving, use our{" "}
           <Link href="/foods/indian/protein-ranking">protein ranking</Link> or
