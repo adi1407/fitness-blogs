@@ -1,14 +1,18 @@
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const { user, loading, login } = useAuth();
-  const [email, setEmail] = useState("admin@fitknowledge.local");
-  const [password, setPassword] = useState("ChangeMeAdmin123!");
+  const [email, setEmail] = useState("admin@fitlives.in");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.title = "Sign in · fitlives CMS";
+  }, []);
 
   if (!loading && user) return <Navigate to="/" replace />;
 
