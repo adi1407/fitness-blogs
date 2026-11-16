@@ -17,6 +17,7 @@ import {
   type BlogCategoryDef,
   type BlogSubcategoryDef,
 } from "@/lib/blogTaxonomy";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd, collectionPageLd } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -77,6 +78,10 @@ export async function generateMetadata({
   const title = `${subcategory.label} Guides (${category.label})`;
   const description = metaDescription(subcategoryIntro(category, subcategory));
   const path = `/blog/${category.slug}/${subcategory.slug}`;
+  const ogImage = ogImageUrl({
+    title: subcategory.label,
+    eyebrow: `${category.label} guides`,
+  });
 
   return {
     title,
@@ -88,7 +93,16 @@ export async function generateMetadata({
       title: `${title} | fitlives`,
       description,
       url: path,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${subcategory.label} guides on fitlives`,
+        },
+      ],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
