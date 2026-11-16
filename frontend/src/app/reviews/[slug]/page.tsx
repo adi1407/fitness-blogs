@@ -14,6 +14,7 @@ import {
   fetchKnowledgeSection,
   staticParamsOrEmpty,
 } from "@/lib/api/knowledge";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -28,10 +29,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const data = await fetchKnowledgePage("reviews", slug);
-  if (!data) return { title: "Review" };
+  if (!data) return { title: "Review", robots: { index: false } };
   const { page } = data;
   const title = pageTitle(page.metaTitle || page.title);
   const description = page.metaDescription || page.excerpt;
+  const ogImage = ogImageUrl({ title: page.title, eyebrow: "Review" });
   return {
     title,
     description,
@@ -42,7 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | fitlives`,
       description,
       url: `/reviews/${slug}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: page.title }],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 

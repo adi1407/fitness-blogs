@@ -22,6 +22,7 @@ import {
   type PublicRecipe,
 } from "@/lib/api/knowledge";
 import { structuredDataImages } from "@/lib/imageVariants";
+import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
@@ -60,6 +61,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { recipe } = data;
   const title = pageTitle(recipe.metaTitle || recipe.title);
   const description = recipe.metaDescription || recipe.excerpt;
+  const ogImage = recipe.imageUrl
+    ? recipe.imageUrl
+    : ogImageUrl({ title: recipe.title, eyebrow: "Recipe" });
+  const ogAlt = recipe.imageAlt || recipe.title;
   return {
     title,
     description,
@@ -70,10 +75,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | fitlives`,
       description,
       url: `/recipes/${slug}`,
-      ...(recipe.imageUrl
-        ? { images: [{ url: recipe.imageUrl, alt: recipe.imageAlt || recipe.title }] }
-        : {}),
+      images: [{ url: ogImage, width: 1200, height: 630, alt: ogAlt }],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
