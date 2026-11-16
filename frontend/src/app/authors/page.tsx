@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { fetchAuthors } from "@/features/authors/api/authors";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS, breadcrumbLd } from "@/lib/seo";
@@ -46,17 +47,10 @@ export default async function AuthorsPage() {
   return (
     <main className="fk-page flex-1 py-16">
       <JsonLd data={breadcrumbLd([["Home", "/"], ["Authors", "/authors"]])} />
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Authors</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[{ href: "/", label: "Home" }, { label: "Authors" }]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight">
         Authors & reviewers

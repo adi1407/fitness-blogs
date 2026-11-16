@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { TrackedHubLink } from "@/components/analytics/TrackedHubLink";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { PillarGuides } from "@/features/blog/components/PillarGuides";
 import { NutritionFocusCards } from "@/features/nutrition/components/NutritionFocusCards";
 import { FaqAccordion } from "@/features/shared/components/FaqAccordion";
@@ -173,17 +174,10 @@ export default async function NutritionPage() {
       <JsonLd data={breadcrumbLd([["Home", "/"], ["Nutrition", "/nutrition"]])} />
       <JsonLd data={faqPageLd(faq)} />
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">Nutrition</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[{ href: "/", label: "Home" }, { label: "Nutrition" }]}
+      />
 
       <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
         Nutrition guide: healthy eating for Indian diets

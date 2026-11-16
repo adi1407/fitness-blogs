@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Breadcrumbs } from "@/components/shared/Breadcrumbs";
 import { CopySnippet } from "@/components/shared/CopySnippet";
 import { embedSnippet, isCalcTool } from "@/features/tools/embed/snippet";
 import { SocialFollow } from "@/components/shared/SocialFollow";
@@ -172,25 +173,14 @@ export async function CalculatorPageShell({
       <JsonLd data={breadcrumbLd} />
       {faqLd ? <JsonLd data={faqLd} /> : null}
 
-      <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
-        <ol className="flex flex-wrap gap-2">
-          <li>
-            <Link href="/" className="fk-link-muted">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/tools" className="fk-link-muted">
-              Calculators
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground" aria-current="page">
-            {title}
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        linkClassName="fk-link-muted"
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/tools", label: "Calculators" },
+          { label: title },
+        ]}
+      />
 
       <h1 className="mt-4 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
         {title}
