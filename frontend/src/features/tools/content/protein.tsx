@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -57,18 +58,18 @@ export const proteinContent: CalculatorContent = {
             Without progressively harder workouts, extra protein simply gets
             used for energy. Combine a target of about 1.6–2.2 g/kg with a
             plan built on{" "}
-            <Link href={ARTICLES.progressiveOverload.href}>
+            <LiveArticleLink article={ARTICLES.progressiveOverload}>
               progressive overload
-            </Link>{" "}
+            </LiveArticleLink>{" "}
             and a small calorie surplus from the{" "}
             <Link href={CALCULATORS.calorie.href}>calorie calculator</Link>.
           </p>
           <p>
             Timing is a minor detail. Hitting your daily total matters far
             more than whether you eat protein before or after training — see{" "}
-            <Link href={ARTICLES.proteinTiming.href}>
+            <LiveArticleLink article={ARTICLES.proteinTiming}>
               protein before or after workout
-            </Link>
+            </LiveArticleLink>
             .
           </p>
         </>
@@ -119,9 +120,9 @@ export const proteinContent: CalculatorContent = {
           <p>
             Pairing dal or rajma with rice or roti improves the overall
             protein quality of the meal. For more ideas, read{" "}
-            <Link href={ARTICLES.indianProteinFoods.href}>
+            <LiveArticleLink article={ARTICLES.indianProteinFoods}>
               best high-protein Indian foods
-            </Link>
+            </LiveArticleLink>
             .
           </p>
           <p>

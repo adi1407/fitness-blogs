@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -112,9 +113,9 @@ export const calorieContent: CalculatorContent = {
             lighter you burn a little less, so an estimate that worked at
             80 kg won&apos;t be exact at 72 kg — recalculate after every 4–5
             kg lost. For a step-by-step method, read{" "}
-            <Link href={ARTICLES.calorieDeficit.href}>
+            <LiveArticleLink article={ARTICLES.calorieDeficit}>
               how to calculate your calorie deficit
-            </Link>
+            </LiveArticleLink>
             .
           </p>
         </>
@@ -147,9 +148,9 @@ export const calorieContent: CalculatorContent = {
             per month for experienced lifters, and a little more for
             beginners. Training is what tells your body to use the extra
             energy for muscle — see{" "}
-            <Link href={ARTICLES.progressiveOverload.href}>
+            <LiveArticleLink article={ARTICLES.progressiveOverload}>
               progressive overload
-            </Link>{" "}
+            </LiveArticleLink>{" "}
             for how to structure it.
           </p>
         </>

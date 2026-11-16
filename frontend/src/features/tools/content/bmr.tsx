@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -133,9 +134,9 @@ export const bmrContent: CalculatorContent = {
             The bigger wins are outside BMR: more daily steps, regular
             strength training and enough protein. They raise your total daily
             burn and help you keep muscle while losing fat. Start with{" "}
-            <Link href={ARTICLES.progressiveOverload.href}>
+            <LiveArticleLink article={ARTICLES.progressiveOverload}>
               progressive overload
-            </Link>
+            </LiveArticleLink>
             .
           </p>
         </>

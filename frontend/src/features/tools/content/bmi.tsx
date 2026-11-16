@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -136,7 +137,7 @@ export const bmiContent: CalculatorContent = {
             80 cm or more in women as abdominal obesity. If you are above
             these numbers, a small calorie deficit, more daily walking and
             strength training are the best places to start — see{" "}
-            <Link href={ARTICLES.bellyFat.href}>how to lose belly fat</Link>.
+            <LiveArticleLink article={ARTICLES.bellyFat}>how to lose belly fat</LiveArticleLink>.
           </p>
         </>
       ),

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -29,9 +30,9 @@ export const tdeeContent: CalculatorContent = {
             and your weight stays roughly stable, which is why it is also
             called your <em>maintenance calories</em>. To check the estimate
             against your real weight, see{" "}
-            <Link href={ARTICLES.maintenanceCalories.href}>
+            <LiveArticleLink article={ARTICLES.maintenanceCalories}>
               how to find your maintenance calories
-            </Link>
+            </LiveArticleLink>
             .
           </p>
           <p>
@@ -65,9 +66,9 @@ export const tdeeContent: CalculatorContent = {
             of similar size. A shop-floor job, walking to work or chasing
             children can outweigh an hour in the gym. That is why step count
             matters so much for fat loss — see{" "}
-            <Link href={ARTICLES.walking.href}>
+            <LiveArticleLink article={ARTICLES.walking}>
               does walking help you lose weight?
-            </Link>
+            </LiveArticleLink>
           </p>
         </>
       ),

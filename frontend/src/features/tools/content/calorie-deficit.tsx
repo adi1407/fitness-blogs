@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -107,10 +108,10 @@ export const calorieDeficitContent: CalculatorContent = {
           <p>
             Two or three of these together cover a 400–500 kcal deficit
             without cutting out the foods you enjoy. See{" "}
-            <Link href={ARTICLES.indianWeightLossFoods.href}>
+            <LiveArticleLink article={ARTICLES.indianWeightLossFoods}>
               best Indian foods for weight loss
-            </Link>{" "}
-            and <Link href={ARTICLES.riceVsRoti.href}>rice vs roti</Link> for
+            </LiveArticleLink>{" "}
+            and <LiveArticleLink article={ARTICLES.riceVsRoti}>rice vs roti</LiveArticleLink> for
             more, or look up exact{" "}
             <Link href={FOODS.roti.href}>roti</Link> and{" "}
             <Link href={FOODS.rice.href}>rice</Link> calories per serving.

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -82,7 +83,7 @@ export const macroContent: CalculatorContent = {
           high-fibre options like dal, vegetables, fruit and whole grains.
           Portion control of rice and roti matters more than choosing between
           them — see{" "}
-          <Link href={ARTICLES.riceVsRoti.href}>rice vs roti for weight loss</Link>.
+          <LiveArticleLink article={ARTICLES.riceVsRoti}>rice vs roti for weight loss</LiveArticleLink>.
         </p>
       ),
     },
@@ -120,11 +121,11 @@ export const macroContent: CalculatorContent = {
           />
           <p>
             For more meal ideas, see{" "}
-            <Link href={ARTICLES.indianWeightLossFoods.href}>
+            <LiveArticleLink article={ARTICLES.indianWeightLossFoods}>
               best Indian foods for weight loss
-            </Link>{" "}
+            </LiveArticleLink>{" "}
             and the{" "}
-            <Link href={ARTICLES.beginnerGymDiet.href}>beginner gym diet plan</Link>.
+            <LiveArticleLink article={ARTICLES.beginnerGymDiet}>beginner gym diet plan</LiveArticleLink>.
             To swap foods in and out, check their macros in the{" "}
             <Link href={FOODS.index.href}>Indian food calories &amp; protein chart</Link>.
           </p>

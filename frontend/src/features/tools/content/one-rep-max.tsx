@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -75,7 +76,7 @@ export const oneRepMaxContent: CalculatorContent = {
           <li>
             <strong>Progress gradually:</strong> once you can beat your rep
             target at a load, add 2.5 kg (upper body) or 5 kg (lower body).
-            See <Link href={ARTICLES.progressiveOverload.href}>progressive overload</Link>.
+            See <LiveArticleLink article={ARTICLES.progressiveOverload}>progressive overload</LiveArticleLink>.
           </li>
           <li>
             <strong>Re-estimate every 4–6 weeks</strong> from a recent hard
