@@ -8,17 +8,26 @@ import {
   LEGAL_CONTACT_MAILTO,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Contact fitlives";
 const DESCRIPTION =
   "Contact fitlives for corrections, privacy requests, partnerships, and support. Not for medical emergencies.";
+const OG_IMAGE = ogImageUrl({ title: "Contact", eyebrow: "fitlives" });
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "/contact" },
-  openGraph: { ...OG_DEFAULTS, title: TITLE, description: DESCRIPTION, url: "/contact" },
+  openGraph: {
+    ...OG_DEFAULTS,
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/contact",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 export default function ContactPage() {

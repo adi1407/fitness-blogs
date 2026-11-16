@@ -12,11 +12,13 @@ import {
   LEGAL_OPERATOR_NOTE,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Terms of Use";
 const DESCRIPTION =
   "Terms of Use for fitlives — educational fitness content, calculators, and Google member accounts. Not medical advice.";
+const OG_IMAGE = ogImageUrl({ title: "Terms of Use", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -27,7 +29,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/terms",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [

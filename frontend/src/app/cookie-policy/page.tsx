@@ -6,11 +6,13 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Cookie Policy";
 const DESCRIPTION =
   "How fitlives uses cookieless analytics, optional Google Analytics cookies, Google AdSense advertising cookies, the sign-in session cookie, and how you can change your choices.";
+const OG_IMAGE = ogImageUrl({ title: "Cookie Policy", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -21,7 +23,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/cookie-policy",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [

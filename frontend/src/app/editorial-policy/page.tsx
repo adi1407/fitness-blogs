@@ -1,10 +1,12 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Editorial Policy";
 const DESCRIPTION =
   "How fitlives researches, reviews, updates, and corrects fitness and nutrition content.";
+const OG_IMAGE = ogImageUrl({ title: "Editorial Policy", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -15,7 +17,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/editorial-policy",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const EXTERNAL = "fk-link font-semibold";

@@ -11,11 +11,13 @@ import {
   LEGAL_OPERATOR_NOTE,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Privacy Policy";
 const DESCRIPTION =
   "How fitlives collects and uses personal data for Google sign-in, member features, hosting, and analytics. India-operated educational site.";
+const OG_IMAGE = ogImageUrl({ title: "Privacy Policy", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -26,7 +28,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/privacy",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [

@@ -10,11 +10,13 @@ import {
   LEGAL_CONTACT_MAILTO,
   LEGAL_RELATED,
 } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Corrections Policy";
 const DESCRIPTION =
   "How to request a factual correction on fitlives. We do not provide clinical second opinions.";
+const OG_IMAGE = ogImageUrl({ title: "Corrections Policy", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -25,7 +27,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/corrections",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [

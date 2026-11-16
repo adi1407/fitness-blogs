@@ -6,11 +6,13 @@ import {
   LegalUl,
 } from "@/components/shared/LegalDocument";
 import { LEGAL_RELATED } from "@/lib/legal";
+import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
 const TITLE = "Affiliate Disclosure";
 const DESCRIPTION =
   "fitlives currently has no paid affiliate links. If that changes, we will disclose it here.";
+const OG_IMAGE = ogImageUrl({ title: "Affiliate Disclosure", eyebrow: "Trust" });
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -21,7 +23,9 @@ export const metadata: Metadata = {
     title: `${TITLE} | fitlives`,
     description: DESCRIPTION,
     url: "/affiliate-disclosure",
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: TITLE }],
   },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
 };
 
 const toc = [
