@@ -19,19 +19,23 @@ const OG_IMAGE = ogImageUrl({
   eyebrow: "Indian-friendly meals",
 });
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  alternates: { canonical: "/recipes" },
-  openGraph: {
-    ...OG_DEFAULTS,
-    title: "Recipes | fitlives",
-    description: "Practical high-protein meals with honest macros.",
-    url: "/recipes",
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives recipes" }],
-  },
-  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const recipes = await fetchRecipes();
+  return {
+    title: TITLE,
+    description: DESCRIPTION,
+    alternates: { canonical: "/recipes" },
+    robots: recipes.length === 0 ? { index: false, follow: true } : undefined,
+    openGraph: {
+      ...OG_DEFAULTS,
+      title: "Recipes | fitlives",
+      description: "Practical high-protein meals with honest macros.",
+      url: "/recipes",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "fitlives recipes" }],
+    },
+    twitter: { card: "summary_large_image", images: [OG_IMAGE] },
+  };
+}
 
 function RecipeLink({
   slug,

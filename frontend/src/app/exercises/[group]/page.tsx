@@ -39,10 +39,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { group } = await params;
-  if (!isMuscleGroup(group)) return { title: "Exercises" };
+  if (!isMuscleGroup(group)) return { title: "Exercises", robots: { index: false } };
   const label = MUSCLE_GROUP_LABELS[group];
   const title = `${label} Exercises — Form, Cues & Programming`;
   const description = GROUP_INTRO[group];
+  const exercises = await fetchExercises(group);
   const ogImage = ogImageUrl({
     title: `${label} exercises`,
     eyebrow: "Form · Cues · Programming",
@@ -51,6 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/exercises/${group}` },
+    robots: exercises.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: {
       ...OG_DEFAULTS,
       title: `${title} | fitlives`,
