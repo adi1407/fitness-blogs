@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -133,7 +134,7 @@ export const bodyFatContent: CalculatorContent = {
           <p>
             Start with the{" "}
             <Link href={CALCULATORS.deficit.href}>calorie deficit calculator</Link>{" "}
-            and read <Link href={ARTICLES.bellyFat.href}>how to lose belly fat</Link>.
+            and read <LiveArticleLink article={ARTICLES.bellyFat}>how to lose belly fat</LiveArticleLink>.
           </p>
         </>
       ),

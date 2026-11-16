@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -136,7 +137,7 @@ export const waterIntakeContent: CalculatorContent = {
             Trying to lose weight? Drinking water before meals may help you
             feel fuller. See the{" "}
             <Link href={CALCULATORS.deficit.href}>calorie deficit calculator</Link>{" "}
-            and <Link href={ARTICLES.indianWeightLossFoods.href}>Indian foods for weight loss</Link>.
+            and <LiveArticleLink article={ARTICLES.indianWeightLossFoods}>Indian foods for weight loss</LiveArticleLink>.
           </p>
         </>
       ),

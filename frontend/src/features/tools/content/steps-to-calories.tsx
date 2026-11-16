@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LiveArticleLink } from "@/features/tools/components/LiveArticleLink";
 import {
   CalcTable,
   type CalculatorContent,
@@ -147,7 +148,7 @@ export const stepsToCaloriesContent: CalculatorContent = {
             after lunch and dinner (also helps blood sugar), taking calls on
             foot, getting off the metro or auto one stop early, and stairs
             instead of the lift. Read{" "}
-            <Link href={ARTICLES.walking.href}>does walking help you lose weight?</Link>
+            <LiveArticleLink article={ARTICLES.walking}>does walking help you lose weight?</LiveArticleLink>
           </p>
         </>
       ),
