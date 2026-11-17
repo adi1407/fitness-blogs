@@ -8,6 +8,7 @@ import {
 import {
   LEGAL_CONTACT_EMAIL,
   LEGAL_CONTACT_MAILTO,
+  LEGAL_LAST_UPDATED,
   LEGAL_OPERATOR_NOTE,
   LEGAL_RELATED,
 } from "@/lib/legal";
@@ -56,7 +57,7 @@ export default function PrivacyPage() {
       title="Privacy Policy"
       intro="This notice explains what personal data fitlives processes when you read the Site, sign in with Google, save or upvote articles, or when we measure traffic."
       toc={toc}
-      lastUpdated="7 October 2026"
+      lastUpdated={LEGAL_LAST_UPDATED}
       related={[
         LEGAL_RELATED.cookies,
         LEGAL_RELATED.terms,
@@ -161,7 +162,8 @@ export default function PrivacyPage() {
       <p>We share data only as needed to run the Site:</p>
       <LegalUl>
         <li>
-          <strong>Google</strong> — authentication.
+          <strong>Google</strong> — authentication, Google Analytics, and
+          Google AdSense advertising.
         </li>
         <li>
           <strong>Hosting</strong> — currently Vercel (frontend) and Render
@@ -171,6 +173,14 @@ export default function PrivacyPage() {
           <strong>Google Analytics 4</strong> — traffic analytics (optional,
           consent).
         </li>
+        <li>
+          <strong>Google AdSense</strong> — display advertising that helps keep
+          the Site free (see section 7 and the{" "}
+          <Link href="/cookie-policy" className="fk-link">
+            Cookie Policy
+          </Link>
+          ).
+        </li>
       </LegalUl>
       <p>
         We may disclose information if required by Indian law, court order, or
@@ -178,7 +188,7 @@ export default function PrivacyPage() {
         not sell mailing lists or member emails to advertisers.
       </p>
 
-      <LegalH2 id="cookies">7. Cookies and similar technologies</LegalH2>
+      <LegalH2 id="cookies">7. Cookies, analytics and advertising</LegalH2>
       <p>
         See the{" "}
         <Link href="/cookie-policy" className="fk-link">
@@ -187,11 +197,34 @@ export default function PrivacyPage() {
         for essential vs analytics use. A consent banner lets you accept all,
         keep essential only, or customize. You can reopen{" "}
         <strong>Cookie settings</strong> from the footer at any time. Basic
-        analytics (Google Analytics Consent Mode) runs without
-        cookies for everyone; analytics cookies and sign-in require Accept
-        cookies. We show ads through Google AdSense; Google may use cookies
-        to personalise them unless you reject optional cookies (in the EEA,
-        UK and Switzerland, only after you accept).
+        analytics (Google Analytics Consent Mode) runs without cookies for
+        everyone; analytics cookies and sign-in require Accept cookies.
+      </p>
+      <p>
+        Third parties, including Google, use cookies to serve ads based on a
+        user&apos;s prior visits to this Site or other sites on the Internet.
+        With advertising cookies, Google and its partners may serve ads to
+        users based on their visits to this and/or other sites. You can opt
+        out of personalised advertising by visiting{" "}
+        <a
+          href="https://adssettings.google.com"
+          className="fk-link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Google Ads Settings
+        </a>
+        , or learn more about third-party opt-outs at{" "}
+        <a
+          href="https://www.aboutads.info"
+          className="fk-link"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          aboutads.info
+        </a>
+        . In the EEA, UK and Switzerland, personalised ads run only after you
+        Accept cookies; Reject keeps ads non-personalised.
       </p>
 
       <LegalH2 id="retention">8. Retention</LegalH2>

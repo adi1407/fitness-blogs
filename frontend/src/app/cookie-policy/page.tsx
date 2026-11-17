@@ -5,7 +5,7 @@ import {
   LegalH2,
   LegalUl,
 } from "@/components/shared/LegalDocument";
-import { LEGAL_RELATED } from "@/lib/legal";
+import { LEGAL_LAST_UPDATED, LEGAL_RELATED } from "@/lib/legal";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
@@ -44,6 +44,7 @@ export default function CookiePolicyPage() {
       title="Cookie Policy"
       intro="This page explains cookies and similar storage on fitlives. Use Accept or Reject on the banner (or Cookie settings in the footer). Cookieless page counts run for everyone. Accept also allows Google Analytics cookies and sign-in; Reject keeps sign-in off."
       toc={toc}
+      lastUpdated={LEGAL_LAST_UPDATED}
       related={[LEGAL_RELATED.privacy, LEGAL_RELATED.terms, LEGAL_RELATED.contact]}
     >
       <LegalH2 id="what">1. What cookies are</LegalH2>
@@ -204,6 +205,15 @@ export default function CookiePolicyPage() {
             target="_blank"
           >
             Google Ads Settings
+          </a>
+          , or use industry opt-out tools at{" "}
+          <a
+            href="https://www.aboutads.info/choices/"
+            className="fk-link"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            aboutads.info
           </a>
           . See{" "}
           <a
