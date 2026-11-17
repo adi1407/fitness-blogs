@@ -11,12 +11,12 @@ import { ogImageUrl } from "@/lib/og/url";
 
 export const revalidate = 120;
 
-const TITLE = "High-Protein Recipes — Indian-Friendly Meal Ideas";
+const TITLE = "High-Protein Recipes — Indian & Air-Fryer Meal Ideas";
 const DESCRIPTION =
-  "Calorie-aware, high-protein recipes with macros — paneer, dal, eggs, chicken, and more.";
+  "Calorie-aware, high-protein recipes with macros — paneer, dal, eggs, chicken, air-fryer tikka, and more.";
 const OG_IMAGE = ogImageUrl({
   title: "High-protein recipes",
-  eyebrow: "Indian-friendly meals",
+  eyebrow: "Indian · Air fryer",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,8 +64,9 @@ export default async function RecipesPage() {
         Recipes
       </h1>
       <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-        High-protein, calorie-aware meals you can cook on a weeknight — with
-        macros listed so you can plug them into your targets.
+        High-protein, calorie-aware meals you can cook on a weeknight — including
+        air-fryer tikka and grills — with macros listed so you can plug them into
+        your targets.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3">
@@ -81,30 +82,71 @@ export default async function RecipesPage() {
         >
           Indian foods hub
         </Link>
+        {recipes.some((r) => r.cuisineTags?.includes("air-fryer")) ? (
+          <a
+            href="#air-fryer"
+            className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
+          >
+            Air-fryer recipes
+          </a>
+        ) : null}
       </div>
 
       {recipes.length === 0 ? (
         <p className="mt-10 text-muted-foreground">Recipes coming soon.</p>
       ) : (
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-          {recipes.map((r) => (
-            <li key={r.id}>
-              <Link
-                href={r.path ?? `/recipes/${r.slug}`}
-                className="block h-full rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
-              >
-                <h2 className="text-lg font-semibold">{r.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{r.excerpt}</p>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  {r.proteinG != null ? `${r.proteinG}g protein` : null}
-                  {r.calories != null
-                    ? `${r.proteinG != null ? " · " : ""}${r.calories} kcal`
-                    : null}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+            {recipes.map((r) => (
+              <li key={r.id}>
+                <Link
+                  href={r.path ?? `/recipes/${r.slug}`}
+                  className="block h-full rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
+                >
+                  <h2 className="text-lg font-semibold">{r.title}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{r.excerpt}</p>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    {r.proteinG != null ? `${r.proteinG}g protein` : null}
+                    {r.calories != null
+                      ? `${r.proteinG != null ? " · " : ""}${r.calories} kcal`
+                      : null}
+                    {r.cuisineTags?.includes("air-fryer") ? " · air fryer" : null}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {recipes.some((r) => r.cuisineTags?.includes("air-fryer")) ? (
+            <section id="air-fryer" className="mt-14 scroll-mt-24">
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Air-fryer high-protein recipes
+              </h2>
+              <p className="mt-3 max-w-3xl text-muted-foreground">
+                Less oil than deep-fried tikka, with the same IFCT-backed macro
+                discipline as the rest of the library — paneer, chicken, soya
+                chaap and fish.
+              </p>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                {recipes
+                  .filter((r) => r.cuisineTags?.includes("air-fryer"))
+                  .map((r) => (
+                    <li key={`af-${r.id}`}>
+                      <Link
+                        href={r.path ?? `/recipes/${r.slug}`}
+                        className="block h-full rounded-xl border border-border bg-card p-5 hover:border-accent hover:bg-accent-soft/40"
+                      >
+                        <h3 className="text-lg font-semibold">{r.title}</h3>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {r.excerpt}
+                        </p>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          ) : null}
+        </>
       )}
 
       <section className="article-body mt-14 max-w-3xl">
@@ -160,15 +202,31 @@ export default async function RecipesPage() {
             sprout chaat
           </RecipeLink>{" "}
           snack, and{" "}
+          <RecipeLink slug="paneer-tikka-air-fryer" live={live}>
+            air-fryer paneer tikka
+          </RecipeLink>
+          ,{" "}
+          <RecipeLink slug="grilled-chicken-breast-air-fryer" live={live}>
+            grilled chicken
+          </RecipeLink>{" "}
+          or{" "}
           <RecipeLink slug="paneer-bhurji-high-protein" live={live}>
             paneer bhurji
           </RecipeLink>{" "}
-          or a{" "}
-          <RecipeLink slug="chicken-stir-fry-veggies" live={live}>
-            chicken stir-fry
+          for dinner. Together that is roughly 105–120 g of protein. For more
+          air-fryer options see{" "}
+          <RecipeLink slug="tandoori-chicken-air-fryer" live={live}>
+            tandoori chicken
+          </RecipeLink>
+          ,{" "}
+          <RecipeLink slug="soya-chaap-tikka-air-fryer" live={live}>
+            soya chaap tikka
           </RecipeLink>{" "}
-          for dinner. Together that is roughly 105–120 g of protein. To see which
-          foods give the most protein per serving, use our{" "}
+          and{" "}
+          <RecipeLink slug="masala-fish-tikka-air-fryer" live={live}>
+            masala fish tikka
+          </RecipeLink>
+          . To see which foods give the most protein per serving, use our{" "}
           <Link href="/foods/indian/protein-ranking">protein ranking</Link> or
           read the <Link href="/nutrition/protein">protein guide</Link>.
         </p>
