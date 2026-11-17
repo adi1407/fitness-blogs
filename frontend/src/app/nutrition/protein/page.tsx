@@ -357,6 +357,12 @@ export default async function ProteinHubPage() {
             >
               Indian high-protein foods
             </Link>
+            <Link
+              href="/recipes#air-fryer"
+              className="rounded-full border border-border px-4 py-2 text-sm font-semibold"
+            >
+              Air-fryer protein recipes
+            </Link>
           </div>
         </section>
 
