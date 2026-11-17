@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch, type CmsRecipe } from "@/lib/api/client";
+
+function needsPhoto(r: CmsRecipe): boolean {
+  return !/^https:\/\//.test(r.imageUrl ?? "");
+}
 
 export default function RecipesListPage() {
   const [recipes, setRecipes] = useState<CmsRecipe[]>([]);
@@ -19,6 +23,18 @@ export default function RecipesListPage() {
     );
   }, [status]);
 
+  const photoGaps = useMemo(
+    () => recipes.filter((r) => needsPhoto(r) || !r.imageAlt?.trim()),
+    [recipes],
+  );
+  const airFryerGaps = useMemo(
+    () =>
+      photoGaps.filter((r) =>
+        (r.cuisineTags ?? []).includes("air-fryer"),
+      ),
+    [photoGaps],
+  );
+
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -35,6 +51,24 @@ export default function RecipesListPage() {
           New recipe
         </Link>
       </div>
+
+      {photoGaps.length > 0 ? (
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          <p className="font-semibold">
+            {photoGaps.length} recipe{photoGaps.length === 1 ? "" : "s"} need a
+            HTTPS photo (and alt) before Google Recipe rich results.
+          </p>
+          <p className="mt-1 text-amber-900/80">
+            Upload the image in the editor, then turn on{" "}
+            <strong>robots index</strong> for air-fryer seeds that were seeded
+            noindex until photos landed
+            {airFryerGaps.length
+              ? ` (${airFryerGaps.length} air-fryer)`
+              : ""}
+            .
+          </p>
+        </div>
+      ) : null}
 
       <select
         value={status}
@@ -54,36 +88,56 @@ export default function RecipesListPage() {
             <tr>
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Protein</th>
+              <th className="px-4 py-3">Photo</th>
+              <th className="px-4 py-3">Index</th>
               <th className="px-4 py-3">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {recipes.length === 0 ? (
               <tr>
-                <td colSpan={3} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
                   No recipes yet.
                 </td>
               </tr>
             ) : (
-              recipes.map((r) => (
-                <tr key={r.id} className="hover:bg-slate-50">
-                  <td className="px-4 py-3">
-                    <Link
-                      to={`/recipes/${r.id}`}
-                      className="font-medium text-sky-700 hover:underline"
-                    >
-                      {r.title}
-                    </Link>
-                    <div className="font-mono text-xs text-slate-400">
-                      {r.path}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    {r.proteinG != null ? `${r.proteinG}g` : "—"}
-                  </td>
-                  <td className="px-4 py-3">{r.status}</td>
-                </tr>
-              ))
+              recipes.map((r) => {
+                const missingPhoto = needsPhoto(r) || !r.imageAlt?.trim();
+                return (
+                  <tr key={r.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-3">
+                      <Link
+                        to={`/recipes/${r.id}`}
+                        className="font-medium text-sky-700 hover:underline"
+                      >
+                        {r.title}
+                      </Link>
+                      <div className="font-mono text-xs text-slate-400">
+                        {r.path}
+                      </div>
+                      {(r.cuisineTags ?? []).includes("air-fryer") ? (
+                        <div className="mt-0.5 text-xs font-medium text-slate-500">
+                          air-fryer
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="px-4 py-3">
+                      {r.proteinG != null ? `${r.proteinG}g` : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {missingPhoto ? (
+                        <span className="font-medium text-amber-700">Needed</span>
+                      ) : (
+                        <span className="text-slate-600">OK</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {r.robotsIndex ? "yes" : "no"}
+                    </td>
+                    <td className="px-4 py-3">{r.status}</td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
