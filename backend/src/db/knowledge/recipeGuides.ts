@@ -467,7 +467,6 @@ const GUIDES: Record<string, RecipeGuide> = {
     fatG: 6,
   },
 
-
   "paneer-tikka-air-fryer": {
     quickAnswer:
       "Marinate 150 g paneer cubes in 40 g hung curd with tikka spices, air-fry with 80 g capsicum at 180°C for about 12 minutes. One serving has about 495 kcal and 33 g protein.",
@@ -701,6 +700,59 @@ const GUIDES: Record<string, RecipeGuide> = {
     fatG: 8,
   },
 
+  "masala-fish-tikka-air-fryer": {
+    quickAnswer:
+      "Coat 150 g rohu pieces in a mustard-spice marinade and air-fry at 180°C for about 10–12 minutes. One serving has about 215 kcal and 30 g protein.",
+    intro: `Masala fish tikka keeps the air-fryer cluster lean and high-protein without frying. ${food("rohu", "Rohu")} is a common Indian freshwater fish with solid protein and little fat when you skip the deep fryer and measure the oil.`,
+    macroRows: [
+      [food("rohu", "Rohu fish (raw)"), "150 g", 153, 29.6],
+      ["Mustard paste and spices", "15 g", 20, 0.8],
+      ["Oil", "5 g (1 tsp)", 45, 0],
+    ],
+    tips: [
+      "Use boneless pieces of even thickness so they cook at the same rate.",
+      "Marinate only 15–30 minutes — acid and salt can toughen fish if left much longer.",
+      "Preheat the air fryer. Oil the basket lightly or use parchment rated for air fryers.",
+      "Fish is done when it flakes easily and is opaque in the centre. Check early to avoid drying.",
+    ],
+    swaps: [
+      "<strong>Other fish:</strong> bangda, pomfret or basa work with the same method; use each fish’s own nutrition data.",
+      `<strong>Chicken night:</strong> use the ${a("/recipes/grilled-chicken-breast-air-fryer", "air-fryer grilled chicken")} or ${a("/recipes/tandoori-chicken-air-fryer", "tandoori chicken")} recipes instead.`,
+      "<strong>Less pungent:</strong> swap mustard for hung-curd tikka spices if you prefer milder heat.",
+      "<strong>Plate:</strong> serve with salad and a measured rice portion for a complete meal.",
+    ],
+    mealPrep:
+      "Best cooked fresh. You can mix the dry spice rub ahead; add mustard and oil just before cooking. Leftovers keep 1 day in the fridge; reheat gently so the fish does not dry out.",
+    goalFit: `About 30 g protein for roughly 215 kcal is excellent for fat loss and high-protein cuts. See ${PROTEIN_TARGET}. Pair with vegetables and a controlled carb side.`,
+    faq: [
+      {
+        q: "Can I use frozen fish?",
+        a: "Thaw fully in the fridge and pat dry. Extra surface water stops browning and dilutes the marinade.",
+      },
+      {
+        q: "Is fried fish the same macros?",
+        a: "No. Frying adds a lot of oil. This air-fryer version only counts 1 tsp oil plus the fish.",
+      },
+    ],
+    ingredients: [
+      "150 g rohu fish, boneless pieces",
+      "1 tsp mustard paste (or kasundi)",
+      "5 g oil (1 tsp)",
+      "1/2 tsp turmeric, 1/2 tsp chilli powder, 1/2 tsp cumin powder",
+      "1/2 tsp ginger-garlic paste, salt, lemon juice",
+    ],
+    steps: [
+      "Pat the fish dry. Mix mustard, spices, ginger-garlic, lemon, salt and oil.",
+      "Coat the fish and marinate 15–30 minutes.",
+      "Preheat the air fryer to 180°C.",
+      "Air-fry 10–12 minutes, turning once, until opaque and flaky.",
+      "Rest 2 minutes and serve with lemon and onion.",
+    ],
+    calories: 215,
+    proteinG: 30,
+    carbsG: 2,
+    fatG: 10,
+  },
 
   "peanut-chikki-protein-snack": {
     quickAnswer:
