@@ -467,6 +467,123 @@ const GUIDES: Record<string, RecipeGuide> = {
     fatG: 6,
   },
 
+  "paneer-tikka-air-fryer": {
+    quickAnswer:
+      "Marinate 150 g paneer cubes in 40 g hung curd with tikka spices, air-fry with 80 g capsicum at 180°C for about 12 minutes. One serving has about 495 kcal and 33 g protein.",
+    intro: `Paneer tikka is one of the most-searched vegetarian air-fryer recipes in India because it tastes restaurant-like without deep-frying. ${food("paneer", "Paneer")} brings most of the protein; hung curd keeps the marinade thick with little oil. The air fryer gives charred edges that a pan rarely matches without burning the spices.`,
+    macroRows: [
+      [food("paneer", "Paneer"), "150 g", 387, 28.3],
+      ["Hung curd (marinade)", "40 g", 40, 3.6],
+      ["Capsicum", "80 g", 25, 1.0],
+      ["Onion (for skewers)", "30 g", 12, 0.4],
+      ["Oil", "5 g (1 tsp)", 45, 0],
+    ],
+    macroNote:
+      "Hung curd uses a typical strained-curd label estimate (~100 kcal and 9 g protein per 100 g). Spices add negligible calories.",
+    tips: [
+      "Pat the paneer dry before marinating so the spices stick and the cubes do not steam.",
+      "Preheat the air fryer for 3 minutes. A hot basket browns the edges instead of drying the centre.",
+      "Brush or spray only 1 tsp oil — more oil drips off and only adds calories.",
+      "Do not overcrowd the basket; cook in two batches if needed so heat can circulate.",
+      "Air-fryer models vary. Start checking at 10 minutes; paneer should be hot through with light char, not hard.",
+    ],
+    swaps: [
+      `<strong>Lower fat:</strong> use low-fat paneer or mix 100 g paneer with 80 g firm tofu.`,
+      `<strong>More volume:</strong> add mushrooms or zucchini with the capsicum for few extra calories.`,
+      `<strong>Dairy-free marinade:</strong> use thick cashew-curd style paste only if you accept different macros — hung curd is lower calorie.`,
+      `<strong>Meal bowl:</strong> serve over measured rice or with ${food("roti", "roti")} and salad depending on your calorie target.`,
+    ],
+    mealPrep:
+      "Marinate the paneer up to 12 hours ahead in the fridge. Cooked tikka keeps 2 days refrigerated; reheat in the air fryer for 3–4 minutes so it does not turn rubbery in the microwave.",
+    goalFit: `At about 33 g protein, this covers a large share of a meal's protein target — see ${PROTEIN_TARGET}. For fat loss, skip extra oil and pair with salad. For muscle gain, add a measured carb side. Compare paneer with other foods on our ${a("/foods/indian/protein-ranking", "protein ranking")}.`,
+    faq: [
+      {
+        q: "What temperature should I use?",
+        a: "180°C (about 360°F) for 10–14 minutes works on most basket air fryers. If your model runs hot, drop to 170°C and extend a minute or two.",
+      },
+      {
+        q: "Can I use wooden skewers?",
+        a: "Yes if they fit. Soak wooden skewers 10 minutes so they do not scorch, or skip skewers and toss cubes in the basket.",
+      },
+    ],
+    ingredients: [
+      "150 g paneer, cut into 2–3 cm cubes",
+      "40 g hung curd (or thick Greek yogurt)",
+      "80 g capsicum, cubed",
+      "30 g onion petals (optional, for skewers)",
+      "5 g oil (1 tsp)",
+      "1 tsp ginger-garlic paste",
+      "1/2 tsp Kashmiri chilli powder, 1/2 tsp garam masala, 1/4 tsp turmeric, 1/2 tsp coriander powder",
+      "1/2 tsp kasuri methi, salt, lemon juice to taste",
+    ],
+    steps: [
+      "Mix hung curd, spices, ginger-garlic, lemon juice, salt and oil into a thick marinade.",
+      "Add paneer, capsicum and onion; coat gently and marinate at least 30 minutes (up to overnight).",
+      "Preheat the air fryer to 180°C for 3 minutes.",
+      "Arrange the pieces in a single layer (skewered or loose) and air-fry 10–14 minutes, turning once halfway.",
+      "Rest 2 minutes, finish with lemon and coriander, and serve hot.",
+    ],
+    calories: 495,
+    proteinG: 33,
+    carbsG: 14,
+    fatG: 30,
+  },
+
+  "grilled-chicken-breast-air-fryer": {
+    quickAnswer:
+      "Season 170 g skinless chicken breast with lemon, garlic and spices, air-fry at 180°C for about 16–18 minutes. One serving has about 335 kcal and 37 g protein.",
+    intro: `Air-fryer “grilled” chicken breast is the lean meal-prep staple people actually repeat: high protein, minimal oil, and easy macros. ${food("chicken-breast", "Chicken breast")} is weighed raw here so the numbers stay honest after cooking moisture loss.`,
+    macroRows: [
+      [food("chicken-breast", "Chicken breast (raw)"), "170 g", 286, 37.1],
+      ["Oil", "5 g (1 tsp)", 45, 0],
+      ["Lemon juice, garlic and spices", "to taste", 5, 0.2],
+    ],
+    tips: [
+      "Pound or butterfly thick breasts so the thickest part is about 2 cm — even thickness cooks evenly.",
+      "Pat dry, then season. Wet chicken steams instead of browning.",
+      "Preheat the air fryer. Flip once halfway for even colour.",
+      "Cook to 74°C in the centre (or until juices run clear). Rest 5 minutes before slicing so juices stay in.",
+      "Weigh raw. Cooked weight is lower after water loss and will understate protein if you log it cooked.",
+    ],
+    swaps: [
+      `<strong>Thighs:</strong> use ${food("chicken-thigh", "skinless chicken thigh")} for juicier meat — higher fat and calories.`,
+      "<strong>Tandoori flavour:</strong> use the tandoori marinade from the air-fryer tandoori chicken recipe.",
+      "<strong>Lower fat:</strong> skip the teaspoon of oil and use a light spray; browning will be milder.",
+      "<strong>Plate it:</strong> add 150 g cooked vegetables and a measured rice or roti portion for a full meal.",
+    ],
+    mealPrep:
+      "Cook 3–4 breasts at once, cool quickly, and refrigerate up to 3 days or freeze portions. Slice only what you need so leftovers stay moist. Reheat gently in the air fryer 3–4 minutes.",
+    goalFit: `Around 37 g protein for roughly 335 kcal makes this efficient for fat loss and muscle gain. Set the rest of the day's food with the ${a("/protein-calculator", "protein calculator")} and ${a("/calorie-calculator", "calorie calculator")}.`,
+    faq: [
+      {
+        q: "Why is my chicken dry?",
+        a: "Usually overcooking or uneven thickness. Butterfly thick ends, check early, and rest before cutting.",
+      },
+      {
+        q: "Can I cook from frozen?",
+        a: "Thaw in the fridge first for even cooking and food safety. Air-frying large frozen breasts often leaves a cold centre.",
+      },
+    ],
+    ingredients: [
+      "170 g skinless chicken breast",
+      "5 g oil (1 tsp)",
+      "1 tsp lemon juice",
+      "1 tsp garlic paste (or 1 crushed clove)",
+      "1/2 tsp chilli powder or paprika, 1/2 tsp cumin, black pepper, salt",
+      "Optional: pinch of garam masala or dried herbs",
+    ],
+    steps: [
+      "Pat the chicken dry. Butterfly if thicker than about 2 cm.",
+      "Rub with oil, lemon, garlic and spices. Rest 10 minutes while the air fryer preheats to 180°C.",
+      "Air-fry 16–18 minutes, flipping once, until the centre reaches 74°C.",
+      "Rest 5 minutes, slice against the grain, and serve.",
+    ],
+    calories: 335,
+    proteinG: 37,
+    carbsG: 2,
+    fatG: 16,
+  },
+
   "peanut-chikki-protein-snack": {
     quickAnswer:
       "Melt 100 g jaggery, stir in 150 g roasted peanuts, press into a tray and cut 16 pieces. Two pieces give about 140 kcal and 5 g protein.",
