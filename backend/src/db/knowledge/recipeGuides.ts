@@ -467,6 +467,7 @@ const GUIDES: Record<string, RecipeGuide> = {
     fatG: 6,
   },
 
+
   "paneer-tikka-air-fryer": {
     quickAnswer:
       "Marinate 150 g paneer cubes in 40 g hung curd with tikka spices, air-fry with 80 g capsicum at 180°C for about 12 minutes. One serving has about 495 kcal and 33 g protein.",
@@ -583,6 +584,123 @@ const GUIDES: Record<string, RecipeGuide> = {
     carbsG: 2,
     fatG: 16,
   },
+
+  "tandoori-chicken-air-fryer": {
+    quickAnswer:
+      "Marinate 200 g skinless chicken thigh in spiced curd for at least an hour, then air-fry at 180°C for about 20–22 minutes. One serving has about 475 kcal and 37 g protein.",
+    intro: `Tandoori chicken is the flagship non-veg air-fryer recipe: familiar spices, juicy meat, and much less oil than restaurant versions. ${food("chicken-thigh", "Skinless chicken thigh")} stays tender in the air fryer better than breast, with honest IFCT macros weighed raw.`,
+    macroRows: [
+      [food("chicken-thigh", "Chicken thigh (raw, skinless)"), "200 g", 400, 36.4],
+      ["Curd (marinade)", "50 g", 30, 1.6],
+      ["Oil", "5 g (1 tsp)", 45, 0],
+      ["Ginger-garlic and spices", "to taste", 8, 0.3],
+    ],
+    macroNote: "Curd uses typical toned-milk values (~60 kcal and 3.1 g protein per 100 g).",
+    tips: [
+      "Score the thigh a few times so the marinade reaches the centre.",
+      "Marinate at least 60 minutes; overnight tastes closer to tandoor chicken.",
+      "Shake off excess marinade so it does not drip and smoke in the basket.",
+      "Preheat to 180°C. Flip once. Finish 1–2 minutes hotter (200°C) only if you want more char.",
+      "Rest 5 minutes before cutting. Juices redistribute and the meat stays moist.",
+    ],
+    swaps: [
+      `<strong>Leaner:</strong> use ${food("chicken-breast", "chicken breast")} and shorten cook time — drier if overcooked.`,
+      "<strong>Milder heat:</strong> use Kashmiri chilli for colour with less burn.",
+      "<strong>Oven:</strong> 220°C on a rack for 20–25 minutes if you do not have an air fryer; macros stay the same.",
+      "<strong>Plate:</strong> serve with salad and a measured roti or rice portion for a full meal.",
+    ],
+    mealPrep:
+      "Marinate a tray of thighs on shopping day. Cook what you need through the week, or cook all portions and refrigerate up to 3 days. Reheat in the air fryer 4–5 minutes.",
+    goalFit: `About 37 g protein supports training days — see ${PROTEIN_TARGET}. Thighs are higher fat than breast; if fat loss is tight, switch to breast or trim visible fat. Pair with vegetables first, then carbs.`,
+    faq: [
+      {
+        q: "Is air-fryer tandoori as good as a tandoor?",
+        a: "You will not get the same smoke, but high heat and a dry marinade give solid char and juicy meat with far less oil than many takeaway versions.",
+      },
+      {
+        q: "Can I use bone-in pieces?",
+        a: "Yes, but cook longer and check near the bone. This recipe’s macros assume boneless skinless thigh meat only.",
+      },
+    ],
+    ingredients: [
+      "200 g skinless boneless chicken thigh",
+      "50 g thick curd",
+      "5 g oil (1 tsp)",
+      "1 tsp ginger-garlic paste",
+      "1 tsp Kashmiri chilli powder, 1/2 tsp turmeric, 1 tsp garam masala, 1 tsp coriander powder",
+      "1/2 tsp cumin powder, 1/2 tsp kasuri methi, salt, lemon juice",
+    ],
+    steps: [
+      "Score the chicken. Mix curd, spices, ginger-garlic, lemon, salt and oil into a marinade.",
+      "Coat the chicken and marinate at least 60 minutes (overnight if possible).",
+      "Preheat the air fryer to 180°C. Place chicken in a single layer.",
+      "Air-fry 20–22 minutes, flipping once, until cooked through and lightly charred.",
+      "Rest 5 minutes, finish with lemon and onion rings, and serve.",
+    ],
+    calories: 475,
+    proteinG: 37,
+    carbsG: 5,
+    fatG: 32,
+  },
+
+  "soya-chaap-tikka-air-fryer": {
+    quickAnswer:
+      "Soak 50 g dry soya chaap/chunks, squeeze dry, marinate in 30 g hung curd and spices, then air-fry about 12–14 minutes. One serving has about 270 kcal and 30 g protein.",
+    intro: `Soya chaap tikka is the budget vegetarian air-fryer protein people order at stalls — here with a measured marinade and no deep-frying. Pack soya chunks are defatted soy flour, so protein per gram is usually higher than whole ${food("soybean", "soybean")}; we use a typical chunk label estimate and say so below.`,
+    macroRows: [
+      ["Soya chaap/chunks (dry)", "50 g", 172, 26.0],
+      ["Hung curd (marinade)", "30 g", 30, 2.7],
+      ["Capsicum", "50 g", 16, 0.6],
+      ["Oil", "5 g (1 tsp)", 45, 0],
+    ],
+    macroNote:
+      "Soya chaap/chunks use a typical defatted soy-chunk label (~345 kcal and 52 g protein per 100 g dry). Whole IFCT soybean differs — check your pack and adjust.",
+    tips: [
+      "Soak until soft, then squeeze firmly. Watery chaap steams and stays soggy.",
+      "If using stick chaap, cut into bite-size pieces so the centre heats through.",
+      "Preheat the air fryer. Light charring at the edges is the goal — not black spices.",
+      "Flip once halfway. Spray or brush only the teaspoon of oil.",
+    ],
+    swaps: [
+      `<strong>Whole soybean:</strong> pressure-cooked soybean works but texture differs; use IFCT ${food("soybean", "soybean")} macros if you go that route.`,
+      `<strong>Paneer night:</strong> swap for the ${a("/recipes/paneer-tikka-air-fryer", "air-fryer paneer tikka")} when you want dairy protein.`,
+      "<strong>Crispier:</strong> dust lightly with besan in the marinade; add ~30 kcal per tablespoon.",
+      "<strong>Lower fat:</strong> skip oil and accept less browning.",
+    ],
+    mealPrep:
+      "Reconstituted, squeezed chaap keeps 2 days in the fridge before marinating. Cooked tikka reheats in the air fryer in 3–4 minutes. Pack marinade separately if prepping ahead.",
+    goalFit: `Around 30 g plant protein for roughly 270 kcal is strong for vegetarian fat-loss and muscle-gain plates. Add a measured carb and salad. See ${PROTEIN_TARGET} and the ${a("/foods/indian/protein-ranking", "protein ranking")}.`,
+    faq: [
+      {
+        q: "Are soya chunks healthy?",
+        a: "They are a concentrated vegetarian protein when portions and oil are measured. Choose plain chunks over deep-fried street chaap dripping in oil.",
+      },
+      {
+        q: "Why do my macros disagree with the pack?",
+        a: "Brands vary. Always prefer the nutrition label on your pack over any generic estimate, including this recipe’s soya line.",
+      },
+    ],
+    ingredients: [
+      "50 g dry soya chaap or soya chunks",
+      "30 g hung curd",
+      "50 g capsicum, cubed",
+      "5 g oil (1 tsp)",
+      "1 tsp ginger-garlic paste",
+      "1/2 tsp chilli powder, 1/2 tsp garam masala, 1/4 tsp turmeric, salt, lemon juice",
+    ],
+    steps: [
+      "Soak the soya in hot water until soft (about 15 minutes). Squeeze out as much water as possible.",
+      "Mix hung curd, spices, ginger-garlic, lemon, salt and oil. Coat soya and capsicum; marinate 30 minutes.",
+      "Preheat the air fryer to 180°C.",
+      "Air-fry 12–14 minutes, shaking or flipping once, until edges are crisp and lightly charred.",
+      "Rest 2 minutes and serve with onion and lemon.",
+    ],
+    calories: 270,
+    proteinG: 30,
+    carbsG: 18,
+    fatG: 8,
+  },
+
 
   "peanut-chikki-protein-snack": {
     quickAnswer:
