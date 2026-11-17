@@ -40,6 +40,8 @@ type SeedRecipe = {
   cuisineTags: string[];
   mealType: string;
   sortOrder: number;
+  /** Default true. Air-fryer seeds stay false until a CMS HTTPS photo is added. */
+  robotsIndex?: boolean;
 } & Partial<RecipeTiming>;
 
 type SeedPage = {
@@ -1776,6 +1778,149 @@ const RECIPES: SeedRecipe[] = [
     mealType: "snack",
     sortOrder: 8,
   },
+  // —— Air-fryer cluster (Batch 1). robotsIndex false until CMS HTTPS photos land.
+  // Research lock: high-intent Indian high-protein air-fryer meals with IFCT food links.
+  {
+    slug: "paneer-tikka-air-fryer",
+    title: "Air-Fryer Paneer Tikka",
+    excerpt:
+      "Hung-curd marinated paneer tikka cubes with capsicum — high-protein vegetarian air-fryer dinner.",
+    quickAnswer:
+      "Marinate 150 g paneer in spiced hung curd, air-fry with capsicum until charred at the edges. About 30 g protein per serving.",
+    bodyHtml: p(
+      "Paneer tikka is one of the highest-intent vegetarian air-fryer recipes in India. This seed is completed by the IFCT guide in recipeGuides.",
+    ),
+    ingredients: [
+      "150 g paneer, cubes",
+      "40 g hung curd",
+      "50 g capsicum",
+      "Tikka spices and 1 tsp oil",
+    ],
+    steps: [
+      "Marinate paneer and capsicum in hung curd and spices.",
+      "Air-fry until edges char, then rest and serve.",
+    ],
+    calories: 390,
+    proteinG: 30,
+    carbsG: 12,
+    fatG: 24,
+    cuisineTags: ["indian", "vegetarian", "high-protein", "air-fryer"],
+    mealType: "lunch-dinner",
+    sortOrder: 9,
+    robotsIndex: false,
+  },
+  {
+    slug: "grilled-chicken-breast-air-fryer",
+    title: "Air-Fryer Grilled Chicken Breast",
+    excerpt:
+      "Lemon-garlic grilled chicken breast in the air fryer — lean meal-prep protein.",
+    quickAnswer:
+      "Season 170 g chicken breast, air-fry until cooked through. About 40 g protein with almost no oil.",
+    bodyHtml: p(
+      "Lean grilled chicken is a staple meal-prep protein. The full IFCT guide lands with timings and swaps.",
+    ),
+    ingredients: [
+      "170 g skinless chicken breast",
+      "Lemon, garlic, spices",
+      "1 tsp oil",
+    ],
+    steps: [
+      "Season the chicken and rest briefly.",
+      "Air-fry until cooked through, rest, then slice.",
+    ],
+    calories: 320,
+    proteinG: 40,
+    carbsG: 2,
+    fatG: 16,
+    cuisineTags: ["high-protein", "air-fryer"],
+    mealType: "lunch-dinner",
+    sortOrder: 10,
+    robotsIndex: false,
+  },
+  {
+    slug: "tandoori-chicken-air-fryer",
+    title: "Air-Fryer Tandoori Chicken",
+    excerpt:
+      "Classic tandoori marinade on chicken thighs, cooked in the air fryer until juicy.",
+    quickAnswer:
+      "Marinate 200 g skinless chicken thigh in spiced curd, air-fry until charred. About 35 g protein.",
+    bodyHtml: p(
+      "Tandoori chicken is a top non-veg air-fryer search. Full guide uses IFCT chicken-thigh macros.",
+    ),
+    ingredients: [
+      "200 g skinless chicken thigh",
+      "Curd marinade and spices",
+      "1 tsp oil",
+    ],
+    steps: [
+      "Marinate the chicken in spiced curd.",
+      "Air-fry until cooked and lightly charred.",
+    ],
+    calories: 410,
+    proteinG: 35,
+    carbsG: 4,
+    fatG: 28,
+    cuisineTags: ["indian", "high-protein", "air-fryer"],
+    mealType: "lunch-dinner",
+    sortOrder: 11,
+    robotsIndex: false,
+  },
+  {
+    slug: "soya-chaap-tikka-air-fryer",
+    title: "Air-Fryer Soya Chaap Tikka",
+    excerpt:
+      "Budget vegetarian protein: soya chaap tikka in the air fryer with a light marinade.",
+    quickAnswer:
+      "Marinate reconstituted soya chaap, air-fry until crisp at the edges. High plant protein for few rupees.",
+    bodyHtml: p(
+      "Soya chaap is a popular vegetarian air-fryer protein. Guide notes pack-label vs IFCT soybean.",
+    ),
+    ingredients: [
+      "50 g dry soya chaap/chunks (reconstituted)",
+      "Hung curd marinade",
+      "1 tsp oil",
+    ],
+    steps: [
+      "Soak and squeeze the soya chaap.",
+      "Marinate, then air-fry until crisp at the edges.",
+    ],
+    calories: 280,
+    proteinG: 32,
+    carbsG: 18,
+    fatG: 8,
+    cuisineTags: ["indian", "vegetarian", "high-protein", "air-fryer"],
+    mealType: "lunch-dinner",
+    sortOrder: 12,
+    robotsIndex: false,
+  },
+  {
+    slug: "masala-fish-tikka-air-fryer",
+    title: "Air-Fryer Masala Fish Tikka",
+    excerpt:
+      "Rohu fish tikka with a mustard-masala marinade — lean air-fryer non-veg protein.",
+    quickAnswer:
+      "Coat 150 g rohu pieces in a mustard-spice marinade and air-fry until flaky. About 30 g protein.",
+    bodyHtml: p(
+      "Fish tikka diversifies the air-fryer cluster with lean IFCT rohu macros.",
+    ),
+    ingredients: [
+      "150 g rohu fish pieces",
+      "Mustard-spice marinade",
+      "1 tsp oil",
+    ],
+    steps: [
+      "Marinate the fish briefly.",
+      "Air-fry until opaque and flaky.",
+    ],
+    calories: 220,
+    proteinG: 30,
+    carbsG: 2,
+    fatG: 10,
+    cuisineTags: ["indian", "high-protein", "air-fryer"],
+    mealType: "lunch-dinner",
+    sortOrder: 13,
+    robotsIndex: false,
+  },
 ];
 
 const KNOWLEDGE_PAGES: SeedPage[] = [
@@ -1910,8 +2055,8 @@ const EXERCISE_SEED_COLUMNS = [
 const RECIPE_SEED_COLUMNS = [
   "title", "excerpt", "quick_answer", "body_html", "ingredients", "steps", "calories",
   "protein_g", "carbs_g", "fat_g", "cuisine_tags", "meal_type", "meta_title",
-  "meta_description", "sort_order", "prep_minutes", "cook_minutes", "total_minutes",
-  "time_note", "servings",
+  "meta_description", "robots_index", "sort_order", "prep_minutes", "cook_minutes",
+  "total_minutes", "time_note", "servings",
 ];
 const PAGE_SEED_COLUMNS = [
   "title", "excerpt", "body_html", "meta_title", "meta_description", "sort_order",
@@ -1973,6 +2118,7 @@ async function upsertExercise(ex: SeedExercise): Promise<void> {
 }
 
 async function upsertRecipe(r: SeedRecipe): Promise<void> {
+  const robotsIndex = r.robotsIndex !== false;
   await pool.query(
     `INSERT INTO recipes (
       slug, title, excerpt, quick_answer, body_html, ingredients, steps,
@@ -1981,7 +2127,7 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       prep_minutes, cook_minutes, total_minutes, time_note, servings
     ) VALUES (
       $1,$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9,$10,$11,$12,$13,$14,$15,
-      'published', TRUE, $16, NOW(), $17, $18, $19, $20, $21
+      'published', $16, $17, NOW(), $18, $19, $20, $21, $22
     )
     ON CONFLICT (slug) DO UPDATE SET
       title = EXCLUDED.title,
@@ -1998,6 +2144,7 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       meal_type = EXCLUDED.meal_type,
       meta_title = EXCLUDED.meta_title,
       meta_description = EXCLUDED.meta_description,
+      robots_index = EXCLUDED.robots_index,
       sort_order = EXCLUDED.sort_order,
       prep_minutes = EXCLUDED.prep_minutes,
       cook_minutes = EXCLUDED.cook_minutes,
@@ -2022,6 +2169,7 @@ async function upsertRecipe(r: SeedRecipe): Promise<void> {
       r.mealType,
       `${r.title} | fitlives Recipes`,
       r.excerpt,
+      robotsIndex,
       r.sortOrder,
       r.prepMinutes ?? null,
       r.cookMinutes ?? null,

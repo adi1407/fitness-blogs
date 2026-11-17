@@ -44,4 +44,37 @@ export const RECIPE_TIMES: Record<string, RecipeTiming> = {
     timeNote: "Total includes about 30 minutes of cooling. Makes 16 pieces; one serving is 2 pieces.",
     servings: 8,
   },
+  "paneer-tikka-air-fryer": {
+    prepMinutes: 15,
+    cookMinutes: 12,
+    totalMinutes: 57,
+    timeNote: "Total includes about 30 minutes of marinating.",
+    servings: 1,
+  },
+  "grilled-chicken-breast-air-fryer": {
+    prepMinutes: 10,
+    cookMinutes: 18,
+    servings: 1,
+  },
+  "tandoori-chicken-air-fryer": {
+    prepMinutes: 15,
+    cookMinutes: 22,
+    totalMinutes: 97,
+    timeNote: "Total includes at least 60 minutes of marinating (overnight is better).",
+    servings: 1,
+  },
+  "soya-chaap-tikka-air-fryer": {
+    prepMinutes: 20,
+    cookMinutes: 14,
+    totalMinutes: 64,
+    timeNote: "Total includes soaking the soya chaap and 30 minutes of marinating.",
+    servings: 1,
+  },
+  "masala-fish-tikka-air-fryer": {
+    prepMinutes: 15,
+    cookMinutes: 12,
+    totalMinutes: 42,
+    timeNote: "Total includes about 15 minutes of marinating.",
+    servings: 1,
+  },
 };
