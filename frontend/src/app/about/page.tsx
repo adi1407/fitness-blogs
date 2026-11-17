@@ -10,6 +10,11 @@ import TailwindImageAccordion, {
 import { AboutRadialIntro } from "@/features/about/components/AboutRadialIntro";
 import { SocialFollow } from "@/components/shared/SocialFollow";
 import { HUB } from "@/lib/hubImages";
+import {
+  LEGAL_CONTACT_EMAIL,
+  LEGAL_CONTACT_MAILTO,
+  LEGAL_OPERATOR_PERSON,
+} from "@/lib/legal";
 import { ogImageUrl } from "@/lib/og/url";
 import { OG_DEFAULTS } from "@/lib/seo";
 
@@ -173,6 +178,19 @@ export default function AboutPage() {
 
       <section className="fk-page py-14">
         <div className="article-body max-w-3xl">
+          <h2>Who runs fitlives</h2>
+          <p>
+            fitlives is run by{" "}
+            <Link href="/authors/aditya-choudhary">{LEGAL_OPERATOR_PERSON}</Link>
+            , who researches and writes the nutrition, weight loss and muscle
+            building guides. He operates the site from India as a sole
+            proprietor. For corrections, privacy requests or partnerships,
+            email{" "}
+            <a href={LEGAL_CONTACT_MAILTO}>{LEGAL_CONTACT_EMAIL}</a> or use the{" "}
+            <Link href="/contact">contact page</Link>. Author profiles and
+            article bylines are listed on{" "}
+            <Link href="/authors">Authors &amp; reviewers</Link>.
+          </p>
           <h2>Why fitlives exists</h2>
           <p>
             Most fitness advice online is written for Western diets, hidden

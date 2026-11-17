@@ -110,12 +110,30 @@ Until that export exists, titles were tuned for the pages with the highest comme
 
 Still under 400 in `<main>`: contact, affiliate disclosure, corrections, nutrition and medical disclaimers (complete as they are), 12 subcategory hubs at 310–394 (article listings plus the guide), and `/exercises`, `/exercises/core` and `/reviews` (listing pages). Re-run with `node wordcount-audit.mjs 400` (in the scan scripts folder).
 
-**Re-apply checklist**
+**Re-apply readiness — 17 Nov 2026**
 
-1. Publish the articles waiting in the CMS review queue (status `submitted`) — unpublished articles also leave dead static links on calculator and hub pages.
-2. GSC → URL Inspection → *Request indexing* for `/`, `/exercises`, `/recipes`, `/programs`, `/reviews`, `/training`, `/about`, `/editorial-policy`; then Sitemaps → resubmit `sitemap.xml`.
-3. Wait about a week so Google recrawls the expanded pages.
-4. AdSense → Sites → fitlives.in → tick "I confirm I have fixed the issues" → **Request review**. Reviews typically take from a few days to a few weeks; don't re-request while one is pending.
+Live check against the Oct “low value content” rejection:
+
+| Check | Status |
+| --- | --- |
+| `ads.txt` (`pub-1696625365436242`) | Pass |
+| AdSense script / `google-adsense-account` meta | Pass (no empty ad boxes until slot env vars are set) |
+| Trust pages: About, Contact, Privacy, Cookie, Terms, Editorial, Medical/Nutrition disclaimers, Affiliate, Corrections | Pass |
+| Privacy AdSense cookie + Ads Settings + aboutads.info disclosures | Pass (shipped 17 Nov) |
+| About names operator (Aditya Choudhary) + contact | Pass (shipped 17 Nov) |
+| Content depth after Oct rewrites (exercises/recipes/programs/reviews/blog/foods) | Pass — still live |
+| Homepage blog links → 404 | Pass (0 broken) |
+| Air-fryer recipes | Live, `noindex` until CMS photos (correct — do not index unfinished photo pages) |
+| ~16 seeded articles still unpublished | Soft risk only — public hubs hide those links; publish when ready, not a hard blocker |
+
+**You can request AdSense review after the 17 Nov trust-page deploy is live on fitlives.in.** Do not wait for every draft article. Do not turn on Auto ads in-page placements during review.
+
+**Re-apply steps**
+
+1. Confirm production shows the updated `/about` (“Who runs fitlives”) and `/privacy` advertising disclosures.
+2. GSC → Sitemaps → resubmit `sitemap.xml` (optional but useful).
+3. AdSense → Sites → fitlives.in → tick “I confirm I have fixed the issues” → **Request review**.
+4. Do not re-request while a review is pending (often days to a few weeks).
 
 **After approval: switch on manual ad units**
 

@@ -40,7 +40,8 @@ export default function ContactPage() {
         <h1 className="text-4xl font-semibold tracking-tight">Contact</h1>
         <p className="mt-4 text-lg text-muted-foreground">
           Corrections, privacy requests, partnerships, and product feedback
-          are welcome. We do not provide clinical care.
+          are welcome. We usually reply within 3 working days. We do not
+          provide clinical care.
         </p>
         <div className="fk-panel mt-8 p-6">
           <p className="text-sm text-muted-foreground">Email</p>
