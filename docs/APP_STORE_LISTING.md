@@ -2,7 +2,7 @@
 
 Copy for Google Play and the App Store, the screenshot plan, and the privacy answers. Character counts are checked against each store's limit; recount if you edit.
 
-Content numbers (live API, Oct 2026): 29 articles, 50 Indian foods, 50 exercises across 7 muscle groups, 8 recipes, 11 calculators. Update the descriptions when these grow; never round up.
+Content numbers (live API, Nov 2026): 29 articles, 50 Indian foods, 50 exercises across 7 muscle groups, 13 recipes (incl. air-fryer cluster; public index after CMS photos), 11 calculators. Update the descriptions when these grow; never round up.
 
 ---
 
