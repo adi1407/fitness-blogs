@@ -43,6 +43,7 @@ const PATHS: Record<string, string> = {
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
   "creatine-dosage": "muscle-building/muscle-building-nutrition",
   "creatine-loading-phase": "muscle-building/muscle-building-nutrition",
+  "creatine-for-women": "muscle-building/muscle-building-nutrition",
   "does-intermittent-fasting-work": "weight-loss/intermittent-fasting",
   "maintenance-calories": "nutrition/calories-energy",
   "bmr-vs-tdee": "nutrition/calories-energy",

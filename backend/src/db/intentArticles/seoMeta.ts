@@ -79,6 +79,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Is a creatine loading phase necessary? Compare ~20 g/day for a week vs 3–5 g daily, water weight, stomach upset, and when loading is worth it.",
   },
+  "creatine-for-women": {
+    metaTitle: "Creatine for Women: Benefits, Dose & Myths",
+    metaDescription:
+      "Creatine for women: benefits with lifting, 3–5 g dose, bloating vs bulk myths, hormones, and when to ask a doctor — with Indian buying notes.",
+  },
   "how-long-does-it-take-to-build-muscle": {
     metaTitle: "How Long Does It Take to Build Muscle?",
     metaDescription:

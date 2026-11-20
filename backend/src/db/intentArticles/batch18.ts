@@ -351,4 +351,136 @@ export const batch18: IntentArticleDef[] = [
       ]),
     ].join("\n"),
   },
+  {
+    slug: "creatine-for-women",
+    title: "Creatine for Women: Benefits, Dose & Myths",
+    excerpt:
+      "Will creatine make women bulky? What about bloating, hormones, and the right dose? Evidence-based answers for women who lift — including when to ask a doctor first.",
+    quickAnswer: `Women can take creatine. The usual dose is the same as for men: 3–5 g of creatine monohydrate daily with strength training. It does not add “male hormones” or automatic bulk — muscle comes from progressive training and enough protein and calories. Expect possible early water weight inside muscle (often ~0.5–2 kg), not fat. Evidence in healthy women is supportive for strength and training quality; pregnancy, trying to conceive, and breastfeeding still need a clinician’s advice because safety data are limited. ${DISCLAIMER}`,
+    categorySlug: "muscle-building",
+    subcategorySlug: "muscle-building-nutrition",
+    primaryKeyword: "creatine for women",
+    metaTitle: "Creatine for Women: Benefits, Dose & Myths",
+    metaDescription:
+      "Creatine for women: benefits with lifting, 3–5 g dose, bloating vs bulk myths, hormones, and when to ask a doctor — with Indian buying notes.",
+    tags: [
+      "creatine",
+      "creatine for women",
+      "supplements",
+      "strength training",
+      "muscle building",
+    ],
+    topics: ["Strength", "Hypertrophy", "Women's Fitness", "Beginner Fitness"],
+    featuredImageAlt:
+      "Woman mixing a shaker bottle in a gym with a small creatine scoop nearby",
+    relatedSlugs: [
+      "creatine-dosage",
+      "is-creatine-safe",
+      "how-to-lose-belly-fat",
+      "how-much-protein-to-build-muscle",
+      "creatine-loading-phase",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Will creatine make women bulky?",
+        answer:
+          "No. Creatine is not an anabolic steroid. Any muscle you gain comes from training and nutrition. Most women who lift see fuller muscles and strength gains, not sudden “bulk.”",
+      },
+      {
+        question: "Should women use a different creatine dose?",
+        answer:
+          "Usually no. 3–5 g daily of monohydrate is the standard range. Smaller adults often do well on ~3 g. Loading is optional for everyone.",
+      },
+      {
+        question: "Does creatine mess with women’s hormones?",
+        answer:
+          "Creatine is not a hormone. Reviews of creatine in women’s health do not show it acting like testosterone therapy. If you have a hormone-related medical condition, ask your doctor before any supplement.",
+      },
+      {
+        question: "Is creatine okay while trying to lose fat?",
+        answer:
+          "Yes for many people — it can help you keep training hard in a deficit. The scale may rise slightly from muscle water, which can be confusing during a cut. Track waist, photos, and lifts, not only body weight. See how to lose belly fat for the bigger fat-loss picture.",
+      },
+      {
+        question: "Can I take creatine on my period?",
+        answer:
+          "Yes. There is no need to stop for a normal menstrual cycle. Stay hydrated as you usually would with training and heat.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_SMITH_RYAN, SRC_ANTONIO, SRC_HULTMAN],
+    body: [
+      p(
+        "Meera trains three days a week in Bengaluru. Her coach suggested creatine. Her sister said it would make her “look like a man.” A reel said women need a special “female formula.” Meera’s actual question was simpler: does creatine for women work, and is the dose different?",
+        "Most of the creatine research historically enrolled men, but women have been studied enough for practical answers — and the dose is not a pink marketing scoop.",
+      ),
+
+      h2("What creatine does for women who lift"),
+      p(
+        "Creatine helps regenerate the energy system muscles use for short, hard efforts: heavy sets, sprints, repeated bursts. With progressive strength training, that often means a few more quality reps over time — which is how strength and muscle are built.",
+        "A lifespan review on creatine in women’s health (Smith-Ryan et al., 2021) discusses potential benefits across training and aging contexts, while noting where evidence is still thinner (including pregnancy).",
+      ),
+      table(
+        ["Goal", "What creatine can support", "What it cannot do alone"],
+        [
+          ["Strength", "Harder training sessions over weeks", "Replace progressive overload"],
+          ["Muscle", "Slight edge when paired with lifting + protein", "Create large muscle without calories and training"],
+          ["Fat loss", "Help you keep intensity in a deficit", "Burn belly fat by itself"],
+        ],
+      ),
+      p(
+        `Pair creatine with solid training and protein. See <a href="${LINK.proteinMuscle}">how much protein to build muscle</a> and, for fat-loss context, <a href="${LINK.bellyFat}">how to lose belly fat</a>.`,
+      ),
+
+      h2("Dose: same 3–5 g for women"),
+      p(
+        `Use creatine monohydrate at <strong>3–5 g per day</strong>, every day. That matches general ISSN dosing guidance. Details and scoop quirks: <a href="${LINK.creatineDosage}">creatine dosage</a>. A loading phase is optional — see <a href="${LINK.creatineLoading}">creatine loading phase</a>.`,
+      ),
+      ul([
+        "Many women prefer starting at 3 g to limit stomach upset",
+        "Take it whenever you will remember — timing is secondary to consistency",
+        "Rest days still count",
+      ]),
+
+      h2("Myth: “It will make me bulky”"),
+      p(
+        "Bulking requires a calorie surplus and a training stimulus that builds a lot of muscle over months and years. Creatine does not flip a hormonal switch that creates male-pattern muscle overnight.",
+        "What you may notice: slightly fuller muscles and a small scale increase from water held inside muscle tissue. Clothes can feel a bit snuger in the gym sense without meaning you “got bulky.”",
+      ),
+
+      h2("Myth: “Creatine bloating means I’m retaining junk water”"),
+      p(
+        "Early water weight is common and mostly intramuscular. Large single doses (especially during aggressive loading) are more likely to feel uncomfortable. Split doses or skip loading if bloating bothers you.",
+        `For kidney myths, hair myths, and blood-test creatinine quirks that affect everyone, read <a href="${LINK.creatineSafe}">is creatine safe</a>.`,
+      ),
+
+      h2("Pregnancy, PCOS, and medical caution"),
+      p(
+        "Creatine is not automatically “unsafe,” but research in pregnancy and breastfeeding is limited. If you are pregnant, trying to conceive, or breastfeeding, ask your obstetrician or a qualified clinician before using it.",
+        "If you have PCOS, thyroid disease, or other conditions and take prescription medicines, check with your doctor or pharmacist — not a supplement seller — before starting.",
+      ),
+
+      h2("Buying notes (India)"),
+      ul([
+        "Plain creatine monohydrate beats flavoured “women’s creatine” blends that cost more per gram",
+        "Check FSSAI labelling and buy from authorised sellers",
+        "Ignore proprietary blends that hide the creatine amount",
+      ]),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/protein-calculator",
+        "protein calculator",
+        "Creatine works best next to a clear protein target. Set yours with the",
+      ),
+
+      takeaways([
+        "Creatine for women uses the same 3–5 g monohydrate daily dose as for men.",
+        "It supports hard training; it does not create automatic bulk or act like a steroid.",
+        "Expect possible early muscle water weight; skip loading if that feels worse.",
+        "Ask a doctor before use in pregnancy, trying to conceive, breastfeeding, or with kidney concerns.",
+        "Buy labelled monohydrate — not expensive “female formula” blends with hidden doses.",
+      ]),
+    ].join("\n"),
+  },
 ];
