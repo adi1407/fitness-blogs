@@ -726,6 +726,46 @@ async function publishSeededIntentArticles(): Promise<void> {
   );
 }
 
+const CREATINE_CLUSTER_TO_PUBLISH = [
+  "creatine-dosage",
+  "creatine-loading-phase",
+  "creatine-for-women",
+  "creatine-monohydrate-vs-hcl",
+] as const;
+
+async function publishCreatineCluster(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE articles
+     SET status = 'published',
+         published_at = COALESCE(published_at, NOW()),
+         updated_at = NOW()
+     WHERE slug = ANY($1::text[])
+       AND status <> 'published'`,
+    [CREATINE_CLUSTER_TO_PUBLISH],
+  );
+  console.log(
+    `[db] published ${res.rowCount ?? 0} creatine cluster article(s)`,
+  );
+}
+
+const CREATINE_CLUSTER_MARKER = "<strong>Creatine cluster:</strong>";
+
+const CREATINE_CLUSTER_LINKS: Record<string, string> = {
+  "is-creatine-safe": `Next reads in this series — ${a("creatine-dosage", "how much creatine per day")}, ${a("creatine-loading-phase", "whether a loading phase is necessary")}, ${a("creatine-for-women", "creatine for women")}, and ${a("creatine-monohydrate-vs-hcl", "creatine monohydrate vs HCl")}.`,
+  "creatine-dosage": `New to creatine? Start with ${a("is-creatine-safe", "is creatine safe")}, then see ${a("creatine-loading-phase", "loading vs daily dosing")} and ${a("creatine-monohydrate-vs-hcl", "monohydrate vs HCl")}.`,
+  "creatine-loading-phase": `Set your maintenance scoop with ${a("creatine-dosage", "creatine dosage")}, and read ${a("is-creatine-safe", "is creatine safe")} for kidney and myth context.`,
+  "creatine-for-women": `Dose details are in ${a("creatine-dosage", "creatine dosage")}; safety myths are covered in ${a("is-creatine-safe", "is creatine safe")}.`,
+  "creatine-monohydrate-vs-hcl": `Once you pick a form, use ${a("creatine-dosage", "creatine dosage")} and skim ${a("is-creatine-safe", "is creatine safe")} before you buy.`,
+};
+
+function insertCreatineClusterLinks(): Promise<void> {
+  return insertMarkedParagraphs(
+    CREATINE_CLUSTER_MARKER,
+    CREATINE_CLUSTER_LINKS,
+    "creatine cluster links",
+  );
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -754,6 +794,8 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-24-lock-default-staff-accounts", run: lockDefaultStaffAccounts },
   { id: "2026-10-29-recipe-times", run: backfillRecipeTimes },
   { id: "2026-11-20-publish-seeded-intent", run: publishSeededIntentArticles },
+  { id: "2026-11-20-publish-creatine-cluster", run: publishCreatineCluster },
+  { id: "2026-11-20-creatine-cluster-links", run: insertCreatineClusterLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

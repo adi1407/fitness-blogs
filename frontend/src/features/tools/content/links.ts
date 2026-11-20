@@ -28,6 +28,27 @@ export const ARTICLES = {
   indianProteinFoods: article("Best high-protein Indian foods", "nutrition/protein", "best-high-protein-indian-foods", 414579475),
   wheySafe: article("Is whey protein safe?", "nutrition/protein", "is-whey-protein-safe", 638746154),
   creatineSafe: article("Is creatine safe?", "muscle-building/muscle-building-nutrition", "is-creatine-safe", 528774226),
+  /** Slug-only href — 308s to the canonical numbered URL once published. */
+  creatineDosage: {
+    title: "How much creatine per day?",
+    slug: "creatine-dosage",
+    href: "/blog/muscle-building/muscle-building-nutrition/creatine-dosage",
+  },
+  creatineLoading: {
+    title: "Creatine loading phase",
+    slug: "creatine-loading-phase",
+    href: "/blog/muscle-building/muscle-building-nutrition/creatine-loading-phase",
+  },
+  creatineWomen: {
+    title: "Creatine for women",
+    slug: "creatine-for-women",
+    href: "/blog/muscle-building/muscle-building-nutrition/creatine-for-women",
+  },
+  creatineHcl: {
+    title: "Creatine monohydrate vs HCl",
+    slug: "creatine-monohydrate-vs-hcl",
+    href: "/blog/muscle-building/muscle-building-nutrition/creatine-monohydrate-vs-hcl",
+  },
   waterPerDay: article("How much water should you drink a day?", "nutrition/hydration", "how-much-water-should-you-drink", 225187540),
   gheeGood: article("Is ghee good for you?", "nutrition/dietary-fats", "is-ghee-good-for-you", 466554465),
   indianWeightLossFoods: article("Best Indian foods for weight loss", "weight-loss/weight-loss-nutrition", "best-indian-foods-for-weight-loss", 676191478),

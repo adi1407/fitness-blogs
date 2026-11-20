@@ -137,10 +137,10 @@ Angle to beat the current results: worked examples for a typical Indian adult (e
 
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
-| creatine dosage | How Much Creatine Per Day? (Dose by Weight) | muscle-building / muscle-building-nutrition | `/protein-calculator` | is creatine safe, creatine loading, protein to build muscle |
-| creatine loading phase | Creatine Loading Phase: Is It Necessary? | muscle-building / muscle-building-nutrition | `/one-rep-max-calculator` | creatine dosage, is creatine safe |
-| creatine for women | Creatine for Women: Benefits, Dose & Myths | muscle-building / muscle-building-nutrition | `/protein-calculator` | creatine dosage, is creatine safe, how to lose belly fat |
-| creatine monohydrate vs hcl | Creatine Monohydrate vs HCl: Which Is Better? | muscle-building / muscle-building-nutrition | `/protein-calculator` | creatine dosage, is whey protein safe (fake-supplement section) |
+| ~~creatine dosage~~ (published, `creatine-dosage`) | How Much Creatine Per Day? (Dose by Weight) | muscle-building / muscle-building-nutrition | `/protein-calculator` | is creatine safe, creatine loading, protein to build muscle |
+| ~~creatine loading phase~~ (published, `creatine-loading-phase`) | Creatine Loading Phase: Is It Necessary? | muscle-building / muscle-building-nutrition | `/one-rep-max-calculator` | creatine dosage, is creatine safe |
+| ~~creatine for women~~ (published, `creatine-for-women`) | Creatine for Women: Benefits, Dose & Myths | muscle-building / muscle-building-nutrition | `/protein-calculator` | creatine dosage, is creatine safe, how to lose belly fat |
+| ~~creatine monohydrate vs hcl~~ (published, `creatine-monohydrate-vs-hcl`) | Creatine Monohydrate vs HCl: Which Is Better? | muscle-building / muscle-building-nutrition | `/protein-calculator` | creatine dosage, is whey protein safe (fake-supplement section) |
 
 Angle: Indian buying advice (third-party tested brands, price per effective gram) alongside the science. Suggested sources: ISSN position stand on creatine (Kreider et al., 2017); Smith-Ryan et al. on creatine in women's health (2021). Keep the existing "consult a doctor if you have kidney disease" framing.
 
