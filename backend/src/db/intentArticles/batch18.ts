@@ -16,6 +16,8 @@ import {
 const LINK = {
   creatineSafe:
     "/blog/muscle-building/muscle-building-nutrition/is-creatine-safe",
+  creatineDosage:
+    "/blog/muscle-building/muscle-building-nutrition/creatine-dosage",
   creatineLoading:
     "/blog/muscle-building/muscle-building-nutrition/creatine-loading-phase",
   creatineWomen:
@@ -214,6 +216,138 @@ export const batch18: IntentArticleDef[] = [
         "Body-weight formulas exist for loading, but fixed 3–5 g maintenance is enough for most people.",
         "Split large doses, take with food if needed, and buy labelled monohydrate from a trusted seller.",
         "Ask a doctor first if you have kidney issues, are pregnant, or are under 18.",
+      ]),
+    ].join("\n"),
+  },
+  {
+    slug: "creatine-loading-phase",
+    title: "Creatine Loading Phase: Is It Necessary?",
+    excerpt:
+      "Should you load creatine at 20 g a day for a week, or just take 3–5 g from day one? What loading actually does, who might bother, and how to avoid stomach upset.",
+    quickAnswer: `A creatine loading phase is optional. About 20 g a day (split into four ~5 g doses) for 5–7 days fills muscle creatine in roughly a week; then you maintain with 3–5 g daily. Taking 3–5 g from the start reaches the same muscle levels in about 3–4 weeks, usually with less bloating and less GI discomfort. Load only if you want the effect sooner — for a meet, a short training block, or personal preference. ${DISCLAIMER}`,
+    categorySlug: "muscle-building",
+    subcategorySlug: "muscle-building-nutrition",
+    primaryKeyword: "creatine loading phase",
+    metaTitle: "Creatine Loading Phase: Is It Necessary?",
+    metaDescription:
+      "Is a creatine loading phase necessary? Compare ~20 g/day for a week vs 3–5 g daily, water weight, stomach upset, and when loading is worth it.",
+    tags: [
+      "creatine",
+      "creatine loading",
+      "supplements",
+      "muscle building",
+      "strength",
+    ],
+    topics: ["Strength", "Hypertrophy", "Performance", "Beginner Fitness"],
+    featuredImageAlt:
+      "Four small creatine scoops lined up to show a split loading day",
+    relatedSlugs: [
+      "creatine-dosage",
+      "is-creatine-safe",
+      "how-much-protein-to-build-muscle",
+      "what-is-progressive-overload",
+      "beginner-gym-diet-plan",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Do I have to load creatine?",
+        answer:
+          "No. Loading only speeds how fast your muscles fill. A steady 3–5 g a day gets you to the same place in a few weeks.",
+      },
+      {
+        question: "How much creatine for a loading phase?",
+        answer:
+          "Commonly about 20 g per day for 5–7 days, split into four ~5 g servings, then 3–5 g daily. Some protocols use ~0.3 g per kg body weight for the load week.",
+      },
+      {
+        question: "Why does loading make me feel bloated?",
+        answer:
+          "Creatine pulls water into muscle; higher early doses can raise the scale by 1–2 kg faster. Splitting doses and drinking normally (not gallons) helps. The water is inside muscle, not the same as body fat.",
+      },
+      {
+        question: "Can I load for only 3 days?",
+        answer:
+          "Shorter loads raise stores somewhat but may not fully match a 5–7 day protocol. If you cut a load short, continue with 3–5 g daily afterward.",
+      },
+      {
+        question: "Should I load again after a break?",
+        answer:
+          "If you stopped for several weeks, muscle creatine drifts back toward baseline over about 4–6 weeks. You can reload or simply resume 3–5 g daily — same trade-off as the first time.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_HULTMAN, SRC_ANTONIO],
+    body: [
+      p(
+        "Every new tub seems to come with the same whiteboard math: “Load 20 grams for seven days or you’re doing it wrong.” Loading sounds scientific. It also sounds like a week of chalky drinks and a scale that jumps overnight.",
+        "Here is the honest version: loading works, and so does not loading. The difference is mostly speed and comfort — not a permanent strength ceiling.",
+      ),
+
+      h2("What “loading” actually means"),
+      p(
+        "Muscle creatine stores are not empty in healthy people, but they are not usually maxed out either — especially on vegetarian diets with little meat or fish. A loading phase pushes a larger amount of creatine into those stores quickly.",
+        "The classic protocol from Hultman et al. (1996) used about 20 g a day for 6 days and raised muscle creatine by roughly 20%. The same study showed that about 3 g a day for 28 days produced a similar rise — just slower.",
+      ),
+      table(
+        ["Approach", "Dose", "Rough timeline to full stores"],
+        [
+          ["Load then maintain", "~20 g/day (split) for 5–7 days → 3–5 g/day", "~1 week"],
+          ["No load", "3–5 g/day from day one", "~3–4 weeks"],
+        ],
+      ),
+      p(
+        `For the day-to-day dose after (or instead of) loading, see <a href="${LINK.creatineDosage}">how much creatine per day</a>. Safety and kidney caveats stay the same either way — read <a href="${LINK.creatineSafe}">is creatine safe</a>.`,
+      ),
+
+      h2("Is a loading phase necessary?"),
+      p(
+        "No. Position stands and reviews treat loading as optional. Once stores are full, both paths use the same maintenance dose. You do not “miss out” on muscle forever if you skip the load week.",
+      ),
+      table(
+        ["Situation", "Loading makes more sense?", "Why"],
+        [
+          ["You want the effect before a short training block or meet", "Maybe", "Faster saturation"],
+          ["Sensitive stomach or hate the scale jump", "Usually no", "Smaller daily dose is gentler"],
+          ["Vegetarian / low meat intake", "Optional", "You may notice saturation either way; speed is still a preference"],
+          ["First time trying creatine", "Usually no", "Easier adherence with one scoop a day"],
+        ],
+      ),
+
+      h2("How to load without wrecking your gut"),
+      ol([
+        "<strong>Split the day:</strong> four servings of ~5 g instead of 20 g at once.",
+        "<strong>Take with food or a shake</strong> if neat creatine bothers you.",
+        "<strong>Use monohydrate</strong> — the form the loading studies used.",
+        "<strong>Drink normally.</strong> You do not need extreme water intake; follow thirst and training/heat as usual.",
+        "<strong>Drop to 3–5 g</strong> after 5–7 days. Continuing 20 g long term mostly increases what you excrete.",
+      ]),
+
+      h2("Water weight and the scale"),
+      p(
+        "Expect the scale to rise faster with loading because creatine draws water into muscle. That is not the same as gaining fat. Many people see about 0.5–2 kg early on; loading front-loads that change.",
+        "If the jump will mess with your head during a fat-loss phase, skip loading and use the slow daily dose.",
+      ),
+
+      h2("Who should skip loading (and maybe skip creatine)"),
+      ul([
+        "Anyone who already gets stomach upset from 5 g — start with 3 g daily instead of loading",
+        "People who should ask a doctor before creatine at all (kidney disease, pregnancy, under 18, certain medicines) — see the safety guide",
+        "Anyone who will not stay consistent after the load week — maintenance is what keeps stores full",
+      ]),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/one-rep-max-calculator",
+        "one-rep max calculator",
+        "Creatine helps hard sets add up. Track strength progress with the",
+      ),
+
+      takeaways([
+        "Loading (~20 g/day split for 5–7 days) fills stores in about a week; 3–5 g daily fills them in 3–4 weeks.",
+        "End result after saturation is the same — loading is optional speed, not magic.",
+        "Split doses and take with food to reduce stomach upset; then maintain at 3–5 g.",
+        "Expect a quicker water-weight bump with loading; skip it if that will derail you.",
+        "Safety rules do not change because you loaded — ask a doctor if you have kidney concerns.",
       ]),
     ].join("\n"),
   },
