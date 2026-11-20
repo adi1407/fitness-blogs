@@ -74,6 +74,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Creatine dosage explained: 3–5 g a day for most people, when to use 5 g, optional loading at ~20 g, timing tips, and who should ask a doctor first.",
   },
+  "creatine-loading-phase": {
+    metaTitle: "Creatine Loading Phase: Is It Necessary?",
+    metaDescription:
+      "Is a creatine loading phase necessary? Compare ~20 g/day for a week vs 3–5 g daily, water weight, stomach upset, and when loading is worth it.",
+  },
   "how-long-does-it-take-to-build-muscle": {
     metaTitle: "How Long Does It Take to Build Muscle?",
     metaDescription:
