@@ -84,6 +84,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Creatine for women: benefits with lifting, 3–5 g dose, bloating vs bulk myths, hormones, and when to ask a doctor — with Indian buying notes.",
   },
+  "creatine-monohydrate-vs-hcl": {
+    metaTitle: "Creatine Monohydrate vs HCl: Which Is Better?",
+    metaDescription:
+      "Creatine monohydrate vs HCl: what the evidence says, dose differences, stomach comfort claims, and how to compare price per gram when buying in India.",
+  },
   "how-long-does-it-take-to-build-muscle": {
     metaTitle: "How Long Does It Take to Build Muscle?",
     metaDescription:
