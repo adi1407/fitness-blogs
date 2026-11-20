@@ -766,6 +766,27 @@ function insertCreatineClusterLinks(): Promise<void> {
   );
 }
 
+/** Revert only the 20 Nov auto-publish allowlists so CMS can publish one-by-one. */
+const AUTO_PUBLISHED_20_NOV = [
+  ...SEEDED_INTENT_TO_PUBLISH,
+  ...CREATINE_CLUSTER_TO_PUBLISH,
+] as const;
+
+async function unpublishAutoPublished20Nov(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE articles
+     SET status = 'submitted',
+         published_at = NULL,
+         updated_at = NOW()
+     WHERE slug = ANY($1::text[])
+       AND status = 'published'`,
+    [AUTO_PUBLISHED_20_NOV],
+  );
+  console.log(
+    `[db] unpublished ${res.rowCount ?? 0} article(s) from 20 Nov auto-publish allowlist (back to submitted)`,
+  );
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -796,6 +817,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-11-20-publish-seeded-intent", run: publishSeededIntentArticles },
   { id: "2026-11-20-publish-creatine-cluster", run: publishCreatineCluster },
   { id: "2026-11-20-creatine-cluster-links", run: insertCreatineClusterLinks },
+  { id: "2026-11-20-unpublish-auto-published", run: unpublishAutoPublished20Nov },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
