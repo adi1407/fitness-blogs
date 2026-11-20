@@ -69,6 +69,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Is creatine safe? What research says about kidneys, hair loss and water weight, the right dose (3–5 g a day), whether to load, and how to buy genuine creatine.",
   },
+  "creatine-dosage": {
+    metaTitle: "How Much Creatine Per Day? Dose by Weight",
+    metaDescription:
+      "Creatine dosage explained: 3–5 g a day for most people, when to use 5 g, optional loading at ~20 g, timing tips, and who should ask a doctor first.",
+  },
   "how-long-does-it-take-to-build-muscle": {
     metaTitle: "How Long Does It Take to Build Muscle?",
     metaDescription:

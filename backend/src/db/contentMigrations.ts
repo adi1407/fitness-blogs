@@ -41,6 +41,7 @@ const PATHS: Record<string, string> = {
   "is-whey-protein-safe": "nutrition/protein",
   "is-ghee-good-for-you": "nutrition/dietary-fats",
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
+  "creatine-dosage": "muscle-building/muscle-building-nutrition",
   "does-intermittent-fasting-work": "weight-loss/intermittent-fasting",
   "maintenance-calories": "nutrition/calories-energy",
   "bmr-vs-tdee": "nutrition/calories-energy",
