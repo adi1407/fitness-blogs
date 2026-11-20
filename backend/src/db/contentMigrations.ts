@@ -687,6 +687,41 @@ async function backfillRecipeTimes(): Promise<void> {
   console.log(`[db] recipe timings filled on ${updated} recipe(s)`);
 }
 
+/** Seeded intent articles left unpublished in CMS — bring them live for hubs and AdSense. */
+const SEEDED_INTENT_TO_PUBLISH = [
+  "bmr-vs-tdee",
+  "1500-calorie-indian-diet-plan",
+  "vegetarian-protein-sources-india",
+  "protein-for-weight-loss",
+  "how-to-gain-weight-for-skinny-guys",
+  "beginner-3-day-gym-workout-plan",
+  "how-many-sets-per-muscle-per-week",
+  "bulking-on-an-indian-diet",
+  "push-pull-legs-for-beginners",
+  "how-many-days-a-week-should-i-work-out",
+  "how-many-calories-should-i-eat-per-day",
+  "what-is-a-calorie-deficit",
+  "1200-calorie-indian-diet-plan",
+  "2000-calorie-indian-diet-plan",
+  "calories-burned-walking-10000-steps",
+  "calories-in-indian-thali",
+] as const;
+
+async function publishSeededIntentArticles(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE articles
+     SET status = 'published',
+         published_at = COALESCE(published_at, NOW()),
+         updated_at = NOW()
+     WHERE slug = ANY($1::text[])
+       AND status <> 'published'`,
+    [SEEDED_INTENT_TO_PUBLISH],
+  );
+  console.log(
+    `[db] published ${res.rowCount ?? 0} seeded intent article(s) from allowlist`,
+  );
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -714,6 +749,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-10-17-source-url-fixes", run: fixSourceUrls },
   { id: "2026-10-24-lock-default-staff-accounts", run: lockDefaultStaffAccounts },
   { id: "2026-10-29-recipe-times", run: backfillRecipeTimes },
+  { id: "2026-11-20-publish-seeded-intent", run: publishSeededIntentArticles },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

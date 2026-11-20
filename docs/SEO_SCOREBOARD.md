@@ -146,11 +146,13 @@ The site has fixed ad slots with reserved height (no layout shift): mid-article 
 
 ## Content status
 
-16 seeded articles are not published (status changed in the CMS) and return 404 until republished. Their inbound links are hidden automatically and reappear when each one is published:
+**20 Nov 2026 — republished.** Migration `2026-11-20-publish-seeded-intent` set these 16 seeded articles to `published` (they had been left unpublished in the CMS and returned 404):
 
-- **Older:** `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `vegetarian-protein-sources-india`, `protein-for-weight-loss` — also linked from calculator pages, `/weight-loss` and `/nutrition/calories` (static links that 404 until published).
-- **Muscle building:** `how-to-gain-weight-for-skinny-guys`, `beginner-3-day-gym-workout-plan`, `how-many-sets-per-muscle-per-week`, `bulking-on-an-indian-diet`, `push-pull-legs-for-beginners`, `how-many-days-a-week-should-i-work-out`.
-- **Calories:** `how-many-calories-should-i-eat-per-day`, `what-is-a-calorie-deficit`, `1200-calorie-indian-diet-plan`, `2000-calorie-indian-diet-plan`, `calories-burned-walking-10000-steps`, `calories-in-indian-thali`.
+- **Older:** `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `vegetarian-protein-sources-india`, `protein-for-weight-loss`
+- **Muscle building:** `how-to-gain-weight-for-skinny-guys`, `beginner-3-day-gym-workout-plan`, `how-many-sets-per-muscle-per-week`, `bulking-on-an-indian-diet`, `push-pull-legs-for-beginners`, `how-many-days-a-week-should-i-work-out`
+- **Calories:** `how-many-calories-should-i-eat-per-day`, `what-is-a-calorie-deficit`, `1200-calorie-indian-diet-plan`, `2000-calorie-indian-diet-plan`, `calories-burned-walking-10000-steps`, `calories-in-indian-thali`
+
+Inbound hub/calculator links reappear automatically once each URL is live after the API redeploy.
 
 The thin early articles (`is-paneer-good-for-weight-loss`, `how-much-water-should-you-drink`, `2-eggs-calories-and-protein`, `best-high-protein-indian-foods`) were rewritten on 13 Oct 2026 — see the AdSense review section.
 
