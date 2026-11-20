@@ -483,4 +483,141 @@ export const batch18: IntentArticleDef[] = [
       ]),
     ].join("\n"),
   },
+  {
+    slug: "creatine-monohydrate-vs-hcl",
+    title: "Creatine Monohydrate vs HCl: Which Is Better?",
+    excerpt:
+      "Creatine HCl is marketed as better absorbed and easier on the stomach. Here is how it compares with creatine monohydrate on evidence, dose, and price per effective gram in India.",
+    quickAnswer: `Creatine monohydrate is still the best-supported choice. Almost all of the performance and safety research uses monohydrate at about 3–5 g a day. Creatine hydrochloride (HCl) dissolves more easily and is sold in smaller scoop sizes, but high-quality evidence that it builds more strength or muscle than monohydrate is lacking. For most people, buy plain monohydrate from a trusted seller and compare price per gram of actual creatine — not the fancy label. ${DISCLAIMER}`,
+    categorySlug: "muscle-building",
+    subcategorySlug: "muscle-building-nutrition",
+    primaryKeyword: "creatine monohydrate vs hcl",
+    metaTitle: "Creatine Monohydrate vs HCl: Which Is Better?",
+    metaDescription:
+      "Creatine monohydrate vs HCl: what the evidence says, dose differences, stomach comfort claims, and how to compare price per gram when buying in India.",
+    tags: [
+      "creatine",
+      "creatine monohydrate",
+      "creatine hcl",
+      "supplements",
+      "muscle building",
+    ],
+    topics: ["Strength", "Hypertrophy", "Performance", "Beginner Fitness"],
+    featuredImageAlt:
+      "Two creatine tubs side by side labelled monohydrate and HCl on a kitchen counter",
+    relatedSlugs: [
+      "creatine-dosage",
+      "is-creatine-safe",
+      "is-whey-protein-safe",
+      "creatine-loading-phase",
+      "how-much-protein-to-build-muscle",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Is creatine HCl better absorbed than monohydrate?",
+        answer:
+          "HCl is more soluble in water, which can make mixing nicer. That is not the same as proven better muscle uptake or better gym results versus a proper monohydrate dose.",
+      },
+      {
+        question: "Can I take a smaller dose of creatine HCl?",
+        answer:
+          "Labels often suggest smaller scoops. Research benchmarks for performance still centre on monohydrate at roughly 3–5 g. Do not assume a tiny HCl scoop matches a studied monohydrate protocol without evidence.",
+      },
+      {
+        question: "Is creatine HCl easier on the stomach?",
+        answer:
+          "Some people prefer it subjectively. Many stomach issues with monohydrate improve by splitting doses, taking it with food, or skipping a heavy load. Try those steps before paying a premium.",
+      },
+      {
+        question: "What about buffered creatine or creatine ethyl ester?",
+        answer:
+          "Reviews of novel creatine forms have not shown a clear advantage over monohydrate for most users. Monohydrate remains the default evidence-based pick.",
+      },
+      {
+        question: "How do I spot overpriced creatine in India?",
+        answer:
+          "Divide the pack price by total grams of creatine (not flavoured powder weight alone). Prefer clear monohydrate labelling, FSSAI details, and authorised sellers — the same caution as for whey.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_JAGER, SRC_ANTONIO, SRC_HULTMAN],
+    body: [
+      p(
+        "Walk into any supplement aisle in India and you will see creatine monohydrate next to creatine HCl tubs that cost two or three times as much for less powder. The pitch is always similar: “better absorption,” “no loading,” “no bloating.”",
+        "Marketing is loud. The evidence hierarchy is quieter: monohydrate has decades of trials; HCl has far less performance data head-to-head.",
+      ),
+
+      h2("Quick comparison"),
+      table(
+        ["Factor", "Creatine monohydrate", "Creatine HCl"],
+        [
+          ["Research base", "Extensive — dosing and safety position stands", "Much thinner for strength/hypertrophy outcomes"],
+          ["Typical studied dose", "About 3–5 g/day (optional load ~20 g/day)", "Labels vary; often marketed as “smaller dose”"],
+          ["Solubility", "Can settle; stir or mix in a shake", "Generally dissolves more easily"],
+          ["Cost per effective gram", "Usually lowest", "Usually higher"],
+          ["Best default?", "Yes for most people", "Only if you personally tolerate it better and accept the price"],
+        ],
+      ),
+      p(
+        `Dose details live in <a href="${LINK.creatineDosage}">creatine dosage</a>. Safety myths (kidneys, hair, water weight): <a href="${LINK.creatineSafe}">is creatine safe</a>.`,
+      ),
+
+      h2("What the science actually supports"),
+      p(
+        "ISSN and related reviews treat creatine monohydrate as the reference form. Classic saturation work (including Hultman et al.) used monohydrate. Analyses of novel creatine forms (including Jäger et al., 2011) have not established that newer salts outperform monohydrate for most athletes when monohydrate is dosed correctly.",
+        "Higher solubility is a real chemical property of HCl. It does not automatically mean “more creatine in the muscle” or “more PRs” than 3–5 g of monohydrate taken consistently.",
+      ),
+
+      h2("Stomach comfort: fix the protocol before upgrading the form"),
+      ol([
+        "Take monohydrate with a meal or shake",
+        "Avoid slamming 20 g at once — split a load or skip loading (<a href=\"" +
+          LINK.creatineLoading +
+          "\">loading phase guide</a>)",
+        "Confirm your scoop is really 3–5 g",
+        "Give it 1–2 weeks before deciding monohydrate “doesn’t sit well”",
+      ]),
+      p(
+        "If you still prefer HCl after that, treat it as a comfort/price trade-off — not a proven superiority claim.",
+      ),
+
+      h2("Price per gram: the India shopping test"),
+      p(
+        "Fancy creatine is a margin product. Do the maths:",
+      ),
+      ul([
+        "Find total creatine content on the label (grams), not only “servings”",
+        "Pack price ÷ creatine grams = cost per gram",
+        "Compare two monohydrate tubs first — then see how expensive HCl is for the same creatine mass",
+        "Reject proprietary blends that hide the creatine amount",
+      ]),
+      p(
+        `Counterfeit and mislabelled powders are a real risk. Use the same buying discipline as <a href="${LINK.whey}">is whey protein safe</a>: authorised sellers, FSSAI details, and batch transparency when available.`,
+      ),
+
+      h2("Who might still choose HCl"),
+      ul([
+        "People who tried sensible monohydrate dosing and still get persistent GI discomfort",
+        "People who will only take creatine if it mixes crystal-clear in water — and who accept paying more",
+      ]),
+      p(
+        "Everyone else: monohydrate, 3–5 g daily, train hard, eat enough protein. That is the boring answer that matches the literature.",
+      ),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/protein-calculator",
+        "protein calculator",
+        "Form debates matter less than training and protein. Set your daily protein target with the",
+      ),
+
+      takeaways([
+        "Creatine monohydrate has the strongest evidence; HCl is not proven superior for strength or muscle.",
+        "Better water solubility ≠ proven better results.",
+        "Fix dose timing, split loads, and scoop size before paying for HCl.",
+        "Compare India prices by cost per gram of creatine, not tub marketing.",
+        "Buy from authorised sellers — form choice will not save you from a fake tub.",
+      ]),
+    ].join("\n"),
+  },
 ];
