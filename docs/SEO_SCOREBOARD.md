@@ -93,6 +93,8 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | 13 Oct 2026 | 7 muscle-group pages: anatomy, weekly volume, sample session, tips, FAQ | [#138](https://github.com/adi1407/fitness-blogs/pull/138) |
 | 13 Oct 2026 | 8 recipes: gram ingredients, IFCT macro table (card macros corrected), tips, swaps, meal prep, FAQ; `/recipes` hub guide | [#140](https://github.com/adi1407/fitness-blogs/pull/140) |
 | 17 Nov 2026 | Air-fryer batch 1 (5): paneer tikka, grilled chicken breast, tandoori chicken, soya chaap tikka, masala fish tikka; hub cluster + CMS photo-gap ops | [#243](https://github.com/adi1407/fitness-blogs/pull/243)–[#247](https://github.com/adi1407/fitness-blogs/pull/247) |
+| 20 Nov 2026 | Republish 16 seeded intent articles left unpublished in CMS | [#250](https://github.com/adi1407/fitness-blogs/pull/250) |
+| 20 Nov 2026 | Creatine cluster: dosage, loading, women, monohydrate vs HCl + pillar/cluster links | [#251](https://github.com/adi1407/fitness-blogs/pull/251)–[#255](https://github.com/adi1407/fitness-blogs/pull/255) |
 | 13 Oct 2026 | 4 programs with workout tables and 12-week progression; 3 criteria-based buying guides (no testing claims); both hubs | [#142](https://github.com/adi1407/fitness-blogs/pull/142) |
 | 13 Oct 2026 | Essentials guide on 17 indexed blog subcategory hubs; `/training` and `/about` expanded | [#144](https://github.com/adi1407/fitness-blogs/pull/144) |
 | 13 Oct 2026 | Editorial policy rewritten; `/exercises`, `/foods`, `/authors` guides; 2 FAQs per subcategory hub; SEO jargon ("thin blog", "doorway pages") removed from visible copy | [#146](https://github.com/adi1407/fitness-blogs/pull/146) |

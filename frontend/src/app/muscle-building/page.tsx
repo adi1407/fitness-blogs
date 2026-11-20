@@ -264,13 +264,45 @@ export default async function MuscleBuildingPage() {
               the best high-protein Indian foods
             </MaybeArticleLink>{" "}
             compares sources by protein per serving. Supplements are optional;
-            creatine monohydrate has the strongest evidence, covered in{" "}
+            creatine monohydrate has the strongest evidence — start with{" "}
             <MaybeArticleLink
               article={ARTICLES.creatineSafe}
               isPublished={isPublished}
               className="fk-link"
             >
               is creatine safe
+            </MaybeArticleLink>
+            , then{" "}
+            <MaybeArticleLink
+              article={ARTICLES.creatineDosage}
+              isPublished={isPublished}
+              className="fk-link"
+            >
+              how much creatine per day
+            </MaybeArticleLink>
+            ,{" "}
+            <MaybeArticleLink
+              article={ARTICLES.creatineLoading}
+              isPublished={isPublished}
+              className="fk-link"
+            >
+              whether to load
+            </MaybeArticleLink>
+            ,{" "}
+            <MaybeArticleLink
+              article={ARTICLES.creatineWomen}
+              isPublished={isPublished}
+              className="fk-link"
+            >
+              creatine for women
+            </MaybeArticleLink>
+            , and{" "}
+            <MaybeArticleLink
+              article={ARTICLES.creatineHcl}
+              isPublished={isPublished}
+              className="fk-link"
+            >
+              monohydrate vs HCl
             </MaybeArticleLink>
             .
           </p>
