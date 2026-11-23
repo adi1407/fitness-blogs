@@ -308,4 +308,121 @@ export const batch19: IntentArticleDef[] = [
       ]),
     ].join("\n"),
   },
+  {
+    slug: "best-time-to-take-whey-protein",
+    title: "Best Time to Take Whey Protein (Before or After?)",
+    excerpt:
+      "Post-workout only? Before bed? The best time to take whey protein is whenever it helps you hit your daily total — here’s what actually matters.",
+    quickAnswer: `The best time to take whey protein is the time you will actually drink it. Total daily protein matters more than a narrow “anabolic window.” Post-workout is convenient; with breakfast or between meals works too. Spread protein across the day when you can. If you train fasted, a scoop after lifting is a practical default. ${DISCLAIMER}`,
+    categorySlug: "nutrition",
+    subcategorySlug: "protein",
+    primaryKeyword: "best time to take whey protein",
+    metaTitle: "Best Time to Take Whey Protein (Before or After?)",
+    metaDescription:
+      "Best time to take whey protein: post-workout vs anytime, morning and night myths, and how timing fits your daily protein target.",
+    tags: [
+      "whey protein",
+      "protein timing",
+      "supplements",
+      "workout nutrition",
+      "protein",
+    ],
+    topics: ["Protein", "Performance", "Beginner Fitness", "Indian Nutrition"],
+    featuredImageAlt:
+      "Shaker bottle on a gym bench after a workout session",
+    relatedSlugs: [
+      "protein-before-or-after-workout",
+      "how-much-whey-protein-per-day",
+      "is-whey-protein-safe",
+      "how-much-protein-to-build-muscle",
+      "whey-protein-concentrate-vs-isolate",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Should I take whey immediately after my workout?",
+        answer:
+          "It is fine and convenient, but not mandatory if you already ate protein within a few hours. Missing the exact minute does not erase your training.",
+      },
+      {
+        question: "Is whey before bed useful?",
+        answer:
+          "Only if it helps your daily protein total. Casein-rich foods like curd or paneer also work overnight. Whey before bed is optional, not magic.",
+      },
+      {
+        question: "Can I take whey on an empty stomach?",
+        answer:
+          "Many people do. If it upsets your stomach, take it with a small meal or switch form (e.g. isolate).",
+      },
+      {
+        question: "Should I take whey before cardio?",
+        answer:
+          "Not required. For long sessions, carbs and fluids matter more. Use whey to hit daily protein around your schedule.",
+      },
+      {
+        question: "Can I mix whey with milk or water?",
+        answer:
+          "Both work. Milk adds calories and protein; water is lighter. Curd smoothies are another Indian-friendly option.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_ARETA, SRC_MORTON],
+    body: [
+      p(
+        "Gym folklore says the shake must hit your lips within 30 minutes or the workout “wastes.” That fear sells tubs. It does not match how protein timing actually works for most lifters.",
+      ),
+
+      h2("Daily total beats the stopwatch"),
+      p(
+        `Research on protein distribution favours getting enough across the day more than a single magic minute. Pair this guide with <a href="${LINK.proteinTiming}">protein before or after workout</a> and set scoops with <a href="${LINK.wheyDose}">how much whey protein per day</a>.`,
+      ),
+      table(
+        ["Timing", "When it helps", "When it does not matter much"],
+        [
+          ["After training", "You trained fasted or far from a meal", "You already ate a protein-rich meal nearby"],
+          ["Breakfast / mid-morning", "Vegetarian breakfasts run low on protein", "Your morning already has eggs, paneer or curd"],
+          ["Between meals", "Long gaps leave you under target", "You are force-feeding calories you do not need"],
+          ["Before bed", "Evening protein was low", "You already hit the day’s total"],
+        ],
+      ),
+
+      h2("Practical defaults"),
+      ol([
+        "<strong>Lift after a normal meal:</strong> shake whenever it is convenient that day",
+        "<strong>Lift fasted mornings:</strong> scoop after training is a simple default",
+        "<strong>Hate shakes post-workout:</strong> eat paneer/eggs/dal within a few hours instead",
+        "<strong>Travel days:</strong> whey is a portable gap-filler — timing is whatever airport security allows",
+      ]),
+
+      h2("Stacking with creatine"),
+      p(
+        `You can mix whey and creatine in the same shaker. Creatine cares about daily consistency more than the clock — see <a href="${LINK.creatineDosage}">creatine dosage</a>.`,
+      ),
+
+      h2("Digestion tips"),
+      ul([
+        "Bloat with concentrate? Try isolate or take the scoop with food — <a href=\"" +
+          LINK.wheyIsolate +
+          "\">concentrate vs isolate</a>",
+        "Very sweet flavours can bother some stomachs — unflavoured in milk/curd is an option",
+        "Safety and quality still matter: <a href=\"" +
+          LINK.wheySafe +
+          "\">is whey protein safe</a>",
+      ]),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/protein-calculator",
+        "protein calculator",
+        "Fix the daily number first; then place scoops where they fit using the",
+      ),
+
+      takeaways([
+        "Best time to take whey = the time that helps you hit today’s protein target.",
+        "Post-workout is convenient, not sacred.",
+        "Spread protein across meals when possible.",
+        "Fasted training → a post-lift scoop is a sensible default.",
+        "Form and food quality still beat clock anxiety.",
+      ]),
+    ].join("\n"),
+  },
 ];
