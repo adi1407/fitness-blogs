@@ -94,6 +94,7 @@ Until that export exists, titles were tuned for the pages with the highest comme
 | 13 Oct 2026 | 8 recipes: gram ingredients, IFCT macro table (card macros corrected), tips, swaps, meal prep, FAQ; `/recipes` hub guide | [#140](https://github.com/adi1407/fitness-blogs/pull/140) |
 | 17 Nov 2026 | Air-fryer batch 1 (5): paneer tikka, grilled chicken breast, tandoori chicken, soya chaap tikka, masala fish tikka; hub cluster + CMS photo-gap ops | [#243](https://github.com/adi1407/fitness-blogs/pull/243)–[#247](https://github.com/adi1407/fitness-blogs/pull/247) |
 | 20 Nov 2026 | Creatine cluster bodies + links seeded; 16 older seeds + 4 creatine auto-publish then reverted to `submitted` for manual CMS publish | [#250](https://github.com/adi1407/fitness-blogs/pull/250)–[#256](https://github.com/adi1407/fitness-blogs/pull/256) |
+| 23 Nov 2026 | Whey cluster seeded `submitted` only (dose, concentrate vs isolate, timing, vegetarians) + cluster link markers — **no auto-publish** | [#257](https://github.com/adi1407/fitness-blogs/pull/257)–[#261](https://github.com/adi1407/fitness-blogs/pull/261) |
 | 13 Oct 2026 | 4 programs with workout tables and 12-week progression; 3 criteria-based buying guides (no testing claims); both hubs | [#142](https://github.com/adi1407/fitness-blogs/pull/142) |
 | 13 Oct 2026 | Essentials guide on 17 indexed blog subcategory hubs; `/training` and `/about` expanded | [#144](https://github.com/adi1407/fitness-blogs/pull/144) |
 | 13 Oct 2026 | Editorial policy rewritten; `/exercises`, `/foods`, `/authors` guides; 2 FAQs per subcategory hub; SEO jargon ("thin blog", "doorway pages") removed from visible copy | [#146](https://github.com/adi1407/fitness-blogs/pull/146) |
@@ -151,6 +152,8 @@ The site has fixed ad slots with reserved height (no layout shift): mid-article 
 
 - **Older (16):** `bmr-vs-tdee`, `1500-calorie-indian-diet-plan`, `vegetarian-protein-sources-india`, `protein-for-weight-loss`, `how-to-gain-weight-for-skinny-guys`, `beginner-3-day-gym-workout-plan`, `how-many-sets-per-muscle-per-week`, `bulking-on-an-indian-diet`, `push-pull-legs-for-beginners`, `how-many-days-a-week-should-i-work-out`, `how-many-calories-should-i-eat-per-day`, `what-is-a-calorie-deficit`, `1200-calorie-indian-diet-plan`, `2000-calorie-indian-diet-plan`, `calories-burned-walking-10000-steps`, `calories-in-indian-thali`
 - **Creatine cluster (4):** `creatine-dosage`, `creatine-loading-phase`, `creatine-for-women`, `creatine-monohydrate-vs-hcl`
+
+**23 Nov 2026 — whey cluster in CMS queue (never auto-published):** `how-much-whey-protein-per-day`, `whey-protein-concentrate-vs-isolate`, `best-time-to-take-whey-protein`, `whey-protein-for-vegetarians`.
 
 No other published articles were changed. Hub links stay hidden until each slug is published manually.
 

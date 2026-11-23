@@ -791,6 +791,24 @@ async function unpublishAutoPublished20Nov(): Promise<void> {
   );
 }
 
+const WHEY_CLUSTER_MARKER = "<strong>Whey cluster:</strong>";
+
+const WHEY_CLUSTER_LINKS: Record<string, string> = {
+  "is-whey-protein-safe": `Next reads in this series — ${a("how-much-whey-protein-per-day", "how much whey protein per day")}, ${a("whey-protein-concentrate-vs-isolate", "whey concentrate vs isolate")}, ${a("best-time-to-take-whey-protein", "best time to take whey protein")}, and ${a("whey-protein-for-vegetarians", "whey protein for vegetarians")}.`,
+  "how-much-whey-protein-per-day": `New to whey? Start with ${a("is-whey-protein-safe", "is whey protein safe")}, then see ${a("whey-protein-concentrate-vs-isolate", "concentrate vs isolate")} and ${a("best-time-to-take-whey-protein", "timing")}.`,
+  "whey-protein-concentrate-vs-isolate": `Size scoops with ${a("how-much-whey-protein-per-day", "how much whey per day")} and skim ${a("is-whey-protein-safe", "is whey protein safe")} before you buy.`,
+  "best-time-to-take-whey-protein": `Daily scoop count matters more than the clock — see ${a("how-much-whey-protein-per-day", "how much whey protein per day")} and ${a("is-whey-protein-safe", "is whey protein safe")}.`,
+  "whey-protein-for-vegetarians": `Food map first in ${a("vegetarian-protein-sources-india", "vegetarian protein sources")}, then ${a("how-much-whey-protein-per-day", "how much whey per day")} if dairy whey fits your diet.`,
+};
+
+function insertWheyClusterLinks(): Promise<void> {
+  return insertMarkedParagraphs(
+    WHEY_CLUSTER_MARKER,
+    WHEY_CLUSTER_LINKS,
+    "whey cluster links",
+  );
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -822,6 +840,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-11-20-publish-creatine-cluster", run: publishCreatineCluster },
   { id: "2026-11-20-creatine-cluster-links", run: insertCreatineClusterLinks },
   { id: "2026-11-20-unpublish-auto-published", run: unpublishAutoPublished20Nov },
+  { id: "2026-11-23-whey-cluster-links", run: insertWheyClusterLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
