@@ -44,8 +44,10 @@ export default async function BlogArticleSlugRedirectPage({
   if (!category || !subcategory) notFound();
 
   const payload = await fetchPublishedArticleBySlug(slug);
+  // Unpublished / unknown slug: send crawlers to the live subcategory hub
+  // instead of a soft-404 that GSC keeps reporting.
   if (!payload?.article?.slug || payload.article.articleNumber == null) {
-    notFound();
+    permanentRedirect(`/blog/${categorySlug}/${subcategorySlug}`);
   }
   const { article } = payload;
 

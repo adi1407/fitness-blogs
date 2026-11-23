@@ -59,11 +59,10 @@ export default function RecipesListPage() {
             HTTPS photo (and alt) before Google Recipe rich results.
           </p>
           <p className="mt-1 text-amber-900/80">
-            Upload the image in the editor, then turn on{" "}
-            <strong>robots index</strong> for air-fryer seeds that were seeded
-            noindex until photos landed
+            Upload a HTTPS image (and alt) in the editor. Air-fryer recipes are
+            indexable now; photos still unlock Recipe rich results
             {airFryerGaps.length
-              ? ` (${airFryerGaps.length} air-fryer)`
+              ? ` (${airFryerGaps.length} air-fryer still need photos)`
               : ""}
             .
           </p>

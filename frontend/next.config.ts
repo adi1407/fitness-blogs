@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
         destination: "/:calc",
         permanent: true,
       },
+      // Legacy / guessed paths Google still discovers as 404s
+      { source: "/calculators", destination: "/tools", permanent: true },
+      { source: "/calculator", destination: "/tools", permanent: true },
+      { source: "/guides", destination: "/blog", permanent: true },
+      { source: "/articles", destination: "/blog", permanent: true },
     ];
   },
 };

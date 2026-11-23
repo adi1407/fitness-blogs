@@ -809,6 +809,29 @@ function insertWheyClusterLinks(): Promise<void> {
   );
 }
 
+const AIR_FRYER_INDEX_SLUGS = [
+  "paneer-tikka-air-fryer",
+  "grilled-chicken-breast-air-fryer",
+  "tandoori-chicken-air-fryer",
+  "soya-chaap-tikka-air-fryer",
+  "masala-fish-tikka-air-fryer",
+] as const;
+
+/** Open air-fryer batch 1 to indexing now that IFCT guides are live. */
+async function indexAirFryerRecipes(): Promise<void> {
+  const res = await pool.query(
+    `UPDATE recipes
+     SET robots_index = TRUE,
+         updated_at = NOW()
+     WHERE slug = ANY($1::text[])
+       AND robots_index IS DISTINCT FROM TRUE`,
+    [AIR_FRYER_INDEX_SLUGS],
+  );
+  console.log(
+    `[db] set robots_index=true on ${res.rowCount ?? 0} air-fryer recipe(s)`,
+  );
+}
+
 const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-09-29-read-next-links", run: () => insertReadNextLinks() },
   { id: "2026-10-05-root-calculator-links", run: rootCalculatorLinks },
@@ -841,6 +864,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-11-20-creatine-cluster-links", run: insertCreatineClusterLinks },
   { id: "2026-11-20-unpublish-auto-published", run: unpublishAutoPublished20Nov },
   { id: "2026-11-23-whey-cluster-links", run: insertWheyClusterLinks },
+  { id: "2026-11-23-index-air-fryer-recipes", run: indexAirFryerRecipes },
 ];
 
 export async function applyContentMigrations(): Promise<void> {

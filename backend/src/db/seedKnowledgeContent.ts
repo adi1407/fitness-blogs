@@ -1778,7 +1778,7 @@ const RECIPES: SeedRecipe[] = [
     mealType: "snack",
     sortOrder: 8,
   },
-  // —— Air-fryer cluster (Batch 1). robotsIndex false until CMS HTTPS photos land.
+  // —— Air-fryer cluster (Batch 1). Indexed with IFCT guides; CMS photos still improve CTR.
   // Research lock: high-intent Indian high-protein air-fryer meals with IFCT food links.
   {
     slug: "paneer-tikka-air-fryer",
@@ -1807,7 +1807,6 @@ const RECIPES: SeedRecipe[] = [
     cuisineTags: ["indian", "vegetarian", "high-protein", "air-fryer"],
     mealType: "lunch-dinner",
     sortOrder: 9,
-    robotsIndex: false,
   },
   {
     slug: "grilled-chicken-breast-air-fryer",
@@ -1835,7 +1834,6 @@ const RECIPES: SeedRecipe[] = [
     cuisineTags: ["high-protein", "air-fryer"],
     mealType: "lunch-dinner",
     sortOrder: 10,
-    robotsIndex: false,
   },
   {
     slug: "tandoori-chicken-air-fryer",
@@ -1863,7 +1861,6 @@ const RECIPES: SeedRecipe[] = [
     cuisineTags: ["indian", "high-protein", "air-fryer"],
     mealType: "lunch-dinner",
     sortOrder: 11,
-    robotsIndex: false,
   },
   {
     slug: "soya-chaap-tikka-air-fryer",
@@ -1891,7 +1888,6 @@ const RECIPES: SeedRecipe[] = [
     cuisineTags: ["indian", "vegetarian", "high-protein", "air-fryer"],
     mealType: "lunch-dinner",
     sortOrder: 12,
-    robotsIndex: false,
   },
   {
     slug: "masala-fish-tikka-air-fryer",
@@ -1919,7 +1915,6 @@ const RECIPES: SeedRecipe[] = [
     cuisineTags: ["indian", "high-protein", "air-fryer"],
     mealType: "lunch-dinner",
     sortOrder: 13,
-    robotsIndex: false,
   },
 ];
 

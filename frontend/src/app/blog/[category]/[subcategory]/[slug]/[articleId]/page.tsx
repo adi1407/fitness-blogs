@@ -114,10 +114,12 @@ export default async function BlogArticleByIdPage({ params }: PageProps) {
   if (!category || !subcategory) notFound();
 
   const payload = await fetchPublishedArticleBySlug(slug);
-  if (!payload?.article?.slug) notFound();
+  // Draft / unpublished URLs that Google still has from a brief publish window
+  // should consolidate on the subcategory hub, not stay as 404s.
+  if (!payload?.article?.slug || payload.article.articleNumber == null) {
+    permanentRedirect(`/blog/${categorySlug}/${subcategorySlug}`);
+  }
   const { article, related } = payload;
-
-  if (article.articleNumber == null) notFound();
 
   if (
     String(article.articleNumber) !== articleId ||
