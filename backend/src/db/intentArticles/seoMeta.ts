@@ -64,6 +64,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Best time to take whey protein: post-workout vs anytime, morning and night myths, and how timing fits your daily protein target.",
   },
+  "whey-protein-for-vegetarians": {
+    metaTitle: "Whey Protein for Vegetarians: Does It Fit?",
+    metaDescription:
+      "Whey protein for vegetarians: dairy vs vegan rules, scoop use with Indian meals, isolate tips, and food-first alternatives when you skip powder.",
+  },
   "protein-before-or-after-workout": {
     metaTitle: "Protein Before or After Workout? What Matters",
     metaDescription:

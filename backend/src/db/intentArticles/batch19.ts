@@ -425,4 +425,123 @@ export const batch19: IntentArticleDef[] = [
       ]),
     ].join("\n"),
   },
+  {
+    slug: "whey-protein-for-vegetarians",
+    title: "Whey Protein for Vegetarians: Does It Fit?",
+    excerpt:
+      "Lactose-ovo vegetarians can use whey; vegans cannot. How whey protein for vegetarians fits Indian diets, when to prefer isolate, and food-first alternatives.",
+    quickAnswer: `Whey protein for vegetarians who eat dairy is fine — whey comes from milk, the same family as paneer and curd. It is not vegan. Use 0–2 scoops to close gaps after dal, curd, paneer and soya, aiming for your daily protein target. If milk bloats you, try isolate or emphasise non-dairy vegetarian foods. Vegans should choose a plant protein blend instead. ${DISCLAIMER}`,
+    categorySlug: "nutrition",
+    subcategorySlug: "protein",
+    primaryKeyword: "whey protein for vegetarians",
+    metaTitle: "Whey Protein for Vegetarians: Does It Fit?",
+    metaDescription:
+      "Whey protein for vegetarians: dairy vs vegan rules, scoop use with Indian meals, isolate tips, and food-first alternatives when you skip powder.",
+    tags: [
+      "whey protein",
+      "vegetarian protein",
+      "protein powder",
+      "Indian diet",
+      "supplements",
+    ],
+    topics: ["Protein", "Indian Nutrition", "Vegetarian", "Beginner Fitness"],
+    featuredImageAlt:
+      "Whey scoop beside curd, paneer and a bowl of dal on a vegetarian thali",
+    relatedSlugs: [
+      "vegetarian-protein-sources-india",
+      "is-whey-protein-safe",
+      "how-much-whey-protein-per-day",
+      "best-high-protein-indian-foods",
+      "whey-protein-concentrate-vs-isolate",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Is whey vegetarian?",
+        answer:
+          "Yes for lacto-vegetarians — it is from milk. It is not suitable for vegans. Check capsule “tablets” separately; some use gelatin shells.",
+      },
+      {
+        question: "Is whey better than paneer and dal?",
+        answer:
+          "No. Food should carry most of your protein. Whey is a convenient top-up when meals fall short.",
+      },
+      {
+        question: "Can Jain or satvik diets use whey?",
+        answer:
+          "Whey is dairy-derived. Whether it fits your personal rules depends on how you define satvik/Jain practice — check with your tradition or advisor. Ingredient lists still matter (flavours, additives).",
+      },
+      {
+        question: "What if I am lactose intolerant but vegetarian?",
+        answer:
+          "Try whey isolate, lactose-free milk products, or emphasise soya, paneer if tolerated, and dals. Severe allergy to milk protein means avoiding whey.",
+      },
+      {
+        question: "Do vegetarians need more whey than non-vegetarians?",
+        answer:
+          "Not automatically. They often need more planning because meat is absent — powder is one tool among many.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_MORTON, SRC_PHILLIPS],
+    body: [
+      p(
+        "In India, “vegetarian” usually still includes milk. That is why whey protein for vegetarians is a common gym recommendation — and why vegan friends need a different aisle.",
+      ),
+
+      h2("Dairy vegetarian vs vegan"),
+      table(
+        ["Pattern", "Whey OK?", "Notes"],
+        [
+          ["Lacto / lacto-ovo vegetarian", "Yes", "Same milk family as curd and paneer"],
+          ["Vegan", "No", "Use pea/soy/rice blends instead"],
+          ["Eggetarian", "Yes", "Eggs + dairy + whey can cover targets easily"],
+        ],
+      ),
+      p(
+        `Map food options first with <a href="${LINK.vegProtein}">vegetarian protein sources in India</a> and <a href="${LINK.indianProtein}">best high-protein Indian foods</a>.`,
+      ),
+
+      h2("How vegetarians usually use whey"),
+      ol([
+        "Set a daily protein target (calculator + body weight)",
+        "Build meals with dal, curd, paneer, soya, sprouts, milk",
+        "Add 1 scoop where breakfast or evening snacks run thin",
+        "Skip powder on days food already hits the number",
+      ]),
+      p(
+        `Scoop maths: <a href="${LINK.wheyDose}">how much whey protein per day</a>. Form choice: <a href="${LINK.wheyIsolate}">concentrate vs isolate</a>.`,
+      ),
+
+      h2("Sample vegetarian day (≈70 kg lifter)"),
+      table(
+        ["Meal", "Example", "Protein (ballpark)"],
+        [
+          ["Breakfast", "Besan chilla + curd", "~25–30 g"],
+          ["Lunch", "Dal, roti, sabzi, raita", "~25–30 g"],
+          ["Evening", "Whey in water or milk", "~20–25 g"],
+          ["Dinner", "Paneer bhurji + salad + roti", "~35–40 g"],
+        ],
+      ),
+
+      h2("Quality still matters"),
+      p(
+        `Vegetarian or not, India has label and contaminant issues in some powders. Read <a href="${LINK.wheySafe}">is whey protein safe</a> before you buy the cheapest tub online.`,
+      ),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/protein-calculator",
+        "protein calculator",
+        "Set a vegetarian-friendly daily target, then decide if whey is needed with the",
+      ),
+
+      takeaways([
+        "Whey fits lacto-vegetarians; it is not vegan.",
+        "Food first — dal, curd, paneer, soya — then 0–2 scoops as needed.",
+        "Isolate can help if concentrate bloats you.",
+        "Plan protein across meals; powder is a bridge, not the whole diet.",
+        "Buy verified whey; quality issues are real in some market products.",
+      ]),
+    ].join("\n"),
+  },
 ];

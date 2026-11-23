@@ -42,6 +42,7 @@ const PATHS: Record<string, string> = {
   "how-much-whey-protein-per-day": "nutrition/protein",
   "whey-protein-concentrate-vs-isolate": "nutrition/protein",
   "best-time-to-take-whey-protein": "nutrition/protein",
+  "whey-protein-for-vegetarians": "nutrition/protein",
   "is-ghee-good-for-you": "nutrition/dietary-fats",
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
   "creatine-dosage": "muscle-building/muscle-building-nutrition",
