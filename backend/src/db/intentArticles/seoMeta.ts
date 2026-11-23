@@ -59,6 +59,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Whey concentrate vs isolate: protein %, lactose, price, and who should pick which — plus India buying tips to avoid fake or blended tubs.",
   },
+  "best-time-to-take-whey-protein": {
+    metaTitle: "Best Time to Take Whey Protein (Before or After?)",
+    metaDescription:
+      "Best time to take whey protein: post-workout vs anytime, morning and night myths, and how timing fits your daily protein target.",
+  },
   "protein-before-or-after-workout": {
     metaTitle: "Protein Before or After Workout? What Matters",
     metaDescription:
