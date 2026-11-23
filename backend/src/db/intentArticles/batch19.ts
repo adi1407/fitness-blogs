@@ -184,4 +184,128 @@ export const batch19: IntentArticleDef[] = [
       ]),
     ].join("\n"),
   },
+  {
+    slug: "whey-protein-concentrate-vs-isolate",
+    title: "Whey Concentrate vs Isolate: Which Is Better?",
+    excerpt:
+      "Concentrate is cheaper; isolate is leaner and lower in lactose. Here is how whey concentrate vs isolate actually differ — and which to buy in India.",
+    quickAnswer: `Both whey concentrate and isolate build muscle when total daily protein and training are right. Concentrate is usually ~70–80% protein by weight, cheaper, and fine if you tolerate dairy. Isolate is more filtered (~90%+ protein), lower lactose and fat, and often better if milk bloats you. Pick based on budget and digestion — not Instagram “superior” claims. Check labels and buy from authorised sellers. ${DISCLAIMER}`,
+    categorySlug: "nutrition",
+    subcategorySlug: "protein",
+    primaryKeyword: "whey concentrate vs isolate",
+    metaTitle: "Whey Concentrate vs Isolate: Which Is Better?",
+    metaDescription:
+      "Whey concentrate vs isolate: protein %, lactose, price, and who should pick which — plus India buying tips to avoid fake or blended tubs.",
+    tags: [
+      "whey protein",
+      "whey concentrate",
+      "whey isolate",
+      "protein powder",
+      "supplements",
+    ],
+    topics: ["Protein", "Indian Nutrition", "Performance", "Beginner Fitness"],
+    featuredImageAlt:
+      "Two whey tubs labelled concentrate and isolate beside a measuring scoop",
+    relatedSlugs: [
+      "how-much-whey-protein-per-day",
+      "is-whey-protein-safe",
+      "best-high-protein-indian-foods",
+      "how-much-protein-to-build-muscle",
+      "whey-protein-for-vegetarians",
+    ],
+    dayOffset: 9,
+    faq: [
+      {
+        question: "Is whey isolate better than concentrate for muscle?",
+        answer:
+          "Not meaningfully if you match protein grams. Isolate is denser per scoop; concentrate can match it if you use a slightly larger serving. Training and total daily protein matter more.",
+      },
+      {
+        question: "Which is better for weight loss?",
+        answer:
+          "Isolate is slightly lower in carbs/fat per scoop, but the difference is small. Calorie deficit and total protein decide fat loss.",
+      },
+      {
+        question: "I get bloated with whey — concentrate or isolate?",
+        answer:
+          "Try isolate (less lactose) or take concentrate with meals. If you have a milk allergy, avoid whey entirely. Persistent symptoms need a clinician, not another brand hop.",
+      },
+      {
+        question: "What about hydrolysate?",
+        answer:
+          "Hydrolysate is pre-broken-down whey, usually costlier, with little proven muscle advantage for most gym-goers over concentrate/isolate when doses match.",
+      },
+      {
+        question: "Can I mix concentrate and isolate?",
+        answer:
+          "Yes. Some blends exist. Just count the protein on the label toward your daily target.",
+      },
+    ],
+    sources: [SRC_ISSN, SRC_MORTON, SRC_PHILLIPS],
+    body: [
+      p(
+        "Shop shelves in India stack “gold isolate” next to “raw concentrate” with a 2× price gap. The question whey concentrate vs isolate sounds technical. For most people it is a digestion-and-budget choice.",
+      ),
+
+      h2("Side-by-side"),
+      table(
+        ["Factor", "Concentrate (WPC)", "Isolate (WPI)"],
+        [
+          ["Typical protein %", "~70–80% by weight", "~90%+ by weight"],
+          ["Lactose / fat", "More", "Much less"],
+          ["Price per gram protein", "Usually lower", "Usually higher"],
+          ["Taste / mix", "Often creamier", "Often thinner; brand-dependent"],
+          ["Best default?", "Yes for most healthy dairy-tolerant buyers", "If lactose bothers you or you want leaner scoops"],
+        ],
+      ),
+      p(
+        `Neither replaces food. Dose still follows <a href="${LINK.wheyDose}">how much whey protein per day</a>. Safety and fake-tub checks: <a href="${LINK.wheySafe}">is whey protein safe</a>.`,
+      ),
+
+      h2("What does not change"),
+      ul([
+        "Both are milk-derived complete proteins with plenty of leucine",
+        "Both only help muscle when you train and hit daily protein",
+        "Neither is a steroid or a hormone",
+      ]),
+
+      h2("When concentrate is enough"),
+      p(
+        "If milk, curd and paneer sit fine with you, concentrate is usually the value pick. Use the label’s protein-per-scoop to hit your gap — not the brand’s “fastest absorbing” slogan.",
+      ),
+
+      h2("When isolate is worth the premium"),
+      ul([
+        "Bloating or loose stools with concentrate that improves on isolate",
+        "You want fewer leftover carbs/fats per scoop during a tight cut",
+        "You prefer a smaller scoop for the same protein grams",
+      ]),
+      p(
+        `Vegetarians still using dairy can use either form — see <a href="${LINK.wheyVeg}">whey protein for vegetarians</a>. Vegans need a plant blend instead.`,
+      ),
+
+      h2("India buying checklist"),
+      ol([
+        "Single-ingredient whey (or clear WPC/WPI) — avoid mystery “proprietary blends”",
+        "Authorised seller + FSSAI details on pack",
+        "Compare price per gram of protein, not tub size",
+        "Skip tubs that hide protein behind huge servings of maltodextrin (mass gainers)",
+      ]),
+      p(DISCLAIMER),
+
+      toolCta(
+        "/protein-calculator",
+        "protein calculator",
+        "Choose a form, then size scoops against your daily target with the",
+      ),
+
+      takeaways([
+        "Concentrate is cheaper and fine for most dairy-tolerant people.",
+        "Isolate is leaner and lower lactose — useful for digestion or tight macros.",
+        "Matched protein grams → similar muscle outcomes; training still rules.",
+        "Pay for verified protein grams, not “gold” marketing.",
+        "Food first; powder second; quality sellers always.",
+      ]),
+    ].join("\n"),
+  },
 ];

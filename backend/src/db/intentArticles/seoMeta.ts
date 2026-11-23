@@ -54,6 +54,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "How much whey protein per day: scoop maths from your total protein target, when 1–2 scoops are enough, and who should skip powder — with Indian food examples.",
   },
+  "whey-protein-concentrate-vs-isolate": {
+    metaTitle: "Whey Concentrate vs Isolate: Which Is Better?",
+    metaDescription:
+      "Whey concentrate vs isolate: protein %, lactose, price, and who should pick which — plus India buying tips to avoid fake or blended tubs.",
+  },
   "protein-before-or-after-workout": {
     metaTitle: "Protein Before or After Workout? What Matters",
     metaDescription:

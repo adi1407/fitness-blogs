@@ -40,6 +40,7 @@ const PATHS: Record<string, string> = {
   "what-is-progressive-overload": "muscle-building/training-programs",
   "is-whey-protein-safe": "nutrition/protein",
   "how-much-whey-protein-per-day": "nutrition/protein",
+  "whey-protein-concentrate-vs-isolate": "nutrition/protein",
   "is-ghee-good-for-you": "nutrition/dietary-fats",
   "is-creatine-safe": "muscle-building/muscle-building-nutrition",
   "creatine-dosage": "muscle-building/muscle-building-nutrition",
