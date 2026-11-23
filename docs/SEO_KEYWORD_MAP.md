@@ -162,6 +162,17 @@ These two give `/weight-loss` its strongest supporting links; once published, ad
 
 Watch for overlap: "vegetarian protein sources" sits next to the `/nutrition/protein` hub ("protein foods india"). The article goes deep on vegetarian-only meal building; the hub stays the broad overview and links to it.
 
+### 5.5 Whey cluster (supports `is-whey-protein-safe`)
+
+| Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
+|---|---|---|---|---|
+| how much whey protein per day (`how-much-whey-protein-per-day`, in CMS queue) | How Much Whey Protein Per Day? Scoops by Goal | nutrition / protein | `/protein-calculator` | is whey protein safe, protein per day, high protein indian foods |
+| whey concentrate vs isolate (`whey-protein-concentrate-vs-isolate`, in CMS queue) | Whey Concentrate vs Isolate: Which Is Better? | nutrition / protein | `/protein-calculator` | how much whey per day, is whey protein safe |
+| best time to take whey protein (`best-time-to-take-whey-protein`, in CMS queue) | Best Time to Take Whey Protein (Before or After?) | nutrition / protein | `/protein-calculator` | protein before or after workout, how much whey per day |
+| whey protein for vegetarians (`whey-protein-for-vegetarians`, in CMS queue) | Whey Protein for Vegetarians: Does It Fit? | nutrition / protein | `/protein-calculator` | vegetarian protein sources, how much whey per day, is whey protein safe |
+
+Angle: scoop maths from total protein, India buying / fake-tub caution, dairy-vegetarian vs vegan clarity. Seeded `submitted` only — publish in CMS one-by-one. Suggested sources: ISSN protein position stand; Morton et al. (2018); Citizens Protein Project (India, 2024).
+
 ---
 
 ## 6. Monthly Search Console routine
