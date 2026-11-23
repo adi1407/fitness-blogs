@@ -49,6 +49,11 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Is whey protein safe for kidneys, liver and skin? Real side effects, who should avoid it, how much to take and how to spot fake or contaminated whey in India.",
   },
+  "how-much-whey-protein-per-day": {
+    metaTitle: "How Much Whey Protein Per Day? Scoops by Goal",
+    metaDescription:
+      "How much whey protein per day: scoop maths from your total protein target, when 1–2 scoops are enough, and who should skip powder — with Indian food examples.",
+  },
   "protein-before-or-after-workout": {
     metaTitle: "Protein Before or After Workout? What Matters",
     metaDescription:
