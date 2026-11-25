@@ -14,6 +14,23 @@ export const ARTICLES = {
   lose10kg: article("How many calories should I eat to lose 10 kg?", "weight-loss/calorie-deficit", "how-many-calories-should-i-eat-to-lose-10-kg", 185338238),
   bellyFat: article("How to lose belly fat", "weight-loss/fat-loss-basics", "how-to-lose-belly-fat", 355528441),
   walking: article("Does walking help you lose weight?", "weight-loss/walking-daily-activity", "does-walking-help-you-lose-weight", 727382084),
+  strengthFatLoss: article("Strength training for fat loss", "weight-loss/strength-training-weight-loss", "strength-training-for-fat-loss", 478521860),
+  /** Slug-only until CMS publish — LiveArticleLink / MaybeArticleLink hide while submitted. */
+  cardioDose: {
+    title: "How much cardio for fat loss?",
+    slug: "how-much-cardio-for-fat-loss",
+    href: "/blog/weight-loss/cardio-weight-loss/how-much-cardio-for-fat-loss",
+  },
+  hiitVsSteady: {
+    title: "HIIT vs steady state for fat loss",
+    slug: "hiit-vs-steady-state-for-fat-loss",
+    href: "/blog/weight-loss/cardio-weight-loss/hiit-vs-steady-state-for-fat-loss",
+  },
+  bestCardio: {
+    title: "Best cardio for weight loss",
+    slug: "best-cardio-for-weight-loss",
+    href: "/blog/weight-loss/cardio-weight-loss/best-cardio-for-weight-loss",
+  },
   notLosingWeight: article("Why am I not losing weight?", "weight-loss/weight-loss-plateaus", "why-am-i-not-losing-weight", 686723666),
   maintenanceCalories: article("What are maintenance calories?", "nutrition/calories-energy", "maintenance-calories", 561064519),
   bmrVsTdee: article("BMR vs TDEE: what's the difference?", "nutrition/calories-energy", "bmr-vs-tdee", 557888306),

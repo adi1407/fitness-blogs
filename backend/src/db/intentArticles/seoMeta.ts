@@ -69,6 +69,21 @@ export const SEO_META: Record<string, { metaTitle: string; metaDescription: stri
     metaDescription:
       "Whey protein for vegetarians: dairy vs vegan rules, scoop use with Indian meals, isolate tips, and food-first alternatives when you skip powder.",
   },
+  "how-much-cardio-for-fat-loss": {
+    metaTitle: "How Much Cardio for Fat Loss?",
+    metaDescription:
+      "How much cardio for fat loss: weekly minutes that work, walking vs harder sessions, and how to add cardio without killing recovery or muscle.",
+  },
+  "hiit-vs-steady-state-for-fat-loss": {
+    metaTitle: "HIIT vs Steady State for Fat Loss",
+    metaDescription:
+      "HIIT vs steady-state cardio for fat loss: equal weekly work, similar fat loss — choose the style you can recover from and stick with.",
+  },
+  "best-cardio-for-weight-loss": {
+    metaTitle: "Best Cardio for Weight Loss Beginners",
+    metaDescription:
+      "Best cardio for weight loss beginners: walking first, then cycling, swimming or easy intervals — plus how to fit sessions around Indian workdays.",
+  },
   "protein-before-or-after-workout": {
     metaTitle: "Protein Before or After Workout? What Matters",
     metaDescription:

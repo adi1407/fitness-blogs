@@ -76,6 +76,7 @@ Until that export exists, titles were tuned for the pages with the highest comme
 
 | Date | Change | Pages | Expected effect | Check on |
 | --- | --- | --- | --- | --- |
+| 25 Nov 2026 | Cardio fat-loss cluster seeded `submitted` (3) + cross-link migration; pillar step links live strength-training article; keyword map §5.3b | cardio ×3 | Fills empty cardio subcategory after CMS publish | 23 Dec |
 | 23 Nov 2026 | GSC Coverage CSVs archived; air-fryer `robots_index=true`; unpublished article URLs → subcategory 308; `/calculators`/`/guides`/`/articles` aliases; footer crawl links | air-fryer ×5, hubs | Clear noindex + 404 buckets; pull Discovered pages into the index | 21 Dec |
 | 10 Nov 2026 | Filed GSC CSV exports under `docs/seo/gsc-exports/` (not `frontend/public/`); recorded Nov indexing snapshot | — | Keeps audit dumps out of the crawlable web root | — |
 | 9 Oct 2026 | Sign-in links `rel="nofollow"` | site-wide header | Fewer `/login` URLs discovered | 6 Nov |
@@ -167,6 +168,8 @@ The site has fixed ad slots with reserved height (no layout shift): mid-article 
 - **Creatine cluster (4):** `creatine-dosage`, `creatine-loading-phase`, `creatine-for-women`, `creatine-monohydrate-vs-hcl`
 
 **23 Nov 2026 — whey cluster in CMS queue (never auto-published):** `how-much-whey-protein-per-day`, `whey-protein-concentrate-vs-isolate`, `best-time-to-take-whey-protein`, `whey-protein-for-vegetarians`.
+
+**25 Nov 2026 — cardio fat-loss cluster in CMS queue (never auto-published):** `how-much-cardio-for-fat-loss`, `hiit-vs-steady-state-for-fat-loss`, `best-cardio-for-weight-loss`. Opens empty `cardio-weight-loss` subcategory once published.
 
 No other published articles were changed. Hub links stay hidden until each slug is published manually.
 

@@ -88,10 +88,17 @@ export const BLOG_TAXONOMY: BlogCategoryDef[] = [
         intro:
           "Practical weight-loss meal plans built from everyday Indian food: a 1500 calorie day with gram weights, a 7-day vegetarian plan, and high-protein breakfasts and lighter dinners that fit a calorie target without special diet products.",
       },
-      { slug: "cardio-weight-loss", label: "Cardio & Weight Loss" },
+      {
+        slug: "cardio-weight-loss",
+        label: "Cardio & Weight Loss",
+        intro:
+          "How much cardio helps fat loss, when HIIT beats easy pacing, and beginner-friendly options from brisk walking to cycling. Pair these with a calorie deficit and strength training so more of the weight you lose is fat.",
+      },
       {
         slug: "strength-training-weight-loss",
         label: "Strength Training for Weight Loss",
+        intro:
+          "Why lifting protects muscle in a deficit, how it compares with cardio for fat loss, and a simple beginner strength plan you can run while dieting.",
       },
       {
         slug: "walking-daily-activity",
