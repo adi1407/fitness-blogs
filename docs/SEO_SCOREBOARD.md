@@ -50,6 +50,18 @@ Raw exports: `docs/seo/gsc-exports/2026-11-10/`.
 | Blocked by robots.txt | 4 | Expected for `/login`, `/account`, `/auth/`, `/preview/`. |
 | Duplicate, Google chose different canonical | 1 | Same as baseline — rice article intent rewrite. |
 
+## Indexing snapshot (GSC Coverage export, 23 Nov 2026)
+
+Raw exports: `docs/seo/gsc-exports/2026-11-23/` (summary CSVs only — no URL drilldowns). Chart: ~194 indexed / ~102 not indexed (mid-Nov).
+
+| Reason (not indexed) | Pages | Diagnosis | Action (shipped 23 Nov) |
+| --- | --- | --- | --- |
+| Page with redirect | 38 | Expected: `www`/`http`, `/tools/*-calculator` → root calculators, `/blog/{pillar}` → pillar hubs, `/learn` → `/blog`, slug-only articles → numbered. Sitemap itself is clean (220/220 HEAD 200). | Keep redirects; do not link redirect sources. Added legacy `/calculators` `/guides` `/articles` → live hubs. |
+| Excluded by `noindex` | 19 | Utility pages (`/search`, `/start`, `/embed/`, `/login`…) plus 5 air-fryer recipes held back for photos. | Air-fryer batch opened to index (`robots_index=true`); utility noindex stays. |
+| Blocked by robots.txt | 13 | Intentional: `/account` `/login` `/auth/` `/api/` `/preview/` `/search` `/unsubscribe` `/embed/` `/start`. | Keep — do not “validate fix” on intentional blocks. |
+| Not found (404) | 3 | Likely brief-publish then unpublish article URLs + guessed paths like `/calculators`. Internal crawl of hubs found 0 linked 404s. | Unpublished article paths now 308 → subcategory hub; legacy calculator/guide aliases redirect. |
+| Discovered – currently not indexed | 29 | Crawl-budget / thin inbound links on newer foods/exercises. | Footer now links `/training`, protein ranking; keep publishing + internal links. |
+
 ## Performance baseline (needs your export)
 
 The Queries/Pages export was not in Downloads. Export **Performance → last 3 months → Queries and Pages** to fill:
@@ -64,6 +76,7 @@ Until that export exists, titles were tuned for the pages with the highest comme
 
 | Date | Change | Pages | Expected effect | Check on |
 | --- | --- | --- | --- | --- |
+| 23 Nov 2026 | GSC Coverage CSVs archived; air-fryer `robots_index=true`; unpublished article URLs → subcategory 308; `/calculators`/`/guides`/`/articles` aliases; footer crawl links | air-fryer ×5, hubs | Clear noindex + 404 buckets; pull Discovered pages into the index | 21 Dec |
 | 10 Nov 2026 | Filed GSC CSV exports under `docs/seo/gsc-exports/` (not `frontend/public/`); recorded Nov indexing snapshot | — | Keeps audit dumps out of the crawlable web root | — |
 | 9 Oct 2026 | Sign-in links `rel="nofollow"` | site-wide header | Fewer `/login` URLs discovered | 6 Nov |
 | 9 Oct 2026 | Baseline recorded | — | — | — |
@@ -125,7 +138,7 @@ Live check against the Oct “low value content” rejection:
 | About names operator (Aditya Choudhary) + contact | Pass (shipped 17 Nov) |
 | Content depth after Oct rewrites (exercises/recipes/programs/reviews/blog/foods) | Pass — still live |
 | Homepage blog links → 404 | Pass (0 broken) |
-| Air-fryer recipes | Live, `noindex` until CMS photos (correct — do not index unfinished photo pages) |
+| Air-fryer recipes | Live and indexable (IFCT guides); CMS HTTPS photos still improve CTR |
 | ~16 seeded articles still unpublished | Soft risk only — public hubs hide those links; publish when ready, not a hard blocker |
 
 **You can request AdSense review after the 17 Nov trust-page deploy is live on fitlives.in.** Do not wait for every draft article. Do not turn on Auto ads in-page placements during review.
