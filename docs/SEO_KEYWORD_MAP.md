@@ -90,6 +90,7 @@ Each pillar server-renders **every** published article in its cluster (`PillarGu
 | indian-diet-plan-for-weight-loss | weight loss diet plan india | Indian Diet Plan for Weight Loss (7-Day Veg) |
 | vegetarian-protein-sources-india | vegetarian protein sources india | Vegetarian Protein Sources: Best Indian Foods |
 | protein-for-weight-loss | protein for weight loss | Protein for Weight Loss: How Much Per Day? |
+| strength-training-for-fat-loss | strength training for fat loss | Strength Training for Fat Loss: Does It Work? |
 
 The live values (with 140–160 character meta descriptions) are in `backend/src/db/intentArticles/seoMeta.ts`, applied by the `2026-10-07-seo-meta` content migration. CMS edits win: the migration only replaces values that still equal the seeded text.
 
@@ -149,9 +150,19 @@ Angle: Indian buying advice (third-party tested brands, price per effective gram
 | Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
 |---|---|---|---|---|
 | ~~weight loss diet plan india~~ (published, `indian-diet-plan-for-weight-loss`) | Indian Diet Plan for Weight Loss (7-Day Veg) | weight-loss / diet-meal-planning | `/calorie-deficit-calculator` | 1500 calorie diet plan, best indian foods for weight loss, rice vs roti |
-| strength training for fat loss | Strength Training for Fat Loss: Beginner Plan | weight-loss / strength-training-weight-loss | `/body-fat-calculator` | what is progressive overload, does walking help you lose weight, calories to lose weight |
+| ~~strength training for fat loss~~ (published, `strength-training-for-fat-loss`) | Strength Training for Fat Loss: Does It Work? | weight-loss / strength-training-weight-loss | `/body-fat-calculator` | what is progressive overload, does walking help you lose weight, calories to lose weight |
 
-These two give `/weight-loss` its strongest supporting links; once published, add them to the "How to lose weight in 5 steps" section on the pillar (`frontend/src/app/weight-loss/page.tsx`).
+Both are live and linked from the pillar “How to lose weight in 5 steps” section.
+
+### 5.3b Cardio & weight loss (fills empty `/blog/weight-loss/cardio-weight-loss`)
+
+| Primary query | Working title (≤ 49 chars) | Category / subcategory | Calculator CTA | Must link to |
+|---|---|---|---|---|
+| how much cardio for fat loss (`how-much-cardio-for-fat-loss`, in CMS queue) | How Much Cardio for Fat Loss? | weight-loss / cardio-weight-loss | `/calorie-deficit-calculator` | strength training for fat loss, does walking help, calories to lose weight |
+| hiit vs steady state for fat loss (`hiit-vs-steady-state-for-fat-loss`, in CMS queue) | HIIT vs Steady State for Fat Loss | weight-loss / cardio-weight-loss | `/body-fat-calculator` | how much cardio for fat loss, strength training for fat loss, belly fat |
+| best cardio for weight loss (`best-cardio-for-weight-loss`, in CMS queue) | Best Cardio for Weight Loss Beginners | weight-loss / cardio-weight-loss | `/steps-to-calories-calculator` | how much cardio, HIIT vs steady state, walking / steps guides |
+
+Angle: dose + modality (not “cardio melts fat”). Seeded `submitted` only — publish in CMS one-by-one. Suggested sources: ACSM activity position stand (Donnelly et al., 2009); Keating et al. HIIT vs MICT adiposity meta-analysis (2017); STRRIDE aerobic/resistance comparison (Willis et al., 2012).
 
 ### 5.4 Protein cluster
 

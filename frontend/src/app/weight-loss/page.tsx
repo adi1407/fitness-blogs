@@ -138,8 +138,16 @@ const buildSteps = (isPublished: (a: { slug: string; href: string }) => boolean)
     body: (
       <>
         Lifting two to four times a week tells your body to keep muscle, so
-        more of what you lose is fat. Daily steps add a steady calorie burn that
-        is easy to recover from; see{" "}
+        more of what you lose is fat — see{" "}
+        <MaybeArticleLink
+          article={ARTICLES.strengthFatLoss}
+          isPublished={isPublished}
+          className="fk-link"
+        >
+          strength training for fat loss
+        </MaybeArticleLink>
+        . Daily steps add a steady calorie burn that is easy to recover from;
+        read{" "}
         <MaybeArticleLink
           article={ARTICLES.walking}
           isPublished={isPublished}

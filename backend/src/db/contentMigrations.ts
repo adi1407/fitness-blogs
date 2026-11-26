@@ -80,6 +80,9 @@ const PATHS: Record<string, string> = {
   "how-many-steps-a-day-to-lose-weight": "weight-loss/walking-daily-activity",
   "strength-training-for-fat-loss": "weight-loss/strength-training-weight-loss",
   "how-to-lose-weight-on-a-vegetarian-diet": "weight-loss/weight-loss-nutrition",
+  "how-much-cardio-for-fat-loss": "weight-loss/cardio-weight-loss",
+  "hiit-vs-steady-state-for-fat-loss": "weight-loss/cardio-weight-loss",
+  "best-cardio-for-weight-loss": "weight-loss/cardio-weight-loss",
   "best-chest-exercises": "muscle-building/muscle-growth-hypertrophy",
   "best-back-exercises": "muscle-building/muscle-growth-hypertrophy",
   "best-leg-exercises": "muscle-building/muscle-growth-hypertrophy",
@@ -809,6 +812,25 @@ function insertWheyClusterLinks(): Promise<void> {
   );
 }
 
+const CARDIO_CLUSTER_MARKER = "<strong>Cardio cluster:</strong>";
+
+const CARDIO_CLUSTER_LINKS: Record<string, string> = {
+  "strength-training-for-fat-loss": `Add weekly burn with ${a("how-much-cardio-for-fat-loss", "how much cardio for fat loss")}, then pick a style in ${a("hiit-vs-steady-state-for-fat-loss", "HIIT vs steady state")} or ${a("best-cardio-for-weight-loss", "best cardio for weight loss")}.`,
+  "does-walking-help-you-lose-weight": `Want structured sessions beyond steps? See ${a("how-much-cardio-for-fat-loss", "how much cardio for fat loss")} and ${a("best-cardio-for-weight-loss", "best cardio for weight loss")}.`,
+  "how-many-steps-a-day-to-lose-weight": `Steps are the base layer — size harder sessions with ${a("how-much-cardio-for-fat-loss", "how much cardio for fat loss")}.`,
+  "how-much-cardio-for-fat-loss": `Compare styles in ${a("hiit-vs-steady-state-for-fat-loss", "HIIT vs steady state for fat loss")} and beginner picks in ${a("best-cardio-for-weight-loss", "best cardio for weight loss")}. Keep muscle with ${a("strength-training-for-fat-loss", "strength training for fat loss")}.`,
+  "hiit-vs-steady-state-for-fat-loss": `Dose the week with ${a("how-much-cardio-for-fat-loss", "how much cardio for fat loss")}; beginners start with ${a("best-cardio-for-weight-loss", "best cardio for weight loss")}.`,
+  "best-cardio-for-weight-loss": `How many minutes? ${a("how-much-cardio-for-fat-loss", "How much cardio for fat loss")}. Intervals or easy pace? ${a("hiit-vs-steady-state-for-fat-loss", "HIIT vs steady state")}.`,
+};
+
+function insertCardioClusterLinks(): Promise<void> {
+  return insertMarkedParagraphs(
+    CARDIO_CLUSTER_MARKER,
+    CARDIO_CLUSTER_LINKS,
+    "cardio cluster links",
+  );
+}
+
 const AIR_FRYER_INDEX_SLUGS = [
   "paneer-tikka-air-fryer",
   "grilled-chicken-breast-air-fryer",
@@ -865,6 +887,7 @@ const MIGRATIONS: { id: string; run: () => Promise<void> }[] = [
   { id: "2026-11-20-unpublish-auto-published", run: unpublishAutoPublished20Nov },
   { id: "2026-11-23-whey-cluster-links", run: insertWheyClusterLinks },
   { id: "2026-11-23-index-air-fryer-recipes", run: indexAirFryerRecipes },
+  { id: "2026-11-25-cardio-cluster-links", run: insertCardioClusterLinks },
 ];
 
 export async function applyContentMigrations(): Promise<void> {
