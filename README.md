@@ -14,11 +14,12 @@
 
 | Doc | Purpose |
 |-----|---------|
+| [docs/PLATFORM_STATUS.md](./docs/PLATFORM_STATUS.md) | **What is built vs remaining** (current snapshot) |
 | [docs/PRODUCT_VISION.md](./docs/PRODUCT_VISION.md) | North star & principles |
 | [docs/INFORMATION_ARCHITECTURE.md](./docs/INFORMATION_ARCHITECTURE.md) | URLs, nav, clusters |
 | [docs/CONTENT_MODEL.md](./docs/CONTENT_MODEL.md) | CMS fields & Postgres entities |
 | [docs/SEO_PLAYBOOK.md](./docs/SEO_PLAYBOOK.md) | Intent, schema, quality |
-| [docs/BUILD_ROADMAP.md](./docs/BUILD_ROADMAP.md) | Phased delivery |
+| [docs/BUILD_ROADMAP.md](./docs/BUILD_ROADMAP.md) | Original phased plan (see status doc for “done”) |
 
 Cursor rule: `.cursor/rules/fitness-platform.mdc` (always on).
 

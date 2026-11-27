@@ -1,5 +1,8 @@
 # Build Roadmap
 
+> **Current “built vs remaining” snapshot:** see [`PLATFORM_STATUS.md`](./PLATFORM_STATUS.md) (27 Nov 2026).  
+> This roadmap is the original phase plan; many Phase 1–4 items below are now live even if checkboxes were not backfilled.
+
 Ship in this order. Do not jump to accounts/community before content engines exist.
 
 ## Now (Phase 0)
